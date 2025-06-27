@@ -16,7 +16,7 @@
 		<p class="text-muted-foreground mx-auto mt-2 mb-8 max-w-2xl text-2xl font-light">
 			Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
 		</p>
-		<Button variant="default" size="lg" href="/docs/intro">
+		<Button variant="default" size="lg" href="/docs/setup">
 			<BookOpenIcon />
 			Get Started
 		</Button>
