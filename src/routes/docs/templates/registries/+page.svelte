@@ -20,7 +20,7 @@
 	<h2 class="mb-3 text-2xl font-semibold">Quick Setup</h2>
 	<h3 class="mt-8 mb-2 text-xl font-semibold">1. Create Registry Structure</h3>
 	<p class="mb-4">Create a JSON manifest file that lists your templates:</p>
-	<div class="w-full p-6">
+	<div class="w-full">
 		<Code.Root
 			lang="json"
 			class="w-full"
@@ -187,7 +187,7 @@
 		</li>
 		<li>
 			<strong>Add registry.json:</strong>
-			<div class="mt-2 w-full p-6">
+			<div class="mt-2 w-full">
 				<Code.Root
 					lang="json"
 					class="w-full"

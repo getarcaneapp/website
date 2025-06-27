@@ -10,7 +10,7 @@
 	<div class="flex flex-1">
 		<!-- Main Content -->
 		<main class="flex flex-1 justify-center">
-			<div class="w-full max-w-5xl p-8">
+			<div class="w-full max-w-6xl p-8">
 				{@render children?.()}
 			</div>
 		</main>

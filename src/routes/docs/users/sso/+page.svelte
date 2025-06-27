@@ -3,6 +3,7 @@
 	import * as Code from '$lib/components/ui/code';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import * as Alert from '$lib/components/ui/alert/index.js';
+	import { Window } from '$lib/components/ui/window';
 
 	const composeFile = `services:
   arcane:
@@ -59,96 +60,99 @@
 	<h3 class="mt-8 mb-2 text-xl font-semibold">Alternative: Environment Variables</h3>
 
 	<p class="mb-2">You can also configure OIDC using environment variables:</p>
-
-	<Table.Root class="mb-6">
-		<Table.Caption>OIDC environment variables and their usage.</Table.Caption>
-		<Table.Header>
-			<Table.Row>
-				<Table.Head class="w-[220px]">Variable</Table.Head>
-				<Table.Head>Description</Table.Head>
-				<Table.Head>Default/Example</Table.Head>
-			</Table.Row>
-		</Table.Header>
-		<Table.Body>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_ENABLED</code>
-				</Table.Cell>
-				<Table.Cell>Enable OIDC login</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5">false</code>
-				</Table.Cell>
-			</Table.Row>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_CLIENT_ID</code>
-				</Table.Cell>
-				<Table.Cell>Client ID from your OIDC provider</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5">your_arcane_client_id_from_provider</code>
-				</Table.Cell>
-			</Table.Row>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_CLIENT_SECRET</code>
-				</Table.Cell>
-				<Table.Cell>Client Secret from provider</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5"
-						>your_super_secret_client_secret_from_provider</code
-					>
-				</Table.Cell>
-			</Table.Row>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_REDIRECT_URI</code>
-				</Table.Cell>
-				<Table.Cell>Redirect URI (must match provider)</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5">http://localhost:3000/auth/oidc/callback</code>
-				</Table.Cell>
-			</Table.Row>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_AUTHORIZATION_ENDPOINT</code>
-				</Table.Cell>
-				<Table.Cell>Auth endpoint URL</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5"
-						>https://your-provider.com/oauth2/authorize</code
-					>
-				</Table.Cell>
-			</Table.Row>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_TOKEN_ENDPOINT</code>
-				</Table.Cell>
-				<Table.Cell>Token endpoint URL</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5">https://your-provider.com/oauth2/token</code>
-				</Table.Cell>
-			</Table.Row>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_USERINFO_ENDPOINT</code>
-				</Table.Cell>
-				<Table.Cell>Userinfo endpoint URL</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5">https://your-provider.com/oauth2/userinfo</code
-					>
-				</Table.Cell>
-			</Table.Row>
-			<Table.Row>
-				<Table.Cell class="font-medium">
-					<code class="bg-muted rounded px-1 py-0.5">OIDC_SCOPES</code>
-				</Table.Cell>
-				<Table.Cell>Scopes to request</Table.Cell>
-				<Table.Cell>
-					<code class="bg-muted rounded px-1 py-0.5">openid email profile</code> (default)
-				</Table.Cell>
-			</Table.Row>
-		</Table.Body>
-	</Table.Root>
+	<Window>
+		<Table.Root class="mb-6">
+			<Table.Header>
+				<Table.Row>
+					<Table.Head class="w-[220px]">Variable</Table.Head>
+					<Table.Head>Description</Table.Head>
+					<Table.Head>Default/Example</Table.Head>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_ENABLED</code>
+					</Table.Cell>
+					<Table.Cell>Enable OIDC login</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5">false</code>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_CLIENT_ID</code>
+					</Table.Cell>
+					<Table.Cell>Client ID from your OIDC provider</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5">your_arcane_client_id_from_provider</code>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_CLIENT_SECRET</code>
+					</Table.Cell>
+					<Table.Cell>Client Secret from provider</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5"
+							>your_super_secret_client_secret_from_provider</code
+						>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_REDIRECT_URI</code>
+					</Table.Cell>
+					<Table.Cell>Redirect URI (must match provider)</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5"
+							>http://localhost:3000/auth/oidc/callback</code
+						>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_AUTHORIZATION_ENDPOINT</code>
+					</Table.Cell>
+					<Table.Cell>Auth endpoint URL</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5"
+							>https://your-provider.com/oauth2/authorize</code
+						>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_TOKEN_ENDPOINT</code>
+					</Table.Cell>
+					<Table.Cell>Token endpoint URL</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5">https://your-provider.com/oauth2/token</code>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_USERINFO_ENDPOINT</code>
+					</Table.Cell>
+					<Table.Cell>Userinfo endpoint URL</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5"
+							>https://your-provider.com/oauth2/userinfo</code
+						>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell class="font-medium">
+						<code class="bg-muted rounded px-1 py-0.5">OIDC_SCOPES</code>
+					</Table.Cell>
+					<Table.Cell>Scopes to request</Table.Cell>
+					<Table.Cell>
+						<code class="bg-muted rounded px-1 py-0.5">openid email profile</code> (default)
+					</Table.Cell>
+				</Table.Row>
+			</Table.Body>
+		</Table.Root></Window
+	>
 
 	<h4 class="mt-8 mb-2 text-lg font-semibold">Example docker-compose</h4>
 
