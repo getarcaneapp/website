@@ -26,7 +26,8 @@
 			<DocsSidebar navItems={SidebarNavItems} />
 		</aside>
 
-		<main class="m-10 flex-1 overflow-y-auto">
+		<!-- Corrected margin and added padding for centering -->
+		<main class="flex-1 overflow-y-auto p-10 lg:ml-64">
 			{@render children?.()}
 		</main>
 	</div>
