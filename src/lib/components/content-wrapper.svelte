@@ -6,7 +6,7 @@
 	let { children }: Props = $props();
 </script>
 
-<div class="bg-background text-foreground flex min-h-screen flex-col">
+<div class="bg-background text-foreground flex flex-col">
 	<div class="flex flex-1">
 		<!-- Main Content -->
 		<main class="flex flex-1 justify-center">
