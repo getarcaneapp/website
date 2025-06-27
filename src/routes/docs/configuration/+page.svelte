@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import * as Table from '$lib/components/ui/table/index.js';
 </script>
 
 <DocsLayout>
@@ -16,253 +17,145 @@
 
 	<h3 class="mb-3 text-xl font-semibold">Environment Variables</h3>
 
-	<div class="mb-8 overflow-x-auto">
-		<table class="w-full border-collapse">
-			<thead>
-				<tr class="border-border bg-muted text-muted-foreground border-b">
-					<th class="p-2 text-left font-semibold">Variable</th>
-					<th class="p-2 text-left font-semibold">Purpose</th>
-					<th class="p-2 text-left font-semibold">Default/Examples</th>
-					<th class="p-2 text-left font-semibold">Notes</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>PORT</code
-						></td
-					>
-					<td class="p-2">The port arcane should run on</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>8080</code
-						></td
-					>
-					<td class="p-2">Optional</td>
-				</tr>
-				<tr class="border-border bg-card border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>DEV_BACKEND_URL</code
-						></td
-					>
-					<td class="p-2">The url of the backend for development</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>http://localhost:8080</code
-						></td
-					>
-					<td class="p-2">Development Only</td>
-				</tr>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>PUID</code
-						></td
-					>
-					<td class="p-2">File owner user ID</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>2000</code
-						></td
-					>
-					<td class="p-2">Use your user ID</td>
-				</tr>
-				<tr class="border-border bg-card border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>PGID</code
-						></td
-					>
-					<td class="p-2">File owner group ID</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>2000</code
-						></td
-					>
-					<td class="p-2">Use your group ID</td>
-				</tr>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>DOCKER_GID</code
-						></td
-					>
-					<td class="p-2">Docker group ID</td>
-					<td class="p-2">(auto)</td>
-					<td class="p-2">Only if needed</td>
-				</tr>
-				<tr class="border-border bg-card border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>ENCRYPTION_KEY</code
-						></td
-					>
-					<td class="p-2">Encrytion Key for secure stored sensitive data</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>-</code
-						></td
-					>
-					<td class="p-2">Required</td>
-				</tr>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>JWT_SECRET</code
-						></td
-					>
-					<td class="p-2">Session secret</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>-</code
-						></td
-					>
-					<td class="p-2">Required</td>
-				</tr>
-				<tr class="border-border bg-card border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_ENABLED</code
-						></td
-					>
-					<td class="p-2">Enable OIDC login</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>false</code
-						></td
-					>
-					<td class="p-2">Sets OIDC Auth to be enabled</td>
-				</tr>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_CLIENT_ID</code
-						></td
-					>
-					<td class="p-2">Client ID from your OIDC provider</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>your_arcane_client_id_from_provider</code
-						></td
-					>
-					<td class="p-2">NA</td>
-				</tr>
-				<tr class="border-border bg-card border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_CLIENT_SECRET</code
-						></td
-					>
-					<td class="p-2">Client Secret from provider</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>your_super_secret_client_secret_from_provider</code
-						></td
-					>
-					<td class="p-2">NA</td>
-				</tr>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_REDIRECT_URI</code
-						></td
-					>
-					<td class="p-2">Redirect URI (must match provider)</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>http://localhost:3000/auth/oidc/callback</code
-						></td
-					>
-					<td class="p-2">NA</td>
-				</tr>
-				<tr class="border-border bg-card border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_AUTHORIZATION_ENDPOINT</code
-						></td
-					>
-					<td class="p-2">Auth endpoint URL</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>https://your-provider.com/oauth2/authorize</code
-						></td
-					>
-					<td class="p-2">NA</td>
-				</tr>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_TOKEN_ENDPOINT</code
-						></td
-					>
-					<td class="p-2">Token endpoint URL</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>https://your-provider.com/oauth2/token</code
-						></td
-					>
-					<td class="p-2">NA</td>
-				</tr>
-				<tr class="border-border bg-card border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_USERINFO_ENDPOINT</code
-						></td
-					>
-					<td class="p-2">Userinfo endpoint URL</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>https://your-provider.com/oauth2/userinfo</code
-						></td
-					>
-					<td class="p-2">NA</td>
-				</tr>
-				<tr class="border-border border-b">
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>OIDC_SCOPES</code
-						></td
-					>
-					<td class="p-2">Scopes to request</td>
-					<td class="p-2"
-						><code
-							class="bg-muted text-muted-foreground relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-							>openid email profile</code
-						> (default)</td
-					>
-					<td class="p-2">NA</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+	<Table.Root class="mb-8">
+		<Table.Caption>Common Arcane environment variables and their usage.</Table.Caption>
+		<Table.Header>
+			<Table.Row>
+				<Table.Head class="w-[220px]">Variable</Table.Head>
+				<Table.Head>Purpose</Table.Head>
+				<Table.Head>Default/Examples</Table.Head>
+			</Table.Row>
+		</Table.Header>
+		<Table.Body>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">PORT</code></Table.Cell
+				>
+				<Table.Cell>The port arcane should run on</Table.Cell>
+				<Table.Cell><code class="bg-muted rounded px-1 py-0.5">8080</code></Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">DEV_BACKEND_URL</code></Table.Cell
+				>
+				<Table.Cell>The url of the backend for development</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5">http://localhost:8080</code></Table.Cell
+				>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">PUID</code></Table.Cell
+				>
+				<Table.Cell>File owner user ID</Table.Cell>
+				<Table.Cell><code class="bg-muted rounded px-1 py-0.5">2000</code></Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">PGID</code></Table.Cell
+				>
+				<Table.Cell>File owner group ID</Table.Cell>
+				<Table.Cell><code class="bg-muted rounded px-1 py-0.5">2000</code></Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">DOCKER_GID</code></Table.Cell
+				>
+				<Table.Cell>Docker group ID</Table.Cell>
+				<Table.Cell><code class="bg-muted rounded px-1 py-0.5">(auto)</code></Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">ENCRYPTION_KEY</code></Table.Cell
+				>
+				<Table.Cell>Encryption Key for secure stored sensitive data</Table.Cell>
+				<Table.Cell><code class="bg-muted rounded px-1 py-0.5">-</code></Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">JWT_SECRET</code></Table.Cell
+				>
+				<Table.Cell>Session secret</Table.Cell>
+				<Table.Cell><code class="bg-muted rounded px-1 py-0.5">-</code></Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_ENABLED</code></Table.Cell
+				>
+				<Table.Cell>Enable OIDC login</Table.Cell>
+				<Table.Cell><code class="bg-muted rounded px-1 py-0.5">false</code></Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_CLIENT_ID</code></Table.Cell
+				>
+				<Table.Cell>Client ID from your OIDC provider</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5">your_arcane_client_id_from_provider</code
+					></Table.Cell
+				>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_CLIENT_SECRET</code></Table.Cell
+				>
+				<Table.Cell>Client Secret from provider</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5">your_client_secret_from_provider</code
+					></Table.Cell
+				>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_REDIRECT_URI</code></Table.Cell
+				>
+				<Table.Cell>Redirect URI (must match provider)</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5">http://localhost:3000/auth/oidc/callback</code
+					></Table.Cell
+				>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_AUTHORIZATION_ENDPOINT</code></Table.Cell
+				>
+				<Table.Cell>Auth endpoint URL</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5"
+						>https://your-provider.com/oauth2/authorize</code
+					></Table.Cell
+				>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_TOKEN_ENDPOINT</code></Table.Cell
+				>
+				<Table.Cell>Token endpoint URL</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5">https://your-provider.com/oauth2/token</code
+					></Table.Cell
+				>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_USERINFO_ENDPOINT</code></Table.Cell
+				>
+				<Table.Cell>Userinfo endpoint URL</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5"
+						>https://your-provider.com/oauth2/userinfo</code
+					></Table.Cell
+				>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell class="font-medium"
+					><code class="bg-muted rounded px-1 py-0.5">OIDC_SCOPES</code></Table.Cell
+				>
+				<Table.Cell>Scopes to request</Table.Cell>
+				<Table.Cell
+					><code class="bg-muted rounded px-1 py-0.5">openid email profile</code> (default)</Table.Cell
+				>
+			</Table.Row>
+		</Table.Body>
+	</Table.Root>
 </DocsLayout>

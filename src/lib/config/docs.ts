@@ -20,8 +20,8 @@ export const SidebarNavItems: SidebarNavItem[] = [
 		items: [
 			{ title: 'Introduction', href: '/', items: [] },
 			{ title: 'Installation', href: '/docs/setup', items: [] },
-			{ title: 'Configuration', href: '/docs/configuration', items: [] },
-			{ title: 'Changelog', href: '/changelog', items: [] }
+			{ title: 'Configuration', href: '/docs/configuration', items: [] }
+			// { title: 'Changelog', href: '/changelog', items: [] }
 		]
 	},
 	{
@@ -34,12 +34,12 @@ export const SidebarNavItems: SidebarNavItem[] = [
 	{
 		title: 'Features',
 		items: [
-			{ title: 'Accordion', href: '/docs/accordion', items: [] },
-			{ title: 'Alert Dialog', href: '/docs/alert-dialog', items: [] },
-			{ title: 'Alert', href: '/docs/alert', items: [] },
-			{ title: 'Aspect Ratio', href: '/docs/aspect-ratio', items: [] },
-			{ title: 'Avatar', href: '/docs/avatar', items: [] },
-			{ title: 'Badge', href: '/docs/badge', items: [] }
+			{ title: 'Containers', href: '/docs/features/containers', items: [] },
+			{ title: 'Environments', href: '/docs/features/environments', items: [] },
+			{ title: 'Images', href: '/docs/features/images', items: [] },
+			{ title: 'Networks', href: '/docs/features/networks', items: [] },
+			{ title: 'Compose Projects', href: '/docs/features/compose-projects', items: [] },
+			{ title: 'Volumes', href: '/docs/features/volumes', items: [] }
 		]
 	}
 ];
