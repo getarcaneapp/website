@@ -13,16 +13,18 @@
 <header class="bg-background border-border sticky top-0 z-50 w-full border-b">
 	<div class="container-wrapper 3xl:fixed:px-0 px-6">
 		<div class="flex items-center gap-4 py-4">
-			<a href="/" class="flex items-center gap-2 no-underline transition hover:opacity-80">
+			<a
+				href="/"
+				class="hidden items-center gap-2 no-underline transition hover:opacity-80 sm:flex"
+			>
 				<Logo class="size-10" />
 				<span class="text-foreground text-xl font-extrabold tracking-tight">Arcane Docs</span>
 			</a>
 			<MainNav items={mainNavItems} class="ml-6 hidden lg:flex" />
 
-			<MobileNav class="flex lg:hidden" />
+			<MobileNav class="flex sm:hidden" />
 
-			<!-- Right side items -->
-			<div class="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
+			<div class="ml-auto hidden items-center gap-2 sm:flex md:flex-1 md:justify-end">
 				<div class="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
 					<!-- <DocsCommandMenu /> -->
 				</div>

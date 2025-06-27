@@ -16,7 +16,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
-<div class="bg-background text-foreground flex min-h-screen flex-col">
+<div class="bg-background text-foreground flex flex-col">
 	<Header />
 	<div class="flex flex-1">
 		<aside
@@ -26,7 +26,7 @@
 			<DocsSidebar navItems={SidebarNavItems} />
 		</aside>
 
-		<main class="flex-1 overflow-y-auto" style="margin-left: 16rem;">
+		<main class="m-10 flex-1 overflow-y-auto">
 			{@render children?.()}
 		</main>
 	</div>

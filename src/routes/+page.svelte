@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
-	import Logo from '$lib/components/logo.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { BookOpenIcon } from '@lucide/svelte';
 </script>
 
 <ContentWrapper>
@@ -16,12 +16,10 @@
 		<p class="text-muted-foreground mx-auto mt-2 mb-8 max-w-2xl text-2xl font-light">
 			Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
 		</p>
-		<a
-			href="/docs/setup"
-			class="bg-primary text-background hover:bg-primary/90 focus:ring-primary/40 inline-block rounded-xl px-10 py-4 text-xl font-bold shadow-lg transition-all duration-200 focus:ring-4"
-		>
-			<span class="mr-2">🚀</span> Get Started
-		</a>
+		<Button variant="default" size="lg" href="/docs/intro">
+			<BookOpenIcon />
+			Get Started
+		</Button>
 	</section>
 
 	<section class="mb-12">
