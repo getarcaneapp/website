@@ -5,7 +5,7 @@
 	import { Button } from '$lib/components/ui/button/index.js'; // Adjust path if needed
 </script>
 
-<Button onclick={toggleMode} variant="outline" size="icon">
+<Button onclick={toggleMode} variant="ghost" size="icon">
 	<SunIcon
 		class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 !transition-all dark:scale-0 dark:-rotate-90"
 	/>
