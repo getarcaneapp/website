@@ -22,11 +22,11 @@
 			<MobileNav class="flex lg:hidden" />
 
 			<!-- Right side items -->
-			<div class="ml-auto flex items-start gap-2 md:flex-1 md:justify-end">
+			<div class="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
 				<div class="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
 					<!-- <DocsCommandMenu /> -->
 				</div>
-				<Separator orientation="vertical" class="ml-2 hidden lg:block" />
+				<Separator orientation="vertical" />
 				<GithubLink />
 				<Separator orientation="vertical" />
 				<ModeSwitcher />

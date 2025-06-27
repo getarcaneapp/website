@@ -85,7 +85,7 @@
 							{group.title}
 						</div>
 						<div class="flex flex-col gap-3">
-							{#each group.items as item, i (i)}
+							{#each group.items as item: { href: string; title: string }, i (i)}
 								{@render MobileLink({ href: item.href, content: item.title })}
 							{/each}
 						</div>
