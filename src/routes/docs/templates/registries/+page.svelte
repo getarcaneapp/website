@@ -1,6 +1,7 @@
 <script lang="ts">
 	import DocsLayout from '$lib/components/DocsLayout.svelte';
 	import * as Code from '$lib/components/ui/code';
+	import * as TreeView from '$lib/components/ui/tree-view';
 </script>
 
 <DocsLayout>
@@ -77,16 +78,14 @@
 
 	<h3 class="mt-8 mb-2 text-xl font-semibold">3. Template File Structure</h3>
 	<p class="mb-4">For each template, create a directory with:</p>
-	<div class="w-full p-6">
-		<Code.Root
-			lang="diff"
-			class="w-full"
-			code={`your-template/
-├── docker-compose.yml    # Required: Main compose file
-├── .env.example         # Optional: Environment variables
-└── README.md            # Optional: Documentation`}
-			><Code.CopyButton variant="ghost" size="sm" /></Code.Root
-		>
+	<div class="mb-6 h-40 w-72">
+		<TreeView.Root>
+			<TreeView.Folder name="your-template">
+				<TreeView.File name="docker-compose.yml" />
+				<TreeView.File name=".env.example" />
+				<TreeView.File name="README.md" />
+			</TreeView.Folder>
+		</TreeView.Root>
 	</div>
 
 	<h2 class="mb-3 text-2xl font-semibold">Registry JSON Reference</h2>
@@ -124,24 +123,26 @@
 	</ul>
 
 	<h2 class="mb-3 text-2xl font-semibold">Example Repository Structure</h2>
-	<div class="w-full p-6">
-		<Code.Root
-			lang="diff"
-			class="w-full"
-			code={`docker-templates/
-├── registry.json
-├── wordpress/
-│   ├── docker-compose.yml
-│   ├── .env.example
-│   └── README.md
-├── nextcloud/
-│   ├── docker-compose.yml
-│   ├── .env.example
-│   └── README.md
-└── nginx-proxy/
-    ├── docker-compose.yml
-    └── README.md`}><Code.CopyButton variant="ghost" size="sm" /></Code.Root
-		>
+	<div class="bg-muted mb-6 w-full max-w-md overflow-x-auto rounded p-4">
+		<TreeView.Root>
+			<TreeView.Folder name="docker-templates">
+				<TreeView.File name="registry.json" />
+				<TreeView.Folder name="wordpress">
+					<TreeView.File name="docker-compose.yml" />
+					<TreeView.File name=".env.example" />
+					<TreeView.File name="README.md" />
+				</TreeView.Folder>
+				<TreeView.Folder name="nextcloud">
+					<TreeView.File name="docker-compose.yml" />
+					<TreeView.File name=".env.example" />
+					<TreeView.File name="README.md" />
+				</TreeView.Folder>
+				<TreeView.Folder name="nginx-proxy">
+					<TreeView.File name="docker-compose.yml" />
+					<TreeView.File name="README.md" />
+				</TreeView.Folder>
+			</TreeView.Folder>
+		</TreeView.Root>
 	</div>
 
 	<h2 class="mb-3 text-2xl font-semibold">Testing Your Registry</h2>
