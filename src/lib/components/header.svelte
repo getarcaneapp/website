@@ -12,12 +12,12 @@
 
 <header class="bg-background border-border sticky top-0 z-50 w-full border-b">
 	<div class="container-wrapper 3xl:fixed:px-0 px-6">
-		<div class="flex items-start gap-2 py-4">
-			<Button href="/" variant="ghost" class="hidden gap-2 lg:flex">
-				<Logo />
-				<span>Arcane Docs</span>
-			</Button>
-			<MainNav items={mainNavItems} class="hidden lg:flex" />
+		<div class="flex items-center gap-4 py-4">
+			<a href="/" class="flex items-center gap-2 no-underline transition hover:opacity-80">
+				<Logo class="size-10" />
+				<span class="text-foreground text-xl font-extrabold tracking-tight">Arcane Docs</span>
+			</a>
+			<MainNav items={mainNavItems} class="ml-6 hidden lg:flex" />
 
 			<MobileNav class="flex lg:hidden" />
 

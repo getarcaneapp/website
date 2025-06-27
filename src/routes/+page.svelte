@@ -5,15 +5,23 @@
 </script>
 
 <ContentWrapper>
-	<section class="mt-3 mb-10 flex flex-col items-center text-center">
-		<h1 class="text-primary mb-2 flex items-center gap-0 text-4xl font-extrabold tracking-tight">
-			<Logo class="relative top-[2px] inline-block size-12 align-middle" />
-			<span class="ml-[-0.2em] align-middle text-4xl font-extrabold">rcane</span>
+	<section class="mt-12 mb-12 flex flex-col items-center text-center">
+		<h1 class="mb-2 flex items-end gap-0 text-6xl font-black tracking-tight">
+			<span
+				class="ml-[-0.18em] bg-gradient-to-r from-purple-700 via-purple-600 to-purple-800 bg-clip-text align-bottom text-transparent drop-shadow-[0_2px_16px_rgba(109,40,217,0.5)]"
+			>
+				Arcane
+			</span>
 		</h1>
-		<p class="text-muted-foreground mx-auto max-w-2xl text-lg">
-			Modern Docker Management, Designed for Everyone.
+		<p class="text-muted-foreground mx-auto mt-2 mb-8 max-w-2xl text-2xl font-light">
+			Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
 		</p>
-		<Button variant="default" href="/docs/setup" class="m-4 w-60">🚀 Get Started</Button>
+		<a
+			href="/docs/setup"
+			class="bg-primary text-background hover:bg-primary/90 focus:ring-primary/40 inline-block rounded-xl px-10 py-4 text-xl font-bold shadow-lg transition-all duration-200 focus:ring-4"
+		>
+			<span class="mr-2">🚀</span> Get Started
+		</a>
 	</section>
 
 	<section class="mb-12">
