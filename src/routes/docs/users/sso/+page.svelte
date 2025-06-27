@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Code from '$lib/components/ui/code';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import * as Alert from '$lib/components/ui/alert/index.js';
@@ -20,7 +20,7 @@
 `;
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">User Management &amp; Single Sign-On (OIDC)</h1>
 
 	<p class="mb-6">
@@ -168,4 +168,4 @@
 	<p class="text-gray-700">
 		For troubleshooting, check both your OIDC provider and Arcane logs for errors.
 	</p>
-</DocsLayout>
+</ContentWrapper>

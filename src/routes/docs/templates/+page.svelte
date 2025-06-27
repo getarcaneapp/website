@@ -1,9 +1,9 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Code from '$lib/components/ui/code';
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Using Templates</h1>
 
 	<p class="mb-6">
@@ -174,4 +174,4 @@ WP_PORT=8080`}
 		>
 		for inspiration!
 	</p>
-</DocsLayout>
+</ContentWrapper>

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Introduction to Arcane</h1>
 
 	<p class="text-muted-foreground mb-4">Welcome to the documentation for Arcane!</p>
@@ -60,4 +60,4 @@
 		I loved the style of the shadcn-svelte docs so much, I wanted to use a similar look and feel for
 		this project's documentation.
 	</p>
-</DocsLayout>
+</ContentWrapper>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Code from '$lib/components/ui/code';
 	import { Snippet } from '$lib/components/ui/snippet';
 
@@ -26,7 +26,7 @@ volumes:
 `;
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Quick Start Guide</h1>
 	<p class="text-muted-foreground mb-6">Get Arcane running fast with Docker Compose.</p>
 
@@ -88,4 +88,4 @@ volumes:
 			in your browser and follow the setup.
 		</p>
 	</div>
-</DocsLayout>
+</ContentWrapper>

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
-	import * as Code from '$lib/components/ui/code';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import { GitCommand } from '$lib/components/ui/git-command';
+	import { Snippet } from '$lib/components/ui/snippet';
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Contributing to Arcane</h1>
 
 	<p class="mb-6">
@@ -59,11 +59,7 @@
 		<li>
 			<strong>Create a Branch:</strong> Create a new branch for your feature or bug fix. Use a
 			descriptive name:
-			<GitCommand
-				agents={['git']}
-				command="git branch -m feat/my-new-feature"
-				class="mt-2 mb-2 w-full"
-			/>
+			<Snippet text="git branch -m feat/my-new-feature" class="mt-2 mb-2 w-full" />
 		</li>
 		<li>
 			<strong>Set Up Development Environment:</strong> Follow the instructions in the
@@ -76,23 +72,14 @@
 				<p class="mb-2">
 					For the backend you can use <code class="bg-muted rounded px-1 py-0.5">air</code> for hot reloading:
 				</p>
-				<Code.Root
-					lang="bash"
-					class="mb-2 w-full"
-					code={`go install github.com/air-verse/air@latest`}
-				/>
+				<Snippet text="go install github.com/air-verse/air@latest" class="mt-2 mb-2 w-full" />
 				<p class="mb-2">
 					Then just run <code class="bg-muted rounded px-1 py-0.5">air</code> in
 					<code class="bg-muted rounded px-1 py-0.5">arcane/backend</code> folder.
 				</p>
 				<h4 class="mt-4 mb-2 text-lg font-semibold">Frontend</h4>
 				<p class="mb-2">The frontend uses vite for development:</p>
-				<Code.Root
-					lang="bash"
-					class="mb-2 w-full"
-					code={`cd frontend
-npm run dev`}
-				/>
+				<Snippet text={['cd frontend', 'npm run dev']} class="mt-2 mb-2 w-full" />
 			</div>
 		</li>
 		<li>
@@ -101,13 +88,7 @@ npm run dev`}
 		<li>
 			<strong>Lint and Format:</strong> Ensure your code adheres to the project's style guidelines
 			by running the linters and formatters:
-			<Code.Root
-				lang="bash"
-				class="mt-2 mb-2 w-full"
-				code={`cd frontend
-npm run lint
-npm run format`}
-			/>
+			<Snippet text={['cd frontend', 'npm run lint', 'npm run format']} class="mt-2 mb-2 w-full" />
 		</li>
 		<li>
 			<strong>Test Your Changes:</strong> Test your changes thoroughly to ensure they work as expected
@@ -122,32 +103,24 @@ npm run format`}
 				target="_blank"
 				rel="noopener">Conventional Commits</a
 			>:
-			<Code.Root
-				lang="bash"
+			<Snippet
+				text={[
+					'git add .',
+					'git commit -a -m "feat: add feature X"',
+					'#or',
+					'git commit -m "fix: resolve issue Y"'
+				]}
 				class="mt-2 mb-2 w-full"
-				code={`git add .
-git commit -m "feat: add feature X"
-# or
-git commit -m "fix: resolve issue Y"`}
 			/>
 		</li>
 		<li>
 			<strong>Keep Your Branch Updated:</strong> Periodically update your branch with the latest
 			changes from the upstream repository:
-			<Code.Root
-				lang="bash"
-				class="mt-2 mb-2 w-full"
-				code={`git fetch upstream
-git rebase upstream/main`}
-			/>
+			<Snippet text={['git fetch upstream', 'git rebase upstream/main']} class="mt-2 mb-2 w-full" />
 		</li>
 		<li>
 			<strong>Push Your Branch:</strong> Push your changes to your forked repository:
-			<Code.Root
-				lang="bash"
-				class="mt-2 mb-2 w-full"
-				code={`git push origin feature/my-new-feature`}
-			/>
+			<Snippet text={['git push origin feature/my-new-feature']} class="mt-2 mb-2 w-full" />
 		</li>
 		<li>
 			<strong>Open a Pull Request:</strong> Go to the original Arcane repository on GitHub and open
@@ -192,4 +165,4 @@ git rebase upstream/main`}
 		help in making Arcane better. If you have any questions or need further clarification, feel free
 		to reach out to the maintainers or the community.
 	</p>
-</DocsLayout>
+</ContentWrapper>

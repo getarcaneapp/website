@@ -1,9 +1,9 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Containers Overview</h1>
 
 	<h2 class="mb-3 text-2xl font-semibold">What Can You Do With Containers in Arcane?</h2>
@@ -92,4 +92,4 @@
 		<li>Click on a container to open its details.</li>
 		<li>Go to the <strong>Logs</strong> tab to see the container’s output and error logs.</li>
 	</ol>
-</DocsLayout>
+</ContentWrapper>

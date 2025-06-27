@@ -1,10 +1,10 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Code from '$lib/components/ui/code';
 	import * as Table from '$lib/components/ui/table/index.js';
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Environments Setup Guide</h1>
 
 	<h2 class="mb-3 text-2xl font-semibold">Overview</h2>
@@ -162,4 +162,4 @@ docker compose up -d`}
 			<Code.CopyButton variant="ghost" size="sm" />
 		</Code.Root>
 	</div>
-</DocsLayout>
+</ContentWrapper>

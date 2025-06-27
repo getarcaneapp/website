@@ -19,8 +19,14 @@
 <div class="bg-background text-foreground flex min-h-screen flex-col">
 	<Header />
 	<div class="flex flex-1">
-		<DocsSidebar navItems={SidebarNavItems} />
-		<main class="flex flex-1 flex-col">
+		<aside
+			class="hidden h-[calc(100vh-4rem)] w-64 max-w-64 min-w-64 overflow-y-auto lg:block"
+			style="position:fixed; top:4rem; left:0; z-index:30;"
+		>
+			<DocsSidebar navItems={SidebarNavItems} />
+		</aside>
+
+		<main class="flex-1 overflow-y-auto" style="margin-left: 16rem;">
 			{@render children?.()}
 		</main>
 	</div>

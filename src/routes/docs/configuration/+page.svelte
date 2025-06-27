@@ -1,9 +1,9 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Table from '$lib/components/ui/table/index.js';
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Arcane Configuration</h1>
 
 	<h3 class="mb-3 text-xl font-semibold">How to Change Settings</h3>
@@ -158,4 +158,4 @@
 			</Table.Row>
 		</Table.Body>
 	</Table.Root>
-</DocsLayout>
+</ContentWrapper>

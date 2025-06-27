@@ -1,10 +1,10 @@
 <script lang="ts">
-	import DocsLayout from '$lib/components/DocsLayout.svelte';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Code from '$lib/components/ui/code';
 	import * as TreeView from '$lib/components/ui/tree-view';
 </script>
 
-<DocsLayout>
+<ContentWrapper>
 	<h1 class="mb-4 text-3xl font-bold">Creating a Custom Template Registry</h1>
 
 	<p class="mb-6">
@@ -237,4 +237,4 @@
 		<li>Ensure proper file permissions are set</li>
 		<li>Look for errors in the browser console</li>
 	</ul>
-</DocsLayout>
+</ContentWrapper>
