@@ -1,6 +1,7 @@
 <script lang="ts">
 	import DocsLayout from '$lib/components/DocsLayout.svelte';
 	import * as Code from '$lib/components/ui/code';
+	import { GitCommand } from '$lib/components/ui/git-command';
 </script>
 
 <DocsLayout>
@@ -52,22 +53,16 @@
 		</li>
 		<li>
 			<strong>Clone Your Fork:</strong> Clone your forked repository to your local machine:
-			<Code.Root
-				lang="bash"
-				class="mt-2 mb-2 w-full"
-				code={`git clone https://github.com/<your-username>/arcane.git
-cd arcane`}
-			/>
+
+			<GitCommand class="mt-2 mb-2 w-full" />
 		</li>
 		<li>
 			<strong>Create a Branch:</strong> Create a new branch for your feature or bug fix. Use a
 			descriptive name:
-			<Code.Root
-				lang="bash"
+			<GitCommand
+				agents={['git']}
+				command="git branch -m feat/my-new-feature"
 				class="mt-2 mb-2 w-full"
-				code={`git checkout -b feature/my-new-feature
-# or
-git checkout -b fix/issue-123`}
 			/>
 		</li>
 		<li>
