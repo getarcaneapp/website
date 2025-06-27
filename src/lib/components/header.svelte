@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Logo from './logo.svelte';
 	import MainNav from './mainnav.svelte';
+	import MobileNav from './mobile-nav.svelte';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import GithubLink from './github-link.svelte';
@@ -17,6 +18,8 @@
 				<span>Arcane Docs</span>
 			</Button>
 			<MainNav items={mainNavItems} class="hidden lg:flex" />
+
+			<MobileNav class="flex lg:hidden" />
 
 			<!-- Right side items -->
 			<div class="ml-auto flex items-start gap-2 md:flex-1 md:justify-end">
