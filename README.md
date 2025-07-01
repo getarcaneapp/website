@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> This website is the `next` version for Arcane, and is not the production documentation.
+
 # Arcane Documentation Website
 
 This documentaion site is built with SvelteKit and uses Vite for local development.
