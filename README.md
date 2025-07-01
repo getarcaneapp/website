@@ -1,5 +1,5 @@
 > [!IMPORTANT]  
-> This website is the `next` version for Arcane, and is not the production documentation.
+> This website is for a unreleased version of Arcane, and is not the production documentation.
 
 # Arcane Documentation Website
 
