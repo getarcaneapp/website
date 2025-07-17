@@ -2,6 +2,7 @@
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Snippet } from '$lib/components/ui/snippet';
+	import InfoIcon from '@lucide/svelte/icons/info';
 </script>
 
 <ContentWrapper>
@@ -15,7 +16,8 @@
 	<h2 class="mt-8 mb-3 text-2xl font-semibold">Local User Management</h2>
 
 	<Alert.Root class="mb-4">
-		<Alert.Title>ℹ️ Default Admin User</Alert.Title>
+		<InfoIcon class="h-4 w-4" />
+		<Alert.Title>Default Admin User</Alert.Title>
 		<Alert.Description>
 			On first run, Arcane creates a default admin user if no users exist. You must change this
 			password during onboarding.

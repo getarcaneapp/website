@@ -4,6 +4,8 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Window } from '$lib/components/ui/window';
+	import InfoIcon from '@lucide/svelte/icons/info';
+	import AlertTriangleIcon from '@lucide/svelte/icons/alert-triangle';
 
 	const composeFile = `services:
   arcane:
@@ -31,15 +33,11 @@
 
 	<h2 class="mt-8 mb-3 text-2xl font-semibold">Single Sign-On (OIDC)</h2>
 
-	<Alert.Root class="mb-4">
-		<Alert.Title>ℹ️ Introduced in version 0.9.0</Alert.Title>
-		<Alert.Description>This feature was added in Arcane v0.9.0.</Alert.Description>
-	</Alert.Root>
-
 	<h3 class="mt-6 mb-2 text-xl font-semibold">Recommended: Configure OIDC in the UI</h3>
 
-	<Alert.Root class="mb-4">
-		<Alert.Title>⚠️ PKCE Required</Alert.Title>
+	<Alert.Root variant="warning" class="mb-4">
+		<AlertTriangleIcon class="size-4" />
+		<Alert.Title>PKCE Required</Alert.Title>
 		<Alert.Description>Arcane requires the use of PKCE for OIDC Authentication.</Alert.Description>
 	</Alert.Root>
 
