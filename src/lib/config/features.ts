@@ -8,7 +8,6 @@ import {
 	ChartBar,
 	type Icon as IconType
 } from '@lucide/svelte';
-import type { ComponentType } from 'svelte';
 
 export interface Feature {
 	icon: typeof IconType;
