@@ -3,7 +3,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { FeatureCard } from '$lib/components/ui/feature-card';
 	import * as Alert from '$lib/components/ui/alert/index.js';
-	import { BookOpen, Lightbulb } from '@lucide/svelte';
+	import { BookOpen, Lightbulb, Settings } from '@lucide/svelte';
 	import { features } from '$lib/config/features';
 </script>
 
@@ -35,6 +35,21 @@
 					fullWidth={feature.fullWidth}
 				/>
 			{/each}
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<div class="mb-8 text-center">
+			<h2 class="mb-4 text-3xl font-bold tracking-tight">Quick Start Generator</h2>
+			<p class="text-muted-foreground text-lg">
+				Generate a custom Docker Compose file for your Arcane deployment
+			</p>
+		</div>
+		<div class="flex justify-center">
+			<Button href="/generator" size="lg" variant="outline">
+				<Settings class="size-4" />
+				Open Generator
+			</Button>
 		</div>
 	</section>
 
