@@ -1,5 +1,6 @@
 export const mainNavItems = [
-	// { href: '/docs', label: 'Docs' }
+	{ href: '/docs/setup', label: 'Docs' },
+	{ href: '/generator', label: 'Compose Generator' }
 ];
 
 export type NavItem = {
@@ -18,7 +19,6 @@ export const SidebarNavItems: SidebarNavItem[] = [
 	{
 		title: 'Get Started',
 		items: [
-			{ title: 'Introduction', href: '/', items: [] },
 			{ title: 'Installation', href: '/docs/setup', items: [] },
 			{ title: 'Configuration', href: '/docs/configuration', items: [] }
 			// { title: 'Changelog', href: '/changelog', items: [] }

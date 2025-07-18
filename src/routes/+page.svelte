@@ -1,10 +1,12 @@
 <script lang="ts">
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { FeatureCard } from '$lib/components/ui/feature-card';
+	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
 	import * as Alert from '$lib/components/ui/alert/index.js';
-	import { BookOpen, Lightbulb, Settings } from '@lucide/svelte';
-	import { features } from '$lib/config/features';
+	import BookOpen from '@lucide/svelte/icons/book-open';
+	import Lightbulb from '@lucide/svelte/icons/lightbulb';
+	import Settings from '@lucide/svelte/icons/settings';
+	import { features } from '$lib/config/features.js';
 </script>
 
 <ContentWrapper>
@@ -19,10 +21,25 @@
 		<p class="text-muted-foreground mx-auto mt-2 mb-8 max-w-2xl text-2xl font-light">
 			Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
 		</p>
-		<Button variant="default" size="lg" href="/docs/setup">
-			<BookOpen class="h-4 w-4" />
-			Get Started
-		</Button>
+
+		<div class="flex flex-col items-center gap-4 sm:flex-row">
+			<Button variant="default" size="lg" href="/docs/setup">
+				<BookOpen class="size-4" />
+				Get Started
+			</Button>
+
+			<div class="relative">
+				<Button variant="secondary" size="lg" href="/generator">
+					<Settings class="size-4" />
+					Compose Generator
+				</Button>
+				<span
+					class="bg-primary text-primary-foreground absolute -top-2 -right-4 rotate-20 rounded-full px-2 py-1 text-xs font-medium"
+				>
+					New
+				</span>
+			</div>
+		</div>
 	</section>
 
 	<section class="mb-12">
@@ -38,29 +55,9 @@
 		</div>
 	</section>
 
-	<section class="mb-12">
-		<div class="mb-8 text-center">
-			<h2 class="mb-4 text-3xl font-bold tracking-tight">Quick Start Generator</h2>
-			<p class="text-muted-foreground text-lg">
-				Generate a custom Docker Compose file for your Arcane deployment
-			</p>
-		</div>
-		<div class="flex justify-center">
-			<Button href="/generator" size="lg" variant="outline">
-				<Settings class="size-4" />
-				Open Generator
-			</Button>
-		</div>
-	</section>
-
-	<Alert.Root class="mx-auto mt-8 max-w-2xl">
-		<Lightbulb class="size-4" />
-		<Alert.Title>Pro Tip</Alert.Title>
-		<Alert.Description>Arcane works best with Docker version 20.10.0 or higher.</Alert.Description>
-	</Alert.Root>
-
 	<p class="text-muted-foreground mt-8 text-center italic">
-		I loved the style of the shadcn-svelte docs so much, I wanted to use a similar look and feel for
-		this project's documentation.
+		Shoutout to the shadcn and shadcn-svelte teams, I loved the style of the shadcn-svelte docs so
+		much, I wanted to use a similar look and feel for this project's documentation. Alot of the code
+		was inspired by their work, so please check them out!
 	</p>
 </ContentWrapper>

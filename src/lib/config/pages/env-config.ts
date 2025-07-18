@@ -1,8 +1,4 @@
-export type EnvConfig = {
-	name: string;
-	description: string;
-	value: string;
-};
+import type { EnvConfig } from '$lib/types/env-config.type.js';
 
 export const envConfig: EnvConfig[] = [
 	{

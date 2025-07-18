@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { page } from '$app/state';
-	import type { SidebarNavItem } from '$lib/config/docs';
+	import type { SidebarNavItem } from '$lib/config/docs.js';
 	import type { ComponentProps } from 'svelte';
 
 	let {
@@ -17,8 +17,8 @@
 	collapsible="none"
 	{...restProps}
 >
-	<Sidebar.Content class="no-scrollbar px-2 pb-12">
-		<div class="h-(--top-spacing) shrink-0"></div>
+	<Sidebar.Content class="no-scrollbar overflow-y-auto pb-12">
+		<!-- <div class="h-(--top-spacing) shrink-0"></div> -->
 		{#each navItems as item (item.title)}
 			<Sidebar.Group>
 				<Sidebar.GroupLabel class="text-muted-foreground font-medium">
