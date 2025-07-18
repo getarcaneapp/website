@@ -34,32 +34,38 @@ export const userManagement: DocMetadata[] = [
 export const features: DocMetadata[] = [
 	{
 		title: 'Containers',
-		description: 'Managing Docker containers',
+		description:
+			'Learn how to manage Docker containers with Arcane - create, start, stop, inspect, and remove containers with ease.',
 		path: 'features/containers'
 	},
 	{
 		title: 'Environments',
-		description: 'Environment management',
+		description:
+			'Learn how to set up and manage remote Docker hosts using the Arcane agent for centralized container management.',
 		path: 'features/environments'
 	},
 	{
 		title: 'Images',
-		description: 'Docker image management',
+		description:
+			'Learn how to manage Docker images with Arcane - view, pull, inspect, remove, and prune images efficiently.',
 		path: 'features/images'
 	},
 	{
 		title: 'Networks',
-		description: 'Docker network management',
+		description:
+			'Learn how to manage Docker networks with Arcane - create, inspect, and remove networks with ease.',
 		path: 'features/networks'
 	},
 	{
 		title: 'Compose Projects',
-		description: 'Docker Compose project management',
+		description:
+			'Learn how to manage Docker Compose projects with Arcane - create, edit, start, stop, and deploy multi-service applications.',
 		path: 'features/compose'
 	},
 	{
 		title: 'Volumes',
-		description: 'Docker volume management',
+		description:
+			'Learn how to manage Docker volumes with Arcane - create, view, and remove persistent data volumes.',
 		path: 'features/volumes'
 	}
 ];
