@@ -11,7 +11,7 @@ export const entries: EntryGenerator = () => {
 	const entries = allDocs.map((doc) => ({ slug: doc.path }));
 
 	// Add empty slug for /docs root
-	entries.push({ slug: '' });
+	entries.push({ slug: 'index' });
 
 	return entries;
 };

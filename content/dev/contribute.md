@@ -31,8 +31,6 @@ blueprint: default
 
    <Snippet text="git branch -m feat/my-new-feature" class="mt-2 mb-2 w-full" />
 
-4. **Set Up Development Environment:** Follow the instructions in the [Building from Source](./building) guide to set up your development environment.
-
    ### Backend
 
    For the backend you can use `air` for hot reloading:
@@ -47,27 +45,27 @@ blueprint: default
 
    <Snippet text={['cd frontend', 'npm run dev']} class="mt-2 mb-2 w-full" />
 
-5. **Make Changes:** Implement your feature or bug fix. Write clear, concise code.
+4. **Make Changes:** Implement your feature or bug fix. Write clear, concise code.
 
-6. **Lint and Format:** Ensure your code adheres to the project's style guidelines by running the linters and formatters:
+5. **Lint and Format:** Ensure your code adheres to the project's style guidelines by running the linters and formatters:
 
    <Snippet text={['cd frontend', 'npm run lint', 'npm run format']} class="mt-2 mb-2 w-full" />
 
-7. **Test Your Changes:** Test your changes thoroughly to ensure they work as expected and don't break existing functionality.
+6. **Test Your Changes:** Test your changes thoroughly to ensure they work as expected and don't break existing functionality.
 
-8. **Commit Changes:** Commit your changes with a clear and descriptive commit message. We use [Conventional Commits](https://www.conventionalcommits.org/):
+7. **Commit Changes:** Commit your changes with a clear and descriptive commit message. We use [Conventional Commits](https://www.conventionalcommits.org/):
 
    <Snippet text={['git add .', 'git commit -a -m "feat: add feature X"', '#or', 'git commit -m "fix: resolve issue Y"']} class="mt-2 mb-2 w-full" />
 
-9. **Keep Your Branch Updated:** Periodically update your branch with the latest changes from the upstream repository:
+8. **Keep Your Branch Updated:** Periodically update your branch with the latest changes from the upstream repository:
 
    <Snippet text={['git fetch upstream', 'git rebase upstream/main']} class="mt-2 mb-2 w-full" />
 
-10. **Push Your Branch:** Push your changes to your forked repository:
+9. **Push Your Branch:** Push your changes to your forked repository:
 
-    <Snippet text={['git push origin feature/my-new-feature']} class="mt-2 mb-2 w-full" />
+   <Snippet text={['git push origin feature/my-new-feature']} class="mt-2 mb-2 w-full" />
 
-11. **Open a Pull Request:** Go to the original Arcane repository on GitHub and open a Pull Request (PR) from your branch to the main branch of the upstream repository.
+10. **Open a Pull Request:** Go to the original Arcane repository on GitHub and open a Pull Request (PR) from your branch to the main branch of the upstream repository.
     - Provide a clear title and description for your PR.
     - Reference any related issues (e.g., "Closes #123").
     - Be prepared to discuss your changes and make adjustments based on feedback.

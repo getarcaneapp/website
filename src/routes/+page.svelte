@@ -2,9 +2,7 @@
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
-	import * as Alert from '$lib/components/ui/alert/index.js';
 	import BookOpen from '@lucide/svelte/icons/book-open';
-	import Lightbulb from '@lucide/svelte/icons/lightbulb';
 	import Settings from '@lucide/svelte/icons/settings';
 	import { features } from '$lib/config/features.js';
 </script>

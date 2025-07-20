@@ -42,14 +42,14 @@ export const SidebarNavItems: SidebarNavItem[] = [
 			{ title: 'Volumes', href: '/docs/features/volumes', items: [] }
 		]
 	},
-	{
-		title: 'Guides',
-		items: [
-			{ title: 'Troubleshooting', href: '/docs/guides/troubleshooting', items: [] },
-			{ title: 'Auto Updates', href: '/docs/guides/updates', items: [] },
-			{ title: 'Container Registries', href: '/docs/guides/registries', items: [] }
-		]
-	},
+	// {
+	// 	title: 'Guides',
+	// 	items: [
+	// 		{ title: 'Troubleshooting', href: '/docs/guides/troubleshooting', items: [] },
+	// 		{ title: 'Auto Updates', href: '/docs/guides/updates', items: [] },
+	// 		{ title: 'Container Registries', href: '/docs/guides/registries', items: [] }
+	// 	]
+	// },
 	{
 		title: 'Templates',
 		items: [

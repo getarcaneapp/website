@@ -70,23 +70,23 @@ export const features: DocMetadata[] = [
 	}
 ];
 
-export const guides: DocMetadata[] = [
-	{
-		title: 'Troubleshooting',
-		description: 'Common issues and solutions',
-		path: 'guides/troubleshooting'
-	},
-	{
-		title: 'Auto Updates',
-		description: 'Configure automatic updates',
-		path: 'guides/updates'
-	},
-	{
-		title: 'Container Registries',
-		description: 'Working with container registries',
-		path: 'guides/registries'
-	}
-];
+// export const guides: DocMetadata[] = [
+// 	{
+// 		title: 'Troubleshooting',
+// 		description: 'Common issues and solutions',
+// 		path: 'guides/troubleshooting'
+// 	},
+// 	{
+// 		title: 'Auto Updates',
+// 		description: 'Configure automatic updates',
+// 		path: 'guides/updates'
+// 	},
+// 	{
+// 		title: 'Container Registries',
+// 		description: 'Working with container registries',
+// 		path: 'guides/registries'
+// 	}
+// ];
 
 export const development: DocMetadata[] = [
 	{
@@ -94,18 +94,36 @@ export const development: DocMetadata[] = [
 		description:
 			'Learn how to contribute to the Arcane project, from reporting bugs to submitting code.',
 		path: 'dev/contribute'
+	}
+];
+
+export const templates: DocMetadata[] = [
+	{
+		title: 'Using Templates',
+		description: 'Learn how to use templates in Arcane for faster development.',
+		path: 'templates'
 	},
 	{
-		title: 'Building from Source',
-		description: 'Build Arcane from source code',
-		path: 'dev/building'
+		title: 'Template Registries',
+		description: 'Learn how to create and manage template registries in Arcane.',
+		path: 'templates/registries'
+	}
+];
+
+export const indexPage: DocMetadata[] = [
+	{
+		title: 'Documentation',
+		description: 'Complete guide to using Arcane for Docker container management.',
+		path: 'index'
 	}
 ];
 
 export const allDocs = [
+	...indexPage,
 	...gettingStarted,
 	...userManagement,
 	...features,
-	...guides,
+	// ...guides,
+	...templates,
 	...development
 ];

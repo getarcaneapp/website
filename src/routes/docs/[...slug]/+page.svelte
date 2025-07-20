@@ -1,6 +1,4 @@
 <script lang="ts">
-	import ContentWrapper from '$lib/components/content-wrapper.svelte';
-
 	let { data } = $props();
 	const Markdown = $derived(data.component);
 	const doc = $derived(data.metadata);
