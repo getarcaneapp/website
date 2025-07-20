@@ -3,9 +3,9 @@
 -->
 
 <script lang="ts">
-	import { cn } from '$lib/utils/utils';
-	import { codeVariants } from '.';
-	import type { CodeRootProps } from './types';
+	import { cn } from '$lib/utils/utils.js';
+	import { codeVariants } from './index.js';
+	import type { CodeRootProps } from './types.js';
 	import { useCode } from './code.svelte.js';
 	import { box } from 'svelte-toolbelt';
 
