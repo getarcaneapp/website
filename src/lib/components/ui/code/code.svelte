@@ -3,7 +3,7 @@
 -->
 
 <script lang="ts">
-	import { cn } from '$lib/utils/utils.js';
+	import { cn } from '$lib/utils.js';
 	import { codeVariants } from './index.js';
 	import type { CodeRootProps } from './types.js';
 	import { useCode } from './code.svelte.js';

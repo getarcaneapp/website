@@ -22,7 +22,6 @@ A **Compose Project** is a collection of services defined in a `compose.yaml` fi
 - **Restart or Redeploy:** Restart a compose project or redeploy it to pull the latest images for your services.
 - **Update Compose Projects:** Change the compose project's name, update its compose file, or modify its environment variables.
 - **Remove Compose Projects:** Delete a compose project and its definition from Arcane.
-- **Import External Compose Projects:** Bring existing compose projects (not yet managed by Arcane) under Arcane's control.
 
 ## How to Use Compose Projects
 
@@ -30,6 +29,8 @@ A **Compose Project** is a collection of services defined in a `compose.yaml` fi
 
 1. Go to the **Compose Projects** section in the sidebar.
 2. You'll see a list of all compose projects, including their names, status (running, partially running, stopped), and how many services are running.
+
+> **Note:** Arcane treats `/app/data/stacks` as the single source of truth. Any Compose files you place in this directory—whether created through Arcane or added externally—are automatically detected and imported as projects.
 
 ### Creating a Compose Project
 
@@ -52,10 +53,6 @@ A **Compose Project** is a collection of services defined in a `compose.yaml` fi
 
 - To update, open the compose project and click **Edit**. Change the name, compose file, or environment variables, then save.
 - To remove, click the **Remove** button. Confirm the action to delete the compose project from Arcane.
-
-### Importing External Compose Projects
-
-If Arcane detects a compose project running on your Docker host that it doesn't manage yet, you'll see an **Import** option. Click it to bring the compose project under Arcane's management.
 
 ## Where Are My Compose Projects Stored?
 

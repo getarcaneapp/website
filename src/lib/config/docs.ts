@@ -34,11 +34,11 @@ export const SidebarNavItems: SidebarNavItem[] = [
 	{
 		title: 'Features',
 		items: [
+			{ title: 'Compose Projects', href: '/docs/features/compose', items: [] },
 			{ title: 'Containers', href: '/docs/features/containers', items: [] },
 			{ title: 'Environments', href: '/docs/features/environments', items: [] },
 			{ title: 'Images', href: '/docs/features/images', items: [] },
 			{ title: 'Networks', href: '/docs/features/networks', items: [] },
-			{ title: 'Compose Projects', href: '/docs/features/compose', items: [] },
 			{ title: 'Volumes', href: '/docs/features/volumes', items: [] }
 		]
 	},

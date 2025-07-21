@@ -42,3 +42,36 @@ description: 'Learn how to manage Docker images with Arcane - view, pull, inspec
 1. Click the **Prune Images** button.
 2. Choose whether to remove only dangling images or all unused images.
 3. Confirm the action to free up disk space.
+
+### Checking for Image Updates
+
+Arcane will indicate when a newer image is available, distinguishing between digest‐only updates and version jumps:
+
+- **Update badge**  
+  In the list view, an “Update” badge appears next to any image that has a newer release.
+
+- **Digest update**  
+  If the tag hasn’t changed but the image digest has (published with the same tag), you’ll see a **Digest** badge.  
+  Hover the badge to view the new digest and date, then click it to pull the updated digest.
+
+- **Major version update**  
+  If a brand‐new tag (e.g. `nginx:1.21` → `nginx:1.22`) is available in your configured registry, you’ll see a **Major** badge.  
+  Hover to see the available tag, then click to pull the new version.
+
+- **Automatic refresh**  
+  Arcane checks for updates on page load and when you click the **Refresh** icon in the Images toolbar.
+
+## Troubleshooting Updates
+
+- If you don’t see an update badge, ensure Arcane can reach your registry (check your network and credentials).
+- Use the **Check Updates** button to force a re‐scan of all images.
+
+### Private Registry Authentication
+
+Arcane will automatically use credentials you configure for private registries when pulling or checking for image updates:
+
+- In the sidebar click **Container Registires** under the Customization section.
+- Add or update credentials for your private registry (registry host, username, password or token).
+- Arcane stores these securely and applies them whenever it needs to authenticate against that registry.
+- When an image reference includes a private hostname, Arcane matches it against your saved credentials.
+- You can manage multiple credential entries; Arcane selects the correct one based on the registry host in the image reference.

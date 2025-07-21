@@ -33,6 +33,12 @@ export const userManagement: DocMetadata[] = [
 
 export const features: DocMetadata[] = [
 	{
+		title: 'Compose Projects',
+		description:
+			'Learn how to manage Docker Compose projects with Arcane - create, edit, start, stop, and deploy multi-service applications.',
+		path: 'features/compose'
+	},
+	{
 		title: 'Containers',
 		description:
 			'Learn how to manage Docker containers with Arcane - create, start, stop, inspect, and remove containers with ease.',
@@ -55,12 +61,6 @@ export const features: DocMetadata[] = [
 		description:
 			'Learn how to manage Docker networks with Arcane - create, inspect, and remove networks with ease.',
 		path: 'features/networks'
-	},
-	{
-		title: 'Compose Projects',
-		description:
-			'Learn how to manage Docker Compose projects with Arcane - create, edit, start, stop, and deploy multi-service applications.',
-		path: 'features/compose'
 	},
 	{
 		title: 'Volumes',
