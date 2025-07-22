@@ -3,11 +3,11 @@
 	import DockerComposeGenerator from '$lib/components/docker-compose-generator.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import Settings from '@lucide/svelte/icons/settings.svelte';
-	import Zap from '@lucide/svelte/icons/zap.svelte';
-	import BookOpen from '@lucide/svelte/icons/book-open.svelte';
-	import Lightbulb from '@lucide/svelte/icons/lightbulb.svelte';
-	import FileText from '@lucide/svelte/icons/file-text.svelte';
+	import Settings from '@lucide/svelte/icons/settings';
+	import Zap from '@lucide/svelte/icons/zap';
+	import BookOpen from '@lucide/svelte/icons/book-open';
+	import Lightbulb from '@lucide/svelte/icons/lightbulb';
+	import FileText from '@lucide/svelte/icons/file-text';
 </script>
 
 <ContentWrapper>

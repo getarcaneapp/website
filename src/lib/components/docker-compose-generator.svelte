@@ -5,9 +5,9 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import Settings from '@lucide/svelte/icons/settings.svelte';
-	import Database from '@lucide/svelte/icons/database.svelte';
-	import FileText from '@lucide/svelte/icons/file-text.svelte';
+	import Settings from '@lucide/svelte/icons/settings';
+	import Database from '@lucide/svelte/icons/database';
+	import FileText from '@lucide/svelte/icons/file-text';
 	import { generateDockerCompose } from '$lib/utils/docker-compose-generator.js';
 	import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
 	import DockerComposeDialog from './docker-compose-dialog.svelte';
