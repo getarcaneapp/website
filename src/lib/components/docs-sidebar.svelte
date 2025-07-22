@@ -4,10 +4,7 @@
 	import type { SidebarNavItem } from '$lib/config/docs.js';
 	import type { ComponentProps } from 'svelte';
 
-	let {
-		navItems,
-		...restProps
-	}: { navItems: SidebarNavItem[] } & ComponentProps<typeof Sidebar.Root> = $props();
+	let { navItems, ...restProps }: { navItems: SidebarNavItem[] } & ComponentProps<typeof Sidebar.Root> = $props();
 
 	const pathname = $derived(page.url.pathname);
 </script>

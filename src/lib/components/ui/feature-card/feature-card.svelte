@@ -10,14 +10,7 @@
 		fullWidth?: boolean;
 	}
 
-	let {
-		icon,
-		title,
-		description,
-		fullWidth = false,
-		class: className,
-		...restProps
-	}: Props = $props();
+	let { icon, title, description, fullWidth = false, class: className, ...restProps }: Props = $props();
 
 	const Icon = icon as typeof IconType;
 </script>

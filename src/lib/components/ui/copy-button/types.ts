@@ -18,5 +18,4 @@ export type CopyButtonPropsWithoutHTML = WithChildren<
 	}
 >;
 
-export type CopyButtonProps = CopyButtonPropsWithoutHTML &
-	WithoutChildren<HTMLAttributes<HTMLButtonElement>>;
+export type CopyButtonProps = CopyButtonPropsWithoutHTML & WithoutChildren<HTMLAttributes<HTMLButtonElement>>;

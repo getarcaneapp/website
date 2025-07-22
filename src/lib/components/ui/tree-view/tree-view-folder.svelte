@@ -8,13 +8,7 @@
 	import { cn } from '$lib/utils/utils';
 	import type { TreeViewFolderProps } from './types';
 
-	let {
-		name,
-		open = $bindable(true),
-		class: className,
-		icon,
-		children
-	}: TreeViewFolderProps = $props();
+	let { name, open = $bindable(true), class: className, icon, children }: TreeViewFolderProps = $props();
 </script>
 
 <Collapsible.Root bind:open>

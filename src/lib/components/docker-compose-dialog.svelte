@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
-	import * as Code from '$lib/components/ui/code';
-	import { Download } from '@lucide/svelte';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Code from '$lib/components/ui/code/index.js';
+	import Download from '@lucide/svelte/icons/download';
 
 	interface Props {
 		open: boolean;
@@ -34,9 +34,7 @@
 	>
 		<Dialog.Header class="shrink-0">
 			<Dialog.Title>Generated Docker Compose</Dialog.Title>
-			<Dialog.Description>
-				Your customized Docker Compose configuration is ready to use.
-			</Dialog.Description>
+			<Dialog.Description>Your customized Docker Compose configuration is ready to use.</Dialog.Description>
 		</Dialog.Header>
 
 		<div class="flex min-h-0 flex-1 flex-col space-y-4">
@@ -51,9 +49,7 @@
 					<Download class="mr-2 size-4" />
 					Download File
 				</Button>
-				<Button variant="secondary" onclick={() => (open = false)} class="w-full sm:w-auto">
-					Close
-				</Button>
+				<Button variant="secondary" onclick={() => (open = false)} class="w-full sm:w-auto">Close</Button>
 			</div>
 		</div>
 	</Dialog.Content>

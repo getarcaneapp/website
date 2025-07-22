@@ -83,13 +83,7 @@
 			<Tooltip.Root>
 				<Tooltip.Trigger>
 					{#snippet child({ props })}
-						<CopyButton
-							{...props}
-							text={commandText}
-							class="size-6 [&_svg]:size-3"
-							variant="ghost"
-							size="sm"
-						>
+						<CopyButton {...props} text={commandText} class="size-6 [&_svg]:size-3" variant="ghost" size="sm">
 							{#snippet icon()}
 								<ClipboardIcon />
 							{/snippet}

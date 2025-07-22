@@ -58,14 +58,12 @@ export const features: DocMetadata[] = [
 	},
 	{
 		title: 'Networks',
-		description:
-			'Learn how to manage Docker networks with Arcane - create, inspect, and remove networks with ease.',
+		description: 'Learn how to manage Docker networks with Arcane - create, inspect, and remove networks with ease.',
 		path: 'features/networks'
 	},
 	{
 		title: 'Volumes',
-		description:
-			'Learn how to manage Docker volumes with Arcane - create, view, and remove persistent data volumes.',
+		description: 'Learn how to manage Docker volumes with Arcane - create, view, and remove persistent data volumes.',
 		path: 'features/volumes'
 	}
 ];
@@ -91,8 +89,7 @@ export const features: DocMetadata[] = [
 export const development: DocMetadata[] = [
 	{
 		title: 'Contributing',
-		description:
-			'Learn how to contribute to the Arcane project, from reporting bugs to submitting code.',
+		description: 'Learn how to contribute to the Arcane project, from reporting bugs to submitting code.',
 		path: 'dev/contribute'
 	}
 ];

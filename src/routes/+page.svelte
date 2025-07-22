@@ -54,8 +54,8 @@
 	</section>
 
 	<p class="text-muted-foreground mt-8 text-center italic">
-		Shoutout to the shadcn and shadcn-svelte teams, I loved the style of the shadcn-svelte docs so
-		much, I wanted to use a similar look and feel for this project's documentation. Alot of the code
-		was inspired by their work, so please check them out!
+		Shoutout to the shadcn and shadcn-svelte teams, I loved the style of the shadcn-svelte docs so much, I wanted to use
+		a similar look and feel for this project's documentation. Alot of the code was inspired by their work, so please
+		check them out!
 	</p>
 </ContentWrapper>

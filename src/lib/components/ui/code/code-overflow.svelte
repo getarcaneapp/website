@@ -9,12 +9,7 @@
 	import type { CodeOverflowProps } from './types.js';
 	import { cn } from '$lib/utils/utils.js';
 
-	let {
-		collapsed = $bindable(true),
-		class: className,
-		children,
-		...props
-	}: CodeOverflowProps = $props();
+	let { collapsed = $bindable(true), class: className, children, ...props }: CodeOverflowProps = $props();
 
 	const state = useCodeOverflow({
 		collapsed: box.with(
@@ -32,9 +27,7 @@
 >
 	{@render children?.()}
 	{#if collapsed}
-		<div
-			class="from-background absolute bottom-0 left-0 z-10 h-full w-full bg-gradient-to-t to-transparent"
-		></div>
+		<div class="from-background absolute bottom-0 left-0 z-10 h-full w-full bg-gradient-to-t to-transparent"></div>
 	{/if}
 	{#if collapsed}
 		<Button

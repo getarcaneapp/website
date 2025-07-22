@@ -12,9 +12,7 @@ function getDocMetadata(slug: string): DocMetadata | undefined {
 	return allDocs.find((doc) => doc.path === slug);
 }
 
-export async function getDoc(
-	_slug: string
-): Promise<{ component: Component; metadata: DocMetadata }> {
+export async function getDoc(_slug: string): Promise<{ component: Component; metadata: DocMetadata }> {
 	const modules = import.meta.glob('/content/**/*.md');
 	const slug = _slug === '' ? 'index' : _slug;
 

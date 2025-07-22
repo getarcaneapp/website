@@ -1,19 +1,13 @@
 <script lang="ts">
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import DockerComposeGenerator from '$lib/components/docker-compose-generator.svelte';
-	import * as Alert from '$lib/components/ui/alert';
-	import { FeatureCard } from '$lib/components/ui/feature-card';
+	import * as Alert from '$lib/components/ui/alert/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import {
-		Settings,
-		Database,
-		Shield,
-		Zap,
-		BookOpen,
-		Lightbulb,
-		FileText,
-		Download
-	} from '@lucide/svelte';
+	import Settings from '@lucide/svelte/icons/settings.svelte';
+	import Zap from '@lucide/svelte/icons/zap.svelte';
+	import BookOpen from '@lucide/svelte/icons/book-open.svelte';
+	import Lightbulb from '@lucide/svelte/icons/lightbulb.svelte';
+	import FileText from '@lucide/svelte/icons/file-text.svelte';
 </script>
 
 <ContentWrapper>
@@ -36,12 +30,10 @@
 			></div>
 		</div>
 
-		<p
-			class="text-muted-foreground mx-auto mt-4 mb-6 max-w-3xl text-lg leading-relaxed font-light sm:mb-8 sm:text-xl"
-		>
+		<p class="text-muted-foreground mx-auto mt-4 mb-6 max-w-3xl text-lg leading-relaxed font-light sm:mb-8 sm:text-xl">
 			Create a <span class="text-primary font-medium">custom Docker Compose configuration</span>
-			for your Arcane deployment with our interactive generator. Configure databases, authentication,
-			and more with just a few clicks.
+			for your Arcane deployment with our interactive generator. Configure databases, authentication, and more with just
+			a few clicks.
 		</p>
 
 		<div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
@@ -65,12 +57,8 @@
 			></div>
 
 			<div class="mb-6 px-4 text-center sm:mb-8">
-				<h2 class="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
-					Configure Your Deployment
-				</h2>
-				<p class="text-muted-foreground text-base sm:text-lg">
-					Customize your Arcane setup with the options below
-				</p>
+				<h2 class="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">Configure Your Deployment</h2>
+				<p class="text-muted-foreground text-base sm:text-lg">Customize your Arcane setup with the options below</p>
 			</div>
 
 			<DockerComposeGenerator />
@@ -81,9 +69,7 @@
 	<section class="mb-12 px-4">
 		<div class="mb-6 text-center sm:mb-8">
 			<h2 class="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">What's Next?</h2>
-			<p class="text-muted-foreground text-base sm:text-lg">
-				After generating your Docker Compose file
-			</p>
+			<p class="text-muted-foreground text-base sm:text-lg">After generating your Docker Compose file</p>
 		</div>
 
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -106,8 +92,7 @@
 				<div>
 					<h3 class="mb-2 text-sm font-semibold sm:text-base">2. Deploy</h3>
 					<p class="text-muted-foreground text-xs sm:text-sm">
-						Run <code class="bg-muted rounded px-1 py-0.5 text-xs">docker compose up -d</code> to start
-						your Arcane instance.
+						Run <code class="bg-muted rounded px-1 py-0.5 text-xs">docker compose up -d</code> to start your Arcane instance.
 					</p>
 				</div>
 			</div>

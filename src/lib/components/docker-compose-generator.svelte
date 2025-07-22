@@ -1,16 +1,17 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { Input } from '$lib/components/ui/input';
-	import { Button } from '$lib/components/ui/button';
-	import { Label } from '$lib/components/ui/label';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { Settings, Database, FileText } from '@lucide/svelte';
-	import { generateDockerCompose } from '$lib/utils/docker-compose-generator';
-	import type { DockerComposeConfig } from '$lib/types/compose-config.type';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import Settings from '@lucide/svelte/icons/settings.svelte';
+	import Database from '@lucide/svelte/icons/database.svelte';
+	import FileText from '@lucide/svelte/icons/file-text.svelte';
+	import { generateDockerCompose } from '$lib/utils/docker-compose-generator.js';
+	import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
 	import DockerComposeDialog from './docker-compose-dialog.svelte';
 
-	// Form state
 	let config = $state<DockerComposeConfig>({
 		// Basic settings
 		port: '8080',
@@ -49,9 +50,9 @@
 	}
 
 	function generateRandomKey() {
-		return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
-			byte.toString(16).padStart(2, '0')
-		).join('');
+		return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join(
+			''
+		);
 	}
 </script>
 
@@ -150,9 +151,7 @@
 					<Card.Content class="space-y-4">
 						<div class="flex items-center space-x-2">
 							<Checkbox id="enableDatabase" bind:checked={config.enableDatabase} />
-							<Label for="enableDatabase" class="text-sm sm:text-base"
-								>Use external PostgreSQL database</Label
-							>
+							<Label for="enableDatabase" class="text-sm sm:text-base">Use external PostgreSQL database</Label>
 						</div>
 
 						{#if config.enableDatabase}
@@ -188,8 +187,7 @@
 					<Card.Content class="space-y-4">
 						<div class="flex items-center space-x-2">
 							<Checkbox id="enableOIDC" bind:checked={config.enableOIDC} />
-							<Label for="enableOIDC" class="text-sm sm:text-base">Enable OIDC Authentication</Label
-							>
+							<Label for="enableOIDC" class="text-sm sm:text-base">Enable OIDC Authentication</Label>
 						</div>
 
 						{#if config.enableOIDC}
@@ -201,11 +199,7 @@
 									</div>
 									<div class="space-y-2">
 										<Label for="oidcClientSecret">Client Secret</Label>
-										<Input
-											id="oidcClientSecret"
-											type="password"
-											bind:value={config.oidcClientSecret}
-										/>
+										<Input id="oidcClientSecret" type="password" bind:value={config.oidcClientSecret} />
 									</div>
 								</div>
 								<div class="space-y-2">
@@ -242,11 +236,7 @@
 								</div>
 								<div class="space-y-2">
 									<Label for="oidcScopes">Scopes</Label>
-									<Input
-										id="oidcScopes"
-										bind:value={config.oidcScopes}
-										placeholder="openid email profile"
-									/>
+									<Input id="oidcScopes" bind:value={config.oidcScopes} placeholder="openid email profile" />
 								</div>
 							</div>
 						{/if}

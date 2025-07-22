@@ -35,12 +35,6 @@
 	} = $props();
 </script>
 
-<div
-	bind:this={ref}
-	data-slot="alert"
-	class={cn(alertVariants({ variant }), className)}
-	{...restProps}
-	role="alert"
->
+<div bind:this={ref} data-slot="alert" class={cn(alertVariants({ variant }), className)} {...restProps} role="alert">
 	{@render children?.()}
 </div>

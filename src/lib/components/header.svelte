@@ -12,10 +12,7 @@
 <header class="bg-background border-border sticky top-0 z-50 w-full">
 	<div class="container-wrapper 3xl:fixed:px-0 px-6">
 		<div class="flex items-center gap-4 py-4">
-			<a
-				href="/"
-				class="hidden items-center gap-2 no-underline transition hover:opacity-80 sm:flex"
-			>
+			<a href="/" class="hidden items-center gap-2 no-underline transition hover:opacity-80 sm:flex">
 				<Logo class="size-5" />
 			</a>
 			<MainNav items={mainNavItems} class="hidden lg:flex" />
