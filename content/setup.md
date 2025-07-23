@@ -7,30 +7,49 @@ blueprint: default
 <script lang="ts">
 import SetupCode from '$lib/components/setup-code.svelte';
 import { Snippet } from '$lib/components/ui/snippet/index.js';
+import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-## 1. Create `docker-compose.yml`:
+## 1. Create **_compose.yaml_**:
 
-<SetupCode />
+```yaml
+---
+services:
+  arcane:
+    image: ghcr.io/ofkm/arcane:latest
+    container_name: arcane
+    ports:
+      - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+      - /host/path/to/stacks:/app/data/stacks
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - DATABASE_URL=sqlite:///app/data/arcane.db
+      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
+      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
+    restart: unless-stopped
+
+volumes:
+  arcane-data:
+```
 
 ## 2. Review Volumes & Imports:
 
-`/var/run/docker.sock`: Lets Arcane manage Docker.
+**_/var/run/docker.sock_**: Lets Arcane manage Docker.
 
-`arcane-data`: Persists settings, stacks, users, etc.
+**_arcane-data_**: Persists settings, stacks, users, etc.
 
-To import existing stacks, add a mount where your existing stacks are located:
-
-```
-/host/path/to/stacks:/host/path/to/stacks:ro
-```
-
-Use `:ro` for read-only access.
+To manage existing compose projects, in addition to mounting your compose projects folder to the `/app/data/stacks` folder, you may need to also mount any additional folders you wish to use for config files.
 
 ## 3. Start Arcane:
 
-<Snippet text="docker compose up -d" class="m-4 w-full" />
+```bash
+docker compose up -d
+```
 
 ## 4. Access Arcane:
 
-Go to [http://localhost:8080](http://localhost:8080) in your browser and follow the setup.
+Go to <Link href="http://localhost:8080">localhost:8080</Link> in your browser and follow the setup.
