@@ -1,7 +1,6 @@
 ---
 title: 'Arcane Setup Guide'
 description: 'Get Arcane running fast with Docker Compose.'
-blueprint: default
 ---
 
 <script lang="ts">
@@ -13,7 +12,6 @@ import { Link } from '$lib/components/ui/link/index.js';
 ## 1. Create **_compose.yaml_**:
 
 ```yaml
----
 services:
   arcane:
     image: ghcr.io/ofkm/arcane:latest

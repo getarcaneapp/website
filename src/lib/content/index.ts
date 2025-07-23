@@ -110,7 +110,8 @@ export const templates: DocMetadata[] = [
 export const indexPage: DocMetadata[] = [
 	{
 		title: 'Documentation',
-		description: 'Complete guide to using Arcane for Docker container management.',
+		description:
+			'Welcome to the Arcane documentation! Here you will find everything you need to get started with Docker container management using Arcane.',
 		path: 'index'
 	}
 ];

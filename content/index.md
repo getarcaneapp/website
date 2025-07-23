@@ -1,42 +1,42 @@
 ---
 title: 'Documentation'
-description: 'Complete guide to using Arcane for Docker container management.'
+description: 'Welcome to the Arcane documentation! Here you will find everything you need to get started with Docker container management using Arcane.'
 ---
 
-# Arcane Documentation
-
-Welcome to the Arcane documentation! Here you'll find everything you need to get started with Docker container management using Arcane.
+<script lang="ts">
+import { Link } from '$lib/components/ui/link/index.js';
+</script>
 
 ## Quick Links
 
 ### Getting Started
 
-- [Installation](/docs/setup) - Get Arcane running with Docker Compose
-- [Configuration](/docs/configuration) - Configure Arcane for your environment
+- <Link href="/docs/setup">Installation</Link> - Get Arcane running with Docker Compose
+- <Link href="/docs/configuration">Configuration</Link> - Configure Arcane for your environment
 
 ### User Management
 
-- [Local Users](/docs/users/local) - Manage local user accounts
-- [OIDC SSO](/docs/users/sso) - Set up single sign-on authentication
+- <Link href="/docs/users/local">Local Users</Link> - Manage local user accounts
+- <Link href="/docs/users/sso">OIDC SSO</Link> - Set up single sign-on authentication
 
 ### Features
 
-- [Containers](/docs/features/containers) - Manage Docker containers
-- [Images](/docs/features/images) - Work with Docker images
-- [Networks](/docs/features/networks) - Configure Docker networks
-- [Volumes](/docs/features/volumes) - Manage persistent storage
-- [Compose Projects](/docs/features/compose) - Deploy multi-container applications
-- [Remote Environments](/docs/features/environments) - Manage remote Docker hosts
+- <Link href="/docs/features/containers">Containers</Link> - Manage Docker containers
+- <Link href="/docs/features/images">Images</Link> - Work with Docker images
+- <Link href="/docs/features/networks">Networks</Link> - Configure Docker networks
+- <Link href="/docs/features/volumes">Volumes</Link> - Manage persistent storage
+- <Link href="/docs/features/compose">Compose Projects</Link> - Deploy multi-container applications
+- <Link href="/docs/features/environments">Remote Environments</Link> - Manage remote Docker hosts
 
 ### Templates
 
-- [Using Templates](/docs/templates) - Deploy applications quickly
-- [Template Registries](/docs/templates/registries) - Create custom template collections
+- <Link href="/docs/templates">Using Templates</Link> - Deploy applications quickly
+- <Link href="/docs/templates/registries">Template Registries</Link> - Create custom template collections
 
 ### Development
 
-- [Contributing](/docs/dev/contribute) - Help improve Arcane
+- <Link href="/docs/dev/contribute">Contributing</Link> - Help improve Arcane
 
 ## Need Help?
 
-If you can't find what you're looking for, check out our [community resources](https://github.com/ofkm/arcane) or open an issue on GitHub.
+If you can't find what you're looking for, check out our <Link href="https://github.com/ofkm/arcane">community resources</Link> or open an issue on GitHub.

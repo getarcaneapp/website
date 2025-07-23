@@ -7,6 +7,6 @@
 └─────────────────┘  HTTP RESPONSE  └─────────────────┘`;
 </script>
 
-<div class="w-full p-6">
+<div class="mt-4 w-full">
 	<Code.Root lang="diff" class="w-full" hideLines code={diagram}></Code.Root>
 </div>

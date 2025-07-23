@@ -48,7 +48,7 @@
 </script>
 
 {#if browser}
-	<Window>
+	<Window class="mt-4">
 		<Table.Root class="mb-6">
 			<Table.Header>
 				<Table.Row>

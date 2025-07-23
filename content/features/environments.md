@@ -34,7 +34,6 @@ The agent supports the following environment variables:
 Create a `.env` file for the agent:
 
 ```bash
-# .env file example
 AGENT_ID=arcane-agent-example
 AGENT_LISTEN_ADDRESS=0.0.0.0
 AGENT_PORT=3552
@@ -46,7 +45,6 @@ API_KEY=your-secret-api-key-here
 ### Docker Compose
 
 ```yaml
-name: arcane-agent
 services:
   arcane-agent:
     container_name: arcane-agent

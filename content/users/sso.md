@@ -11,13 +11,7 @@ import InfoIcon from '@lucide/svelte/icons/info';
 import AlertTriangleIcon from '@lucide/svelte/icons/alert-triangle';
 </script>
 
-# Single Sign-On (OIDC)
-
-Arcane supports both local user management and Single Sign-On (OIDC) for flexible, secure access control.
-
-## PKCE Requirement
-
-<Alert.Root variant="warning">
+<Alert.Root variant="warning" class="mt-4">
 <AlertTriangleIcon class="size-4" />
 <Alert.Title>PKCE Required</Alert.Title>
 <Alert.Description>Arcane requires the use of PKCE for OIDC Authentication.</Alert.Description>
@@ -40,7 +34,7 @@ You can also configure OIDC using environment variables:
 
 <OidcTable />
 
-### Example docker-compose
+## Example docker-compose
 
 ```yaml
 services:

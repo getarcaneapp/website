@@ -68,7 +68,6 @@ Add this in **Settings → Templates → Add Registry** to get started instantly
 Templates use standard Docker Compose format:
 
 ```yaml
----
 services:
   wordpress:
     image: wordpress:latest

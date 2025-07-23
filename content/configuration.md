@@ -18,7 +18,7 @@ import { envConfig } from '$lib/config/pages/env-config.js';
 
 ## Environment Variables
 
-<Window class="m-4">
+<Window class="mt-4">
   <Table.Root class="mb-8">
     <Table.Header>
       <Table.Row>

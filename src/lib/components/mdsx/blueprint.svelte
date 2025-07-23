@@ -25,10 +25,8 @@
 </script>
 
 <script lang="ts">
-	let { frontmatter, children } = $props();
+	let { children } = $props();
 </script>
-
-<!-- No head tags here - let the page component handle SEO -->
 
 <div class="mdsx">
 	{@render children()}

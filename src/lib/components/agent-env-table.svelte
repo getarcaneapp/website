@@ -26,7 +26,7 @@
 	];
 </script>
 
-<Window>
+<Window class="mt-4">
 	<Table.Root class="mb-8">
 		<Table.Caption>Agent environment variables and their usage.</Table.Caption>
 		<Table.Header>

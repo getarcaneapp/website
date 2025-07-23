@@ -1,5 +1,5 @@
 export const mainNavItems = [
-	{ href: '/docs/setup', label: 'Docs' },
+	{ href: '/docs', label: 'Docs' },
 	{ href: '/generator', label: 'Compose Generator' }
 ];
 

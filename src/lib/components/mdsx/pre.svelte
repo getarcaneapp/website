@@ -28,16 +28,10 @@
 	const { accesskey, autocapitalize, autofocus, ...codeProps } = restProps;
 </script>
 
-<!-- Hidden pre element to extract text content -->
-<pre bind:this={preNode} style="display: none;">{@render children?.()}</pre>
+<pre bind:this={preNode} class="hidden">{@render children?.()}</pre>
 
 {#if code}
-	<Code.Root {lang} class={cn('m-0 w-full', className)} {code}>
+	<Code.Root {lang} class={cn('mx-auto w-full', className)} {code}>
 		<Code.CopyButton size="sm" variant="ghost" />
 	</Code.Root>
-{:else}
-	<!-- Fallback while code is loading -->
-	<pre class={cn('no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none', className)} {...restProps}>
-		{@render children?.()}
-	</pre>
 {/if}
