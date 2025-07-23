@@ -17,7 +17,7 @@ Arcane supports both local user management and Single Sign-On (OIDC) for flexibl
 
 ## PKCE Requirement
 
-<Alert.Root variant="warning" class="m-5">
+<Alert.Root variant="warning">
 <AlertTriangleIcon class="size-4" />
 <Alert.Title>PKCE Required</Alert.Title>
 <Alert.Description>Arcane requires the use of PKCE for OIDC Authentication.</Alert.Description>

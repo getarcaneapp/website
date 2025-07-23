@@ -9,7 +9,7 @@
 				destructive:
 					'text-destructive bg-card *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
 				warning:
-					'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200 *:data-[slot=alert-description]:text-yellow-700 dark:*:data-[slot=alert-description]:text-yellow-300 [&>svg]:text-yellow-600 dark:[&>svg]:text-yellow-400'
+					'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 *:data-[slot=alert-description]:text-amber-800 dark:*:data-[slot=alert-description]:text-amber-200 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400'
 			}
 		},
 		defaultVariants: {

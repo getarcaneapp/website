@@ -3,10 +3,6 @@ title: 'Using Templates'
 description: 'Templates help you quickly deploy common applications and services with Docker Compose. Arcane supports both local templates and remote registries.'
 ---
 
-<script lang="ts">
-import * as Code from '$lib/components/ui/code/index.js';
-</script>
-
 # Using Templates
 
 Templates help you quickly deploy common applications and services with Docker Compose. Arcane supports both local templates and remote registries.
@@ -51,7 +47,7 @@ When you click **Choose Template**, you'll see:
 
 ### Example Structure
 
-```
+```diff
 data/templates/compose/
 ├── wordpress.yaml
 ├── wordpress.env
@@ -72,9 +68,7 @@ Add this in **Settings → Templates → Add Registry** to get started instantly
 Templates use standard Docker Compose format:
 
 ```yaml
-# WordPress with MySQL
-version: '3.8'
-
+---
 services:
   wordpress:
     image: wordpress:latest

@@ -6,14 +6,17 @@ blueprint: default
 
 <script lang="ts">
     import { GitCommand } from '$lib/components/ui/git-command';
-    import { Snippet } from '$lib/components/ui/snippet';
+    import { Snippet } from '$lib/components/ui/snippet/index.js';
+    import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
 ## Ways to Contribute
 
-- **Reporting Bugs:** If you encounter a bug, please help us by submitting a detailed bug report. Use the [Bug Report](https://github.com/ofkm/arcane/issues/new?template=bug.yml) template on GitHub.
+- **Reporting Bugs:** If you encounter a bug, please help us by submitting a detailed bug report. <br />
+  Use the <Link href="https://github.com/ofkm/arcane/issues/new?template=bug.yml">Bug Report</Link> template on GitHub.
 
-- **Suggesting Features:** Have an idea for a new feature or an enhancement? We'd love to hear it! Use the [Feature Request](https://github.com/ofkm/arcane/issues/new?template=feature.yml) template on GitHub.
+- **Suggesting Features:** Have an idea for a new feature or an enhancement? We'd love to hear it! <br />
+  Use the <Link href="https://github.com/ofkm/arcane/issues/new?template=feature.yml">Feature Request</Link> template on GitHub.
 
 - **Code Contributions:** If you'd like to contribute code, please follow the process outlined below.
 
@@ -53,7 +56,8 @@ blueprint: default
 
 6. **Test Your Changes:** Test your changes thoroughly to ensure they work as expected and don't break existing functionality.
 
-7. **Commit Changes:** Commit your changes with a clear and descriptive commit message. We use [Conventional Commits](https://www.conventionalcommits.org/):
+7. **Commit Changes:** Commit your changes with a clear and descriptive commit message. <br />
+   We use <Link href="https://www.conventionalcommits.org/">Conventional Commits</Link>
 
    <Snippet text={['git add .', 'git commit -a -m "feat: add feature X"', '#or', 'git commit -m "fix: resolve issue Y"']} class="mt-2 mb-2 w-full" />
 
@@ -72,7 +76,7 @@ blueprint: default
 
 ## Code Style
 
-Arcane uses [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) to enforce code style and consistency. Please run `npm run lint` and `npm run format` in the frontend directory before committing your changes. Configuration files are included in the repository.
+Arcane uses <Link href="https://eslint.org/">ESLint</Link> and <Link href="https://prettier.io/">Prettier</Link> to enforce code style and consistency. Please run `npm run lint` and `npm run format` in the frontend directory before committing your changes. Configuration files are included in the repository.
 
 ## Development Tips
 

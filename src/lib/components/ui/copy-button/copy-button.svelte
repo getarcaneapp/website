@@ -3,12 +3,14 @@
 -->
 
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
-	import { cn } from '$lib/utils/utils';
-	import { CheckIcon, CopyIcon, XIcon } from '@lucide/svelte';
+	import { cn } from '$lib/utils/utils.js';
+	import CheckIcon from '@lucide/svelte/icons/check';
+	import CopyIcon from '@lucide/svelte/icons/copy';
+	import XIcon from '@lucide/svelte/icons/x';
 	import { scale } from 'svelte/transition';
-	import type { CopyButtonProps } from './types';
+	import type { CopyButtonProps } from './types.js';
 
 	let {
 		ref = $bindable(null),

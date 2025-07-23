@@ -1,10 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import CopyButton from '$lib/components/copy-button.svelte';
+	import * as Code from '$lib/components/ui/code/index.js';
 	import { cn } from '$lib/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 
-	let { class: className, children, ...restProps }: HTMLAttributes<HTMLPreElement> = $props();
+	type SupportedLang = 'bash' | 'diff' | 'javascript' | 'json' | 'svelte' | 'typescript' | 'yaml';
+
+	let {
+		class: className,
+		children,
+		lang = 'bash', // Default to a supported language
+		...restProps
+	}: HTMLAttributes<HTMLPreElement> & {
+		lang?: SupportedLang;
+	} = $props();
 
 	let preNode = $state<HTMLPreElement>();
 	let code = $state('');
@@ -14,16 +23,21 @@
 			code = preNode.innerText.trim().replaceAll('  ', ' ');
 		}
 	});
+
+	// Filter out HTML attributes that Code.Root doesn't accept
+	const { accesskey, autocapitalize, autofocus, ...codeProps } = restProps;
 </script>
 
-<!--
-We cannot have a newline between the pre and children or we will get a newline in the code block
--->
-<pre
-	bind:this={preNode}
-	class={cn(
-		'no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none has-[[data-highlighted-line]]:px-0 has-[[data-line-numbers]]:px-0 has-[[data-slot=tabs]]:p-0',
-		className
-	)}
-	{...restProps}>{@render children?.()}</pre>
-<CopyButton text={code} />
+<!-- Hidden pre element to extract text content -->
+<pre bind:this={preNode} style="display: none;">{@render children?.()}</pre>
+
+{#if code}
+	<Code.Root {lang} class={cn('m-0 w-full', className)} {code}>
+		<Code.CopyButton size="sm" variant="ghost" />
+	</Code.Root>
+{:else}
+	<!-- Fallback while code is loading -->
+	<pre class={cn('no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none', className)} {...restProps}>
+		{@render children?.()}
+	</pre>
+{/if}
