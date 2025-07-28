@@ -20,24 +20,9 @@
 			defaultValue: 'your_super_secret_client_secret_from_provider'
 		},
 		{
-			name: 'OIDC_REDIRECT_URI',
-			description: 'Redirect URI (must match provider)',
-			defaultValue: 'http://localhost:3000/auth/oidc/callback'
-		},
-		{
-			name: 'OIDC_AUTHORIZATION_ENDPOINT',
-			description: 'Auth endpoint URL',
-			defaultValue: 'https://your-provider.com/oauth2/authorize'
-		},
-		{
-			name: 'OIDC_TOKEN_ENDPOINT',
-			description: 'Token endpoint URL',
-			defaultValue: 'https://your-provider.com/oauth2/token'
-		},
-		{
-			name: 'OIDC_USERINFO_ENDPOINT',
-			description: 'Userinfo endpoint URL',
-			defaultValue: 'https://your-provider.com/oauth2/userinfo'
+			name: 'OIDC_ISSUER_URL',
+			description: 'Issuer URL of your OIDC provider, No trailing slash.',
+			defaultValue: 'https://your-provider.com'
 		},
 		{
 			name: 'OIDC_SCOPES',

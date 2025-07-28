@@ -28,6 +28,8 @@ The easiest way to set up OIDC is through Arcane's web interface:
 
 OIDC users are auto-provisioned on first login. You can disable local login for stricter security.
 
+All the OIDC Urls are discovered from the issuer url/the providers `.well-known/openid-configuration` endpoint. Make sure there is no trailing slash on the Issuer URL.
+
 ## Alternative: Environment Variables
 
 You can also configure OIDC using environment variables:
@@ -43,16 +45,13 @@ services:
     environment:
       # ....
       - OIDC_ENABLED=true
-      - OIDC_CLIENT_ID=your_arcane_client_id_from_provider
-      - OIDC_CLIENT_SECRET=your_super_secret_client_secret_from_provider
-      - OIDC_REDIRECT_URI=http://your-arcane-address/auth/oidc/callback
-      - OIDC_AUTHORIZATION_ENDPOINT=https://your-provider.com/oauth2/authorize
-      - OIDC_TOKEN_ENDPOINT=https://your-provider.com/oauth2/token
-      - OIDC_USERINFO_ENDPOINT=https://your-provider.com/oauth2/userinfo
+      - OIDC_CLIENT_ID="your_arcane_client_id_from_provider"
+      - OIDC_CLIENT_SECRET="your_super_secret_client_secret_from_provider"
+      - OIDC_ISSUER_URL="https://auth.example.com"
       - OIDC_SCOPES=openid email profile
 ```
 
-**Note:** Environment variables always override UI settings. The Redirect URI in Arcane and your OIDC provider must match exactly.
+> **Note:** Environment variables always override UI settings. If the settings are configured from the Environment then removed from the environment, the values still stay in the database and OIDC is still configured, unless turned off via the UI. 
 
 ## Troubleshooting
 
