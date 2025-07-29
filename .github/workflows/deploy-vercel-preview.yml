@@ -1,14 +1,14 @@
-name: Deploy Production Website
+name: Deploy Pull Request Preview Website
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - 'src/**'
       - 'content/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
-      - '.github/workflows/deploy-vercel.yml'
+      - '.github/workflows/deploy-vercel-preview.yml'
       - 'svelte.config.js'
 
 jobs:
@@ -47,8 +47,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           GITHUB_DEPLOYMENT: true
-          GITHUB_DEPLOYMENT_ENV: arcane-website-production
-          PRODUCTION: true
-          ALIAS_DOMAINS: |
-            arcane.ofkm.dev
-            arcane-website-ofkm.vercel.app
+          GITHUB_DEPLOYMENT_ENV: arcane-website-pr-preview
+          PRODUCTION: false
+          PR_PREVIEW_DOMAIN: '{REPO}-{PR}.preview.arcane.ofkm.dev'
+          DEPLOY_PR_FROM_FORK: true
