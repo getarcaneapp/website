@@ -22,7 +22,7 @@ jobs:
         id: preview-build-artifact
         with:
           name: preview-build
-          path: cloudflare
+          path: build
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
@@ -34,4 +34,4 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           projectName: arcane-ofkm
           deploymentName: arcane-website-pr-preview
-          directory: ${{ steps.preview-build-artifact.outputs.download-path }}/cloudflare
+          directory: ${{ steps.preview-build-artifact.outputs.download-path }}
