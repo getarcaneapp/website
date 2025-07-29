@@ -37,6 +37,9 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
+      - name: Build site
+        run: pnpm build
+
       - name: Deploy to Cloudflare Pages
         uses: AdrianGonz97/refined-cf-pages-action@v1
         with:
@@ -45,4 +48,4 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           projectName: arcane-ofkm
           deploymentName: arcane-website-production
-          directory: .svelte-kit
+          directory: .svelte-kit/cloudflare
