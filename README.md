@@ -3,7 +3,7 @@
 
 # Arcane Documentation Website
 
-This documentaion site is built with SvelteKit and uses Vite for local development.
+This documentation site is built with SvelteKit and uses Vite for local development.
 
 ## Developing
 

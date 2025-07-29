@@ -18,7 +18,7 @@ By default Arcane will use a SQLite database with the following connection strin
 
 <Snippet text="file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate" class="mt-2 mb-2 w-full" />
 
-If you would like to change to a external postgres databse, change the `DATABASE_URL` Env variable to something similar to below:
+If you would like to change to a external postgres database, change the `DATABASE_URL` Env variable to something similar to below:
 
 <Snippet text="postgres://<db_username>:<db_password>@<postgres_url>:<postgres_port>/<postgres_db_name>" class="mt-2 mb-2 w-full" />
 
