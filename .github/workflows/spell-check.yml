@@ -18,5 +18,5 @@ jobs:
       - name: Run typos check
         uses: crate-ci/typos@v1.33.1
         with:
-          config: ./.github/typos-config.toml
+          config: ./.github/typos.toml
           write_changes: false
