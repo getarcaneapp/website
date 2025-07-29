@@ -1,0 +1,22 @@
+# Typos configuration file
+
+[default]
+extend-ignore-re = [
+  # JWT secrets and API keys in documentation examples
+  "JWT_SECRET=[A-Za-z0-9+/=]+",
+  "API_KEY=[A-Za-z0-9_-]+",
+  # OIDC configuration values in examples
+  "OIDC_[A-Z_]+=[\"']?[^\"'\\s]+[\"']?",
+  # Generic secret placeholders in docs
+  "secret[_-]?(key|token)?[\"']?[:=][\"']?[xX]+[\"']?",
+]
+
+[files]
+extend-exclude = [
+  "package-lock.json",
+  "pnpm-lock.yaml",
+  "node_modules/",
+  "build/",
+  ".svelte-kit/",
+  "dist/",
+]
