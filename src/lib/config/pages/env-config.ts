@@ -4,12 +4,17 @@ export const envConfig: EnvConfig[] = [
 	{
 		name: 'PORT',
 		description: 'The port arcane should run on',
-		value: '8080'
+		value: '3552'
+	},
+	{
+		name: 'DATABASE_URL',
+		description: 'The database connection string (SQLite by default)',
+		value: 'file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
 	},
 	{
 		name: 'DEV_BACKEND_URL',
 		description: 'The url of the backend for development',
-		value: 'http://localhost:8080'
+		value: 'http://localhost:3552'
 	},
 	{
 		name: 'PUID',
@@ -23,7 +28,7 @@ export const envConfig: EnvConfig[] = [
 	},
 	{
 		name: 'DOCKER_GID',
-		description: 'Docker group ID',
+		description: 'Only set this manually if the autodetected GID is incorrect',
 		value: '(auto)'
 	},
 	{
@@ -52,24 +57,9 @@ export const envConfig: EnvConfig[] = [
 		value: 'your_client_secret_from_provider'
 	},
 	{
-		name: 'OIDC_REDIRECT_URI',
-		description: 'Redirect URI (must match provider)',
-		value: 'http://localhost:3000/auth/oidc/callback'
-	},
-	{
-		name: 'OIDC_AUTHORIZATION_ENDPOINT',
-		description: 'Auth endpoint URL',
-		value: 'https://your-provider.com/oidc/authorize'
-	},
-	{
-		name: 'OIDC_TOKEN_ENDPOINT',
-		description: 'Token endpoint URL',
-		value: 'https://your-provider.com/oidc/token'
-	},
-	{
-		name: 'OIDC_USERINFO_ENDPOINT',
-		description: 'Userinfo endpoint URL',
-		value: 'https://your-provider.com/oidc/userinfo'
+		name: 'OIDC_ISSUER_URL',
+		description: 'Issuer URL from provider',
+		value: 'https://your-provider.com'
 	},
 	{
 		name: 'OIDC_SCOPES',

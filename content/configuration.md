@@ -7,14 +7,28 @@ description: 'Learn how to configure Arcane using environment variables and the 
 import * as Table from '$lib/components/ui/table/index.js';
 import { Window } from '$lib/components/ui/window/index.js';
 import { envConfig } from '$lib/config/pages/env-config.js';
+import { Snippet } from '$lib/components/ui/snippet/index.js';
 </script>
 
-## How to Change Settings
+Most of the settings in Arcane can be changed via the Settings UI. Below are a the settings that can be set via the Environment.
 
-1. Open Arcane in your browser
-2. Expand the **Settings** section in the sidebar.
-3. Choose the section of settings you want to change.
-4. Make your changes and Save
+## Use External Postgres Database
+
+By default Arcane will use a SQLite database with the following connection string:
+
+<Snippet text="file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate" class="mt-2 mb-2 w-full" />
+
+If you would like to change to a external postgres databse, change the `DATABASE_URL` Env variable to something similar to below:
+
+<Snippet text="postgres://<db_username>:<db_password>@<postgres_url>:<postgres_port>/<postgres_db_name>" class="mt-2 mb-2 w-full" />
+
+Make sure to replace the placeholder values with the real values for your environment.
+
+- `<db_username>`: The username to use to connect to the postgres Database
+- `<db_password>`: The password to use to connect to the postgres Database
+- `<postgres_url>`: The server where the postgres instance is (can be a dns name or ip address)
+- `<postgres_port>`: The port to use to connect to the postgres server
+- `<postgres_db_name>`: The name of the database to use on the postgres server
 
 ## Environment Variables
 

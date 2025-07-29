@@ -15,6 +15,11 @@ export const gettingStarted: DocMetadata[] = [
 		title: 'Configuration',
 		description: 'Configure Arcane for your environment',
 		path: 'configuration'
+	},
+	{
+		title: 'Try the 1.0 Preview',
+		description: 'Experience the new features and improvements in Arcane 1.0',
+		path: '1-0-preview'
 	}
 ];
 

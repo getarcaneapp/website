@@ -14,7 +14,7 @@
 
 	let config = $state<DockerComposeConfig>({
 		// Basic settings
-		port: '8080',
+		port: '3552',
 		puid: '1000',
 		pgid: '1000',
 		dataPath: 'arcane-data',
@@ -34,10 +34,7 @@
 		enableOIDC: false,
 		oidcClientId: '',
 		oidcClientSecret: '',
-		oidcRedirectUri: 'http://localhost:8080/auth/oidc/callback',
-		oidcAuthEndpoint: '',
-		oidcTokenEndpoint: '',
-		oidcUserinfoEndpoint: '',
+		oidcIssuerUrl: 'https://your-provider.com',
 		oidcScopes: 'openid email profile'
 	});
 
@@ -203,36 +200,8 @@
 									</div>
 								</div>
 								<div class="space-y-2">
-									<Label for="oidcRedirectUri">Redirect URI</Label>
-									<Input
-										id="oidcRedirectUri"
-										bind:value={config.oidcRedirectUri}
-										placeholder="http://localhost:8080/auth/oidc/callback"
-									/>
-								</div>
-								<div class="space-y-2">
-									<Label for="oidcAuthEndpoint">Authorization Endpoint</Label>
-									<Input
-										id="oidcAuthEndpoint"
-										bind:value={config.oidcAuthEndpoint}
-										placeholder="https://your-provider.com/oidc/authorize"
-									/>
-								</div>
-								<div class="space-y-2">
-									<Label for="oidcTokenEndpoint">Token Endpoint</Label>
-									<Input
-										id="oidcTokenEndpoint"
-										bind:value={config.oidcTokenEndpoint}
-										placeholder="https://your-provider.com/oidc/token"
-									/>
-								</div>
-								<div class="space-y-2">
-									<Label for="oidcUserinfoEndpoint">Userinfo Endpoint</Label>
-									<Input
-										id="oidcUserinfoEndpoint"
-										bind:value={config.oidcUserinfoEndpoint}
-										placeholder="https://your-provider.com/oidc/userinfo"
-									/>
+									<Label for="oidcIssuerUrl">OIDC Issuer URL</Label>
+									<Input id="oidcIssuerUrl" bind:value={config.oidcIssuerUrl} placeholder="https://sso.example.com" />
 								</div>
 								<div class="space-y-2">
 									<Label for="oidcScopes">Scopes</Label>

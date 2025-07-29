@@ -3,10 +3,10 @@
 
 	const composeFile = `services:
   arcane:
-    image: ghcr.io/ofkm/arcane:latest
+    image: ghcr.io/ofkm/arcane:v1
     container_name: arcane
     ports:
-      - '8080:8080'
+      - '3552:3552'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data

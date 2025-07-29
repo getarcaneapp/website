@@ -2,6 +2,7 @@
 	import '../app.css';
 	import { ModeWatcher } from 'mode-watcher';
 	import Header from '$lib/components/header.svelte';
+	import PreviewBanner from '$lib/components/preview-banner.svelte';
 
 	let { children } = $props();
 </script>
@@ -15,6 +16,7 @@
 </svelte:head>
 
 <div class="bg-background text-foreground flex min-h-screen flex-col">
+	<PreviewBanner />
 	<Header />
 	<main class="flex-1">
 		{@render children()}

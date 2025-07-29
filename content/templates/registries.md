@@ -71,6 +71,7 @@ For each template, create a directory with:
 
 ## Example Repository Structure
 
+
 ```
 docker-templates/
 ├── registry.json

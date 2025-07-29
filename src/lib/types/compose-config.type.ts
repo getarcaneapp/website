@@ -20,9 +20,6 @@ export interface DockerComposeConfig {
 	enableOIDC: boolean;
 	oidcClientId: string;
 	oidcClientSecret: string;
-	oidcRedirectUri: string;
-	oidcAuthEndpoint: string;
-	oidcTokenEndpoint: string;
-	oidcUserinfoEndpoint: string;
+	oidcIssuerUrl: string;
 	oidcScopes: string;
 }

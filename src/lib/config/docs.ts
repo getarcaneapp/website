@@ -20,8 +20,8 @@ export const SidebarNavItems: SidebarNavItem[] = [
 		title: 'Get Started',
 		items: [
 			{ title: 'Installation', href: '/docs/setup', items: [] },
-			{ title: 'Configuration', href: '/docs/configuration', items: [] }
-			// { title: 'Changelog', href: '/changelog', items: [] }
+			{ title: 'Configuration', href: '/docs/configuration', items: [] },
+			{ title: 'Try the 1.0 Preview', href: '/docs/1-0-preview', items: [] }
 		]
 	},
 	{
@@ -42,14 +42,6 @@ export const SidebarNavItems: SidebarNavItem[] = [
 			{ title: 'Volumes', href: '/docs/features/volumes', items: [] }
 		]
 	},
-	// {
-	// 	title: 'Guides',
-	// 	items: [
-	// 		{ title: 'Troubleshooting', href: '/docs/guides/troubleshooting', items: [] },
-	// 		{ title: 'Auto Updates', href: '/docs/guides/updates', items: [] },
-	// 		{ title: 'Container Registries', href: '/docs/guides/registries', items: [] }
-	// 	]
-	// },
 	{
 		title: 'Templates',
 		items: [

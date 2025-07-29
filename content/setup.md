@@ -17,7 +17,7 @@ services:
     image: ghcr.io/ofkm/arcane:latest
     container_name: arcane
     ports:
-      - '8080:8080'
+      - '3552:3552'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
@@ -25,7 +25,6 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - DATABASE_URL=sqlite:///app/data/arcane.db
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
       - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
     restart: unless-stopped
@@ -50,4 +49,4 @@ docker compose up -d
 
 ## 4. Access Arcane:
 
-Go to <Link href="http://localhost:8080">localhost:8080</Link> in your browser and follow the setup.
+Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup.
