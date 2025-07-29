@@ -3,6 +3,8 @@ title: 'Documentation'
 description: 'Welcome to the Arcane documentation! Here you will find everything you need to get started with Docker container management using Arcane.'
 ---
 
+test update 
+
 <script lang="ts">
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
