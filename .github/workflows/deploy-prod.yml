@@ -51,4 +51,5 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           projectName: arcane-ofkm
           deploymentName: arcane-website-production
+          branch: main
           directory: .svelte-kit/cloudflare
