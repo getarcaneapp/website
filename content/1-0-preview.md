@@ -46,4 +46,4 @@ use the new  <Link href="/generator">Compose Generator</Link> to generate a 1.0 
 
 Open [http://localhost:3552](http://localhost:3552) in your browser to start working with Arcane 1.0!
 
-> **Important**: In order to make Arcane the best project we can, provide feedback on Github using the Issue Template at the link below. This way we can make sure all major issues are worked out before the official 1.0 release. <br/> <Link href="https://github.com/ofkm/arcane">Give Feedback Here</Link>
+> **Important**: In order to make Arcane the best project we can, provide feedback on Github using the Issue Template at the link below. This way we can make sure all major issues are worked out before the official 1.0 release. <br/> <Link href="https://github.com/ofkm/arcane/issues/new?template=1.0-feedback.yml">Give Feedback Here</Link>
