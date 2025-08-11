@@ -10,7 +10,7 @@
 </script>
 
 <Sidebar.Root
-	class="sticky top-[calc(var(--header-height)+1px)] z-30 hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] bg-transparent lg:flex"
+	class="sticky top-16 z-30 hidden h-[calc(100vh-4rem)] bg-transparent lg:flex"
 	collapsible="none"
 	{...restProps}
 >
