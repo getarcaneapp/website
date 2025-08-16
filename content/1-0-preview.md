@@ -30,11 +30,13 @@ use the new  <Link href="/generator">Compose Generator</Link> to generate a 1.0 
 ```yaml
   services:
     arcane:
-      image: ghcr.io/ofkm/arcane:1.0-public-beta
+      image: ghcr.io/ofkm/arcane:1.0-preview
       container_name: arcane
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
         - arcane-data:/app/data
+        - /your/projects:/app/data/projects 
+        #This mounts your exsisting stacks or projects into the default folder if you change that youll have to mount it to the correct directory.
       environment:
         - PUID=1000
         - PGID=1000

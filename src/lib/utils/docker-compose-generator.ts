@@ -1,4 +1,4 @@
-import type { DockerComposeConfig } from '$lib/types/compose-config.type';
+import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
 
 function generateRandomKey(): string {
 	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join('');
@@ -16,15 +16,17 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 
 	// Default SQLite database
 	if (!config.enableDatabase) {
-		environment.push('DATABASE_URL=sqlite:///app/data/arcane.db');
+		environment.push(
+			'DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
+		);
 	}
 
 	const services: any = {
 		arcane: {
-			image: 'ghcr.io/ofkm/arcane:latest',
+			image: 'ghcr.io/ofkm/arcane:1.0-preview',
 			container_name: 'arcane',
 			restart: 'unless-stopped',
-			ports: [`${config.port}:8080`],
+			ports: [`${config.port}:3552`],
 			volumes: [`${config.dockerSocket}:/var/run/docker.sock`, `${config.dataPath}:/app/data`],
 			environment
 		}
@@ -33,7 +35,7 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 	// Add external database if enabled (PostgreSQL only)
 	if (config.enableDatabase && config.dbType === 'postgres') {
 		services.postgres = {
-			image: 'postgres:16-alpine',
+			image: 'postgres:17-alpine',
 			container_name: 'arcane-postgres',
 			restart: 'unless-stopped',
 			environment: [
@@ -57,10 +59,7 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 			'OIDC_ENABLED=true',
 			`OIDC_CLIENT_ID=${config.oidcClientId}`,
 			`OIDC_CLIENT_SECRET=${config.oidcClientSecret}`,
-			`OIDC_REDIRECT_URI=${config.oidcRedirectUri}`,
-			`OIDC_AUTHORIZATION_ENDPOINT=${config.oidcAuthEndpoint}`,
-			`OIDC_TOKEN_ENDPOINT=${config.oidcTokenEndpoint}`,
-			`OIDC_USERINFO_ENDPOINT=${config.oidcUserinfoEndpoint}`,
+			`OIDC_ISSUER_URL=${config.oidcIssuerUrl}`,
 			`OIDC_SCOPES=${config.oidcScopes}`
 		);
 	}

@@ -8,6 +8,7 @@
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import Lightbulb from '@lucide/svelte/icons/lightbulb';
 	import FileText from '@lucide/svelte/icons/file-text';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
 </script>
 
 <ContentWrapper>
@@ -24,10 +25,6 @@
 					Generator
 				</span>
 			</h1>
-			<!-- Decorative gradient orb -->
-			<div
-				class="absolute -top-4 -right-4 -z-10 h-32 w-32 rounded-full bg-gradient-to-br from-purple-400/40 to-pink-600/40 blur-2xl sm:-top-8 sm:-right-8 sm:h-40 sm:w-40"
-			></div>
 		</div>
 
 		<p class="text-muted-foreground mx-auto mt-4 mb-6 max-w-3xl text-lg leading-relaxed font-light sm:mb-8 sm:text-xl">
@@ -47,6 +44,16 @@
 			</Button>
 		</div>
 	</section>
+
+	<Alert.Root
+		class="mx-auto -mt-6 mb-8 max-w-4xl border-amber-300 bg-amber-50/60 sm:-mt-4 dark:border-amber-800 dark:bg-amber-950/20"
+	>
+		<AlertTriangle class="size-4 text-amber-700 dark:text-amber-400" />
+		<Alert.Title class="text-amber-900 dark:text-amber-100">Preview Notice</Alert.Title>
+		<Alert.Description class="text-amber-800 dark:text-amber-200">
+			This generator outputs an Arcane 1.0 configuration. Arcane 1.0 is not officially released yet.
+		</Alert.Description>
+	</Alert.Root>
 
 	<!-- Main Generator Section -->
 	<section class="mb-12 sm:mb-16">
