@@ -10,6 +10,11 @@
 			defaultValue: 'false'
 		},
 		{
+			name: 'APP_URL',
+			description: 'This should be set regardless of OIDC. But this is used in generating the Redirect URL',
+			defaultValue: 'http://localhost:3552'
+		},
+		{
 			name: 'OIDC_CLIENT_ID',
 			description: 'Client ID from your OIDC provider',
 			defaultValue: 'your_arcane_client_id_from_provider'

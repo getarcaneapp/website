@@ -2,6 +2,11 @@ import type { EnvConfig } from '$lib/types/env-config.type.js';
 
 export const envConfig: EnvConfig[] = [
 	{
+		name: 'APP_URL',
+		description: 'The URL arcane runs on',
+		value: 'http://localhost:3552'
+	},
+	{
 		name: 'PORT',
 		description: 'The port arcane should run on',
 		value: '3552'

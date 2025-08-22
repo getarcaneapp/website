@@ -38,6 +38,7 @@ use the new  <Link href="/generator">Compose Generator</Link> to generate a 1.0 
         - /your/projects:/app/data/projects 
         #This mounts your existing stacks or projects into the default folder if you change that youll have to mount it to the correct directory.
       environment:
+        - APP_URL=http://localhost:3552
         - PUID=1000
         - PGID=1000
         - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx

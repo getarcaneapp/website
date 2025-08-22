@@ -23,6 +23,7 @@ services:
       - arcane-data:/app/data
       - /host/path/to/stacks:/app/data/stacks
     environment:
+      - APP_URL=http://localhost:3552
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
