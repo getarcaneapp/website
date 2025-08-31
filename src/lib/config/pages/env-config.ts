@@ -70,5 +70,10 @@ export const envConfig: EnvConfig[] = [
 		name: 'OIDC_SCOPES',
 		description: 'Scopes to request',
 		value: 'openid email profile (default)'
+	},
+	{
+		name: 'LOG_JSON',
+		description: 'Enable JSON logging',
+		value: 'false'
 	}
 ];
