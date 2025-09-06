@@ -75,5 +75,10 @@ export const envConfig: EnvConfig[] = [
 		name: 'LOG_JSON',
 		description: 'Enable JSON logging',
 		value: 'false'
+	},
+	{
+		name: 'LOG_LEVEL',
+		description: 'Logging level',
+		value: 'info'
 	}
 ];
