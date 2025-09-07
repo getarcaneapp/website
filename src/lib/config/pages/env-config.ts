@@ -78,8 +78,8 @@ export const envConfig: EnvConfig[] = [
 	},
 	{
 		name: 'OIDC_ADMIN_VALUE',
-		description: 'The value to check in the OIDC_ADMIN_CLAIM to give a user admin access',
-		value: '_admin_group'
+		description: 'Values to check in the OIDC_ADMIN_CLAIM to give a user admin access ',
+		value: '_admin_group,_admin_group2'
 	},
 	{
 		name: 'LOG_JSON',

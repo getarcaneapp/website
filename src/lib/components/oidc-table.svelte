@@ -32,7 +32,17 @@
 		{
 			name: 'OIDC_SCOPES',
 			description: 'Scopes to request',
-			defaultValue: 'openid email profile (default)'
+			defaultValue: 'openid email profile'
+		},
+		{
+			name: 'OIDC_ADMIN_CLAIM',
+			description: 'Where to find the admin claim in the OIDC token',
+			value: 'groups'
+		},
+		{
+			name: 'OIDC_ADMIN_VALUE',
+			description: 'Values to check in the OIDC_ADMIN_CLAIM to give a user admin access ',
+			value: '_admin_group,_admin_group2'
 		}
 	];
 </script>
