@@ -1,5 +1,4 @@
 export interface DockerComposeConfig {
-	// Basic settings
 	appUrl: string;
 	port: string;
 	puid: string;
@@ -9,15 +8,13 @@ export interface DockerComposeConfig {
 	encryptionKey: string;
 	jwtSecret: string;
 
-	// Database settings
 	enableDatabase: boolean;
-	dbType: string;
+	dbType: 'postgres';
 	dbName: string;
 	dbUser: string;
 	dbPassword: string;
 	dbPort: string;
 
-	// Authentication
 	enableOIDC: boolean;
 	oidcClientId: string;
 	oidcClientSecret: string;

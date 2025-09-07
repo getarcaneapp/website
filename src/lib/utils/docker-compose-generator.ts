@@ -13,7 +13,6 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 	environment.push(`APP_URL=${config.appUrl}`);
 	environment.push(`ENCRYPTION_KEY=${encryptionKey}`);
 	environment.push(`JWT_SECRET=${jwtSecret}`);
-	environment.push(`APP_URL=${config.appUrl}`);
 
 	// Default SQLite database
 	if (!config.enableDatabase) {
