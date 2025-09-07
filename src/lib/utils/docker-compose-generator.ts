@@ -7,12 +7,13 @@ function generateRandomKey(): string {
 export function generateDockerCompose(config: DockerComposeConfig): string {
 	const environment = [`PUID=${config.puid}`, `PGID=${config.pgid}`];
 
-	// Generate encryption key and JWT secret if not provided (required)
 	const encryptionKey = config.encryptionKey || generateRandomKey();
 	const jwtSecret = config.jwtSecret || generateRandomKey();
 
+	environment.push(`APP_URL=${config.appUrl}`);
 	environment.push(`ENCRYPTION_KEY=${encryptionKey}`);
 	environment.push(`JWT_SECRET=${jwtSecret}`);
+	environment.push(`APP_URL=${config.appUrl}`);
 
 	// Default SQLite database
 	if (!config.enableDatabase) {

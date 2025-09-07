@@ -1,5 +1,6 @@
 export interface DockerComposeConfig {
 	// Basic settings
+	appUrl: string;
 	port: string;
 	puid: string;
 	pgid: string;

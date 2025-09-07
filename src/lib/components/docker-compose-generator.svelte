@@ -14,6 +14,7 @@
 
 	let config = $state<DockerComposeConfig>({
 		// Basic settings
+		appUrl: 'http://localhost:3552',
 		port: '3552',
 		puid: '1000',
 		pgid: '1000',
@@ -76,6 +77,10 @@
 					</Card.Header>
 					<Card.Content class="space-y-4">
 						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+							<div class="space-y-2">
+								<Label for="appUrl">App URL</Label>
+								<Input id="appUrl" bind:value={config.appUrl} placeholder="http://localhost:3552" />
+							</div>
 							<div class="space-y-2">
 								<Label for="port">Port</Label>
 								<Input id="port" bind:value={config.port} placeholder="8080" />
