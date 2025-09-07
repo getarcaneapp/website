@@ -72,6 +72,16 @@ export const envConfig: EnvConfig[] = [
 		value: 'openid email profile (default)'
 	},
 	{
+		name: 'OIDC_ADMIN_CLAIM',
+		description: 'Where to find the admin claim in the OIDC token',
+		value: 'groups'
+	},
+	{
+		name: 'OIDC_ADMIN_VALUE',
+		description: 'The value to check in the OIDC_ADMIN_CLAIM to give a user admin access',
+		value: '_admin_group'
+	},
+	{
 		name: 'LOG_JSON',
 		description: 'Enable JSON logging',
 		value: 'false'
