@@ -43,6 +43,10 @@ export const SidebarNavItems: SidebarNavItem[] = [
 		]
 	},
 	{
+		title: 'Guides',
+		items: [{ title: 'Auto Updates', href: '/docs/guides/updates', items: [] }]
+	},
+	{
 		title: 'Templates',
 		items: [
 			{ title: 'Using Templates', href: '/docs/templates', items: [] },

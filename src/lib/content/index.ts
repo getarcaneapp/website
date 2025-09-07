@@ -73,6 +73,14 @@ export const features: DocMetadata[] = [
 	}
 ];
 
+export const guides: DocMetadata[] = [
+	{
+		title: 'Auto Updates',
+		description: 'Configure automatic updates for containers and projects',
+		path: 'guides/updates'
+	}
+];
+
 // export const guides: DocMetadata[] = [
 // 	{
 // 		title: 'Troubleshooting',
@@ -126,7 +134,7 @@ export const allDocs = [
 	...gettingStarted,
 	...userManagement,
 	...features,
-	// ...guides,
+	...guides,
 	...templates,
 	...development
 ];
