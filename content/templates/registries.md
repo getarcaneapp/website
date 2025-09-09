@@ -18,7 +18,7 @@ A template registry is simply a JSON file hosted online that describes available
 
 ### 1. Create Registry Structure
 
-Create a JSON manifest file that lists your templates:
+Create a JSON manifest file that lists your templates (include the `$schema` field pointing to the Arcane schema for editor validation):
 
 <RegistryJson />
 
@@ -43,34 +43,38 @@ For each template, create a directory with:
 
 ## Registry JSON Reference
 
-### Required Fields
+The registry must conform to the Arcane Templates Registry Schema:
+- Schema ID: `https://github.com/ofkm/arcane-templates/schema.json`
+- JSON Schema Draft: 07
+- No additional properties are allowed beyond those listed below
 
-- `name`: Registry display name
-- `description`: Brief description
-- `version`: Registry version
-- `templates`: Array of template objects
+### Top-level Fields
+
+- Optional:
+  - `$schema`: URL to the registry schema (recommended for tooling)
+- Required:
+  - `name`: Registry display name (string)
+  - `description`: Brief description (string)
+  - `version`: Registry version (semver)
+  - `author`: Registry maintainer (string)
+  - `url`: Repository or homepage URL (URI)
+  - `templates`: Array of template objects (min 1)
 
 ### Template Object Fields
 
-**Required:**
-
-- `id`: Unique identifier (alphanumeric, hyphens, underscores)
-- `name`: Display name
-- `description`: What the template does
-- `compose_url`: Direct URL to docker-compose.yml file
-- `version`: Template version
-- `updated_at`: ISO 8601 timestamp
-
-**Optional:**
-
-- `author`: Template creator
-- `tags`: Array of keywords
-- `env_url`: URL to .env example file
-- `documentation_url`: Link to docs
-- `icon_url`: Template icon
+- Required:
+  - `id`: Unique slug (lowercase, hyphens only)
+  - `name`: Display name (string)
+  - `description`: Detailed description (string)
+  - `version`: Template version (semver)
+  - `author`: Template author (string)
+  - `compose_url`: Direct URL to docker-compose.yml (URI)
+  - `env_url`: Direct URL to .env.example (URI)
+  - `documentation_url`: URL to template docs/README (URI)
+  - `tags`: Array of slugs (lowercase, hyphens; min 1; unique)
+- Additional properties are not allowed
 
 ## Example Repository Structure
-
 
 ```
 docker-templates/
@@ -90,10 +94,11 @@ docker-templates/
 
 ## Testing Your Registry
 
-1. **Validate JSON:** Use a JSON validator to check syntax
-2. **Test URLs:** Ensure all file URLs are accessible
-3. **Add to Arcane:** Settings → Templates → Add Registry
-4. **Verify:** Check that templates appear and can be downloaded
+1. Validate JSON syntax and schema (Draft 07) against `https://github.com/ofkm/arcane-templates/schema.json`
+2. Test URLs: ensure all file URLs are accessible (HTTPS)
+3. Add to Arcane: Settings → Templates → Add Registry
+4. Verify: templates appear and download correctly
+5. Ensure no extra properties exist beyond the schema
 
 ## Best Practices
 
@@ -107,9 +112,8 @@ docker-templates/
 
 ### Registry Management
 
-- Version your templates and registry
+- Version your templates and registry (semantic versioning)
 - Keep documentation current
-- Use semantic versioning
 - Regular updates and maintenance
 - Monitor for security updates
 
@@ -128,11 +132,25 @@ Here's a minimal GitHub setup:
 2. **Add registry.json:**
    ```json
    {
-       "$schema": "https://templates.arcane.ofkm.dev/schema.json",
-       "name": "My Templates",
-       "description": "Custom Docker templates",
-       "version": "1.0.0",
-       "templates": [...]
+     "$schema": "https://github.com/ofkm/arcane-templates/schema.json",
+     "name": "My Templates",
+     "description": "Custom Docker templates",
+     "version": "1.0.0",
+     "author": "Acme Corp",
+     "url": "https://github.com/username/my-docker-templates",
+     "templates": [
+       {
+         "id": "wordpress",
+         "name": "WordPress",
+         "description": "Production-ready WordPress with MariaDB and health checks.",
+         "version": "1.2.3",
+         "author": "Acme Corp",
+         "compose_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/docker-compose.yml",
+         "env_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/.env.example",
+         "documentation_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/README.md",
+         "tags": ["cms", "php", "wordpress"]
+       }
+     ]
    }
    ```
 3. **Registry URL:** `https://raw.githubusercontent.com/username/my-docker-templates/main/registry.json`
@@ -149,14 +167,14 @@ Submit pull requests to add your templates to the community collection!
 
 **Registry not loading?**
 
-- Check JSON syntax
-- Verify URL accessibility
-- Ensure HTTPS protocol
-- Check CORS headers if using custom domain
+- Check JSON syntax and validate against the schema
+- Verify URL accessibility and HTTPS
+- Ensure CORS headers if using a custom domain
+- Confirm no additional/unknown fields are present
 
 **Templates not downloading?**
 
-- Verify file URLs are direct download links
+- Verify direct download links for all files
 - Check that files exist at specified URLs
 - Ensure proper file permissions are set
-- Look for errors in the browser console
+- Look for errors in the browser

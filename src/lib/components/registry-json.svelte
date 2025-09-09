@@ -18,8 +18,7 @@
             "compose_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/docker-compose.yml",
             "env_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/.env.example",
             "documentation_url": "https://github.com/yourcompany/docker-templates/tree/main/internal-app",
-            "tags": ["internal", "webapp", "postgres"],
-            "updated_at": "2024-12-01T10:00:00Z"
+            "tags": ["internal", "webapp", "postgres"]
         }
     ]
 }`;

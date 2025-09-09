@@ -5,7 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
+		"velite": "velite",
+		"velite:watch": "velite --watch",
 		"dev": "vite dev",
+		"prebuild": "pnpm velite",
 		"build": "vite build",
 		"build:prod": "node --experimental-strip-types node_modules/.bin/vite build",
 		"preview": "vite preview",

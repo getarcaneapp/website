@@ -6,22 +6,18 @@ const docSchema = s
 		title: s.string(),
 		description: s.string(),
 		path: s.path(),
-		navLabel: s.string().optional(),
-		links: s
-			.object({
-				doc: s.string().optional(),
-				api: s.string().optional(),
-				source: s.string().optional()
-			})
-			.optional(),
-		component: s.boolean().default(false),
+		published: s.boolean().default(true),
+		order: s.number().optional(),
 		toc: s.toc()
 	})
 	.transform((data) => {
+		const segments = data.path.split('/');
+
 		return {
 			...data,
-			slug: data.path.split('/').slice(1).join('/'),
-			slugFull: `/${data.path}`
+			slug: segments.join('/'),
+			section: segments[0],
+			segments
 		};
 	});
 
