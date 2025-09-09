@@ -23,7 +23,7 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 
 	const services: any = {
 		arcane: {
-			image: 'ghcr.io/ofkm/arcane:1.0-preview',
+			image: 'ghcr.io/ofkm/arcane:latest',
 			container_name: 'arcane',
 			restart: 'unless-stopped',
 			ports: [`${config.port}:3552`],
