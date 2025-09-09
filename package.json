@@ -3,6 +3,7 @@
 	"private": true,
 	"version": "1.0.0-next.2",
 	"type": "module",
+	"packageManager": "pnpm@10.15.1",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"velite": "velite",
@@ -10,7 +11,6 @@
 		"dev": "pnpm velite:watch & vite dev",
 		"prebuild": "pnpm velite",
 		"build": "vite build",
-		"build:prod": "node --experimental-strip-types node_modules/.bin/vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
