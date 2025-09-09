@@ -104,6 +104,11 @@ export const development: DocMetadata[] = [
 		title: 'Contributing',
 		description: 'Learn how to contribute to the Arcane project, from reporting bugs to submitting code.',
 		path: 'dev/contribute'
+	},
+	{
+		title: 'Translating',
+		description: 'Help translate Arcane into your language',
+		path: 'dev/translate'
 	}
 ];
 
