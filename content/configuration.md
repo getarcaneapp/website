@@ -1,6 +1,6 @@
 ---
-title: 'Arcane Configuration'
-description: 'Learn how to configure Arcane using environment variables and the settings interface.'
+title: 'Configuration'
+description: 'Configure Arcane using environment variables or the settings interface.'
 ---
 
 <script lang="ts">

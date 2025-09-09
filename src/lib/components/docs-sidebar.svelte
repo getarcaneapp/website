@@ -14,7 +14,7 @@
 	collapsible="none"
 	{...restProps}
 >
-	<Sidebar.Content class="no-scrollbar overflow-y-auto pb-12">
+	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto pb-12">
 		<!-- <div class="h-(--top-spacing) shrink-0"></div> -->
 		{#each navItems as item (item.title)}
 			<Sidebar.Group>

@@ -1,5 +1,5 @@
 ---
-title: Translating
+title: Translating Arcane
 description: Help translate Arcane into your language
 ---
 

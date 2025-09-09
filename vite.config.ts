@@ -8,5 +8,14 @@ export default defineConfig({
 		fs: {
 			allow: ['..', './content']
 		}
+	},
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					icons: ['@lucide/svelte']
+				}
+			}
+		}
 	}
 });

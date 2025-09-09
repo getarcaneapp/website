@@ -16,7 +16,6 @@
 </svelte:head>
 
 <div class="bg-background text-foreground flex min-h-screen flex-col">
-	<PreviewBanner />
 	<Header />
 	<main class="flex-1">
 		{@render children()}

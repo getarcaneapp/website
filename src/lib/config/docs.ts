@@ -1,3 +1,14 @@
+import {
+	indexPage,
+	setup,
+	configuration,
+	userManagement,
+	features,
+	guides,
+	development,
+	templates
+} from '$velite/index.js';
+
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
 	{ href: '/generator', label: 'Compose Generator' }
@@ -15,49 +26,57 @@ export type SidebarNavItem = NavItem & {
 	items: SidebarNavItem[];
 };
 
-export const SidebarNavItems: SidebarNavItem[] = [
-	{
-		title: 'Get Started',
-		items: [
-			{ title: 'Installation', href: '/docs/setup', items: [] },
-			{ title: 'Configuration', href: '/docs/configuration', items: [] },
-			{ title: 'Try the 1.0 Preview', href: '/docs/1-0-preview', items: [] }
-		]
-	},
-	{
-		title: 'User Management',
-		items: [
-			{ title: 'Local Users', href: '/docs/users/local', items: [] },
-			{ title: 'OIDC Single Sign-On', href: '/docs/users/sso', items: [] }
-		]
-	},
-	{
-		title: 'Features',
-		items: [
-			{ title: 'Compose Projects', href: '/docs/features/compose', items: [] },
-			{ title: 'Containers', href: '/docs/features/containers', items: [] },
-			{ title: 'Environments', href: '/docs/features/environments', items: [] },
-			{ title: 'Images', href: '/docs/features/images', items: [] },
-			{ title: 'Networks', href: '/docs/features/networks', items: [] },
-			{ title: 'Volumes', href: '/docs/features/volumes', items: [] }
-		]
-	},
-	{
-		title: 'Guides',
-		items: [{ title: 'Auto Updates', href: '/docs/guides/updates', items: [] }]
-	},
-	{
-		title: 'Templates',
-		items: [
-			{ title: 'Using Templates', href: '/docs/templates', items: [] },
-			{ title: 'Template Registries', href: '/docs/templates/registries', items: [] }
-		]
-	},
-	{
-		title: 'Development',
-		items: [
-			{ title: 'Contributing', href: '/docs/dev/contribute', items: [] },
-			{ title: 'Translating', href: '/docs/dev/translate', items: [] }
-		]
-	}
+function toHref(path: string) {
+	return `/docs/${path}`;
+}
+
+function sortDocs<T extends { title: string; order?: number }>(arr: T[]) {
+	return [...arr].sort((a, b) => {
+		const ao = a.order ?? 1e9;
+		const bo = b.order ?? 1e9;
+		if (ao !== bo) return ao - bo;
+		return a.title.localeCompare(b.title);
+	});
+}
+
+function mapLeafDocs(docs: Array<{ title: string; path: string; order?: number }>): SidebarNavItem[] {
+	return sortDocs(docs).map((d) => ({
+		title: d.title,
+		href: toHref(d.path),
+		items: []
+	}));
+}
+
+const SECTION_BUILDERS: Array<{
+	key: string;
+	title: string;
+	source: any[];
+}> = [
+	{ key: 'setup', title: 'Setup', source: setup },
+	{ key: 'configuration', title: 'Configuration', source: configuration },
+	{ key: 'userManagement', title: 'User Management', source: userManagement },
+	{ key: 'features', title: 'Features', source: features },
+	{ key: 'guides', title: 'Guides', source: guides },
+	{ key: 'templates', title: 'Templates', source: templates },
+	{ key: 'development', title: 'Development', source: development }
 ];
+
+export const SidebarNavItems: SidebarNavItem[] = SECTION_BUILDERS.map(({ title, source }) => ({
+	title,
+	items: mapLeafDocs(source)
+}));
+
+const flat: SidebarNavItem[] = SECTION_BUILDERS.flatMap((s) => mapLeafDocs(s.source));
+
+export function findNeighbors(pathName: string): {
+	previous: SidebarNavItem | null;
+	next: SidebarNavItem | null;
+} {
+	const clean = pathName.split('?')[0].split('#')[0];
+	const idx = flat.findIndex((i) => i.href === clean);
+	if (idx === -1) return { previous: null, next: null };
+	return {
+		previous: flat[idx - 1] ?? null,
+		next: flat[idx + 1] ?? null
+	};
+}

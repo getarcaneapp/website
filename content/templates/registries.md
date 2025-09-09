@@ -8,10 +8,6 @@ import TemplateStructure from '$lib/components/template-structure.svelte';
 import RegistryJson from '$lib/components/registry-json.svelte';
 </script>
 
-# Creating a Custom Template Registry
-
-Want to share templates with your team or the community? Create your own template registry!
-
 A template registry is simply a JSON file hosted online that describes available templates and where to find them.
 
 ## Quick Setup

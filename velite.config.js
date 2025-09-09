@@ -21,9 +21,21 @@ const docSchema = s
 		};
 	});
 
-const gettingStarted = defineCollection({
-	name: 'gettingStarted',
-	pattern: './*.md',
+const indexPage = defineCollection({
+	name: 'indexPage',
+	pattern: './index.md',
+	schema: docSchema
+});
+
+const setup = defineCollection({
+	name: 'setup',
+	pattern: './setup/**/*.md',
+	schema: docSchema
+});
+
+const configuration = defineCollection({
+	name: 'configuration',
+	pattern: './configuration.md',
 	schema: docSchema
 });
 
@@ -51,14 +63,23 @@ const development = defineCollection({
 	schema: docSchema
 });
 
+const templates = defineCollection({
+	name: 'templates',
+	pattern: ['./templates.md', './templates/**/*.md'],
+	schema: docSchema
+});
+
 export default defineConfig({
 	root: './content',
 	collections: {
-		gettingStarted,
+		indexPage,
+		setup,
+		configuration,
 		userManagement,
 		features,
 		guides,
-		development
+		development,
+		templates
 	},
 	output: { assets: 'static' }
 });

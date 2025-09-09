@@ -1,5 +1,5 @@
 ---
-title: 'Arcane Setup Guide'
+title: 'Installation'
 description: 'Get Arcane running fast with Docker Compose.'
 ---
 
