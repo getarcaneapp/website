@@ -4,13 +4,11 @@
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
-
 	import Settings from '@lucide/svelte/icons/settings';
 	import Zap from '@lucide/svelte/icons/zap';
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import Lightbulb from '@lucide/svelte/icons/lightbulb';
 	import FileText from '@lucide/svelte/icons/file-text';
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
 
 	import { envConfig as allEnv } from '$lib/config/pages/env-config.js';
 
@@ -23,8 +21,8 @@
 			<div
 				class="text-muted-foreground mx-auto mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs"
 			>
-				<span class="inline-flex h-2 w-2 rounded-full bg-amber-500"></span>
-				Arcane 1.0 Preview
+				<span class="inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+				Arcane 1.0
 			</div>
 
 			<h1 class="mb-3 text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
@@ -59,16 +57,6 @@
 			</div>
 		</div>
 	</section>
-
-	<Alert.Root
-		class="mx-auto -mt-4 mb-10 max-w-4xl border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-950/20"
-	>
-		<AlertTriangle class="size-4 text-amber-700 dark:text-amber-400" />
-		<Alert.Title class="text-amber-900 dark:text-amber-100">Preview Notice</Alert.Title>
-		<Alert.Description class="text-amber-800 dark:text-amber-200">
-			This generator outputs an Arcane 1.0 configuration. Arcane 1.0 is not officially released yet.
-		</Alert.Description>
-	</Alert.Root>
 
 	<section id="configure" class="mb-14 px-4 sm:mb-16">
 		<div
