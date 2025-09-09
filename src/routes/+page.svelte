@@ -21,7 +21,7 @@
 		</p>
 
 		<div class="flex flex-col items-center gap-4 sm:flex-row">
-			<Button variant="default" size="lg" href="/docs/setup">
+			<Button variant="default" size="lg" href="/docs/setup/installation">
 				<BookOpen class="size-4" />
 				Get Started
 			</Button>
