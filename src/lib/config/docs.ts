@@ -61,10 +61,24 @@ const SECTION_BUILDERS: Array<{
 	{ key: 'development', title: 'Development', source: development }
 ];
 
+const COMMUNITY_GROUP: SidebarNavItem = {
+	title: 'Community',
+	items: [
+		{
+			title: 'Discord',
+			href: 'https://discord.gg/WyXYpdyV3Z',
+			external: true,
+			items: []
+		}
+	]
+};
+
 export const SidebarNavItems: SidebarNavItem[] = SECTION_BUILDERS.map(({ title, source }) => ({
 	title,
 	items: mapLeafDocs(source)
 }));
+
+SidebarNavItems.push(COMMUNITY_GROUP);
 
 const flat: SidebarNavItem[] = SECTION_BUILDERS.flatMap((s) => mapLeafDocs(s.source));
 

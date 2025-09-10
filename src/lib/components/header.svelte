@@ -9,6 +9,7 @@
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { mainNavItems } from '$lib/config/docs.js';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { CommandSearch } from '$lib/components/command-search/index.js';
 
 	let version: string | undefined = $state('');
 
@@ -43,7 +44,9 @@
 			<MobileNav class="flex lg:hidden" />
 
 			<div class="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
-				<div class="hidden w-full flex-1 md:flex md:w-auto md:flex-none"><!-- docs search placeholder --></div>
+				<div class="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
+					<CommandSearch />
+				</div>
 				<Separator orientation="vertical" />
 				{#if version}
 					<Badge

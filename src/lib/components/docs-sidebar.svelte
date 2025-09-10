@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import type { SidebarNavItem } from '$lib/config/docs.js';
 	import type { ComponentProps } from 'svelte';
+	import ExternalLink from '@lucide/svelte/icons/external-link';
 
 	let { navItems, ...restProps }: { navItems: SidebarNavItem[] } & ComponentProps<typeof Sidebar.Root> = $props();
 
@@ -15,7 +16,6 @@
 	{...restProps}
 >
 	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto pb-12">
-		<!-- <div class="h-(--top-spacing) shrink-0"></div> -->
 		{#each navItems as item (item.title)}
 			<Sidebar.Group>
 				<Sidebar.GroupLabel class="text-muted-foreground font-medium">
@@ -32,7 +32,14 @@
 											class="data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md"
 										>
 											{#snippet child({ props })}
-												<a href={subItem.href} {...props}>{subItem.title}</a>
+												{#if subItem.external}
+													<a href={subItem.href} {...props} target="_blank" rel="noopener noreferrer">
+														{subItem.title}
+														<ExternalLink class="text-muted-foreground mb-1 inline size-3 align-text-bottom" />
+													</a>
+												{:else}
+													<a href={subItem.href} {...props}>{subItem.title}</a>
+												{/if}
 											{/snippet}
 										</Sidebar.MenuButton>
 									</Sidebar.MenuItem>
