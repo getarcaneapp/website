@@ -2,10 +2,13 @@
 	let { data } = $props();
 	const Markdown = $derived(data.component);
 	const doc = $derived(data.metadata);
+	import ExternalLink from '@lucide/svelte/icons/external-link';
+
+	const githubEditUrl = $derived(`https://github.com/ofkm/arcane-website/edit/main/content/${doc.path}.md`);
 </script>
 
 <svelte:head>
-	<title>{doc.title} - Arcane Docs</title>
+	<title>{doc.title}</title>
 	<meta name="description" content={doc.description} />
 </svelte:head>
 
@@ -24,6 +27,21 @@
 
 		<div class="w-full flex-1">
 			<Markdown />
+		</div>
+
+		<div class="mt-8 border-t pt-6">
+			<div class="flex items-center justify-between">
+				<div class="text-muted-foreground text-sm">Help improve this page</div>
+				<a
+					href={githubEditUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
+				>
+					Edit this page on GitHub
+					<ExternalLink class="text-muted-foreground mb-1 size-4 align-text-bottom" />
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
