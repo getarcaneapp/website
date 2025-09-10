@@ -74,7 +74,7 @@
 				<div class="flex flex-col gap-3">
 					{@render MobileLink({ href: '/', content: 'Home' })}
 					{#each mainNavItems as item, i (i)}
-						{@render MobileLink({ href: item.href, content: item.title })}
+						{@render MobileLink({ href: item.href, content: item.label })}
 					{/each}
 				</div>
 			</div>

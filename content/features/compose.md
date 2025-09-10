@@ -30,7 +30,7 @@ A **Compose Project** is a collection of services defined in a `compose.yaml` fi
 1. Go to the **Compose Projects** section in the sidebar.
 2. You'll see a list of all compose projects, including their names, status (running, partially running, stopped), and how many services are running.
 
-> **Note:** Arcane treats `/app/data/stacks` as the single source of truth. Any Compose files you place in this directory—whether created through Arcane or added externally—are automatically detected and imported as projects.
+> **Note:** Arcane treats `/app/data/projects` as the single source of truth. Any Compose files you place in this directory—whether created through Arcane or added externally—are automatically detected and imported as projects.
 
 ### Creating a Compose Project
 
@@ -56,6 +56,6 @@ A **Compose Project** is a collection of services defined in a `compose.yaml` fi
 
 ## Where Are My Compose Projects Stored?
 
-Arcane saves your compose project definitions (compose files, `.env` files, and metadata) in its data directory (by default `/app/data/compose-projects`).
+Arcane saves your compose project definitions (compose files, `.env` files, and metadata) in its data directory (by default `/app/data/projects`).
 
 **Tip:** To keep your compose projects safe, make sure to mount this directory as a Docker volume if you're running Arcane in a container.
