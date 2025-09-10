@@ -42,7 +42,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
-{#if !showBanner}
+{#if showBanner}
 	<div
 		class="sticky top-0 z-[60] border-b border-purple-500 bg-purple-500/10 text-purple-600 backdrop-blur-sm dark:bg-purple-500/15 dark:text-purple-400"
 	>
