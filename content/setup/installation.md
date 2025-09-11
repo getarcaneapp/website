@@ -38,7 +38,7 @@ volumes:
 
 **_/var/run/docker.sock_**: Lets Arcane manage Docker.
 
-**_arcane-data_**: Persists settings, projects, users, etc.
+**_arcane-data_**: Arcanes data directory. (for the database and projects)
 
 To manage existing compose projects, in addition to mounting your compose projects folder to the `/app/data/projects` folder, you may need to also mount any additional folders you wish to use for config files.
 
