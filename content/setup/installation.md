@@ -21,7 +21,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
-      - /host/path/to/stacks:/app/data/stacks
+      - /host/path/to/projects:/app/data/projects
     environment:
       - APP_URL=http://localhost:3552
       - PUID=1000
@@ -38,9 +38,9 @@ volumes:
 
 **_/var/run/docker.sock_**: Lets Arcane manage Docker.
 
-**_arcane-data_**: Persists settings, stacks, users, etc.
+**_arcane-data_**: Persists settings, projects, users, etc.
 
-To manage existing compose projects, in addition to mounting your compose projects folder to the `/app/data/stacks` folder, you may need to also mount any additional folders you wish to use for config files.
+To manage existing compose projects, in addition to mounting your compose projects folder to the `/app/data/projects` folder, you may need to also mount any additional folders you wish to use for config files.
 
 ## 3. Start Arcane:
 
