@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-preview:
-    runs-on: macos-latest
+    runs-on: macos-26
     name: Build Preview Site and Upload Build Artifact
     steps:
       - name: Checkout
