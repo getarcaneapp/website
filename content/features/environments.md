@@ -49,11 +49,11 @@ docker compose up -d
 
 If you prefer to run the agent via the static binary you can do so with the instructions below:
 
-1. Download the latest binary for you platfrom from the releases page
+1. Download the latest binary for you platform from the releases page
 2. Move the binary to where you would like to run it from and create you `.env` file:
 
 > [!NOTE]
-> The `GIN_MODE=release` environment varible is needed in this case due to it not being set via the dockerfile. Unless you dont care if gin runs in development mode.
+> The `GIN_MODE=release` environment variable is needed in this case due to it not being set via the dockerfile. Unless you dont care if gin runs in development mode.
 
 ```
 GIN_MODE=release
@@ -62,7 +62,7 @@ AGENT_BOOTSTRAP_TOKEN=xxxxxxxxxxxxxxxxxxxxxx
 ENVIRONMENT=production
 PORT=3553
 ```
-3. Run the following command to start the agent, make sure to replace the environment varibles with yours:
+3. Run the following command to start the agent, make sure to replace the environment variables with yours:
 
 <Snippet text="./arcane-agent" class="mt-2 mb-2 w-full" />
 
