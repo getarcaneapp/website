@@ -220,7 +220,12 @@
 		</Tabs.Root>
 
 		<div class="flex justify-center">
-			<Button onclick={handleGenerateDockerCompose} size="lg" class="w-full sm:w-auto sm:min-w-48">
+			<Button
+				onclick={handleGenerateDockerCompose}
+				data-umami-event="compose-generated"
+				size="lg"
+				class="w-full sm:w-auto sm:min-w-48"
+			>
 				<FileText class="mr-2 h-4 w-4" />
 				Generate Docker Compose
 			</Button>
