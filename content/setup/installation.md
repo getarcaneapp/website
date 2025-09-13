@@ -9,6 +9,9 @@ import { Snippet } from '$lib/components/ui/snippet/index.js';
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
+> [!NOTE] This guide is for the full installation of Arcane.
+> If you are looking to setup a remote environment see <Link href="/docs/features/environments">here</Link>
+
 ## 1. Create **_compose.yaml_**:
 
 ```yaml

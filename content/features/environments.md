@@ -3,6 +3,10 @@ title: 'Remote Environments'
 description: 'Learn how to set up and manage remote Docker hosts using the Arcane agent for centralized container management.'
 ---
 
+<script lang="ts">
+import { Snippet } from '$lib/components/ui/snippet/index.js';
+</script>
+
 ## Overview
 
 Remote Environments let Arcane manage containers on other hosts through a stripped down version of Arcane it self. You run the Agent on a remote machine (with access to its Docker daemon), pair it to your Arcane manager using a one-time Bootstrap Token, and both sides store an Agent Token for all future requests.
@@ -16,7 +20,6 @@ Remote Environments let Arcane manage containers on other hosts through a stripp
 ## Quick start (Docker Compose)
 
 ```yaml
-# docker-compose.yml
 services:
   arcane-agent:
     image: ghcr.io/ofkm/arcane-headless:latest
@@ -41,6 +44,31 @@ Start the Agent:
 ```bash
 docker compose up -d
 ```
+
+## Standalone Binary
+
+If you prefer to run the agent via the static binary you can do so with the instructions below:
+
+1. Download the latest binary for you platfrom from the releases page
+2. Move the binary to where you would like to run it from and create you `.env` file:
+
+> [!NOTE]
+> The `GIN_MODE=release` environment varible is needed in this case due to it not being set via the dockerfile. Unless you dont care if gin runs in development mode.
+
+```
+GIN_MODE=release
+AGENT_MODE=true
+AGENT_BOOTSTRAP_TOKEN=xxxxxxxxxxxxxxxxxxxxxx
+ENVIRONMENT=production
+PORT=3553
+```
+3. Run the following command to start the agent, make sure to replace the environment varibles with yours:
+
+<Snippet text="./arcane-agent" class="mt-2 mb-2 w-full" />
+
+You can also skip creating a `.env` file and just use inline environment variables:
+<Snippet text="ENVIRONMENT=production GIN_MODE=release PORT=3553 AGENT_MODE=true AGENT_BOOTSTRAP_TOKEN=xxxxxxxxxxxxxxxxxxxxxx ./arcane-agent" class="mt-2 mb-2 w-full" />
+
 
 ## Pair the Agent with Arcane
 
