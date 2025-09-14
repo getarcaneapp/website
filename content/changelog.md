@@ -22,7 +22,7 @@ description: 'Release notes for Arcane'
 * do not recursive chown the /app/data/projects directory in entrypoint ([368612a](https://github.com/ofkm/arcane/commit/368612a8f072e59d63745a700f6de9f8c588b033))
 * do not stop arcanes container it self when using the quick action ([0166084](https://github.com/ofkm/arcane/commit/016608442b052df71ede8c94dff1346c4e4f6551))
 * dont allow the auto updater to update arcane it self ([4b0931e](https://github.com/ofkm/arcane/commit/4b0931e52935580d3040aced090ce8c39850d51b))
-* make auto-update off by defualt on fresh installs ([129c5c5](https://github.com/ofkm/arcane/commit/129c5c5e1f8e69efbc8b9af496baa56046e3b6e4))
+* make auto-update off by default on fresh installs ([129c5c5](https://github.com/ofkm/arcane/commit/129c5c5e1f8e69efbc8b9af496baa56046e3b6e4))
 * project save button not using the correct styles ([9825c4a](https://github.com/ofkm/arcane/commit/9825c4aa15a59c626580e5aa6f6d39cc23843613))
 * projects are not searchable ([31ce3e9](https://github.com/ofkm/arcane/commit/31ce3e9866981f16cb2e838c7e419ef332c67249))
 * reschedule jobs when polling or autoupdate job settings is changed ([5c3f168](https://github.com/ofkm/arcane/commit/5c3f1687dd6ab5dfb06526fb2af9b40693e60b2c))
