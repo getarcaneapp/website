@@ -11,7 +11,8 @@ import {
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
-	{ href: '/generator', label: 'Compose Generator' }
+	{ href: '/generator', label: 'Compose Generator' },
+	{ href: '/changelog', label: 'Changelog' }
 ];
 
 export type NavItem = {

@@ -1,0 +1,107 @@
+name: Update Arcane Changelog
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Get latest release
+        id: latest
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://api.github.com/repos/ofkm/arcane/releases/latest'
+          method: 'GET'
+          bearerToken: ${{ secrets.GITHUB_TOKEN }}
+          customHeaders: '{"Accept":"application/vnd.github+json"}'
+          responseFile: 'release.json'
+
+      - name: Build updated changelog
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG=$(jq -r .tag_name release.json)
+          DATE=$(jq -r .published_at release.json | cut -dT -f1)
+          URL=$(jq -r .html_url release.json)
+          BODY=$(jq -r '.body // ""' release.json)
+
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+          echo "branch=chore/changelog-$TAG" >> "$GITHUB_OUTPUT"
+
+          # If changelog exists and already has this tag, skip
+          if [[ -f content/changelog.current.md ]] && grep -qE "^##[[:space:]]+$TAG\b" content/changelog.current.md; then
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            echo "No update needed."
+            exit 0
+          fi
+
+          mkdir -p content
+
+          SECTION_FILE=/tmp/section.md
+          {
+            echo "## $TAG${DATE:+ - $DATE}"
+            echo
+            echo "[Release]($URL)"
+            echo
+            printf "%s\n" "$BODY"
+          } > "$SECTION_FILE"
+
+          DEFAULT_FM="---"$'\n'"title: 'Changelog'"$'\n'"description: 'Release notes for Arcane'"$'\n'"---"
+
+          if [[ -f content/changelog.current.md ]]; then
+            if head -n1 content/changelog.current.md | grep -q '^---$'; then
+              # Insert after end of frontmatter
+              END_LINE=$(awk '/^---$/{i++} i==2{print NR; exit}' content/changelog.current.md || true)
+              if [[ -n "${END_LINE:-}" ]]; then
+                head -n "$END_LINE" content/changelog.current.md > content/changelog.md
+                echo >> content/changelog.md
+                cat "$SECTION_FILE" >> content/changelog.md
+                echo >> content/changelog.md
+                tail -n +"$((END_LINE+1))" content/changelog.current.md >> content/changelog.md
+              else
+                # Malformed frontmatter, seed a new one
+                printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
+                cat "$SECTION_FILE" >> content/changelog.md
+                echo >> content/changelog.md
+                cat content/changelog.current.md >> content/changelog.md
+              fi
+            else
+              # No frontmatter present, add it
+              printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
+              cat "$SECTION_FILE" >> content/changelog.md
+              echo >> content/changelog.md
+              cat content/changelog.current.md >> content/changelog.md
+            fi
+          else
+            # File doesn't exist, create fresh with frontmatter
+            printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
+            cat "$SECTION_FILE" >> content/changelog.md
+            echo >> content/changelog.md
+          fi
+
+          echo "updated=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
+          title: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
+          body: 'Automated changelog update for ${{ steps.build.outputs.version }} from ofkm/arcane latest release.'
+          branch: '${{ steps.build.outputs.branch }}'
+          base: main
+          add-paths: |
+            content/changelog.md
+          delete-branch: true
