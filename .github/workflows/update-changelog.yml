@@ -26,6 +26,11 @@ jobs:
           customHeaders: '{"Accept":"application/vnd.github+json"}'
           responseFile: 'release.json'
 
+      - name: Prepare current changelog
+        run: |
+          mkdir -p content
+          [[ -f content/changelog.md ]] && cp content/changelog.md content/changelog.current.md || true
+
       - name: Build updated changelog
         id: build
         shell: bash
@@ -43,11 +48,8 @@ jobs:
           # If changelog exists and already has this tag, skip
           if [[ -f content/changelog.current.md ]] && grep -qE "^##[[:space:]]+$TAG\b" content/changelog.current.md; then
             echo "updated=false" >> "$GITHUB_OUTPUT"
-            echo "No update needed."
             exit 0
           fi
-
-          mkdir -p content
 
           SECTION_FILE=/tmp/section.md
           {
@@ -62,7 +64,6 @@ jobs:
 
           if [[ -f content/changelog.current.md ]]; then
             if head -n1 content/changelog.current.md | grep -q '^---$'; then
-              # Insert after end of frontmatter
               END_LINE=$(awk '/^---$/{i++} i==2{print NR; exit}' content/changelog.current.md || true)
               if [[ -n "${END_LINE:-}" ]]; then
                 head -n "$END_LINE" content/changelog.current.md > content/changelog.md
@@ -71,21 +72,18 @@ jobs:
                 echo >> content/changelog.md
                 tail -n +"$((END_LINE+1))" content/changelog.current.md >> content/changelog.md
               else
-                # Malformed frontmatter, seed a new one
                 printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
                 cat "$SECTION_FILE" >> content/changelog.md
                 echo >> content/changelog.md
                 cat content/changelog.current.md >> content/changelog.md
               fi
             else
-              # No frontmatter present, add it
               printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
               cat "$SECTION_FILE" >> content/changelog.md
               echo >> content/changelog.md
               cat content/changelog.current.md >> content/changelog.md
             fi
           else
-            # File doesn't exist, create fresh with frontmatter
             printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
             cat "$SECTION_FILE" >> content/changelog.md
             echo >> content/changelog.md
@@ -94,9 +92,10 @@ jobs:
           echo "updated=true" >> "$GITHUB_OUTPUT"
 
       - name: Create pull request
+        if: steps.build.outputs.updated == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACTIONS_PAT }}
           commit-message: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
           title: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
           body: 'Automated changelog update for ${{ steps.build.outputs.version }} from ofkm/arcane latest release.'
