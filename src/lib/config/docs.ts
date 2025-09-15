@@ -1,13 +1,4 @@
-import {
-	indexPage,
-	setup,
-	configuration,
-	userManagement,
-	features,
-	guides,
-	development,
-	templates
-} from '$velite/index.js';
+import { indexPage, setup, configuration, features, guides, development, templates } from '$velite/index.js';
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
@@ -55,7 +46,6 @@ const SECTION_BUILDERS: Array<{
 }> = [
 	{ key: 'setup', title: 'Setup', source: setup },
 	{ key: 'configuration', title: 'Configuration', source: configuration },
-	{ key: 'userManagement', title: 'User Management', source: userManagement },
 	{ key: 'features', title: 'Features', source: features },
 	{ key: 'guides', title: 'Guides', source: guides },
 	{ key: 'templates', title: 'Templates', source: templates },

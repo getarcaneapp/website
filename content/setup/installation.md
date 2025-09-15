@@ -53,4 +53,10 @@ docker compose up -d
 
 ## 4. Access Arcane:
 
-Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup.
+Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup, the default credentials are shown below.
+
+Username:
+<Snippet text="arcane" class="mt-2 max-w-[300px]" />
+
+Password:
+<Snippet text="arcane-admin" class="mt-2 max-w-[300px]" />

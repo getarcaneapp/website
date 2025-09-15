@@ -1,5 +1,5 @@
 ---
-title: 'Configuration'
+title: 'Environment Variables'
 description: 'Configure Arcane using environment variables or the settings interface.'
 ---
 

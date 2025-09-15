@@ -1,14 +1,5 @@
 import { json } from '@sveltejs/kit';
-import {
-	indexPage,
-	setup,
-	configuration,
-	userManagement,
-	features,
-	guides,
-	development,
-	templates
-} from '$velite/index.js';
+import { indexPage, setup, configuration, features, guides, development, templates } from '$velite/index.js';
 
 export const prerender = true;
 
@@ -56,7 +47,6 @@ const allDocs: CollectionDoc[] = [
 	...indexPage,
 	...setup,
 	...configuration,
-	...userManagement,
 	...features,
 	...guides,
 	...development,

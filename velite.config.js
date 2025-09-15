@@ -35,13 +35,7 @@ const setup = defineCollection({
 
 const configuration = defineCollection({
 	name: 'configuration',
-	pattern: './configuration.md',
-	schema: docSchema
-});
-
-const userManagement = defineCollection({
-	name: 'userManagement',
-	pattern: './users/**/*.md',
+	pattern: './configuration/**/*.md',
 	schema: docSchema
 });
 
@@ -81,7 +75,6 @@ export default defineConfig({
 		indexPage,
 		setup,
 		configuration,
-		userManagement,
 		features,
 		guides,
 		development,
