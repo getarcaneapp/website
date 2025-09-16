@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Link } from '$lib/components/ui/link/index.js';
-	import { setup, configuration, userManagement, features, templates, guides, development } from '$velite/index.js';
+	import { setup, configuration, features, templates, guides, development } from '$velite/index.js';
 
 	type Doc = { title: string; path: string; order?: number };
 
 	let {
 		sections = [
-			{ title: 'Getting Started', collections: [setup, configuration] },
-			{ title: 'User Management', collections: [userManagement] },
+			{ title: 'Getting Started', collections: [setup] },
+			{ title: 'Configuration', collections: [configuration] },
 			{ title: 'Features', collections: [features] },
 			{ title: 'Templates', collections: [templates] },
 			{ title: 'Guides', collections: [guides] },
