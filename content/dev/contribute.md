@@ -1,89 +1,246 @@
 ---
 title: Contributing to Arcane
-description: Thank you for your interest in contributing to Arcane! We welcome contributions from the community to help make Arcane better. Whether it's reporting a bug, suggesting a feature, or writing code, your help is appreciated.
+description: Thanks for helping make Arcane better! A streamlined guide with Docker-based dev, VS Code tasks, and clear contribution steps.
 blueprint: default
 ---
 
 <script lang="ts">
-    import { GitCommand } from '$lib/components/ui/git-command';
-    import { Snippet } from '$lib/components/ui/snippet/index.js';
-    import { Link } from '$lib/components/ui/link/index.js';
+  import { GitCommand } from '$lib/components/ui/git-command';
+  import { Snippet } from '$lib/components/ui/snippet/index.js';
+  import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-## Ways to Contribute
+Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
 
-- **Reporting Bugs:** If you encounter a bug, please help us by submitting a detailed bug report. <br />
-  Use the <Link href="https://github.com/ofkm/arcane/issues/new?template=bug.yml">Bug Report</Link> template on GitHub.
+## 🌟 Ways to Contribute
 
-- **Suggesting Features:** Have an idea for a new feature or an enhancement? We'd love to hear it! <br />
-  Use the <Link href="https://github.com/ofkm/arcane/issues/new?template=feature.yml">Feature Request</Link> template on GitHub.
+- 🐛 <strong>Report bugs</strong> using our issue templates
+- 💡 <strong>Suggest features</strong> or improvements
+- 🔧 <strong>Code contributions</strong> (frontend, backend, DevOps)
+- 📚 <strong>Documentation</strong> improvements
+- 🌍 <strong>Translations</strong> via <Link href="https://crowdin.com/project/arcane-docker-management">Crowdin</Link>
+- 🧪 <strong>Testing</strong> and quality assurance
 
-- **Code Contributions:** If you'd like to contribute code, please follow the process outlined below.
+## 🚀 Quick Start
 
-- **Documentation:** Improvements to the documentation are always welcome.
+### Prerequisites
 
-## Code Contribution Process
+- <strong>Docker & Docker Compose</strong> (that's it! 🎉)
+- <strong>VS Code</strong> based IDE (recommended for the best developer experience)
 
-1. **Fork the Repository:** Start by forking the main Arcane repository on GitHub.
+> 💡 <strong>Working Directory</strong>: Unless otherwise specified, all commands in this guide should be run from the project root directory (<code>arcane/</code>).
 
-2. **Clone Your Fork:** Clone your forked repository to your local machine:
+### 1. Fork and Clone
 
-   <GitCommand class="mt-2 mb-2 w-full" />
+<GitCommand class="mt-2 mb-2 w-full" />
+<Snippet text="cd arcane" class="mt-2 mb-4 w-full" />
 
-3. **Create a Branch:** Create a new branch for your feature or bug fix. Use a descriptive name:
+### 2. Start Development Environment
 
-   <Snippet text="git branch -m feat/my-new-feature" class="mt-2 mb-2 w-full" />
+From the project root directory:
 
-   ### Backend
+<Snippet text="./scripts/development/dev.sh start" class="mt-2 mb-4 w-full" />
 
-   For the backend you can use `air` for hot reloading:
+That's it! The development environment will automatically:
+- 🔥 Start both frontend and backend with hot reload
+- 🐳 Handle all dependencies via Docker
+- 📊 Set up health checks and monitoring
+- 💾 Create persistent storage for your development data
 
-   <Snippet text="go install github.com/air-verse/air@latest" class="mt-2 mb-2 w-full" />
+Access your development environment:
+- <strong>Frontend</strong>: <Link href="http://localhost:3000">http:\/\/localhost:3000</Link> (SvelteKit with HMR)
+- <strong>Backend</strong>: <Link href="http://localhost:3552">http:\/\/localhost:3552</Link> (Go with Air hot reload)
 
-   Then just run `air` in `arcane/backend` folder.
+## 🎯 VS Code Integration
 
-   ### Frontend
+For the best development experience, we've included VS Code tasks and workspace configuration.
 
-   The frontend uses vite for development:
+### Recommended Extensions
 
-   <Snippet text={['cd frontend', 'npm run dev']} class="mt-2 mb-2 w-full" />
+When you open the project in VS Code, you'll be prompted to install our recommended extensions. These provide:
+- Docker integration and management
+- Go language support with debugging
+- Svelte/TypeScript support
+- Integrated terminal management
 
-4. **Make Changes:** Implement your feature or bug fix. Write clear, concise code.
+### One-Click Development Commands
 
-5. **Lint and Format:** Ensure your code adheres to the project's style guidelines by running the linters and formatters:
+Use <code>Ctrl/Cmd+Shift+P</code> → "Tasks: Run Task" to access:
 
-   <Snippet text={['cd frontend', 'npm run lint', 'npm run format']} class="mt-2 mb-2 w-full" />
+| Task | Description |
+|------|-------------|
+| <strong>Start</strong> | Start the development environment |
+| <strong>Stop</strong> | Stop all services |
+| <strong>Restart</strong> | Restart all services |
+| <strong>Rebuild</strong> | Rebuild containers (after dependency changes) |
+| <strong>Clean</strong> | Remove all containers and volumes |
+| <strong>Logs</strong> | Interactive log viewer with service selection |
+| <strong>Open Frontend</strong> | Launch frontend in browser |
 
-6. **Test Your Changes:** Test your changes thoroughly to ensure they work as expected and don't break existing functionality.
+### Quick Build Shortcut
 
-7. **Commit Changes:** Commit your changes with a clear and descriptive commit message. <br />
-   We use <Link href="https://www.conventionalcommits.org/">Conventional Commits</Link>
+Press <code>Ctrl/Cmd+Shift+B</code> to run the default build task (Start Environment).
 
-   <Snippet text={['git add .', 'git commit -a -m "feat: add feature X"', '#or', 'git commit -m "fix: resolve issue Y"']} class="mt-2 mb-2 w-full" />
+## 🔍 Development Workflow
 
-8. **Keep Your Branch Updated:** Periodically update your branch with the latest changes from the upstream repository:
+### Making Changes
 
-   <Snippet text={['git fetch upstream', 'git rebase upstream/main']} class="mt-2 mb-2 w-full" />
+1. <strong>Create a feature branch</strong>:
+```bash
+git switch -c feat/my-awesome-feature
+# or
+git switch -c fix/issue-123
+```
 
-9. **Push Your Branch:** Push your changes to your forked repository:
+2. <strong>Start development</strong> (from project root):
+```bash
+./scripts/development/dev.sh start
+# or use VS Code Task: "Start"
+```
 
-   <Snippet text={['git push origin feature/my-new-feature']} class="mt-2 mb-2 w-full" />
+3. <strong>Monitor logs</strong> (choose your preferred method):
+```bash
+# Interactive selector
+./scripts/development/dev.sh logs
 
-10. **Open a Pull Request:** Go to the original Arcane repository on GitHub and open a Pull Request (PR) from your branch to the main branch of the upstream repository.
-    - Provide a clear title and description for your PR.
-    - Reference any related issues (e.g., "Closes #123").
-    - Be prepared to discuss your changes and make adjustments based on feedback.
+# Specific service
+./scripts/development/dev.sh logs frontend
+./scripts/development/dev.sh logs backend
 
-## Code Style
+# Or use VS Code Task: "Logs"
+```
 
-Arcane uses <Link href="https://eslint.org/">ESLint</Link> and <Link href="https://prettier.io/">Prettier</Link> to enforce code style and consistency. Please run `npm run lint` and `npm run format` in the frontend directory before committing your changes. Configuration files are included in the repository.
+4. <strong>Make your changes</strong> - hot reload will automatically update:
+- <strong>Frontend</strong>: Instant HMR via Vite
+- <strong>Backend</strong>: Auto-rebuild and restart via Air
 
-## Development Tips
+## 🛠️ Development Commands
 
-- Use Svelte 5 syntax for all frontend files
-- Follow the existing code patterns and conventions
-- Keep commits focused and atomic
-- Write meaningful commit messages
-- Test your changes in both development and production builds
+Note: All commands should be run from the project root directory (<code>arcane/</code>).
 
-Thank you for contributing to Arcane! We look forward to your pull requests and appreciate your help in making Arcane better. If you have any questions or need further clarification, feel free to reach out to the maintainers or the community.
+### Environment Management
+```bash
+# Start development environment
+./scripts/development/dev.sh start
+
+# View service status
+./scripts/development/dev.sh status
+
+# Stop all services
+./scripts/development/dev.sh stop
+
+# Restart services (for config changes)
+./scripts/development/dev.sh restart
+
+# Rebuild containers (for dependency changes)
+./scripts/development/dev.sh rebuild
+
+# Clean up everything (nuclear option)
+./scripts/development/dev.sh clean
+```
+
+### Debugging & Logs
+```bash
+# Interactive log selection
+./scripts/development/dev.sh logs
+
+# All services
+./scripts/development/dev.sh logs
+
+# Frontend only (Vite/SvelteKit)
+./scripts/development/dev.sh logs frontend
+
+# Backend only (Go/Air)
+./scripts/development/dev.sh logs backend
+
+# Shell access
+./scripts/development/dev.sh shell frontend
+./scripts/development/dev.sh shell backend
+```
+
+## 🎨 Code Quality
+
+### Manual Commands
+
+If you need to run checks manually:
+
+```bash
+# Frontend checks
+docker compose -f docker-compose.dev.yml exec frontend pnpm check
+docker compose -f docker-compose.dev.yml exec frontend pnpm format
+```
+
+```bash
+# Backend checks
+docker compose -f docker-compose.dev.yml exec backend go fmt ./...
+docker compose -f docker-compose.dev.yml exec backend go vet ./...
+```
+
+
+## 📝 Commit Guidelines
+
+We use <strong>Conventional Commits</strong> for clear, semantic commit messages:
+
+```bash
+git commit -m "feat: add user authentication"
+git commit -m "fix: resolve Docker volume mounting issue"
+git commit -m "docs: update development setup guide"
+git commit -m "refactor: simplify API response handling"
+```
+
+<strong>Types</strong>: <code>feat</code>, <code>fix</code>, <code>docs</code>, <code>style</code>, <code>refactor</code>, <code>test</code>, <code>chore</code>
+
+## 🔄 Pull Request Process
+
+1. <strong>Keep changes focused</strong> - One feature/fix per PR
+2. <strong>Test your changes</strong> - Ensure both frontend and backend work
+3. <strong>Update documentation</strong> - If you change APIs or add features
+4. <strong>Link issues</strong> - Reference issues with "Closes #123" or "Fixes #456"
+5. <strong>Be responsive</strong> - Address review feedback promptly
+
+### PR Checklist
+
+- [ ] Code builds successfully in development environment
+- [ ] Frontend hot reload works correctly
+- [ ] Backend hot reload works correctly
+- [ ] No linting errors
+- [ ] Commit messages follow conventional format
+- [ ] PR description explains the change and why it's needed
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+<strong>Port conflicts:</strong>
+```bash
+# Stop and clean everything (from project root)
+./scripts/development/dev.sh clean
+
+# Check for conflicting processes
+lsof -i :3000  # Frontend port
+lsof -i :3552  # Backend port
+```
+
+<strong>Docker issues:</strong>
+```bash
+# Reset Docker environment (from project root)
+./scripts/development/dev.sh clean
+docker system prune -f
+
+# Restart development
+./scripts/development/dev.sh start
+```
+
+<strong>VS Code tasks not working:</strong>
+- Ensure you've opened the project root folder (<code>arcane/</code>) in VS Code, not a subfolder or parent directory
+- Install recommended extensions when prompted
+- Restart VS Code if tasks don't appear
+- Verify you're in the correct working directory when running terminal commands
+
+### Need Help?
+
+- <strong>Bug Report</strong>: <Link href="https://github.com/ofkm/arcane/issues/new?template=bug.yml">Create an issue</Link>
+- <strong>Feature Request</strong>: <Link href="https://github.com/ofkm/arcane/issues/new?template=feature.yml">Suggest a feature</Link>
+- <strong>Development Question</strong>: Open a discussion in the repository
+
+Thank you for contributing to Arcane! Your help makes this project better for everyone. 🚀

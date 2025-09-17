@@ -28,7 +28,7 @@
 <div bind:this={preNode} style="display: none;">{@render children?.()}</div>
 
 {#if code}
-	<Code.Root {lang} class={cn('mt-3 w-full max-w-none', className)} {...restProps} {code}>
+	<Code.Root {lang} class={cn('m-3 w-full max-w-none', className)} {...restProps} {code}>
 		<Code.CopyButton size="sm" variant="ghost" />
 	</Code.Root>
 {/if}
