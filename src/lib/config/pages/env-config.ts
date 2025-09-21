@@ -90,5 +90,10 @@ export const envConfig: EnvConfig[] = [
 		name: 'LOG_LEVEL',
 		description: 'Logging level',
 		value: 'info'
+	},
+	{
+		name: 'UI_CONFIGURATION_DISABLED',
+		description: 'Disables UI-based settings changes; forces env-driven configuration',
+		value: 'false'
 	}
 ];
