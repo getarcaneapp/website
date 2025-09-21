@@ -60,11 +60,11 @@ Make sure to replace the placeholder values with the real values for your enviro
 
 ## Settings Overrides via Environment
 
-If you prefer to configure Arcane via Environment Varibles bewlow is a list of all configurable variables that can set if one of the follwing variables is set:
+If you prefer to configure Arcane via environment variables, below is a list of all configurable variables that can be set if one of the following variables is set:
 - `UI_CONFIGURATION_DISABLED=true` or
 - `AGENT_MODE=true`
 
-If neither of the above are set these values are ignored.
+If neither of the above are set, these values are ignored.
 
 <Window class="mt-4">
   <Table.Root>
