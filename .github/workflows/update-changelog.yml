@@ -15,91 +15,110 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-
-      - name: Get latest release
-        id: latest
-        uses: fjogeleit/http-request-action@v1
         with:
-          url: 'https://api.github.com/repos/ofkm/arcane/releases/latest'
-          method: 'GET'
-          bearerToken: ${{ secrets.GITHUB_TOKEN }}
-          customHeaders: '{"Accept":"application/vnd.github+json"}'
-          responseFile: 'release.json'
+          fetch-depth: 0
 
-      - name: Prepare current changelog
+      - name: Ensure content directory
+        run: mkdir -p content
+
+      - name: Backup existing changelog
         run: |
-          mkdir -p content
-          [[ -f content/changelog.md ]] && cp content/changelog.md content/changelog.current.md || true
+          if [[ -f content/changelog.md ]]; then
+            cp content/changelog.md content/changelog.current.md
+          fi
 
-      - name: Build updated changelog
-        id: build
+      - name: Generate changelog (git-cliff)
+        id: cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff.toml
+          args: --verbose
+        env:
+          OUTPUT: /tmp/FULL_CHANGELOG.md
+
+      - name: Extract latest release section
+        id: extract
         shell: bash
         run: |
           set -euo pipefail
+          FULL_FILE="/tmp/FULL_CHANGELOG.md"
+          [[ ! -s "$FULL_FILE" ]] && { echo "Full changelog empty"; exit 1; }
 
-          TAG=$(jq -r .tag_name release.json)
-          DATE=$(jq -r .published_at release.json | cut -dT -f1)
-          URL=$(jq -r .html_url release.json)
-          BODY=$(jq -r '.body // ""' release.json)
-
-          echo "version=$TAG" >> "$GITHUB_OUTPUT"
-          echo "branch=chore/changelog-$TAG" >> "$GITHUB_OUTPUT"
-
-          # If changelog exists and already has this tag, skip
-          if [[ -f content/changelog.current.md ]] && grep -qE "^##[[:space:]]+$TAG\b" content/changelog.current.md; then
+          # Find first release heading line: starts with "## "
+            # (git-cliff default template headings look like: ## [1.2.3] - 2025-09-21)
+          START_LINE=$(grep -nE '^##[[:space:]]+\[[0-9v]' "$FULL_FILE" | head -n1 | cut -d: -f1 || true)
+          if [[ -z "${START_LINE:-}" ]]; then
+            echo "No release headings found."
             echo "updated=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          SECTION_FILE=/tmp/section.md
-          {
-            echo "## $TAG${DATE:+ - $DATE}"
-            echo
-            echo "[Release]($URL)"
-            echo
-            printf "%s\n" "$BODY"
-          } > "$SECTION_FILE"
+          # Capture tag name (strip brackets)
+          HEADER_LINE=$(sed -n "${START_LINE}p" "$FULL_FILE")
+          # Extract inside [] before first ]
+          TAG=$(echo "$HEADER_LINE" | sed -E 's/^##[[:space:]]+\[([^]]+)\].*/\1/')
+          echo "Detected latest tag: $TAG"
 
-          DEFAULT_FM="---"$'\n'"title: 'Changelog'"$'\n'"description: 'Release notes for Arcane'"$'\n'"---"
+          # Determine end line (next heading or EOF)
+          END_LINE=$(awk -v s="$START_LINE" 'NR>s && /^##[[:space:]]+\[/{print NR; exit}' "$FULL_FILE" || true)
+          if [[ -n "${END_LINE:-}" ]]; then
+            sed -n "${START_LINE},$((END_LINE-1))p" "$FULL_FILE" > /tmp/SECTION.md
+          else
+            sed -n "${START_LINE},\$p" "$FULL_FILE" > /tmp/SECTION.md
+          fi
+
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+          echo "branch=docs/changelog-$TAG" >> "$GITHUB_OUTPUT"
+
+          # Skip if already present
+          if [[ -f content/changelog.current.md ]] && grep -qE "^##[[:space:]]+\[$TAG\]" content/changelog.current.md; then
+            echo "Latest tag already in changelog."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Frontmatter template
+          FRONTMATTER="---"$'\n'"title: 'Changelog'"$'\n'"description: 'Release notes for Arcane'"$'\n'"---"
 
           if [[ -f content/changelog.current.md ]]; then
             if head -n1 content/changelog.current.md | grep -q '^---$'; then
-              END_LINE=$(awk '/^---$/{i++} i==2{print NR; exit}' content/changelog.current.md || true)
-              if [[ -n "${END_LINE:-}" ]]; then
-                head -n "$END_LINE" content/changelog.current.md > content/changelog.md
+              # Has frontmatter, replicate it
+              FM_END=$(awk '/^---$/{c++} c==2{print NR; exit}' content/changelog.current.md || true)
+              if [[ -n "${FM_END:-}" ]]; then
+                head -n "$FM_END" content/changelog.current.md > content/changelog.md
                 echo >> content/changelog.md
-                cat "$SECTION_FILE" >> content/changelog.md
+                cat /tmp/SECTION.md >> content/changelog.md
                 echo >> content/changelog.md
-                tail -n +"$((END_LINE+1))" content/changelog.current.md >> content/changelog.md
+                tail -n +"$((FM_END+1))" content/changelog.current.md >> content/changelog.md
               else
-                printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
-                cat "$SECTION_FILE" >> content/changelog.md
+                printf "%s\n\n" "$FRONTMATTER" > content/changelog.md
+                cat /tmp/SECTION.md >> content/changelog.md
                 echo >> content/changelog.md
                 cat content/changelog.current.md >> content/changelog.md
               fi
             else
-              printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
-              cat "$SECTION_FILE" >> content/changelog.md
+              printf "%s\n\n" "$FRONTMATTER" > content/changelog.md
+              cat /tmp/SECTION.md >> content/changelog.md
               echo >> content/changelog.md
               cat content/changelog.current.md >> content/changelog.md
             fi
           else
-            printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
-            cat "$SECTION_FILE" >> content/changelog.md
+            printf "%s\n\n" "$FRONTMATTER" > content/changelog.md
+            cat /tmp/SECTION.md >> content/changelog.md
             echo >> content/changelog.md
           fi
 
           echo "updated=true" >> "$GITHUB_OUTPUT"
 
       - name: Create pull request
-        if: steps.build.outputs.updated == 'true'
+        if: steps.extract.outputs.updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.ACTIONS_PAT }}
-          commit-message: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
-          title: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
-          body: 'Automated changelog update for ${{ steps.build.outputs.version }} from ofkm/arcane latest release.'
-          branch: '${{ steps.build.outputs.branch }}'
+          commit-message: 'docs(changelog): add ${{ steps.extract.outputs.version }} release notes'
+          title: 'docs(changelog): add ${{ steps.extract.outputs.version }} release notes'
+          body: 'Automated changelog update for ${{ steps.extract.outputs.version }} using git-cliff.'
+          branch: '${{ steps.extract.outputs.branch }}'
           base: main
           add-paths: |
             content/changelog.md
