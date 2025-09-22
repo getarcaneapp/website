@@ -92,6 +92,17 @@ export const envConfig: EnvConfig[] = [
 		value: 'info'
 	},
 	{
+		name: 'LOG_LEVEL',
+		description: 'Logging level',
+		value: 'info'
+	},
+
+	{
+		name: 'ANALYTICS_DISABLED',
+		description: 'Disable analytics check in ',
+		value: 'false'
+	},
+	{
 		name: 'UI_CONFIGURATION_DISABLED',
 		description: 'Disables UI-based settings changes; forces env-driven configuration',
 		value: 'false'
