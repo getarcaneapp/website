@@ -37,6 +37,8 @@ volumes:
   arcane-data:
 ```
 
+where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
+
 ## 2. Review Volumes & Imports:
 
 **_/var/run/docker.sock_**: Lets Arcane manage Docker.
