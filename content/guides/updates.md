@@ -3,7 +3,7 @@ title: 'Auto Updates'
 description: 'Configure automatic updates for containers and projects'
 ---
 
-Keep selected containers and Compose projects up to date automatically when new images are available.
+Keep selected containers and projects up to date automatically when new images are available.
 
 ## Prerequisites
 - Your images are hosted in registries accessible from the Arcane host.
@@ -12,10 +12,10 @@ Keep selected containers and Compose projects up to date automatically when new 
 ## Enable auto updates
 1. Go to Settings → Docker.
 2. Turn on Auto updates.
-3. Set the check interval (5–1440 minutes).
+3. Set the check interval (60-1440 minutes).
 4. Save.
 
-> Tip: Choose an interval that aligns with your maintenance window (e.g., 60 or 1440 minutes).
+> Tip: Choose an interval that aligns with your maintenance window (e.g., 60-1440 minutes).
 
 ## Exclude specific services
 To prevent updates for a project or container, add this label:
