@@ -9,7 +9,7 @@ import { Snippet } from '$lib/components/ui/snippet/index.js';
 
 ## Overview
 
-Remote Environments let Arcane manage containers on other hosts through a stripped down version of Arcane it self. You run the Agent on a remote machine (with access to its Docker daemon), pair it to your Arcane manager using a one-time Bootstrap Token, and both sides store an Agent Token for all future requests.
+Remote Environments let Arcane manage containers on other hosts through a stripped down version of Arcane itself. You run the Agent on a remote machine (with access to its Docker daemon), pair it to your Arcane manager using a one-time Bootstrap Token, and both sides store an Agent Token for all future requests.
 
 ## Requirements
 
