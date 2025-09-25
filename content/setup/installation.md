@@ -62,3 +62,54 @@ Username:
 
 Password:
 <Snippet text="arcane-admin" class="mt-2 max-w-[300px]" />
+
+## 5. If you have a custom domain:
+
+Arcane uses websockets, if you are using a reverse proxy to set Arcane behind a custom domain
+you will need to ensure that it supports websockets and is configured correctly.
+
+As an example, here is a sample Nginx configuration, the specific rules are under `# WebSocket support`:
+
+```nginxconf
+server {
+   listen 80;
+   server_name arcane.yourdomain.com;
+   # Redirection from HTTP site to HTTPS
+   return 301 https://$host$request_uri;
+}
+
+server {
+        listen 443 ssl http2;
+
+        ssl_certificate        /etc/letsencrypt/live/arcane.yourdomain.com/fullchain.pem;
+        ssl_certificate_key    /etc/letsencrypt/live/arcane.yourdomain.com/privkey.pem;
+
+        server_name arcane.yourdomain.com;
+
+        add_header X-Frame-Options "*";
+
+        location / {
+                add_header X-Robots-Tag "noindex, nofollow";
+                proxy_pass http://127.0.0.1:3552;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+
+                # WebSocket support
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_cache_bypass $http_upgrade;
+        }
+
+        access_log /var/log/nginx/arcane-access.log;
+        error_log /var/log/nginx/arcane-error.log debug;
+}
+```
+
+Full documentation for some common reverse proxies is linked below, all from [websocket.org](https://websocket.org/):
+- [Nginx](https://websocket.org/guides/infrastructure/nginx/)
+- [Amazon ALB](https://websocket.org/guides/infrastructure/aws/alb/)
+- [Cloudfare](https://websocket.org/guides/infrastructure/cloudflare/)
+- [K8s](https://websocket.org/guides/infrastructure/kubernetes/)
