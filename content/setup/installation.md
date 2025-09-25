@@ -111,5 +111,5 @@ server {
 Full documentation for some common reverse proxies is linked below, all from [websocket.org](https://websocket.org/):
 - [Nginx](https://websocket.org/guides/infrastructure/nginx/)
 - [Amazon ALB](https://websocket.org/guides/infrastructure/aws/alb/)
-- [Cloudfare](https://websocket.org/guides/infrastructure/cloudflare/)
+- [Cloudflare](https://websocket.org/guides/infrastructure/cloudflare/)
 - [K8s](https://websocket.org/guides/infrastructure/kubernetes/)
