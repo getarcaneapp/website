@@ -100,8 +100,8 @@ importers:
         specifier: ^4.3.2
         version: 4.3.2(picomatch@4.0.3)(svelte@5.39.3)(typescript@5.9.2)
       svelte-toolbelt:
-        specifier: ^0.9.3
-        version: 0.9.3(svelte@5.39.3)
+        specifier: ^0.10.5
+        version: 0.10.5(svelte@5.39.3)
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.3.1
@@ -2124,12 +2124,6 @@ packages:
     engines: {node: '>=18', pnpm: '>=8.7.0'}
     peerDependencies:
       svelte: ^5.0.0
-
-  svelte-toolbelt@0.9.3:
-    resolution: {integrity: sha512-HCSWxCtVmv+c6g1ACb8LTwHVbDqLKJvHpo6J8TaqwUme2hj9ATJCpjCPNISR1OCq2Q4U1KT41if9ON0isINQZw==}
-    engines: {node: '>=18', pnpm: '>=8.7.0'}
-    peerDependencies:
-      svelte: ^5.30.2
 
   svelte@5.39.3:
     resolution: {integrity: sha512-7Jwus6iXviGZAvhqbeYu3NNHA6LGyQ8EbmjdAhJUDade5rrW6g9VnBbRhUuYX4pMZLHozijsFolt88zvKPfsbQ==}
@@ -4613,13 +4607,6 @@ snapshots:
     dependencies:
       clsx: 2.1.1
       runed: 0.23.4(svelte@5.39.3)
-      style-to-object: 1.0.9
-      svelte: 5.39.3
-
-  svelte-toolbelt@0.9.3(svelte@5.39.3):
-    dependencies:
-      clsx: 2.1.1
-      runed: 0.29.2(svelte@5.39.3)
       style-to-object: 1.0.9
       svelte: 5.39.3
 
