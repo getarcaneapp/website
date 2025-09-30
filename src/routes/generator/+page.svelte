@@ -41,17 +41,13 @@
 			</p>
 
 			<div class="flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-				<Button variant="default" size="lg" href="#configure" class="w-full sm:w-auto">
-					<Zap class="h-4 w-4" />
-					Start Configuring
-				</Button>
-				<Button variant="outline" size="lg" href="/docs/setup" class="w-full sm:w-auto">
+				<Button variant="outline" size="lg" href="/docs/setup/installation" class="w-full sm:w-auto">
 					<BookOpen class="h-4 w-4" />
 					Read Setup Guide
 				</Button>
-				<Button variant="ghost" size="lg" href="/docs/configuration" class="w-full sm:w-auto">
+				<Button variant="outline" size="lg" href="/docs/configuration/environment" class="w-full sm:w-auto">
 					<Settings class="h-4 w-4" />
-					Configuration Docs
+					Environment Variable Docs
 				</Button>
 			</div>
 		</div>
