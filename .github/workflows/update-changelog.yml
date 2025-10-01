@@ -95,13 +95,17 @@ jobs:
         if: steps.build.outputs.updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.ACTIONS_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "docs(changelog): add ${{ steps.build.outputs.version }} release notes"
+          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          signoff: true
           title: "docs(changelog): add ${{ steps.build.outputs.version }} release notes"
           body: "Automated changelog update for ${{ steps.build.outputs.version }} from ofkm/arcane latest release."
           branch: "${{ steps.build.outputs.branch }}"
           base: main
           labels: "docs(changelog)"
+          draft: always-true
           add-paths: |
             content/changelog.md
           delete-branch: true
