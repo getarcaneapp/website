@@ -108,6 +108,29 @@ server {
 }
 ```
 
+If you are using Apache 2.4.47 or later, you need to use a `ProxyPass` rule with `upgrade=websocket`:
+
+```apache
+Define HOST arcane.example.com
+Define PORT 3552
+
+<VirtualHost *:443>
+  ServerName ${HOST}
+
+  ProxyPassMatch ^/(.*)\/ws$  ws://127.0.0.1:${PORT}/$1/ws upgrade=websocket
+  ProxyPass / http://127.0.0.1:${PORT}/
+  ProxyPassReverse / http://127.0.0.1:${PORT}/
+
+  ErrorLog ${APACHE_LOG_DIR}/arcane.error.log
+  CustomLog ${APACHE_LOG_DIR}/arcane.access.log combined
+
+  Include /etc/letsencrypt/options-ssl-apache.conf
+  SSLCertificateFile /etc/letsencrypt/live/${HOST}/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/${HOST}/privkey.pem
+</VirtualHost>
+```
+
+
 Full documentation for some common reverse proxies is linked below, all from [websocket.org](https://websocket.org/):
 - [Nginx](https://websocket.org/guides/infrastructure/nginx/)
 - [Amazon ALB](https://websocket.org/guides/infrastructure/aws/alb/)
