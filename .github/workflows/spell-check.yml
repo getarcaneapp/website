@@ -11,12 +11,48 @@ on:
 jobs:
   check-typos:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if this is a changelog PR
+        id: check_label
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "${{ contains(github.event.pull_request.labels.*.name, 'docs(changelog)') }}" == "true" ]]; then
+            echo "is_changelog_pr=true" >> $GITHUB_OUTPUT
+            echo "should_fix=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_changelog_pr=false" >> $GITHUB_OUTPUT
+            echo "should_fix=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Run typos check
         uses: crate-ci/typos@v1.37.0
         with:
           config: ./.github/workflows/typos.toml
-          write_changes: false
+          write_changes: ${{ steps.check_label.outputs.should_fix }}
+
+      - name: Check for changes
+        if: steps.check_label.outputs.should_fix == 'true'
+        id: verify_diff
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push typo fixes
+        if: steps.check_label.outputs.should_fix == 'true' && steps.verify_diff.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git commit -m "fix: auto-correct typos in changelog documentation"
+          git push
