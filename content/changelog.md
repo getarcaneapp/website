@@ -25,7 +25,7 @@ description: 'Release notes for Arcane'
 * sort and filter properly using docker api ([#593](https://github.com/ofkm/arcane/pull/593) by @kmendell)
 * project title not saving([fe4e8b4](https://github.com/ofkm/arcane/commit/fe4e8b43a4160a56470c1082eef2e3822fdb0bce) by @kmendell)
 * use live project status vs stored value([1426374](https://github.com/ofkm/arcane/commit/14263744ebbc899b649fc205316dfe00599c4f84) by @kmendell)
-* image update item not retreving the correct update data([d6c449c](https://github.com/ofkm/arcane/commit/d6c449cabae66a87a94e31d7ebf604283e5a9568) by @kmendell)
+* image update item not retrieving the correct update data([d6c449c](https://github.com/ofkm/arcane/commit/d6c449cabae66a87a94e31d7ebf604283e5a9568) by @kmendell)
 * skip onboarding when UI configuration is disabled ([#602](https://github.com/ofkm/arcane/pull/602) by @kmendell)
 * pass registry credentials to environments ([#603](https://github.com/ofkm/arcane/pull/603) by @kmendell)
 * remove trailing slash on projectId route([f824aa4](https://github.com/ofkm/arcane/commit/f824aa4d4dc87145a0ad771c2ce9567f25a7f807) by @kmendell)
