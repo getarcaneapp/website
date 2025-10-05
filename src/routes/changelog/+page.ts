@@ -35,7 +35,8 @@ export const load: PageLoad = async () => {
 			...fm,
 			path: 'changelog',
 			title: fm.title ?? meta.title,
-			description: fm.description ?? meta.description
+			description: fm.description ?? meta.description,
+			toc: fm.toc ?? meta.toc ?? []
 		}
 	};
 };
