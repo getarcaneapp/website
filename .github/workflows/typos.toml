@@ -9,7 +9,12 @@ extend-ignore-re = [
   "OIDC_[A-Z_]+=[\"']?[^\"'\\s]+[\"']?",
   # Generic secret placeholders in docs
   "secret[_-]?(key|token)?[\"']?[:=][\"']?[xX]+[\"']?",
+  # Git commit hashes in changelog (7-40 hex chars)
+  "\\b[a-f0-9]{7,40}\\b",
+  # GitHub commit URLs with hashes
+  "github\\.com/[^/]+/[^/]+/commit/[a-f0-9]{7,40}",
 ]
+
 
 [files]
 extend-exclude = [
