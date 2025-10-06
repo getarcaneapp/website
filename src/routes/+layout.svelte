@@ -20,8 +20,8 @@
 		}
 	}
 
-	const PROD_HOSTS = ['arcane.ofkm.dev'];
-	const PROD_DOCS_URL = 'https://arcane.ofkm.dev/docs';
+	const PROD_HOSTS = ['arcane.ofkm.dev', 'getarcane.app'];
+	const PROD_DOCS_URL = 'https://getarcane.app/docs';
 
 	if (typeof window !== 'undefined') {
 		const host = window.location.hostname;
@@ -37,7 +37,7 @@
 <ModeWatcher disableTransitions={false} />
 
 <svelte:head>
-	<title>Arcane Docs</title>
+	<title>Arcane Documentation</title>
 	<meta name="description" content="Arcane - Docker Management, Designed for Everyone." />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
