@@ -37,6 +37,11 @@ export const envConfig: EnvConfig[] = [
 		value: '(auto)'
 	},
 	{
+		name: 'DOCKER_HOST',
+		description: 'Docker daemon socket or host (e.g., tcp://docker-socket-proxy:2375)',
+		value: 'unix:///var/run/docker.sock'
+	},
+	{
 		name: 'ENCRYPTION_KEY',
 		description: 'Encryption Key for secure stored sensitive data',
 		value: '-'
