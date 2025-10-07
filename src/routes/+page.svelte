@@ -8,15 +8,23 @@
 </script>
 
 <ContentWrapper>
-	<section class="mt-12 mb-12 flex flex-col items-center text-center">
-		<h1 class="mb-2 flex items-end gap-0 text-6xl font-black tracking-tight">
+	<section class="relative mt-12 mb-12 flex flex-col items-center text-center">
+		<h1 class="relative mb-4 flex flex-col items-center gap-3 font-black tracking-tight">
+			<span class="text-6xl sm:text-7xl md:text-8xl">
+				<span
+					class="ml-[-0.18em] inline-block bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-[0_4px_24px_rgba(147,51,234,0.45)]"
+				>
+					Arcane
+				</span>
+			</span>
 			<span
-				class="ml-[-0.18em] bg-gradient-to-r from-purple-700 via-purple-600 to-purple-800 bg-clip-text align-bottom text-transparent drop-shadow-[0_2px_16px_rgba(109,40,217,0.5)]"
+				class="text-foreground/70 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs font-medium tracking-wide backdrop-blur-md dark:bg-white/5"
 			>
-				Arcane
+				Open Source • Free • Self-Hosted
 			</span>
 		</h1>
-		<p class="text-muted-foreground mx-auto mt-2 mb-8 max-w-2xl text-2xl font-light">
+
+		<p class="text-muted-foreground mx-auto mt-2 mb-6 max-w-2xl text-2xl leading-snug font-light text-balance">
 			Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
 		</p>
 
@@ -32,7 +40,7 @@
 					Compose Generator
 				</Button>
 				<span
-					class="bg-primary text-primary-foreground absolute -top-2 -right-4 rotate-20 rounded-full px-2 py-1 text-xs font-medium"
+					class="bg-primary text-primary-foreground absolute -top-2 -right-4 rotate-12 rounded-full px-2 py-1 text-xs font-medium shadow-md ring-1 ring-black/10 dark:ring-white/10"
 				>
 					New
 				</span>
@@ -40,7 +48,11 @@
 		</div>
 	</section>
 
-	<section class="mb-12">
+	<section class="relative -mt-4 mb-16">
+		<div
+			aria-hidden="true"
+			class="border-border/60 from-background/60 via-background/40 to-background/20 pointer-events-none absolute inset-0 -z-10 rounded-3xl border bg-gradient-to-b [mask-image:linear-gradient(to_bottom,black,transparent_85%)] p-px"
+		></div>
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
 			{#each features as feature}
 				<FeatureCard
@@ -53,9 +65,8 @@
 		</div>
 	</section>
 
-	<p class="text-muted-foreground mt-8 text-center italic">
-		Shoutout to the shadcn and shadcn-svelte teams, I loved the style of the shadcn-svelte docs so much, I wanted to use
-		a similar look and feel for this project's documentation. Alot of the code was inspired by their work, so please
-		check them out!
+	<p class="text-muted-foreground mx-auto mt-8 max-w-3xl text-center text-sm leading-relaxed italic">
+		Shoutout to the shadcn and shadcn-svelte teams — their design language inspired this documentation experience. Much
+		of the UX polish pays homage to their incredible work, so be sure to explore their ecosystems!
 	</p>
 </ContentWrapper>
