@@ -32,7 +32,9 @@
 	});
 </script>
 
-<header class="bg-background border-border sticky top-0 z-50 w-full">
+<header
+	class="border-border/60 sticky top-0 z-50 w-full border-b bg-[oklch(1_0_0/0.85)]/50 shadow-[0_1px_0_0_oklch(0.92_0_0)_inset,0_4px_12px_-2px_oklch(0.7_0_0/0.15),0_12px_32px_-8px_oklch(0.7_0_0/0.12)] backdrop-blur-xl supports-[backdrop-filter]:bg-[oklch(0.97_0_0/0.75)] dark:bg-[oklch(0.18_0.006_285.823/0.72)] dark:shadow-[0_1px_0_0_oklch(0.28_0.006_285.823)_inset,0_4px_12px_-2px_oklch(0.05_0_0/0.5),0_12px_32px_-8px_oklch(0.05_0_0/0.35)] dark:supports-[backdrop-filter]:bg-[oklch(0.16_0.006_285.823/0.65)]"
+>
 	<div class="container-wrapper px-6">
 		<div class="flex h-16 items-center gap-2 **:data-[slot=separator]:!h-4">
 			<Button href="/" variant="ghost" size="icon" class="hidden size-8 lg:flex">
@@ -51,7 +53,7 @@
 				{#if version}
 					<Badge
 						variant="default"
-						class="bg-background dark:bg-surface border-border/50 dark:border-primary text-foreground border text-xs font-bold shadow-sm dark:shadow-none"
+						class="border-border/60 dark:border-primary/60 text-foreground/90 border bg-[oklch(1_0_0/0.6)] text-xs font-bold shadow-[0_0_0_1px_oklch(0.92_0_0/0.6),0_2px_4px_-1px_oklch(0.7_0_0/0.25)] backdrop-blur supports-[backdrop-filter]:bg-[oklch(0.98_0_0/0.55)] dark:bg-[oklch(0.22_0.006_285.823/0.55)] dark:shadow-[0_0_0_1px_oklch(0.28_0.006_285.823/0.7),0_2px_4px_-1px_oklch(0.05_0_0/0.6)] dark:supports-[backdrop-filter]:bg-[oklch(0.25_0.006_285.823/0.45)]"
 					>
 						v{version}
 					</Badge>
