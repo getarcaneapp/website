@@ -180,6 +180,11 @@
 	}
 }
 
+.env-var-table table td:nth-child(2) {
+	word-break: break-all;
+	width: 250px;
+}
+
 @utility border-grid {
 	@apply border-border/50 dark:border-border;
 }

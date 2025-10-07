@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as Table from '$lib/components/ui/table/index.js';
-	import { Window } from '$lib/components/ui/window/index.js';
 	import { browser } from '$app/environment';
 
 	const oidcEnvConfig = [
@@ -48,7 +47,7 @@
 </script>
 
 {#if browser}
-	<Window class="mt-4">
+	<div class="env-var-table mt-4">
 		<Table.Root class="mb-6">
 			<Table.Header>
 				<Table.Row>
@@ -71,29 +70,31 @@
 				{/each}
 			</Table.Body>
 		</Table.Root>
-	</Window>
+	</div>
 {:else}
 	<!-- Fallback for SSR -->
-	<Table.Root class="mb-6">
-		<Table.Header>
-			<Table.Row>
-				<Table.Head class="w-[220px]">Variable</Table.Head>
-				<Table.Head>Description</Table.Head>
-				<Table.Head>Default/Example</Table.Head>
-			</Table.Row>
-		</Table.Header>
-		<Table.Body>
-			{#each oidcEnvConfig as env}
+	<div class="env-var-table">
+		<Table.Root class="mb-6">
+			<Table.Header>
 				<Table.Row>
-					<Table.Cell class="font-medium">
-						<code class="bg-muted rounded px-1 py-0.5">{env.name}</code>
-					</Table.Cell>
-					<Table.Cell>{env.description}</Table.Cell>
-					<Table.Cell>
-						<code class="bg-muted rounded px-1 py-0.5">{env.defaultValue}</code>
-					</Table.Cell>
+					<Table.Head class="w-[220px]">Variable</Table.Head>
+					<Table.Head>Description</Table.Head>
+					<Table.Head>Default/Example</Table.Head>
 				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
+			</Table.Header>
+			<Table.Body>
+				{#each oidcEnvConfig as env}
+					<Table.Row>
+						<Table.Cell class="font-medium">
+							<code class="bg-muted rounded px-1 py-0.5">{env.name}</code>
+						</Table.Cell>
+						<Table.Cell>{env.description}</Table.Cell>
+						<Table.Cell>
+							<code class="bg-muted rounded px-1 py-0.5">{env.defaultValue}</code>
+						</Table.Cell>
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</div>
 {/if}

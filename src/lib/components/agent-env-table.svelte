@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as Table from '$lib/components/ui/table/index.js';
-	import { Window } from '$lib/components/ui/window/index.js';
 
 	const agentEnvConfig = [
 		{
@@ -26,7 +25,7 @@
 	];
 </script>
 
-<Window class="mt-4">
+<div class="env-var-table mt-4">
 	<Table.Root class="mb-8">
 		<Table.Caption>Agent environment variables and their usage.</Table.Caption>
 		<Table.Header>
@@ -50,4 +49,4 @@
 			{/each}
 		</Table.Body>
 	</Table.Root>
-</Window>
+</div>
