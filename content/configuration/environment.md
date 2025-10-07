@@ -5,7 +5,6 @@ description: 'Configure Arcane using environment variables or the settings inter
 
 <script lang="ts">
 import * as Table from '$lib/components/ui/table/index.js';
-import { Window } from '$lib/components/ui/window/index.js';
 import { envConfig } from '$lib/config/pages/env-config.js';
 import { Snippet } from '$lib/components/ui/snippet/index.js';
 import { envSettingsOverrides } from '$lib/config/pages/env-settings-overrides.js';
@@ -33,7 +32,7 @@ Make sure to replace the placeholder values with the real values for your enviro
 
 ## Environment Variables
 
-<Window class="mt-4">
+<div class="env-var-table mt-4">
   <Table.Root class="mb-8">
     <Table.Header>
       <Table.Row>
@@ -56,7 +55,7 @@ Make sure to replace the placeholder values with the real values for your enviro
       {/each}
     </Table.Body>
   </Table.Root>
-</Window>
+</div>
 
 ## Settings Overrides via Environment
 
@@ -66,7 +65,7 @@ If you prefer to configure Arcane via environment variables, below is a list of 
 
 If neither of the above are set, these values are ignored.
 
-<Window class="mt-4">
+<div class="env-var-table mt-4">
   <Table.Root>
     <Table.Header>
       <Table.Row>
@@ -103,4 +102,4 @@ If neither of the above are set, these values are ignored.
       {/each}
     </Table.Body>
   </Table.Root>
-</Window>
+</div>
