@@ -8,14 +8,7 @@ import * as Code from '$lib/components/ui/code/index.js';
 import OidcTable from '$lib/components/oidc-table.svelte';
 import * as Alert from '$lib/components/ui/alert/index.js';
 import InfoIcon from '@lucide/svelte/icons/info';
-import AlertTriangleIcon from '@lucide/svelte/icons/alert-triangle';
 </script>
-
-<Alert.Root variant="warning" class="mt-4">
-<AlertTriangleIcon class="size-4" />
-<Alert.Title>PKCE Required</Alert.Title>
-<Alert.Description>Arcane requires the use of PKCE for OIDC Authentication.</Alert.Description>
-</Alert.Root>
 
 ## Recommended: Configure OIDC in the UI
 
