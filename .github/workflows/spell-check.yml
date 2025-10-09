@@ -34,7 +34,7 @@ jobs:
           fi
 
       - name: Run typos check
-        uses: crate-ci/typos@v1.38.0
+        uses: crate-ci/typos@v1.38.1
         with:
           config: ./.github/workflows/typos.toml
           write_changes: ${{ steps.check_label.outputs.should_fix }}
