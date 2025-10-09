@@ -1,11 +1,22 @@
 import { json } from '@sveltejs/kit';
-import { indexPage, setup, configuration, features, guides, development, templates } from '$velite/index.js';
+import {
+	configuration,
+	development,
+	features,
+	guides,
+	indexPage,
+	setup,
+	templates,
+} from '$velite/index.js';
 
 export const prerender = true;
 
 type CollectionDoc = (typeof indexPage)[number];
 
-const rawDocs = import.meta.glob('/content/**/*.md', { as: 'raw', eager: true }) as Record<string, string>;
+const rawDocs = import.meta.glob('/content/**/*.md', {
+	as: 'raw',
+	eager: true,
+}) as Record<string, string>;
 
 function stripFrontmatter(md: string) {
 	return md.replace(/^---[\s\S]*?---\s*/m, '');
@@ -50,7 +61,7 @@ const allDocs: CollectionDoc[] = [
 	...features,
 	...guides,
 	...development,
-	...templates
+	...templates,
 ];
 
 export function GET() {
@@ -70,7 +81,7 @@ export function GET() {
 				section: (d as any).section,
 				href: pathToHref(slugish),
 				headings,
-				content: text.slice(0, 10_000)
+				content: text.slice(0, 10_000),
 			};
 		});
 

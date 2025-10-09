@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte.js';
-	import { cn } from '$lib/utils.js';
-	import ClipboardIcon from '@lucide/svelte/icons/clipboard';
-	import CheckIcon from '@lucide/svelte/icons/check';
-	import type { ComponentProps } from 'svelte';
+import CheckIcon from '@lucide/svelte/icons/check';
+import ClipboardIcon from '@lucide/svelte/icons/clipboard';
+import type { ComponentProps } from 'svelte';
+import { Button } from '$lib/components/ui/button/index.js';
+import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+import { UseClipboard } from '$lib/hooks/use-clipboard.svelte.js';
+import { cn } from '$lib/utils.js';
 
-	let {
-		text,
-		variant = 'ghost',
-		class: className,
-		...restProps
-	}: ComponentProps<typeof Button> & {
-		text: string;
-	} = $props();
+let {
+	text,
+	variant = 'ghost',
+	class: className,
+	...restProps
+}: ComponentProps<typeof Button> & {
+	text: string;
+} = $props();
 
-	const clipboard = new UseClipboard();
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const rp = $derived(restProps as any);
+const clipboard = new UseClipboard();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rp = $derived(restProps as any);
 </script>
 
 <Tooltip.Root disableCloseOnTriggerClick>

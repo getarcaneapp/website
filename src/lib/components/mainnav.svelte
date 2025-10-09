@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { page } from '$app/state';
-	import { cn } from '$lib/utils.js';
+import { page } from '$app/state';
+import Button from '$lib/components/ui/button/button.svelte';
+import { cn } from '$lib/utils.js';
 
-	let { items, class: className = '' } = $props<{
-		items: { href: string; label: string }[];
-		class?: string;
-	}>();
+let { items, class: className = '' } = $props<{
+	items: { href: string; label: string }[];
+	class?: string;
+}>();
 </script>
 
 <nav class="{className} text-sm">

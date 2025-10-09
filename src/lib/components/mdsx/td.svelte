@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
-	import type { HTMLTdAttributes } from 'svelte/elements';
+import type { HTMLTdAttributes } from 'svelte/elements';
+import { cn } from '$lib/utils.js';
 
-	let { class: className, children, ...restProps }: HTMLTdAttributes = $props();
+let { class: className, children, ...restProps }: HTMLTdAttributes = $props();
 </script>
 
 <td

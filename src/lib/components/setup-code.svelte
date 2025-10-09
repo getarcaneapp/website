@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as Code from '$lib/components/ui/code/index.js';
+import * as Code from '$lib/components/ui/code/index.js';
 
-	const composeFile = `services:
+const composeFile = `services:
   arcane:
     image: ghcr.io/ofkm/arcane:v1
     container_name: arcane

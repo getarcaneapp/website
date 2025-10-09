@@ -1,11 +1,20 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { getIconForLanguageExtension } from '../icons/icons.js';
-	import { cn } from '$lib/utils.js';
+import type { HTMLAttributes } from 'svelte/elements';
+import { cn } from '$lib/utils.js';
+import { getIconForLanguageExtension } from '../icons/icons.js';
 
-	let { class: className, children, 'data-language': language, ...restProps }: HTMLAttributes<HTMLElement> = $props();
+let {
+	class: className,
+	children,
+	'data-language': language,
+	...restProps
+}: HTMLAttributes<HTMLElement> = $props();
 
-	const Icon = $derived(language && typeof language === 'string' ? getIconForLanguageExtension(language) : null);
+const Icon = $derived(
+	language && typeof language === 'string'
+		? getIconForLanguageExtension(language)
+		: null,
+);
 </script>
 
 <!-- svelte-ignore a11y_figcaption_parent -->

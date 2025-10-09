@@ -1,35 +1,37 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import Logo from './logo.svelte';
-	import MainNav from './mainnav.svelte';
-	import MobileNav from './mobile-nav.svelte';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import GithubLink from './github-link.svelte';
-	import ModeSwitcher from './modeswitcher.svelte';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { mainNavItems } from '$lib/config/docs.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { CommandSearch } from '$lib/components/command-search/index.js';
+import { onMount } from 'svelte';
+import { CommandSearch } from '$lib/components/command-search/index.js';
+import { Badge } from '$lib/components/ui/badge/index.js';
+import { Button } from '$lib/components/ui/button/index.js';
+import { Separator } from '$lib/components/ui/separator/index.js';
+import { mainNavItems } from '$lib/config/docs.js';
+import GithubLink from './github-link.svelte';
+import Logo from './logo.svelte';
+import MainNav from './mainnav.svelte';
+import MobileNav from './mobile-nav.svelte';
+import ModeSwitcher from './modeswitcher.svelte';
 
-	let version: string | undefined = $state('');
+let version: string | undefined = $state('');
 
-	async function readVersionFile(): Promise<string> {
-		try {
-			const response = await fetch('https://raw.githubusercontent.com/ofkm/arcane/refs/heads/main/.version');
-			return await response.text();
-		} catch (error) {
-			console.error('Error reading version file:', error);
-			return '';
-		}
+async function readVersionFile(): Promise<string> {
+	try {
+		const response = await fetch(
+			'https://raw.githubusercontent.com/ofkm/arcane/refs/heads/main/.version',
+		);
+		return await response.text();
+	} catch (error) {
+		console.error('Error reading version file:', error);
+		return '';
 	}
+}
 
-	onMount(() => {
-		readVersionFile().then((v) => {
-			if (v.trim()) {
-				version = v.trim();
-			}
-		});
+onMount(() => {
+	readVersionFile().then((v) => {
+		if (v.trim()) {
+			version = v.trim();
+		}
 	});
+});
 </script>
 
 <header

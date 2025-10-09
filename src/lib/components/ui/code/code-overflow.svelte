@@ -3,20 +3,25 @@
 -->
 
 <script lang="ts">
-  import Button from '$lib/components/ui/button/button.svelte';
-  import { useCodeOverflow } from './code.svelte.js';
-  import { box } from 'svelte-toolbelt';
-  import type { CodeOverflowProps } from './types.js';
-  import { cn } from '$lib/utils.js';
+import { box } from 'svelte-toolbelt';
+import Button from '$lib/components/ui/button/button.svelte';
+import { cn } from '$lib/utils.js';
+import { useCodeOverflow } from './code.svelte.js';
+import type { CodeOverflowProps } from './types.js';
 
-  let { collapsed = $bindable(true), class: className, children, ...props }: CodeOverflowProps = $props();
+let {
+	collapsed = $bindable(true),
+	class: className,
+	children,
+	...props
+}: CodeOverflowProps = $props();
 
-  const state = useCodeOverflow({
-    collapsed: box.with(
-      () => collapsed,
-      (v) => (collapsed = v)
-    ),
-  });
+const state = useCodeOverflow({
+	collapsed: box.with(
+		() => collapsed,
+		(v) => (collapsed = v),
+	),
+});
 </script>
 
 <div

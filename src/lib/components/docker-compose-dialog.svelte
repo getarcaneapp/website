@@ -1,31 +1,31 @@
 <script lang="ts">
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Code from '$lib/components/ui/code/index.js';
-	import Download from '@lucide/svelte/icons/download';
+import Download from '@lucide/svelte/icons/download';
+import { Button } from '$lib/components/ui/button/index.js';
+import * as Code from '$lib/components/ui/code/index.js';
+import * as Dialog from '$lib/components/ui/dialog/index.js';
 
-	interface Props {
-		open: boolean;
-		generatedCompose: string;
-		onOpenChange?: (open: boolean) => void;
-	}
+interface Props {
+	open: boolean;
+	generatedCompose: string;
+	onOpenChange?: (open: boolean) => void;
+}
 
-	let { open = $bindable(), generatedCompose, onOpenChange }: Props = $props();
+let { open = $bindable(), generatedCompose, onOpenChange }: Props = $props();
 
-	function downloadCompose() {
-		const blob = new Blob([generatedCompose], { type: 'text/yaml' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = 'docker-compose.yml';
-		a.click();
-		URL.revokeObjectURL(url);
-	}
+function downloadCompose() {
+	const blob = new Blob([generatedCompose], { type: 'text/yaml' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = 'docker-compose.yml';
+	a.click();
+	URL.revokeObjectURL(url);
+}
 
-	function handleOpenChange(newOpen: boolean) {
-		open = newOpen;
-		onOpenChange?.(newOpen);
-	}
+function handleOpenChange(newOpen: boolean) {
+	open = newOpen;
+	onOpenChange?.(newOpen);
+}
 </script>
 
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>

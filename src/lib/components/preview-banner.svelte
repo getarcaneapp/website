@@ -1,22 +1,23 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import X from '@lucide/svelte/icons/x';
-	import Sparkles from '@lucide/svelte/icons/sparkles';
-	import { browser } from '$app/environment';
+import Sparkles from '@lucide/svelte/icons/sparkles';
+import X from '@lucide/svelte/icons/x';
+import { browser } from '$app/environment';
+import { Button } from '$lib/components/ui/button/index.js';
 
-	let dismissed = $state(false);
+let dismissed = $state(false);
 
-	// Check if banner was previously dismissed
+// Check if banner was previously dismissed
+if (browser) {
+	dismissed =
+		localStorage.getItem('arcane-preview-banner-dismissed') === 'true';
+}
+
+function dismissBanner() {
+	dismissed = true;
 	if (browser) {
-		dismissed = localStorage.getItem('arcane-preview-banner-dismissed') === 'true';
+		localStorage.setItem('arcane-preview-banner-dismissed', 'true');
 	}
-
-	function dismissBanner() {
-		dismissed = true;
-		if (browser) {
-			localStorage.setItem('arcane-preview-banner-dismissed', 'true');
-		}
-	}
+}
 </script>
 
 {#if !dismissed}

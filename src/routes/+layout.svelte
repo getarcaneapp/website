@@ -1,37 +1,39 @@
 <script lang="ts">
-	import '../app.css';
-	import { ModeWatcher } from 'mode-watcher';
-	import Header from '$lib/components/header.svelte';
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import Code from '@lucide/svelte/icons/code';
+import '../app.css';
+import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+import Code from '@lucide/svelte/icons/code';
+import { ModeWatcher } from 'mode-watcher';
+import Header from '$lib/components/header.svelte';
 
-	let { children } = $props();
+let { children } = $props();
 
-	let showBanner = $state(false);
-	let isDev = $state(false);
-	let version: string | undefined = $state();
+let showBanner = $state(false);
+let isDev = $state(false);
+let version: string | undefined = $state();
 
-	async function readVersionFile(): Promise<string> {
-		try {
-			const res = await fetch('https://raw.githubusercontent.com/ofkm/arcane/refs/heads/main/.version');
-			return await res.text();
-		} catch {
-			return '';
-		}
+async function readVersionFile(): Promise<string> {
+	try {
+		const res = await fetch(
+			'https://raw.githubusercontent.com/ofkm/arcane/refs/heads/main/.version',
+		);
+		return await res.text();
+	} catch {
+		return '';
 	}
+}
 
-	const PROD_HOSTS = ['arcane.ofkm.dev', 'getarcane.app'];
-	const PROD_DOCS_URL = 'https://getarcane.app/docs';
+const PROD_HOSTS = ['arcane.ofkm.dev', 'getarcane.app'];
+const PROD_DOCS_URL = 'https://getarcane.app/docs';
 
-	if (typeof window !== 'undefined') {
-		const host = window.location.hostname;
-		const isProd = PROD_HOSTS.includes(host);
-		if (!isProd) {
-			showBanner = true;
-			isDev = host === 'localhost' || host === '127.0.0.1';
-			readVersionFile().then((v) => (version = v?.trim() || undefined));
-		}
+if (typeof window !== 'undefined') {
+	const host = window.location.hostname;
+	const isProd = PROD_HOSTS.includes(host);
+	if (!isProd) {
+		showBanner = true;
+		isDev = host === 'localhost' || host === '127.0.0.1';
+		readVersionFile().then((v) => (version = v?.trim() || undefined));
 	}
+}
 </script>
 
 <ModeWatcher disableTransitions={false} />

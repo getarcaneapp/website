@@ -1,17 +1,19 @@
 <script lang="ts">
-	import DockerComposeGenerator from '$lib/components/docker-compose-generator.svelte';
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import Settings from '@lucide/svelte/icons/settings';
-	import Zap from '@lucide/svelte/icons/zap';
-	import BookOpen from '@lucide/svelte/icons/book-open';
-	import Lightbulb from '@lucide/svelte/icons/lightbulb';
-	import FileText from '@lucide/svelte/icons/file-text';
-	import { envConfig as allEnv } from '$lib/config/pages/env-config.js';
-	import ContentWrapper from '$lib/components/content-wrapper.svelte';
+import BookOpen from '@lucide/svelte/icons/book-open';
+import FileText from '@lucide/svelte/icons/file-text';
+import Lightbulb from '@lucide/svelte/icons/lightbulb';
+import Settings from '@lucide/svelte/icons/settings';
+import Zap from '@lucide/svelte/icons/zap';
+import ContentWrapper from '$lib/components/content-wrapper.svelte';
+import DockerComposeGenerator from '$lib/components/docker-compose-generator.svelte';
+import * as Alert from '$lib/components/ui/alert/index.js';
+import Button from '$lib/components/ui/button/button.svelte';
+import * as Card from '$lib/components/ui/card/index.js';
+import { envConfig as allEnv } from '$lib/config/pages/env-config.js';
 
-	const featuredEnv = allEnv.filter((c) => ['APP_URL', 'PORT', 'DATABASE_URL', 'OIDC_ENABLED'].includes(c.name));
+const featuredEnv = allEnv.filter((c) =>
+	['APP_URL', 'PORT', 'DATABASE_URL', 'OIDC_ENABLED'].includes(c.name),
+);
 </script>
 
 <ContentWrapper>

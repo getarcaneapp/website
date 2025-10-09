@@ -1,23 +1,23 @@
 <script lang="ts" module>
-	import { type VariantProps, tv } from 'tailwind-variants';
+import { tv, type VariantProps } from 'tailwind-variants';
 
-	export const alertVariants = tv({
-		base: 'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
-		variants: {
-			variant: {
-				default: 'bg-card text-card-foreground',
-				destructive:
-					'text-destructive bg-card *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
-				warning:
-					'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 *:data-[slot=alert-description]:text-amber-800 dark:*:data-[slot=alert-description]:text-amber-200 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400'
-			}
+export const alertVariants = tv({
+	base: 'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
+	variants: {
+		variant: {
+			default: 'bg-card text-card-foreground',
+			destructive:
+				'text-destructive bg-card *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
+			warning:
+				'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 *:data-[slot=alert-description]:text-amber-800 dark:*:data-[slot=alert-description]:text-amber-200 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400',
 		},
-		defaultVariants: {
-			variant: 'default'
-		}
-	});
+	},
+	defaultVariants: {
+		variant: 'default',
+	},
+});
 
-	export type AlertVariant = VariantProps<typeof alertVariants>['variant'];
+export type AlertVariant = VariantProps<typeof alertVariants>['variant'];
 </script>
 
 <script lang="ts">

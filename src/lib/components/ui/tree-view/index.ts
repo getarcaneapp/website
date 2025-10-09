@@ -10,9 +10,8 @@ export {
 	TreeView,
 	TreeViewFile,
 	TreeViewFolder,
-
 	// ...
 	TreeView as Root,
 	TreeViewFile as File,
-	TreeViewFolder as Folder
+	TreeViewFolder as Folder,
 };

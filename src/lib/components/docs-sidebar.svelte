@@ -1,13 +1,17 @@
 <script lang="ts">
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { page } from '$app/state';
-	import type { SidebarNavItem } from '$lib/config/docs.js';
-	import type { ComponentProps } from 'svelte';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
+import ExternalLink from '@lucide/svelte/icons/external-link';
+import type { ComponentProps } from 'svelte';
+import { page } from '$app/state';
+import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+import type { SidebarNavItem } from '$lib/config/docs.js';
 
-	let { navItems, ...restProps }: { navItems: SidebarNavItem[] } & ComponentProps<typeof Sidebar.Root> = $props();
+let {
+	navItems,
+	...restProps
+}: { navItems: SidebarNavItem[] } & ComponentProps<typeof Sidebar.Root> =
+	$props();
 
-	const pathname = $derived(page.url.pathname);
+const pathname = $derived(page.url.pathname);
 </script>
 
 <Sidebar.Root

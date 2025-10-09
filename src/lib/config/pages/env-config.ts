@@ -4,107 +4,110 @@ export const envConfig: EnvConfig[] = [
 	{
 		name: 'APP_URL',
 		description: 'The URL arcane runs on',
-		value: 'http://localhost:3552'
+		value: 'http://localhost:3552',
 	},
 	{
 		name: 'PORT',
 		description: 'The port arcane should run on',
-		value: '3552'
+		value: '3552',
 	},
 	{
 		name: 'DATABASE_URL',
 		description: 'The database connection string (SQLite by default)',
-		value: 'file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
+		value:
+			'file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate',
 	},
 	{
 		name: 'DEV_BACKEND_URL',
 		description: 'The url of the backend for development',
-		value: 'http://localhost:3552'
+		value: 'http://localhost:3552',
 	},
 	{
 		name: 'PUID',
 		description: 'File owner user ID',
-		value: '2000'
+		value: '2000',
 	},
 	{
 		name: 'PGID',
 		description: 'File owner group ID',
-		value: '2000'
+		value: '2000',
 	},
 	{
 		name: 'DOCKER_GID',
 		description: 'Only set this manually if the autodetected GID is incorrect',
-		value: '(auto)'
+		value: '(auto)',
 	},
 	{
 		name: 'ENCRYPTION_KEY',
 		description: 'Encryption Key for secure stored sensitive data',
-		value: '-'
+		value: '-',
 	},
 	{
 		name: 'JWT_SECRET',
 		description: 'Session secret',
-		value: '-'
+		value: '-',
 	},
 	{
 		name: 'OIDC_ENABLED',
 		description: 'Enable OIDC login',
-		value: 'false'
+		value: 'false',
 	},
 	{
 		name: 'OIDC_CLIENT_ID',
 		description: 'Client ID from your OIDC provider',
-		value: 'your_arcane_client_id_from_provider'
+		value: 'your_arcane_client_id_from_provider',
 	},
 	{
 		name: 'OIDC_CLIENT_SECRET',
 		description: 'Client Secret from provider',
-		value: 'your_client_secret_from_provider'
+		value: 'your_client_secret_from_provider',
 	},
 	{
 		name: 'OIDC_ISSUER_URL',
 		description: 'Issuer URL from provider',
-		value: 'https://your-provider.com'
+		value: 'https://your-provider.com',
 	},
 	{
 		name: 'OIDC_SCOPES',
 		description: 'Scopes to request',
-		value: 'openid email profile (default)'
+		value: 'openid email profile (default)',
 	},
 	{
 		name: 'OIDC_ADMIN_CLAIM',
 		description: 'Where to find the admin claim in the OIDC token',
-		value: 'groups'
+		value: 'groups',
 	},
 	{
 		name: 'OIDC_ADMIN_VALUE',
-		description: 'Values to check in the OIDC_ADMIN_CLAIM to give a user admin access ',
-		value: '_admin_group,_admin_group2'
+		description:
+			'Values to check in the OIDC_ADMIN_CLAIM to give a user admin access ',
+		value: '_admin_group,_admin_group2',
 	},
 	{
 		name: 'LOG_JSON',
 		description: 'Enable JSON logging',
-		value: 'false'
+		value: 'false',
 	},
 	{
 		name: 'LOG_LEVEL',
 		description: 'Logging level',
-		value: 'info'
+		value: 'info',
 	},
 	{
 		name: 'LOG_LEVEL',
 		description: 'Logging level',
-		value: 'info'
+		value: 'info',
 	},
 
 	{
 		name: 'ANALYTICS_DISABLED',
 		description: 'Disable analytics check in ',
-		value: 'false'
+		value: 'false',
 	},
 	{
 		name: 'UI_CONFIGURATION_DISABLED',
-		description: 'Disables UI-based settings changes; forces env-driven configuration',
-		value: 'false'
-	}
+		description:
+			'Disables UI-based settings changes; forces env-driven configuration',
+		value: 'false',
+	},
 ];

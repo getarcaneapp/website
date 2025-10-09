@@ -3,12 +3,13 @@
 -->
 
 <script lang="ts" module>
-	import type { WithChildren } from 'bits-ui';
-	import type { HTMLAttributes } from 'svelte/elements';
+import type { WithChildren } from 'bits-ui';
+import type { HTMLAttributes } from 'svelte/elements';
 
-	export type WindowPropsWithoutHTML = WithChildren;
+export type WindowPropsWithoutHTML = WithChildren;
 
-	export type WindowProps = HTMLAttributes<HTMLDivElement> & WindowPropsWithoutHTML;
+export type WindowProps = HTMLAttributes<HTMLDivElement> &
+	WindowPropsWithoutHTML;
 </script>
 
 <script lang="ts">

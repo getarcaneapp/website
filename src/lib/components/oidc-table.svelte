@@ -1,49 +1,51 @@
 <script lang="ts">
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { browser } from '$app/environment';
+import { browser } from '$app/environment';
+import * as Table from '$lib/components/ui/table/index.js';
 
-	const oidcEnvConfig = [
-		{
-			name: 'OIDC_ENABLED',
-			description: 'Enable OIDC login',
-			defaultValue: 'false'
-		},
-		{
-			name: 'APP_URL',
-			description: 'This should be set regardless of OIDC. But this is used in generating the Redirect URL',
-			defaultValue: 'http://localhost:3552'
-		},
-		{
-			name: 'OIDC_CLIENT_ID',
-			description: 'Client ID from your OIDC provider',
-			defaultValue: 'your_arcane_client_id_from_provider'
-		},
-		{
-			name: 'OIDC_CLIENT_SECRET',
-			description: 'Client Secret from provider',
-			defaultValue: 'your_super_secret_client_secret_from_provider'
-		},
-		{
-			name: 'OIDC_ISSUER_URL',
-			description: 'Issuer URL of your OIDC provider, No trailing slash.',
-			defaultValue: 'https://your-provider.com'
-		},
-		{
-			name: 'OIDC_SCOPES',
-			description: 'Scopes to request',
-			defaultValue: 'openid email profile'
-		},
-		{
-			name: 'OIDC_ADMIN_CLAIM',
-			description: 'Where to find the admin claim in the OIDC token',
-			value: 'groups'
-		},
-		{
-			name: 'OIDC_ADMIN_VALUE',
-			description: 'Values to check in the OIDC_ADMIN_CLAIM to give a user admin access ',
-			value: '_admin_group,_admin_group2'
-		}
-	];
+const oidcEnvConfig = [
+	{
+		name: 'OIDC_ENABLED',
+		description: 'Enable OIDC login',
+		defaultValue: 'false',
+	},
+	{
+		name: 'APP_URL',
+		description:
+			'This should be set regardless of OIDC. But this is used in generating the Redirect URL',
+		defaultValue: 'http://localhost:3552',
+	},
+	{
+		name: 'OIDC_CLIENT_ID',
+		description: 'Client ID from your OIDC provider',
+		defaultValue: 'your_arcane_client_id_from_provider',
+	},
+	{
+		name: 'OIDC_CLIENT_SECRET',
+		description: 'Client Secret from provider',
+		defaultValue: 'your_super_secret_client_secret_from_provider',
+	},
+	{
+		name: 'OIDC_ISSUER_URL',
+		description: 'Issuer URL of your OIDC provider, No trailing slash.',
+		defaultValue: 'https://your-provider.com',
+	},
+	{
+		name: 'OIDC_SCOPES',
+		description: 'Scopes to request',
+		defaultValue: 'openid email profile',
+	},
+	{
+		name: 'OIDC_ADMIN_CLAIM',
+		description: 'Where to find the admin claim in the OIDC token',
+		value: 'groups',
+	},
+	{
+		name: 'OIDC_ADMIN_VALUE',
+		description:
+			'Values to check in the OIDC_ADMIN_CLAIM to give a user admin access ',
+		value: '_admin_group,_admin_group2',
+	},
+];
 </script>
 
 {#if browser}

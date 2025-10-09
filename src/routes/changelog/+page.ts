@@ -1,7 +1,7 @@
-import type { PageLoad } from './$types.js';
 import { error } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 import { changelog as changelogMeta } from '$velite/index.js';
+import type { PageLoad } from './$types.js';
 
 type DocModule = { default: Component; metadata?: Record<string, any> };
 
@@ -22,7 +22,9 @@ export const load: PageLoad = async () => {
 	const meta = changelogMeta?.[0];
 	if (!meta) throw error(404, 'Changelog not found');
 
-	const key = Object.keys(modules).find((k) => transformPath(k) === 'changelog');
+	const key = Object.keys(modules).find(
+		(k) => transformPath(k) === 'changelog',
+	);
 	if (!key) throw error(404, 'Changelog module not found');
 
 	const mod = await modules[key]();
@@ -36,7 +38,7 @@ export const load: PageLoad = async () => {
 			path: 'changelog',
 			title: fm.title ?? meta.title,
 			description: fm.description ?? meta.description,
-			toc: fm.toc ?? meta.toc ?? []
-		}
+			toc: fm.toc ?? meta.toc ?? [],
+		},
 	};
 };

@@ -1,5 +1,6 @@
 export { default as a } from './a.svelte';
 export { default as blockquote } from './blockquote.svelte';
+export { default as figcaption } from './figcaption.svelte';
 export { default as h1 } from './h1.svelte';
 export { default as h2 } from './h2.svelte';
 export { default as h3 } from './h3.svelte';
@@ -18,4 +19,3 @@ export { default as td } from './td.svelte';
 export { default as th } from './th.svelte';
 export { default as tr } from './tr.svelte';
 export { default as ul } from './ul.svelte';
-export { default as figcaption } from './figcaption.svelte';
