@@ -14,8 +14,8 @@
 				class="relative inline-block w-full px-4 sm:max-w-[520px] md:max-w-[680px] lg:max-w-[840px] xl:max-w-[900px]"
 			>
 				<span class="sr-only">Arcane</span>
-				<img
-					src="/img/PNG/PNG-3.png"
+				<enhanced:img
+					src="/static/img/PNG/PNG-3.png"
 					alt="Arcane — Modern Docker Management"
 					decoding="async"
 					loading="eager"
