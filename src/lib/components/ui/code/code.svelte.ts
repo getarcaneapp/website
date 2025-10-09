@@ -2,12 +2,12 @@
 	Installed from @ieedan/shadcn-svelte-extras
 */
 
-import { Context } from 'runed';
-import type { ReadableBoxedValues, WritableBoxedValues } from 'svelte-toolbelt';
-import type { CodeRootProps } from './types.js';
-import { highlighter } from './shiki.js';
 import DOMPurify from 'isomorphic-dompurify';
+import { Context } from 'runed';
 import type { HighlighterCore } from 'shiki';
+import type { ReadableBoxedValues, WritableBoxedValues } from 'svelte-toolbelt';
+import { highlighter } from './shiki.js';
+import type { CodeRootProps } from './types.js';
 
 type CodeOverflowStateProps = WritableBoxedValues<{
 	collapsed: boolean;
@@ -39,7 +39,7 @@ class CodeRootState {
 
 	constructor(
 		readonly opts: CodeRootStateProps,
-		readonly overflow?: CodeOverflowState
+		readonly overflow?: CodeOverflowState,
 	) {
 		highlighter.then((hl) => (this.highlighter = hl));
 	}
@@ -49,7 +49,7 @@ class CodeRootState {
 			lang: this.opts.lang.current,
 			themes: {
 				light: 'github-light-default',
-				dark: 'github-dark-default'
+				dark: 'github-dark-default',
 			},
 			transformers: [
 				{
@@ -64,13 +64,14 @@ class CodeRootState {
 					},
 					line: (node, line) => {
 						if (within(line, this.opts.highlight.current)) {
-							node.properties.class = node.properties.class + ' line--highlighted';
+							node.properties.class =
+								node.properties.class + ' line--highlighted';
 						}
 
 						return node;
-					}
-				}
-			]
+					},
+				},
+			],
 		});
 	}
 
@@ -121,7 +122,7 @@ export function useCodeOverflow(props: CodeOverflowStateProps) {
 }
 
 export function useCode(props: CodeRootStateProps) {
-	let overflow: CodeOverflowState | undefined = undefined;
+	let overflow: CodeOverflowState | undefined;
 
 	try {
 		overflow = overflowCtx.get();

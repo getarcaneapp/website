@@ -1,7 +1,9 @@
 import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
 
 function generateRandomKey(): string {
-	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join('');
+	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
+		byte.toString(16).padStart(2, '0'),
+	).join('');
 }
 
 export function generateDockerCompose(config: DockerComposeConfig): string {
@@ -17,7 +19,7 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 	// Default SQLite database
 	if (!config.enableDatabase) {
 		environment.push(
-			'DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
+			'DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate',
 		);
 	}
 
@@ -27,9 +29,12 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 			container_name: 'arcane',
 			restart: 'unless-stopped',
 			ports: [`${config.port}:3552`],
-			volumes: [`${config.dockerSocket}:/var/run/docker.sock`, `${config.dataPath}:/app/data`],
-			environment
-		}
+			volumes: [
+				`${config.dockerSocket}:/var/run/docker.sock`,
+				`${config.dataPath}:/app/data`,
+			],
+			environment,
+		},
 	};
 
 	// Add external database if enabled (PostgreSQL only)
@@ -41,14 +46,14 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 			environment: [
 				`POSTGRES_DB=${config.dbName}`,
 				`POSTGRES_USER=${config.dbUser}`,
-				`POSTGRES_PASSWORD=${config.dbPassword}`
+				`POSTGRES_PASSWORD=${config.dbPassword}`,
 			],
 			volumes: [`postgres-data:/var/lib/postgresql/data`],
-			ports: [`${config.dbPort}:5432`]
+			ports: [`${config.dbPort}:5432`],
 		};
 
 		services.arcane.environment.push(
-			`DATABASE_URL=postgresql://${config.dbUser}:${config.dbPassword}@postgres:5432/${config.dbName}`
+			`DATABASE_URL=postgresql://${config.dbUser}:${config.dbPassword}@postgres:5432/${config.dbName}`,
 		);
 		services.arcane.depends_on = ['postgres'];
 	}
@@ -60,15 +65,15 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 			`OIDC_CLIENT_ID=${config.oidcClientId}`,
 			`OIDC_CLIENT_SECRET=${config.oidcClientSecret}`,
 			`OIDC_ISSUER_URL=${config.oidcIssuerUrl}`,
-			`OIDC_SCOPES=${config.oidcScopes}`
+			`OIDC_SCOPES=${config.oidcScopes}`,
 		);
 	}
 
 	// Create volumes section
 	const volumes: any = {
 		[config.dataPath]: {
-			driver: 'local'
-		}
+			driver: 'local',
+		},
 	};
 
 	if (config.enableDatabase && config.dbType === 'postgres') {
@@ -77,7 +82,7 @@ export function generateDockerCompose(config: DockerComposeConfig): string {
 
 	const compose = {
 		services,
-		volumes
+		volumes,
 	};
 
 	return `# Arcane Docker Compose Configuration

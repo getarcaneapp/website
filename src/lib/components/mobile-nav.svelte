@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
-	import { Button, type ButtonProps } from '$lib/components/ui/button/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import type { HTMLAnchorAttributes } from 'svelte/elements';
-	import { mainNavItems, SidebarNavItems } from '$lib/config/docs.js';
+import type { HTMLAnchorAttributes } from 'svelte/elements';
+import { Button, type ButtonProps } from '$lib/components/ui/button/index.js';
+import * as Popover from '$lib/components/ui/popover/index.js';
+import { mainNavItems, SidebarNavItems } from '$lib/config/docs.js';
+import { cn } from '$lib/utils.js';
 
-	type MobileLinkProps = HTMLAnchorAttributes & {
-		content?: string;
-	};
+type MobileLinkProps = HTMLAnchorAttributes & {
+	content?: string;
+};
 
-	let { class: className, ...restProps }: ButtonProps = $props();
+let { class: className, ...restProps }: ButtonProps = $props();
 
-	let open = $state(false);
+let open = $state(false);
 </script>
 
 {#snippet MobileLink({ href, content, class: className, ...props }: MobileLinkProps)}

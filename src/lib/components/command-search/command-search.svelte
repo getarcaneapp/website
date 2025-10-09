@@ -1,95 +1,95 @@
 <script lang="ts">
-	import { useIsMac } from '$lib/hooks/is-mac.svelte.js';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils.js';
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { SidebarNavItems } from '$lib/config/docs.js';
-	import type { Component } from 'svelte';
-	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
-	import CommandMenuItem from './command-search-item.svelte';
-	import { goto } from '$app/navigation';
-	import { tick } from 'svelte';
+import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
+import type { Component } from 'svelte';
+import { tick } from 'svelte';
+import type { HTMLAttributes } from 'svelte/elements';
+import { goto } from '$app/navigation';
+import { Button } from '$lib/components/ui/button/index.js';
+import * as Command from '$lib/components/ui/command/index.js';
+import * as Dialog from '$lib/components/ui/dialog/index.js';
+import { SidebarNavItems } from '$lib/config/docs.js';
+import { useIsMac } from '$lib/hooks/is-mac.svelte.js';
+import { cn } from '$lib/utils.js';
+import CommandMenuItem from './command-search-item.svelte';
 
-	const isMac = useIsMac();
-	let open = $state(false);
+const isMac = useIsMac();
+let open = $state(false);
 
-	type SearchDoc = {
-		id: string;
-		title: string;
-		description: string;
-		section: string;
-		href: string;
-		headings: string[];
-		content: string;
-	};
+type SearchDoc = {
+	id: string;
+	title: string;
+	description: string;
+	section: string;
+	href: string;
+	headings: string[];
+	content: string;
+};
 
-	let query = $state('');
-	let allDocs = $state<SearchDoc[]>([]);
-	let results = $state<SearchDoc[]>([]);
-	let loading = $state(false);
+let query = $state('');
+let allDocs = $state<SearchDoc[]>([]);
+let results = $state<SearchDoc[]>([]);
+let loading = $state(false);
 
-	async function ensureIndex() {
-		if (allDocs.length) return;
-		loading = true;
-		try {
-			const res = await fetch('/api/command');
-			const json = (await res.json()) as { docs: SearchDoc[] };
-			allDocs = json.docs;
-		} finally {
-			loading = false;
-		}
+async function ensureIndex() {
+	if (allDocs.length) return;
+	loading = true;
+	try {
+		const res = await fetch('/api/command');
+		const json = (await res.json()) as { docs: SearchDoc[] };
+		allDocs = json.docs;
+	} finally {
+		loading = false;
 	}
+}
 
-	function score(doc: SearchDoc, q: string) {
-		const ql = q.toLowerCase();
-		let s = 0;
-		if (doc.title.toLowerCase().includes(ql)) s += 5;
-		if (doc.section.toLowerCase().includes(ql)) s += 3;
-		if (doc.description.toLowerCase().includes(ql)) s += 2;
-		if (doc.headings.join(' ').toLowerCase().includes(ql)) s += 2;
-		if (doc.content.toLowerCase().includes(ql)) s += 1;
-		return s;
+function score(doc: SearchDoc, q: string) {
+	const ql = q.toLowerCase();
+	let s = 0;
+	if (doc.title.toLowerCase().includes(ql)) s += 5;
+	if (doc.section.toLowerCase().includes(ql)) s += 3;
+	if (doc.description.toLowerCase().includes(ql)) s += 2;
+	if (doc.headings.join(' ').toLowerCase().includes(ql)) s += 2;
+	if (doc.content.toLowerCase().includes(ql)) s += 1;
+	return s;
+}
+
+async function onQueryChange() {
+	const q = query.trim();
+	if (!q) {
+		results = [];
+		return;
 	}
+	await ensureIndex();
+	results = allDocs
+		.map((d) => ({ d, s: score(d, q) }))
+		.filter((x) => x.s > 0)
+		.sort((a, b) => b.s - a.s)
+		.slice(0, 50)
+		.map((x) => x.d);
+}
 
-	async function onQueryChange() {
-		const q = query.trim();
-		if (!q) {
-			results = [];
+async function runCommand(command: () => unknown) {
+	open = false;
+	await tick();
+	command();
+}
+
+function handleKeydown(e: KeyboardEvent) {
+	if ((e.key === 'l' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
+		if (
+			(e.target instanceof HTMLElement && e.target.isContentEditable) ||
+			e.target instanceof HTMLInputElement ||
+			e.target instanceof HTMLTextAreaElement ||
+			e.target instanceof HTMLSelectElement
+		) {
 			return;
 		}
-		await ensureIndex();
-		results = allDocs
-			.map((d) => ({ d, s: score(d, q) }))
-			.filter((x) => x.s > 0)
-			.sort((a, b) => b.s - a.s)
-			.slice(0, 50)
-			.map((x) => x.d);
-	}
 
-	async function runCommand(command: () => unknown) {
-		open = false;
-		await tick();
-		command();
+		e.preventDefault();
+		open = !open;
+		if (open) ensureIndex();
 	}
-
-	function handleKeydown(e: KeyboardEvent) {
-		if ((e.key === 'l' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
-			if (
-				(e.target instanceof HTMLElement && e.target.isContentEditable) ||
-				e.target instanceof HTMLInputElement ||
-				e.target instanceof HTMLTextAreaElement ||
-				e.target instanceof HTMLSelectElement
-			) {
-				return;
-			}
-
-			e.preventDefault();
-			open = !open;
-			if (open) ensureIndex();
-		}
-	}
+}
 </script>
 
 <svelte:document onkeydown={handleKeydown} />

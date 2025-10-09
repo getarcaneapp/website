@@ -1,10 +1,13 @@
 <script lang="ts">
-	let { data } = $props();
-	const Markdown = $derived(data.component);
-	const doc = $derived(data.metadata);
-	import ExternalLink from '@lucide/svelte/icons/external-link';
+let { data } = $props();
+const Markdown = $derived(data.component);
+const doc = $derived(data.metadata);
 
-	const githubEditUrl = $derived(`https://github.com/ofkm/arcane-website/edit/main/content/${doc.path}.md`);
+import ExternalLink from '@lucide/svelte/icons/external-link';
+
+const githubEditUrl = $derived(
+	`https://github.com/ofkm/arcane-website/edit/main/content/${doc.path}.md`,
+);
 </script>
 
 <svelte:head>

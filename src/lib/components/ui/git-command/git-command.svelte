@@ -4,28 +4,28 @@
 -->
 
 <script lang="ts" module>
-	import { tv, type VariantProps } from 'tailwind-variants';
+import { tv, type VariantProps } from 'tailwind-variants';
 
-	const style = tv({
-		base: 'border-border w-full rounded-lg border',
-		variants: {
-			variant: {
-				default: 'bg-card',
-				secondary: 'bg-secondary/50 border-transparent'
-			}
-		}
-	});
+const style = tv({
+	base: 'border-border w-full rounded-lg border',
+	variants: {
+		variant: {
+			default: 'bg-card',
+			secondary: 'bg-secondary/50 border-transparent',
+		},
+	},
+});
 
-	type Variant = VariantProps<typeof style>['variant'];
+type Variant = VariantProps<typeof style>['variant'];
 
-	export type GitCommandProps = {
-		variant?: Variant;
-		class?: string;
-		agents?: string[];
-		agent?: string;
-		repo?: string;
-		command?: string;
-	};
+export type GitCommandProps = {
+	variant?: Variant;
+	class?: string;
+	agents?: string[];
+	agent?: string;
+	repo?: string;
+	command?: string;
+};
 </script>
 
 <script lang="ts">

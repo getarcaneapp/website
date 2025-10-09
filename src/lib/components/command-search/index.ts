@@ -6,5 +6,5 @@ export {
 	Item,
 	//
 	Root as CommandSearch,
-	Item as CommandSearchItem
+	Item as CommandSearchItem,
 };

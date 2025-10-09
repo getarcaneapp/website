@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as Code from '$lib/components/ui/code/index.js';
+import * as Code from '$lib/components/ui/code/index.js';
 
-	const diagram = `┌─────────────────┐    HTTP API     ┌─────────────────┐
+const diagram = `┌─────────────────┐    HTTP API     ┌─────────────────┐
 │  Arcane Server  │ ──────────────> │    Go Agent     │
 │  (Management)   │ <────────────── │  (Remote Host)  │
 └─────────────────┘  HTTP RESPONSE  └─────────────────┘`;

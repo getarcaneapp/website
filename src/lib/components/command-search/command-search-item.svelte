@@ -1,38 +1,38 @@
 <script lang="ts">
-	import { useObserver } from '$lib/hooks/observer.svelte.js';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import { cn } from '$lib/utils.js';
-	import type { ComponentProps } from 'svelte';
+import type { ComponentProps } from 'svelte';
+import * as Command from '$lib/components/ui/command/index.js';
+import { useObserver } from '$lib/hooks/observer.svelte.js';
+import { cn } from '$lib/utils.js';
 
-	let {
-		children,
-		ref = $bindable(null),
-		class: className,
-		onHighlight,
-		...restProps
-	}: ComponentProps<typeof Command.Item> & {
-		onHighlight?: () => void;
-		'data-selected'?: string;
-		'aria-selected'?: boolean;
-	} = $props();
+let {
+	children,
+	ref = $bindable(null),
+	class: className,
+	onHighlight,
+	...restProps
+}: ComponentProps<typeof Command.Item> & {
+	onHighlight?: () => void;
+	'data-selected'?: string;
+	'aria-selected'?: boolean;
+} = $props();
 
-	useObserver(
-		() => ref,
-		(mutations) => {
-			for (const mutation of mutations) {
-				if (
-					mutation.type === 'attributes' &&
-					mutation.attributeName === 'aria-selected' &&
-					ref?.getAttribute('aria-selected') === 'true'
-				) {
-					onHighlight?.();
-				}
+useObserver(
+	() => ref,
+	(mutations) => {
+		for (const mutation of mutations) {
+			if (
+				mutation.type === 'attributes' &&
+				mutation.attributeName === 'aria-selected' &&
+				ref?.getAttribute('aria-selected') === 'true'
+			) {
+				onHighlight?.();
 			}
-		},
-		{
-			attributes: true
 		}
-	);
+	},
+	{
+		attributes: true,
+	},
+);
 </script>
 
 <Command.Item

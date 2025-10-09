@@ -3,10 +3,10 @@
 -->
 
 <script lang="ts">
-	import { cn } from '$lib/utils/utils';
-	import type { TreeViewRootProps } from './types';
+import { cn } from '$lib/utils/utils';
+import type { TreeViewRootProps } from './types';
 
-	let { children, class: className }: TreeViewRootProps = $props();
+let { children, class: className }: TreeViewRootProps = $props();
 </script>
 
 <div class={cn('flex flex-col', className)}>

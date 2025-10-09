@@ -1,18 +1,25 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils.js';
-	import type { Icon as IconType } from '@lucide/svelte';
+import type { Icon as IconType } from '@lucide/svelte';
+import type { HTMLAttributes } from 'svelte/elements';
+import { cn } from '$lib/utils.js';
 
-	interface Props extends HTMLAttributes<HTMLDivElement> {
-		icon: typeof IconType;
-		title: string;
-		description: string;
-		fullWidth?: boolean;
-	}
+interface Props extends HTMLAttributes<HTMLDivElement> {
+	icon: typeof IconType;
+	title: string;
+	description: string;
+	fullWidth?: boolean;
+}
 
-	let { icon, title, description, fullWidth = false, class: className, ...restProps }: Props = $props();
+let {
+	icon,
+	title,
+	description,
+	fullWidth = false,
+	class: className,
+	...restProps
+}: Props = $props();
 
-	const Icon = icon as typeof IconType;
+const Icon = icon as typeof IconType;
 </script>
 
 <div

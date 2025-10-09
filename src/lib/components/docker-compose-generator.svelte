@@ -1,57 +1,57 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card/index.js';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import Settings from '@lucide/svelte/icons/settings';
-	import Database from '@lucide/svelte/icons/database';
-	import FileText from '@lucide/svelte/icons/file-text';
-	import { generateDockerCompose } from '$lib/utils/docker-compose-generator.js';
-	import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
-	import DockerComposeDialog from './docker-compose-dialog.svelte';
+import Database from '@lucide/svelte/icons/database';
+import FileText from '@lucide/svelte/icons/file-text';
+import Settings from '@lucide/svelte/icons/settings';
+import { Button } from '$lib/components/ui/button/index.js';
+import * as Card from '$lib/components/ui/card/index.js';
+import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+import { Input } from '$lib/components/ui/input/index.js';
+import { Label } from '$lib/components/ui/label/index.js';
+import * as Tabs from '$lib/components/ui/tabs/index.js';
+import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
+import { generateDockerCompose } from '$lib/utils/docker-compose-generator.js';
+import DockerComposeDialog from './docker-compose-dialog.svelte';
 
-	let config = $state<DockerComposeConfig>({
-		// Basic settings
-		appUrl: 'http://localhost:3552',
-		port: '3552',
-		puid: '1000',
-		pgid: '1000',
-		dataPath: 'arcane-data',
-		dockerSocket: '/var/run/docker.sock',
-		encryptionKey: '',
-		jwtSecret: '',
+let config = $state<DockerComposeConfig>({
+	// Basic settings
+	appUrl: 'http://localhost:3552',
+	port: '3552',
+	puid: '1000',
+	pgid: '1000',
+	dataPath: 'arcane-data',
+	dockerSocket: '/var/run/docker.sock',
+	encryptionKey: '',
+	jwtSecret: '',
 
-		// Database settings
-		enableDatabase: false,
-		dbType: 'postgres',
-		dbName: 'arcane',
-		dbUser: 'arcane',
-		dbPassword: 'your_secure_password',
-		dbPort: '5432',
+	// Database settings
+	enableDatabase: false,
+	dbType: 'postgres',
+	dbName: 'arcane',
+	dbUser: 'arcane',
+	dbPassword: 'your_secure_password',
+	dbPort: '5432',
 
-		// Authentication
-		enableOIDC: false,
-		oidcClientId: '',
-		oidcClientSecret: '',
-		oidcIssuerUrl: 'https://your-provider.com',
-		oidcScopes: 'openid email profile'
-	});
+	// Authentication
+	enableOIDC: false,
+	oidcClientId: '',
+	oidcClientSecret: '',
+	oidcIssuerUrl: 'https://your-provider.com',
+	oidcScopes: 'openid email profile',
+});
 
-	let generatedCompose = $state('');
-	let dialogOpen = $state(false);
+let generatedCompose = $state('');
+let dialogOpen = $state(false);
 
-	function handleGenerateDockerCompose() {
-		generatedCompose = generateDockerCompose(config);
-		dialogOpen = true;
-	}
+function handleGenerateDockerCompose() {
+	generatedCompose = generateDockerCompose(config);
+	dialogOpen = true;
+}
 
-	function generateRandomKey() {
-		return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join(
-			''
-		);
-	}
+function generateRandomKey() {
+	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
+		byte.toString(16).padStart(2, '0'),
+	).join('');
+}
 </script>
 
 <div class="mx-auto w-full max-w-4xl space-y-6 px-4 sm:px-6">

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
-	import BookOpen from '@lucide/svelte/icons/book-open';
-	import Settings from '@lucide/svelte/icons/settings';
-	import { features } from '$lib/config/features.js';
-	import ContentWrapper from '$lib/components/content-wrapper.svelte';
+import BookOpen from '@lucide/svelte/icons/book-open';
+import Settings from '@lucide/svelte/icons/settings';
+import ContentWrapper from '$lib/components/content-wrapper.svelte';
+import Button from '$lib/components/ui/button/button.svelte';
+import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
+import { features } from '$lib/config/features.js';
 </script>
 
 <ContentWrapper>

@@ -1,8 +1,9 @@
 <script lang="ts">
-	import DocsSidebar from '$lib/components/docs-sidebar.svelte';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { SidebarNavItems } from '$lib/config/docs.js';
-	let { children } = $props();
+import DocsSidebar from '$lib/components/docs-sidebar.svelte';
+import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+import { SidebarNavItems } from '$lib/config/docs.js';
+
+let { children } = $props();
 </script>
 
 <div class="container-wrapper flex flex-1 flex-col px-2">

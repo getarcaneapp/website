@@ -1,30 +1,37 @@
 <script lang="ts">
-	import { Link } from '$lib/components/ui/link/index.js';
-	import { setup, configuration, features, templates, guides, development } from '$velite/index.js';
+import { Link } from '$lib/components/ui/link/index.js';
+import {
+	configuration,
+	development,
+	features,
+	guides,
+	setup,
+	templates,
+} from '$velite/index.js';
 
-	type Doc = { title: string; path: string; order?: number };
+type Doc = { title: string; path: string; order?: number };
 
-	let {
-		sections = [
-			{ title: 'Getting Started', collections: [setup] },
-			{ title: 'Configuration', collections: [configuration] },
-			{ title: 'Features', collections: [features] },
-			{ title: 'Templates', collections: [templates] },
-			{ title: 'Guides', collections: [guides] },
-			{ title: 'Development', collections: [development] }
-		]
-	} = $props();
+let {
+	sections = [
+		{ title: 'Getting Started', collections: [setup] },
+		{ title: 'Configuration', collections: [configuration] },
+		{ title: 'Features', collections: [features] },
+		{ title: 'Templates', collections: [templates] },
+		{ title: 'Guides', collections: [guides] },
+		{ title: 'Development', collections: [development] },
+	],
+} = $props();
 
-	function sortDocs(arr: Doc[]): Doc[] {
-		return [...arr].sort((a, b) => {
-			const ao = a.order ?? 1e9;
-			const bo = b.order ?? 1e9;
-			if (ao !== bo) return ao - bo;
-			return a.title.localeCompare(b.title);
-		});
-	}
+function sortDocs(arr: Doc[]): Doc[] {
+	return [...arr].sort((a, b) => {
+		const ao = a.order ?? 1e9;
+		const bo = b.order ?? 1e9;
+		if (ao !== bo) return ao - bo;
+		return a.title.localeCompare(b.title);
+	});
+}
 
-	const toHref = (p: string) => `/docs/${p}`;
+const toHref = (p: string) => `/docs/${p}`;
 </script>
 
 <div class="space-y-8">

@@ -1,15 +1,17 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
-	import ChangelogToc from '$lib/components/changelog-toc.svelte';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
+import ExternalLink from '@lucide/svelte/icons/external-link';
+import ChangelogToc from '$lib/components/changelog-toc.svelte';
+import type { PageData } from './$types.js';
 
-	let { data }: { data: PageData } = $props();
+let { data }: { data: PageData } = $props();
 
-	const Markdown = $derived(data.component);
-	const doc = $derived(data.metadata);
-	const toc = $derived(doc.toc ?? []);
+const Markdown = $derived(data.component);
+const doc = $derived(data.metadata);
+const toc = $derived(doc.toc ?? []);
 
-	const githubEditUrl = $derived(`https://github.com/ofkm/arcane-website/edit/main/content/${doc.path}.md`);
+const githubEditUrl = $derived(
+	`https://github.com/ofkm/arcane-website/edit/main/content/${doc.path}.md`,
+);
 </script>
 
 <svelte:head>

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import InfoIcon from '@lucide/svelte/icons/info';
+import InfoIcon from '@lucide/svelte/icons/info';
+import * as Alert from '$lib/components/ui/alert/index.js';
 </script>
 
 <Alert.Root class="my-6">

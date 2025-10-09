@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
-	import type { HTMLThAttributes } from 'svelte/elements';
+import type { HTMLThAttributes } from 'svelte/elements';
+import { cn } from '$lib/utils.js';
 
-	let { class: className, children, ...restProps }: HTMLThAttributes = $props();
+let { class: className, children, ...restProps }: HTMLThAttributes = $props();
 </script>
 
 <th
