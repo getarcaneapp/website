@@ -148,7 +148,7 @@ For ENCRYPTION_KEY and JWT Secret you can use the below command to generate thes
 
 <Snippet text="openssl rand -base64 32" class="mt-2 max-w-[300px]" />
 
-## 4. Start the Stack:
+## 4. Start the Project:
 
 ```bash
 docker compose up -d
