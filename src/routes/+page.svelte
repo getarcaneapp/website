@@ -1,32 +1,30 @@
 <script lang="ts">
-import BookOpen from '@lucide/svelte/icons/book-open';
-import Settings from '@lucide/svelte/icons/settings';
-import ContentWrapper from '$lib/components/content-wrapper.svelte';
-import Button from '$lib/components/ui/button/button.svelte';
-import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
-import { features } from '$lib/config/features.js';
+	import BookOpen from '@lucide/svelte/icons/book-open';
+	import Settings from '@lucide/svelte/icons/settings';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
+	import { features } from '$lib/config/features.js';
 </script>
 
 <ContentWrapper>
 	<section class="relative mt-12 mb-12 flex flex-col items-center text-center">
 		<h1 class="relative mb-4 flex flex-col items-center gap-3 font-black tracking-tight">
-			<span
-				class="relative inline-block w-full px-4 sm:max-w-[520px] md:max-w-[680px] lg:max-w-[840px] xl:max-w-[900px]"
-			>
+			<span class="inline-block w-full px-4 sm:max-w-[520px] md:max-w-[680px] lg:max-w-[840px] xl:max-w-[900px]">
 				<span class="sr-only">Arcane</span>
 				<enhanced:img
-					src="/static/img/PNG/PNG-3.png"
+					src="/static/img/logo-full.svg"
 					alt="Arcane — Modern Docker Management"
 					decoding="async"
 					loading="eager"
 					class="mx-auto h-auto w-full object-contain drop-shadow-[0_4px_24px_rgba(147,51,234,0.25)] select-none"
 					sizes="(min-width: 1280px) 900px, (min-width: 1024px) 840px, (min-width: 640px) 520px, 90vw"
 				/>
-				<span
-					class="text-foreground/90 pointer-events-none absolute right-[-3.5%] bottom-[4%] block text-right text-[clamp(1rem,1.8vw,1.5rem)] leading-tight font-light whitespace-nowrap drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] md:text-[clamp(1.1rem,1.6vw,1.75rem)]"
-				>
-					Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
-				</span>
+			</span>
+			<span
+				class="text-foreground/90 block text-center text-[clamp(1rem,1.8vw,1.5rem)] leading-tight font-light md:text-[clamp(1.1rem,1.6vw,1.75rem)]"
+			>
+				Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
 			</span>
 		</h1>
 

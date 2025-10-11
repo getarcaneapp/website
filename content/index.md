@@ -8,8 +8,6 @@ description: 'Welcome to the Arcane documentation! Here you will find everything
     import DocsIndex from '$lib/components/docs-index.svelte';
 </script>
 
-## Quick Links
-
 <DocsIndex />
 
 ## Need Help?
