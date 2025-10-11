@@ -33,7 +33,7 @@ description: 'Release notes for Arcane'
 
 * fix ES translations ([#630](https://github.com/ofkm/arcane/pull/630) by @vsc55)
 * bump the backend-dependencies group in /backend with 2 updates ([#646](https://github.com/ofkm/arcane/pull/646) by @dependabot[bot])
-* move compose examples to seperate folder([aab7d3a](https://github.com/ofkm/arcane/commit/aab7d3ab966ab9b0697aeb9b93b3a11e5b752650) by @kmendell)
+* move compose examples to separate folder([aab7d3a](https://github.com/ofkm/arcane/commit/aab7d3ab966ab9b0697aeb9b93b3a11e5b752650) by @kmendell)
 * update readme note([8f32754](https://github.com/ofkm/arcane/commit/8f32754f1e262334c9c4dd26f62c8c9ad29dfb32) by @kmendell)
 * bump the prod-dependencies group with 4 updates ([#644](https://github.com/ofkm/arcane/pull/644) by @dependabot[bot])
 * bump eslint from 9.36.0 to 9.37.0 in the dev-dependencies group ([#645](https://github.com/ofkm/arcane/pull/645) by @dependabot[bot])
@@ -44,7 +44,7 @@ description: 'Release notes for Arcane'
 * use up and down selectors([d3d0607](https://github.com/ofkm/arcane/commit/d3d060703a27b4301338764b59b855404db4bc22) by @kmendell)
 * bump the dev-dependencies group with 2 updates ([#655](https://github.com/ofkm/arcane/pull/655) by @dependabot[bot])
 * bump the prod-dependencies group with 3 updates ([#660](https://github.com/ofkm/arcane/pull/660) by @dependabot[bot])
-* fix internal reponse of challenge manager([3d7187d](https://github.com/ofkm/arcane/commit/3d7187dda8b5b3cb578f010de6e593ca5b80b02c) by @kmendell)
+* fix internal response of challenge manager([3d7187d](https://github.com/ofkm/arcane/commit/3d7187dda8b5b3cb578f010de6e593ca5b80b02c) by @kmendell)
 * update readme with new logo([4b34d0c](https://github.com/ofkm/arcane/commit/4b34d0caa92ebb39c75217f91e03f18998c5c840) by @kmendell)
 * serve images from backend vs static frontend assets ([#671](https://github.com/ofkm/arcane/pull/671) by @kmendell)
 * bump the backend-dependencies group in /backend with 4 updates ([#667](https://github.com/ofkm/arcane/pull/667) by @dependabot[bot])
