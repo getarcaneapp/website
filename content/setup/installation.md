@@ -10,7 +10,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE] This guide is for the full installation of Arcane.
-> If you are looking to setup a remote environment see <Link href="/docs/features/environments">here</Link>
+> If you are looking to setup a remote environment see <Link href="/docs/features/environments">here</Link>. For enhanced security with a Docker socket proxy, see the <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link> guide.
 
 ## 1. Create **_compose.yaml_**:
 
