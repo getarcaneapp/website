@@ -59,6 +59,6 @@ data/templates
 
 Don't want to create your own? Use our community registry with pre-built templates:
 
-**Registry URL:** `https://templates.arcane.ofkm.dev/registry.json`
+**Registry URL:** `https://registry.getarcane.app/registry.json`
 
 Add this in **Settings → Templates → Add Registry** to get started instantly with popular applications.

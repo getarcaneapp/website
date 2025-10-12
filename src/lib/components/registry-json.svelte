@@ -1,8 +1,8 @@
 <script lang="ts">
-import * as Code from '$lib/components/ui/code/index.js';
+	import * as Code from '$lib/components/ui/code/index.js';
 
-const registryCode = `{
-    "$schema": "https://templates.arcane.ofkm.dev/schema.json",
+	const registryCode = `{
+    "$schema": "https://registry.getarcane.app/schema.json",
     "name": "My Company Templates",
     "description": "Docker templates for internal applications",
     "version": "1.0.0",
