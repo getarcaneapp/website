@@ -44,7 +44,7 @@ A **Project** is a collection of services defined in a `compose.yaml` file.
 - **Up:** Click the **Up** button to pull and start all services in the project. 
 - **Down:** Click **Down** to down and remove all containers in the project.
 - **Restart:** Click **Restart** to stop and then start the project again, this does **NOT**** recreate the containers.
-- **Redeploy:** Click **Redeploy** to pull the latest images and restart the project (equivilant to docker pull && docker up -d).
+- **Redeploy:** Click **Redeploy** to pull the latest images and restart the project (equivalent to docker pull && docker up -d).
 - **Destroy:** Click **Destroy** to down and destroy all resources made by the project, this has two options one to remove volumes, amd one to remove the actual project files on the disk.
 
 
