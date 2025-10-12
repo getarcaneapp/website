@@ -1,6 +1,6 @@
 ---
-title: 'Network Management'
-description: 'Learn how to manage Docker networks with Arcane - create, inspect, and remove networks with ease.'
+title: 'Networks'
+description: 'Learn how to manage Docker networks with Arcane'
 ---
 
 ## What Can You Do With Networks in Arcane?

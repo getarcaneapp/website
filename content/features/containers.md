@@ -1,6 +1,6 @@
 ---
-title: 'Container Management'
-description: 'Learn how to manage Docker containers with Arcane - create, start, stop, inspect, and remove containers with ease.'
+title: 'Containers'
+description: 'Learn how to manage Docker containers with Arcane'
 ---
 
 ## What Can You Do With Containers in Arcane?

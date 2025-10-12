@@ -1,6 +1,6 @@
 ---
-title: 'Volume Management'
-description: 'Learn how to manage Docker volumes with Arcane - create, view, and remove persistent data volumes.'
+title: 'Volumes'
+description: 'Learn how to manage Docker volumes with Arcane'
 ---
 
 ## What Can You Do With Volumes in Arcane?

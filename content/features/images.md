@@ -1,6 +1,6 @@
 ---
-title: 'Image Management'
-description: 'Learn how to manage Docker images with Arcane - view, pull, inspect, remove, and prune images efficiently.'
+title: 'Images'
+description: 'Learn how to manage Docker images with Arcane'
 ---
 
 ## What Can You Do With Images in Arcane?
@@ -53,10 +53,6 @@ Arcane will indicate when a newer image is available, distinguishing between dig
 - **Digest update**  
   If the tag hasn’t changed but the image digest has (published with the same tag), you’ll see a **Digest** badge.  
   Hover the badge to view the new digest and date, then click it to pull the updated digest.
-
-- **Major version update**  
-  If a brand‐new tag (e.g. `nginx:1.21` → `nginx:1.22`) is available in your configured registry, you’ll see a **Major** badge.  
-  Hover to see the available tag, then click to pull the new version.
 
 - **Automatic refresh**  
   Arcane checks for updates on page load and when you click the **Refresh** icon in the Images toolbar.
