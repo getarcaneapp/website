@@ -3,43 +3,21 @@
 	"compatibility_date": "2025-10-13",
 	"preview_urls": true,
 	"workers_dev": true,
+	"main": "./src/_worker.js",
 	"assets": {
-		"directory": "./build"
+		"directory": "./build",
+		"binding": "ASSETS"
 	},
 	"routes": [
 		{
-			"pattern": "getarcane.app",
+			"pattern": "arcane.ofkm.dev/*",
+			"custom_domain": true
+		},
+		{
+			"pattern": "getarcane.app/*",
 			"custom_domain": true
 		}
 	]
-
-	// Optional: Add bindings only if your application needs them
-	// Uncomment and configure as needed:
-
-	// KV Namespaces for key-value storage
-	// "kv_namespaces": [
-	//   {
-	//     "binding": "MY_KV",
-	//     "id": "your-kv-namespace-id"
-	//   }
-	// ],
-
-	// D1 Databases for SQL storage
-	// "d1_databases": [
-	//   {
-	//     "binding": "DB",
-	//     "database_name": "your-database-name",
-	//     "database_id": "your-database-id"
-	//   }
-	// ],
-
-	// R2 Buckets for object storage
-	// "r2_buckets": [
-	//   {
-	//     "binding": "MY_BUCKET",
-	//     "bucket_name": "your-bucket-name"
-	//   }
-	// ],
 
 	// Environment variables
 	// "vars": {
