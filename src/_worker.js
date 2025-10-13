@@ -25,5 +25,5 @@ export default {
 
 		// Serve static assets for all other requests
 		return env.ASSETS.fetch(request);
-	}
+	},
 };
