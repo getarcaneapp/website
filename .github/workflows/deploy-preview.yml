@@ -54,7 +54,7 @@ jobs:
 
             - name: Upload and Deploy Preview
               env:
-                  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                  CLOUDFLARE_API_TOKEN: ${{ secrets.CF_WORKERS_API }}
                   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
               run: |
                   pnpm exec wrangler versions upload --preview-alias "$PREVIEW_ALIAS"
