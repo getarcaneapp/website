@@ -4,15 +4,14 @@
 	"preview_urls": true,
 	"workers_dev": true,
 	"assets": {
-		"directory": "./build",
-		"not_found_handling": "single-page-application"
+		"directory": "./build"
 	},
 	"routes": [
 		{
 			"pattern": "getarcane.app",
 			"custom_domain": true
 		}
-	],
+	]
 
 	// Optional: Add bindings only if your application needs them
 	// Uncomment and configure as needed:
@@ -46,9 +45,4 @@
 	// "vars": {
 	//   "API_URL": "https://api.example.com"
 	// },
-
-	// Observability and logging
-	"observability": {
-		"enabled": true
-	}
 }
