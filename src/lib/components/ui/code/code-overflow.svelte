@@ -25,21 +25,23 @@ const state = useCodeOverflow({
 </script>
 
 <div
-  {...props}
-  data-code-overflow
-  data-collapsed={collapsed}
-  class={cn('relative overflow-y-hidden data-[collapsed=true]:max-h-[300px]', className)}>
-  {@render children?.()}
-  {#if collapsed}
-    <div class="from-background absolute bottom-0 left-0 z-10 h-full w-full bg-gradient-to-t to-transparent"></div>
-  {/if}
-  {#if collapsed}
-    <Button
-      variant="secondary"
-      size="sm"
-      class="absolute bottom-2 left-1/2 z-20 w-fit -translate-x-1/2"
-      onclick={state.toggleCollapsed}>
-      Expand
-    </Button>
-  {/if}
+	{...props}
+	data-code-overflow
+	data-collapsed={collapsed}
+	class={cn('relative overflow-y-hidden data-[collapsed=true]:max-h-[300px]', className)}
+>
+	{@render children?.()}
+	{#if collapsed}
+		<div class="from-background absolute bottom-0 left-0 z-10 h-full w-full bg-gradient-to-t to-transparent"></div>
+	{/if}
+	{#if collapsed}
+		<Button
+			variant="secondary"
+			size="sm"
+			class="absolute bottom-2 left-1/2 z-20 w-fit -translate-x-1/2"
+			onclick={state.toggleCollapsed}
+		>
+			Expand
+		</Button>
+	{/if}
 </div>

@@ -2,7 +2,7 @@ name: Update Arcane Changelog
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -20,11 +20,11 @@ jobs:
         id: latest
         uses: fjogeleit/http-request-action@v1
         with:
-          url: "https://api.github.com/repos/ofkm/arcane/releases/latest"
-          method: "GET"
+          url: 'https://api.github.com/repos/ofkm/arcane/releases/latest'
+          method: 'GET'
           bearerToken: ${{ secrets.GITHUB_TOKEN }}
           customHeaders: '{"Accept":"application/vnd.github+json"}'
-          responseFile: "release.json"
+          responseFile: 'release.json'
 
       - name: Prepare current changelog
         run: |
@@ -96,15 +96,15 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "docs(changelog): add ${{ steps.build.outputs.version }} release notes"
-          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
-          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          commit-message: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
+          committer: 'github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
+          author: 'github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
           signoff: true
-          title: "docs(changelog): add ${{ steps.build.outputs.version }} release notes"
-          body: "Automated changelog update for ${{ steps.build.outputs.version }} from ofkm/arcane latest release."
-          branch: "${{ steps.build.outputs.branch }}"
+          title: 'docs(changelog): add ${{ steps.build.outputs.version }} release notes'
+          body: 'Automated changelog update for ${{ steps.build.outputs.version }} from ofkm/arcane latest release.'
+          branch: '${{ steps.build.outputs.branch }}'
           base: main
-          labels: "docs(changelog)"
+          labels: 'docs(changelog)'
           draft: always-true
           add-paths: |
             content/changelog.md
