@@ -4,29 +4,36 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/**'
-      - 'content/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - '.github/workflows/deploy-prod.yml'
-      - 'svelte.config.js'
+      - "src/**"
+      - "content/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy-prod.yml"
+      - "svelte.config.js"
+      - "wrangler.jsonc"
 
 jobs:
   deploy:
-    runs-on: macos-26
+    runs-on: macos-latest
 
     permissions:
       contents: read
       deployments: write
-      actions: write
-      pull-requests: write
+
+    environment:
+      name: production
+      url: https://getarcane.app
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -36,16 +43,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Check Wrangler version
+        run: pnpm exec wrangler --version
+
       - name: Build site
         run: pnpm build
 
-      - name: Deploy to Cloudflare Pages
-        uses: AdrianGonz97/refined-cf-pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          projectName: arcane-ofkm
-          deploymentName: arcane-website-production
-          branch: main
-          directory: build
+      - name: Deploy to Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: pnpm exec wrangler deploy
