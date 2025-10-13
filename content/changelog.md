@@ -10,7 +10,7 @@ description: 'Release notes for Arcane'
 
 ### Bug fixes
 
-* remove custom timestamps and rely soley on dockers log timestamps([c69e00a](https://github.com/ofkm/arcane/commit/c69e00a30f9b546a3b095faef010bff746197e5d) by @kmendell)
+* remove custom timestamps and rely solely on dockers log timestamps([c69e00a](https://github.com/ofkm/arcane/commit/c69e00a30f9b546a3b095faef010bff746197e5d) by @kmendell)
 * container metrics not respecting the cpu limit / count([f9840de](https://github.com/ofkm/arcane/commit/f9840de4f06cf5a844731af804b6b19d82bf0c8a) by @kmendell)
 * registry credentials not reliably being passed to remote environments([31cfd54](https://github.com/ofkm/arcane/commit/31cfd540dbd7130876685f56055a361e9a7f1d68) by @kmendell)
 * revert development compose deploy limits ([#697](https://github.com/ofkm/arcane/pull/697) by @cabaucom376)
