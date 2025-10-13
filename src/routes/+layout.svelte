@@ -2,6 +2,7 @@
 import '../app.css';
 import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
 import Code from '@lucide/svelte/icons/code';
+import ArrowRight from '@lucide/svelte/icons/arrow-right';
 import { ModeWatcher } from 'mode-watcher';
 import Header from '$lib/components/header.svelte';
 
@@ -9,6 +10,7 @@ let { children } = $props();
 
 let showBanner = $state(false);
 let isDev = $state(false);
+let isDeprecatedDomain = $state(false);
 let version: string | undefined = $state();
 
 async function readVersionFile(): Promise<string> {
@@ -28,6 +30,12 @@ const PROD_DOCS_URL = 'https://getarcane.app/docs';
 if (typeof window !== 'undefined') {
 	const host = window.location.hostname;
 	const isProd = PROD_HOSTS.includes(host);
+	
+	// Check if accessing via deprecated domain
+	if (host === 'arcane.ofkm.dev') {
+		isDeprecatedDomain = true;
+	}
+	
 	if (!isProd) {
 		showBanner = true;
 		isDev = host === 'localhost' || host === '127.0.0.1';
@@ -43,6 +51,28 @@ if (typeof window !== 'undefined') {
 	<meta name="description" content="Arcane - Docker Management, Designed for Everyone." />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
+
+{#if isDeprecatedDomain}
+	<div
+		class="sticky top-0 z-[60] border-b border-amber-500 bg-amber-500/10 text-amber-600 backdrop-blur-sm dark:bg-amber-500/15 dark:text-amber-400"
+	>
+		<div class="container-wrapper px-6 py-2">
+			<div class="flex items-center justify-center gap-2 text-center text-[12px] font-medium">
+				<AlertTriangle class="size-4" />
+				<span>
+					This domain is deprecated. Please visit the new domain:
+					<a
+						href={`https://getarcane.app${typeof window !== 'undefined' ? window.location.pathname : ''}`}
+						class="font-semibold text-current underline hover:opacity-80 inline-flex items-center gap-1"
+					>
+						getarcane.app
+						<ArrowRight class="size-3" />
+					</a>
+				</span>
+			</div>
+		</div>
+	</div>
+{/if}
 
 {#if showBanner}
 	<div
