@@ -10,10 +10,12 @@
 <ContentWrapper>
 	<section class="relative mt-12 mb-12 flex flex-col items-center text-center">
 		<h1 class="relative mb-4 flex flex-col items-center gap-3 font-black tracking-tight">
-			<span class="inline-block w-full px-4 sm:max-w-[520px] md:max-w-[680px] lg:max-w-[840px] xl:max-w-[900px]">
+			<span
+				class="relative inline-block w-full px-4 sm:max-w-[520px] md:max-w-[680px] lg:max-w-[840px] xl:max-w-[900px]"
+			>
 				<span class="sr-only">Arcane</span>
 				<enhanced:img
-					src="/static/img/logo-full.svg"
+					src="../../static/img/logo-full.svg"
 					alt="Arcane — Modern Docker Management"
 					decoding="async"
 					loading="eager"
@@ -22,7 +24,7 @@
 				/>
 			</span>
 			<span
-				class="text-foreground/90 block text-center text-[clamp(1rem,1.8vw,1.5rem)] leading-tight font-light md:text-[clamp(1.1rem,1.6vw,1.75rem)]"
+				class="text-foreground/90 mt-4 block text-center text-[clamp(1rem,1.8vw,1.5rem)] leading-tight font-light whitespace-nowrap md:text-[clamp(1.1rem,1.6vw,1.75rem)]"
 			>
 				Modern Docker Management, <span class="text-primary font-medium">Designed for Everyone.</span>
 			</span>
