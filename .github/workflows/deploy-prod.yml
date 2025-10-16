@@ -4,13 +4,13 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/**'
-      - 'content/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - '.github/workflows/deploy-prod.yml'
-      - 'svelte.config.js'
-      - 'wrangler.jsonc'
+      - "src/**"
+      - "content/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy-prod.yml"
+      - "svelte.config.js"
+      - "wrangler.jsonc"
 
 jobs:
   deploy:
@@ -34,15 +34,13 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: latest
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Check Wrangler version
-        run: pnpm exec wrangler --version
 
       - name: Build site
         run: pnpm build
