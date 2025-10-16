@@ -4,12 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'src/**'
-      - 'content/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'svelte.config.js'
-      - 'wrangler.jsonc'
+      - "src/**"
+      - "content/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "svelte.config.js"
+      - "wrangler.jsonc"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -24,7 +24,7 @@ jobs:
   build-and-deploy-preview:
     runs-on: macos-latest
     environment:
-      name: preview-pr-${{ github.event.pull_request.number }}
+      name: arcane-website-pr-preview
       url: ${{ env.PREVIEW_BASE }}
     env:
       PREVIEW_ALIAS: pr-${{ github.event.pull_request.number }}
@@ -64,7 +64,7 @@ jobs:
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
+          comment-author: "github-actions[bot]"
           body-includes: Preview deployed successfully!
 
       - name: Comment preview URL
