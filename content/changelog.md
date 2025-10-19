@@ -31,7 +31,7 @@ description: 'Release notes for Arcane'
 * include version in jwt for auth sessions after updating the server ([#724](https://github.com/ofkm/arcane/pull/724) by @kmendell)
 * update file permissions to 0644 for project and templatye file creations([ca66f44](https://github.com/ofkm/arcane/commit/ca66f44df33f8f5520776371b3c2303f4b9ff42e) by @kmendell)
 * handle Docker socket GID conflict in entrypoint  ([#735](https://github.com/ofkm/arcane/pull/735) by @jae-jae)
-* hidden table coumns data still showing even if the column is hidden([aced2a6](https://github.com/ofkm/arcane/commit/aced2a6eefaaba89525b8cbfd180e826fac92891) by @kmendell)
+* hidden table columns data still showing even if the column is hidden([aced2a6](https://github.com/ofkm/arcane/commit/aced2a6eefaaba89525b8cbfd180e826fac92891) by @kmendell)
 * update icon import ([#737](https://github.com/ofkm/arcane/pull/737) by @cabaucom376)
 * z-index of search icons on settings and customize pages([87af81c](https://github.com/ofkm/arcane/commit/87af81c68475c84acdfe46c62ae97e34370320a5) by @kmendell)
 * sidebar items not expanding in non hover mode([515d442](https://github.com/ofkm/arcane/commit/515d4420ff3ef5e231b0175b9f388165a7929295) by @kmendell)
