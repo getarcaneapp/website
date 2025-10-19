@@ -28,7 +28,7 @@ description: 'Release notes for Arcane'
 * mobile nav sheet not working on small desktop screens([14bd338](https://github.com/ofkm/arcane/commit/14bd338107b2e8136599599116fe88cd0fee015d) by @kmendell)
 * velocity to open nav sheet in mobile view([3d436a1](https://github.com/ofkm/arcane/commit/3d436a13ff78f48d9922affdfd4d7e9d0e6deda6) by @kmendell)
 * sub nav items now showing in hover mode([c60e954](https://github.com/ofkm/arcane/commit/c60e954a7ffd92319bd028111fccc3bd035c34d9) by @kmendell)
-* include version in jwt for auth sessions after updaing the server ([#724](https://github.com/ofkm/arcane/pull/724) by @kmendell)
+* include version in jwt for auth sessions after updating the server ([#724](https://github.com/ofkm/arcane/pull/724) by @kmendell)
 * update file permissions to 0644 for project and templatye file creations([ca66f44](https://github.com/ofkm/arcane/commit/ca66f44df33f8f5520776371b3c2303f4b9ff42e) by @kmendell)
 * handle Docker socket GID conflict in entrypoint  ([#735](https://github.com/ofkm/arcane/pull/735) by @jae-jae)
 * hidden table coumns data still showing even if the column is hidden([aced2a6](https://github.com/ofkm/arcane/commit/aced2a6eefaaba89525b8cbfd180e826fac92891) by @kmendell)
