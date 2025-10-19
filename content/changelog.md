@@ -29,7 +29,7 @@ description: 'Release notes for Arcane'
 * velocity to open nav sheet in mobile view([3d436a1](https://github.com/ofkm/arcane/commit/3d436a13ff78f48d9922affdfd4d7e9d0e6deda6) by @kmendell)
 * sub nav items now showing in hover mode([c60e954](https://github.com/ofkm/arcane/commit/c60e954a7ffd92319bd028111fccc3bd035c34d9) by @kmendell)
 * include version in jwt for auth sessions after updating the server ([#724](https://github.com/ofkm/arcane/pull/724) by @kmendell)
-* update file permissions to 0644 for project and templatye file creations([ca66f44](https://github.com/ofkm/arcane/commit/ca66f44df33f8f5520776371b3c2303f4b9ff42e) by @kmendell)
+* update file permissions to 0644 for project and template file creations([ca66f44](https://github.com/ofkm/arcane/commit/ca66f44df33f8f5520776371b3c2303f4b9ff42e) by @kmendell)
 * handle Docker socket GID conflict in entrypoint  ([#735](https://github.com/ofkm/arcane/pull/735) by @jae-jae)
 * hidden table columns data still showing even if the column is hidden([aced2a6](https://github.com/ofkm/arcane/commit/aced2a6eefaaba89525b8cbfd180e826fac92891) by @kmendell)
 * update icon import ([#737](https://github.com/ofkm/arcane/pull/737) by @cabaucom376)
@@ -458,4 +458,5 @@ description: 'Release notes for Arcane'
 * update banner link not clickable ([69e95e0](https://github.com/ofkm/arcane/commit/69e95e0457f5a317f1b7928039bd3719dd70471d))
 * use correct running container count on dashboard ([3dad327](https://github.com/ofkm/arcane/commit/3dad32721a0e53e6f44e2f73959e1d315835d36a))
 * use correct time for auto update job ([e7a5a31](https://github.com/ofkm/arcane/commit/e7a5a3173f8f24ceccf34497915e1b845d377b43))
+
 
