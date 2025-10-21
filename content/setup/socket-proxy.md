@@ -158,7 +158,7 @@ The proxy will start first, followed by Arcane which depends on it.
 
 ## 5. Access Arcane:
 
-Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup.
+Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. After your first initial login, you will be asked to change the default admin password.
 
 Username:
 <Snippet text="arcane" class="mt-2 max-w-[300px]" />

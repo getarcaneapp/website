@@ -53,7 +53,7 @@
 	<section class="relative -mt-4 mb-16">
 		<div
 			aria-hidden="true"
-			class="border-border/60 from-background/60 via-background/40 to-background/20 pointer-events-none absolute inset-0 -z-10 rounded-3xl border bg-gradient-to-b [mask-image:linear-gradient(to_bottom,black,transparent_85%)] p-px"
+			class="border-border/60 from-background/60 via-background/40 to-background/20 pointer-events-none absolute inset-0 -z-10 rounded-3xl border bg-linear-to-b mask-[linear-gradient(to_bottom,black,transparent_85%)] p-px"
 		></div>
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
 			{#each features as feature (feature.title)}
