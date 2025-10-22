@@ -54,11 +54,27 @@ where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
 >
 > This ensures that file paths in your compose files (like `./config` or relative volume mounts) resolve correctly both inside Arcane and when Docker executes on the host.
 
-## 3. Start Arcane:
+## 3. Generating secrets
+
+You can use the Arcane CLI inside a temporary container to generate secrets in the format arcane supports, or you can use the host OSes `openssl` command as previoulsy documented.
+
+Via Docker Container:
+
+<Snippet text="docker run --rm ghcr.io/ofkm/arcane:latest /app/arcane generate secret" class="mt-2" />
+
+Standalone Arcane Binary:
+
+<Snippet text="arcane generate secret" class="mt-2" />
+
+## 4. Start Arcane:
 
 ```bash
 docker compose up -d
 ```
+
+
+
+
 
 ## 4. Access Arcane:
 

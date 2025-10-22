@@ -142,11 +142,17 @@ Key environment variables for proxy integration:
 
 This tells Arcane to connect to the Docker API through the proxy instead of the direct socket.
 
-**Generate secure keys:**
+## 3. Generating secrets
 
-For ENCRYPTION_KEY and JWT Secret you can use the below command to generate these values:
+You can use the Arcane CLI inside a temporary container to generate secrets in the format arcane supports, or you can use the host OSes `openssl` command as previoulsy documented.
 
-<Snippet text="openssl rand -base64 32" class="mt-2 max-w-[300px]" />
+Via Docker Container:
+
+<Snippet text="docker run --rm ghcr.io/ofkm/arcane:latest /app/arcane generate secret" class="mt-2" />
+
+Standalone Arcane Binary:
+
+<Snippet text="arcane generate secret" class="mt-2" />
 
 ## 4. Start the Project:
 
