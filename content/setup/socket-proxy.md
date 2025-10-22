@@ -144,7 +144,7 @@ This tells Arcane to connect to the Docker API through the proxy instead of the 
 
 ## 3. Generating secrets
 
-You can use the Arcane CLI inside a temporary container to generate secrets in the format arcane supports, or you can use the host OSes `openssl` command as previoulsy documented.
+You can use the Arcane CLI inside a temporary container to generate secrets in the format arcane supports, or you can use the host OSes `openssl` command as previously documented.
 
 Via Docker Container:
 
