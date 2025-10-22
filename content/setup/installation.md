@@ -72,11 +72,7 @@ Standalone Arcane Binary:
 docker compose up -d
 ```
 
-
-
-
-
-## 4. Access Arcane:
+## 5. Access Arcane:
 
 Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. After your first initial login, you will be asked to change the default admin password. The default credentials are shown below.
 
@@ -86,7 +82,7 @@ Username:
 Password:
 <Snippet text="arcane-admin" class="mt-2 max-w-[300px]" />
 
-## 5. Using a Custom Domain or Reverse Proxy?
+## 6. Using a Custom Domain or Reverse Proxy?
 
 > [!NOTE]
 > Arcane uses WebSockets for real-time communication. If you're setting up Arcane behind a reverse proxy or custom domain, you'll need to ensure WebSocket support is properly configured.
