@@ -1,22 +1,22 @@
 <script lang="ts">
-	export interface Flag {
-		name: string;
-		description: string;
-		default?: string;
-	}
+export interface Flag {
+	name: string;
+	description: string;
+	default?: string;
+}
 
-	export interface Command {
-		name: string;
-		description: string;
-		aliases?: string[];
-		usage: string;
-		flags: Flag[];
-		globalFlags?: Flag[];
-		subcommands?: Array<{ name: string; description: string }>;
-		examples?: string[];
-	}
+export interface Command {
+	name: string;
+	description: string;
+	aliases?: string[];
+	usage: string;
+	flags: Flag[];
+	globalFlags?: Flag[];
+	subcommands?: Array<{ name: string; description: string }>;
+	examples?: string[];
+}
 
-	let { command }: { command: Command } = $props();
+let { command }: { command: Command } = $props();
 </script>
 
 <div class="space-y-6">

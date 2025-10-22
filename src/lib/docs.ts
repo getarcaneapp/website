@@ -1,6 +1,15 @@
 import { error } from '@sveltejs/kit';
 import type { Component } from 'svelte';
-import { configuration, development, features, guides, indexPage, setup, templates, cli } from '$velite/index.js';
+import {
+	cli,
+	configuration,
+	development,
+	features,
+	guides,
+	indexPage,
+	setup,
+	templates,
+} from '$velite/index.js';
 
 type CollectionDoc = (typeof indexPage)[number];
 
@@ -12,7 +21,7 @@ const allDocs: CollectionDoc[] = [
 	...guides,
 	...development,
 	...templates,
-	...cli
+	...cli,
 ];
 
 interface DocModule {
@@ -48,7 +57,9 @@ function resolveModule(slug: string): DocResolver | undefined {
 	return key ? (modules[key] as DocResolver) : undefined;
 }
 
-export async function getDoc(_slug: string): Promise<{ component: Component; metadata: DocMetadata }> {
+export async function getDoc(
+	_slug: string,
+): Promise<{ component: Component; metadata: DocMetadata }> {
 	const slug = _slug === '' ? 'index' : _slug;
 
 	const veliteMeta = getDocMetadata(slug);
@@ -71,11 +82,11 @@ export async function getDoc(_slug: string): Promise<{ component: Component; met
 		section: (veliteMeta as any).section,
 		segments: (veliteMeta as any).segments,
 		published: fm.published ?? (veliteMeta as any).published ?? true,
-		toc: fm.toc ?? (veliteMeta as any).toc
+		toc: fm.toc ?? (veliteMeta as any).toc,
 	};
 
 	return {
 		component: mod.default,
-		metadata
+		metadata,
 	};
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
 import '../app.css';
 import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-import Code from '@lucide/svelte/icons/code';
 import ArrowRight from '@lucide/svelte/icons/arrow-right';
+import Code from '@lucide/svelte/icons/code';
 import { ModeWatcher } from 'mode-watcher';
 import Header from '$lib/components/header.svelte';
 
@@ -30,12 +30,12 @@ const PROD_DOCS_URL = 'https://getarcane.app/docs';
 if (typeof window !== 'undefined') {
 	const host = window.location.hostname;
 	const isProd = PROD_HOSTS.includes(host);
-	
+
 	// Check if accessing via deprecated domain
 	if (host === 'arcane.ofkm.dev') {
 		isDeprecatedDomain = true;
 	}
-	
+
 	if (!isProd) {
 		showBanner = true;
 		isDev = host === 'localhost' || host === '127.0.0.1';
