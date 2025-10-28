@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 import {
+	cli,
 	configuration,
 	development,
 	features,
@@ -20,6 +21,7 @@ const allDocs: CollectionDoc[] = [
 	...guides,
 	...development,
 	...templates,
+	...cli,
 ];
 
 interface DocModule {

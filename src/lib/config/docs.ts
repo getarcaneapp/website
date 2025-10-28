@@ -1,9 +1,9 @@
 import {
+	cli,
 	configuration,
 	development,
 	features,
 	guides,
-	indexPage,
 	setup,
 	templates,
 } from '$velite/index.js';
@@ -57,6 +57,7 @@ const SECTION_BUILDERS: Array<{
 	{ key: 'setup', title: 'Setup', source: setup },
 	{ key: 'configuration', title: 'Configuration', source: configuration },
 	{ key: 'features', title: 'Features', source: features },
+	{ key: 'cli', title: 'CLI', source: cli },
 	{ key: 'guides', title: 'Guides', source: guides },
 	{ key: 'templates', title: 'Templates', source: templates },
 	{ key: 'development', title: 'Development', source: development },

@@ -1,6 +1,7 @@
 ---
 title: 'Environment Variables'
 description: 'Configure Arcane using environment variables or the settings interface.'
+order: 2
 ---
 
 <script lang="ts">

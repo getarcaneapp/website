@@ -1,5 +1,6 @@
 import { getDoc } from '$lib/docs.js';
 import {
+	cli,
 	configuration,
 	development,
 	features,
@@ -20,6 +21,7 @@ const ALL_DOCS = [
 	...guides,
 	...templates,
 	...development,
+	...cli,
 ];
 
 export const entries: EntryGenerator = () => {

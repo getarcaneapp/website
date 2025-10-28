@@ -1,6 +1,7 @@
 ---
 title: 'OIDC Single Sign-On'
 description: 'Configure OIDC authentication for secure single sign-on access to Arcane.'
+order: 3
 ---
 
 <script lang="ts">

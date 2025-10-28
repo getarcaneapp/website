@@ -69,6 +69,12 @@ const changelog = defineCollection({
 	schema: docSchema,
 });
 
+const cli = defineCollection({
+	name: 'cli',
+	pattern: './cli/**/*.md',
+	schema: docSchema,
+});
+
 export default defineConfig({
 	root: './content',
 	collections: {
@@ -80,6 +86,7 @@ export default defineConfig({
 		development,
 		templates,
 		changelog,
+		cli,
 	},
 	output: { assets: 'static' },
 });

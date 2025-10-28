@@ -54,13 +54,25 @@ where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
 >
 > This ensures that file paths in your compose files (like `./config` or relative volume mounts) resolve correctly both inside Arcane and when Docker executes on the host.
 
-## 3. Start Arcane:
+## 3. Generating secrets
+
+You can use the Arcane CLI inside a temporary container to generate secrets in the format arcane supports, or you can use the host OSes `openssl` command as previously documented.
+
+Via Docker Container:
+
+<Snippet text="docker run --rm ghcr.io/ofkm/arcane:latest /app/arcane generate secret" class="mt-2" />
+
+Standalone Arcane Binary:
+
+<Snippet text="arcane generate secret" class="mt-2" />
+
+## 4. Start Arcane:
 
 ```bash
 docker compose up -d
 ```
 
-## 4. Access Arcane:
+## 5. Access Arcane:
 
 Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. After your first initial login, you will be asked to change the default admin password. The default credentials are shown below.
 
@@ -70,7 +82,7 @@ Username:
 Password:
 <Snippet text="arcane-admin" class="mt-2 max-w-[300px]" />
 
-## 5. Using a Custom Domain or Reverse Proxy?
+## 6. Using a Custom Domain or Reverse Proxy?
 
 > [!NOTE]
 > Arcane uses WebSockets for real-time communication. If you're setting up Arcane behind a reverse proxy or custom domain, you'll need to ensure WebSocket support is properly configured.
