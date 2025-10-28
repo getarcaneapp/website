@@ -10,5 +10,6 @@ import { ARCANE_COMMANDS } from '$lib/config/cli-commands.js';
 Running `arcane` with no command starts the Arcane server or agent. Use the available commands below for other tasks:
 
 - [`generate`](/docs/cli/generate) — Generate secrets for Arcane's backend
+- [`upgrade`](/docs/cli/upgrade) — Upgrade an Arcane container from outside the container
 - [`version`](/docs/cli/version) — Print version information
 - [`help`](/docs/cli/help) — Display help for any command
