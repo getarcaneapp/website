@@ -1,6 +1,7 @@
 ---
 title: 'Websocket Configuration'
 description: 'Configure your reverse proxy to support WebSockets for Arcane.'
+order: 4
 ---
 
 <script lang="ts">
