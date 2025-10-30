@@ -14,7 +14,7 @@ description: 'Release notes for Arcane'
 * use correct background colors for components when glass is disabled([615c21f](https://github.com/ofkm/arcane/commit/615c21f13244a95c00bdb22e62209a8876b16a89) by @kmendell)
 * event details dialog header padding([55dca66](https://github.com/ofkm/arcane/commit/55dca6690e811e06cbb9e4cd159fefb4847903fc) by @kmendell)
 * cpu count not showing under cpu meter([30cab56](https://github.com/ofkm/arcane/commit/30cab5657f79cccf9e07fb4394ced5db9e4d8f31) by @kmendell)
-* settings state not persisted acorss settings pages([46bbe93](https://github.com/ofkm/arcane/commit/46bbe93c862d8f7014e2303f8280e33a293dae10) by @kmendell)
+* settings state not persisted across settings pages([46bbe93](https://github.com/ofkm/arcane/commit/46bbe93c862d8f7014e2303f8280e33a293dae10) by @kmendell)
 * notification settings does not show on the settings overview page([6354f9c](https://github.com/ofkm/arcane/commit/6354f9c3cf73a7fe96815b39634d3ad54feecfd2) by @kmendell)
 * properly log error events to event table([caef210](https://github.com/ofkm/arcane/commit/caef21052fb92be51588da7eff5d301612f2e59a) by @kmendell)
 
