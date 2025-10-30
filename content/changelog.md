@@ -3,6 +3,20 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.7.2 - 2025-10-30
+
+[Release](https://github.com/ofkm/arcane/releases/tag/v1.7.2)
+
+### Bug fixes
+
+* syntax highlighting not showing on code-editors([027155e](https://github.com/ofkm/arcane/commit/027155e092d0b91ff6c9b52d77149456deac9f72) by @kmendell)
+* pass version to docker file builds([8a136cd](https://github.com/ofkm/arcane/commit/8a136cd51e52f4721452e1a32d4a17523a22de1c) by @kmendell)
+
+
+
+**Full Changelog**: https://github.com/ofkm/arcane/compare/v1.7.1...v1.7.2
+
+
 ## v1.7.1 - 2025-10-30
 
 [Release](https://github.com/ofkm/arcane/releases/tag/v1.7.1)
