@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   build-and-deploy-preview:
-    runs-on: macos-latest
+    runs-on: depot-ubuntu-latest
     environment:
       name: ${{ github.event.pull_request.user.login }}-pr-${{ github.event.pull_request.number }}
       url: ${{ env.PREVIEW_BASE }}
