@@ -1,10 +1,10 @@
 <script lang="ts">
-import BookOpen from '@lucide/svelte/icons/book-open';
-import Settings from '@lucide/svelte/icons/settings';
-import ContentWrapper from '$lib/components/content-wrapper.svelte';
-import Button from '$lib/components/ui/button/button.svelte';
-import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
-import { features } from '$lib/config/features.js';
+	import BookOpen from '@lucide/svelte/icons/book-open';
+	import Settings from '@lucide/svelte/icons/settings';
+	import ContentWrapper from '$lib/components/content-wrapper.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
+	import { features } from '$lib/config/features.js';
 </script>
 
 <ContentWrapper>
@@ -72,23 +72,47 @@ import { features } from '$lib/config/features.js';
 		of the UX polish pays homage to their incredible work, so be sure to explore their ecosystems!
 	</p>
 
-	<div class="mx-auto mt-6 flex max-w-3xl items-center justify-center gap-3 text-center">
+	<div class="mx-auto mt-6 flex max-w-3xl flex-col items-center justify-center gap-3 text-center">
 		<span class="text-muted-foreground text-sm">Supported by</span>
-		<a
-			href="https://greptile.com"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="inline-flex items-center transition-opacity hover:opacity-80"
-			aria-label="Greptile Open Source License"
-		>
-			<enhanced:img
-				src="../../static/img/greptile.svg"
-				alt="Greptile"
-				class="h-6 w-auto"
-				decoding="async"
-				loading="lazy"
-			/>
-		</a>
-		<span class="text-muted-foreground text-sm">Open Source License</span>
+		<div class="flex items-center gap-6">
+			<a
+				href="https://greptile.com"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center transition-opacity hover:opacity-80"
+				aria-label="Greptile"
+			>
+				<enhanced:img
+					src="../../static/img/greptile.svg"
+					alt="Greptile"
+					class="h-6 w-auto"
+					decoding="async"
+					loading="lazy"
+				/>
+			</a>
+
+			<a
+				href="https://depot.dev"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center transition-opacity hover:opacity-80"
+				aria-label="Depot"
+			>
+				<img
+					src="/img/depot-logo-horizontal-on-light.svg"
+					alt="Depot"
+					class="h-6 w-auto dark:hidden"
+					decoding="async"
+					loading="lazy"
+				/>
+				<img
+					src="/img/depot-logo-horizontal-on-dark.svg"
+					alt="Depot"
+					class="hidden h-6 w-auto dark:block"
+					decoding="async"
+					loading="lazy"
+				/>
+			</a>
+		</div>
 	</div>
 </ContentWrapper>
