@@ -18,11 +18,11 @@ import { Link } from '$lib/components/ui/link/index.js';
 
 **_Optional_**: Configure socket to automatically start after reboots
 
-<Snippet class="mt-2">
-  systemctl --user enable podman.socket
+```bash
+systemctl --user enable podman.socket
   
-  loginctl enable-linger <USER>
-</Snippet>
+loginctl enable-linger <user>
+```
 
 ## 2. Update **_compose.yaml_**:
 
