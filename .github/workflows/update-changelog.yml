@@ -20,7 +20,7 @@ jobs:
         id: latest
         uses: fjogeleit/http-request-action@v1
         with:
-          url: "https://api.github.com/repos/ofkm/arcane/releases/latest"
+          url: "https://api.github.com/repos/getarcaneapp/arcane/releases/latest"
           method: "GET"
           bearerToken: ${{ secrets.GITHUB_TOKEN }}
           customHeaders: '{"Accept":"application/vnd.github+json"}'
