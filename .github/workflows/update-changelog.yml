@@ -105,7 +105,6 @@ jobs:
           branch: "${{ steps.build.outputs.branch }}"
           base: main
           labels: "docs(changelog)"
-          draft: always-true
           add-paths: |
             content/changelog.md
           delete-branch: true
