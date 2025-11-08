@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref || github.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ARCANE_BOT_TOKEN }}
 
       - name: Check if this is a changelog PR
         id: check_label
@@ -52,8 +52,8 @@ jobs:
       - name: Commit and push typo fixes
         if: steps.check_label.outputs.should_fix == 'true' && steps.verify_diff.outputs.has_changes == 'true'
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "info@getarcane.app"
+          git config --local user.name "getarcaneappbot"
           git add -u
           git commit -m "fix: auto-correct typos in changelog documentation"
           git push
