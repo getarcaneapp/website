@@ -54,8 +54,8 @@ Email notifications provide detailed information about container updates and sup
 |-------|----------|-------------|
 | **SMTP Host** | Yes | Your SMTP server hostname (e.g., `smtp.gmail.com`) |
 | **SMTP Port** | Yes | SMTP server port (typically 587 for STARTTLS, 465 for SSL) |
-| **SMTP Username** | Yes | Username for SMTP authentication |
-| **SMTP Password** | Yes | Password for SMTP authentication (stored encrypted) |
+| **SMTP Username** | No | Username for SMTP authentication (leave blank if not required) |
+| **SMTP Password** | No | Password for SMTP authentication (stored encrypted, leave blank if not required) |
 | **From Address** | Yes | Email address notifications are sent from |
 | **To Addresses** | Yes | Comma-separated list of recipient email addresses |
 | **TLS Mode** | Yes | Encryption mode: `none`, `starttls`, or `ssl` |
