@@ -27,7 +27,7 @@ Below is an example compose file with the updated variables. Pin to a specific r
 ```yaml
 services:
   arcane:
-    image: ghcr.io/ofkm/arcane:v1
+    image: ghcr.io/getarcaneapp/arcane:v1
     container_name: arcane
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

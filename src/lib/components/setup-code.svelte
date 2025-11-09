@@ -3,7 +3,7 @@ import * as Code from '$lib/components/ui/code/index.js';
 
 const composeFile = `services:
   arcane:
-    image: ghcr.io/ofkm/arcane:v1
+    image: ghcr.io/getarcaneapp/arcane:v1
     container_name: arcane
     ports:
       - '3552:3552'

@@ -99,9 +99,9 @@ export const ARCANE_COMMANDS: Record<string, CLICommand> = {
 			}
 		],
 		examples: [
-			'# Auto-detect and upgrade the Arcane container\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/ofkm/arcane:latest upgrade --auto',
-			'# Upgrade a specific container\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/ofkm/arcane:latest upgrade --container arcane',
-			'# Upgrade to a specific image tag\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/ofkm/arcane:latest upgrade --container arcane --image ghcr.io/ofkm/arcane:v1.2.3'
+			'# Auto-detect and upgrade the Arcane container\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/getarcaneapp/arcane:latest upgrade --auto',
+			'# Upgrade a specific container\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/getarcaneapp/arcane:latest upgrade --container arcane',
+			'# Upgrade to a specific image tag\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/getarcaneapp/arcane:latest upgrade --container arcane --image ghcr.io/getarcaneapp/arcane:v1.2.3'
 		]
 	}
 };

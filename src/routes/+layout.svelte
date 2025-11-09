@@ -16,7 +16,7 @@ let version: string | undefined = $state();
 async function readVersionFile(): Promise<string> {
 	try {
 		const res = await fetch(
-			'https://raw.githubusercontent.com/ofkm/arcane/refs/heads/main/.version',
+			'https://raw.githubusercontent.com/getarcaneapp/arcane/refs/heads/main/.version',
 		);
 		return await res.text();
 	} catch {

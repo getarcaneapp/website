@@ -21,7 +21,7 @@ The `arcane upgrade` command allows you to upgrade an Arcane container from outs
 ```bash
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  ghcr.io/ofkm/arcane:latest \
+  ghcr.io/getarcaneapp/arcane:latest \
   upgrade --auto
 ```
 
@@ -30,7 +30,7 @@ docker run --rm \
 ```bash
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  ghcr.io/ofkm/arcane:latest \
+  ghcr.io/getarcaneapp/arcane:latest \
   upgrade --container arcane
 ```
 
@@ -39,8 +39,8 @@ docker run --rm \
 ```bash
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  ghcr.io/ofkm/arcane:latest \
-  upgrade --container arcane --image ghcr.io/ofkm/arcane:v1.2.3
+  ghcr.io/getarcaneapp/arcane:latest \
+  upgrade --container arcane --image ghcr.io/getarcaneapp/arcane:v1.2.3
 ```
 
 ## Docker Compose Setup
@@ -50,12 +50,12 @@ Add an upgrader service to your compose file:
 ```yaml
 services:
   arcane:
-    image: ghcr.io/ofkm/arcane:latest
+    image: ghcr.io/getarcaneapp/arcane:latest
     container_name: arcane
     # ... your existing config ...
 
   upgrader:
-    image: ghcr.io/ofkm/arcane:latest
+    image: ghcr.io/getarcaneapp/arcane:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     entrypoint: ['/app/arcane']
@@ -73,7 +73,7 @@ docker compose run --rm upgrader
 ## How It Works
 
 1. **Detects** the running Arcane container (or uses specified name)
-2. **Determines** the current image tag (e.g., `ghcr.io/ofkm/arcane:v1.2.3`)
+2. **Determines** the current image tag (e.g., `ghcr.io/getarcaneapp/arcane:v1.2.3`)
 3. **Pulls** the latest image with that tag
 4. **Stops** the old container (freeing ports)
 5. **Creates** a new container with the new image
@@ -105,9 +105,9 @@ This ensures you stay on your intended version channel.
 INFO Auto-detecting Arcane container...
 INFO Found Arcane container name=arcane id=abc123def456
 
-INFO Determined image to pull image=ghcr.io/ofkm/arcane:self-update
+INFO Determined image to pull image=ghcr.io/getarcaneapp/arcane:self-update
 
-INFO Pulling new image image=ghcr.io/ofkm/arcane:self-update
+INFO Pulling new image image=ghcr.io/getarcaneapp/arcane:self-update
 
 INFO Starting container upgrade container=arcane
 
@@ -121,5 +121,5 @@ INFO Removing old container id=abc123def456
 
 INFO Renaming new container from=arcane-upgrading to=arcane
 
-INFO ✅ Upgrade completed successfully container=arcane image=ghcr.io/ofkm/arcane:self-update
+INFO ✅ Upgrade completed successfully container=arcane image=ghcr.io/getarcaneapp/arcane:self-update
 ```

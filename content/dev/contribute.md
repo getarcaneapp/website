@@ -239,8 +239,8 @@ docker system prune -f
 
 ### Need Help?
 
-- <strong>Bug Report</strong>: <Link href="https://github.com/ofkm/arcane/issues/new?template=bug.yml">Create an issue</Link>
-- <strong>Feature Request</strong>: <Link href="https://github.com/ofkm/arcane/issues/new?template=feature.yml">Suggest a feature</Link>
+- <strong>Bug Report</strong>: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=bug.yml">Create an issue</Link>
+- <strong>Feature Request</strong>: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=feature.yml">Suggest a feature</Link>
 - <strong>Development Question</strong>: Open a discussion in the repository
 
 Thank you for contributing to Arcane! Your help makes this project better for everyone. 🚀
