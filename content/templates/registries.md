@@ -40,7 +40,7 @@ For each template, create a directory with:
 ## Registry JSON Reference
 
 The registry must conform to the Arcane Templates Registry Schema:
-- Schema ID: `https://github.com/ofkm/arcane-templates/schema.json`
+- Schema ID: `https://github.com/getarcaneapp/arcane-templates/schema.json`
 - JSON Schema Draft: 07
 - No additional properties are allowed beyond those listed below
 
@@ -90,7 +90,7 @@ docker-templates/
 
 ## Testing Your Registry
 
-1. Validate JSON syntax and schema (Draft 07) against `https://github.com/ofkm/arcane-templates/schema.json`
+1. Validate JSON syntax and schema (Draft 07) against `https://github.com/getarcaneapp/arcane-templates/schema.json`
 2. Test URLs: ensure all file URLs are accessible (HTTPS)
 3. Add to Arcane: Settings → Templates → Add Registry
 4. Verify: templates appear and download correctly
@@ -128,7 +128,7 @@ Here's a minimal GitHub setup:
 2. **Add registry.json:**
    ```json
    {
-     "$schema": "https://github.com/ofkm/arcane-templates/schema.json",
+     "$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
      "name": "My Templates",
      "description": "Custom Docker templates",
      "version": "1.0.0",
@@ -155,7 +155,7 @@ Here's a minimal GitHub setup:
 
 Don't want to maintain your own? Contribute to our community registry:
 
-**GitHub:** [https://github.com/ofkm/arcane-templates](https://github.com/ofkm/arcane-templates)
+**GitHub:** [https://github.com/getarcaneapp/arcane-templates](https://github.com/getarcaneapp/arcane-templates)
 
 Submit pull requests to add your templates to the community collection!
 

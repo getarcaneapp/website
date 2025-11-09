@@ -7,7 +7,7 @@ const FALLBACK_STAR_COUNT = 0;
 
 async function getGithubStarCount() {
 	try {
-		const res = await fetch('https://ungh.cc/repos/ofkm/arcane');
+		const res = await fetch('https://ungh.cc/repos/getarcaneapp/arcane');
 		const data = await res.json();
 		return data.repo?.stars ?? FALLBACK_STAR_COUNT;
 	} catch (error) {
@@ -24,7 +24,7 @@ onMount(async () => {
 </script>
 
 <Button
-	href="https://github.com/ofkm/arcane"
+	href="https://github.com/getarcaneapp/arcane"
 	target="_blank"
 	rel="noreferrer"
 	size="sm"

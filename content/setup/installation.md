@@ -17,7 +17,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 ```yaml
 services:
   arcane:
-    image: ghcr.io/ofkm/arcane:latest
+    image: ghcr.io/getarcaneapp/arcane:latest
     container_name: arcane
     ports:
       - '3552:3552'
@@ -60,7 +60,7 @@ You can use the Arcane CLI inside a temporary container to generate secrets in t
 
 Via Docker Container:
 
-<Snippet text="docker run --rm ghcr.io/ofkm/arcane:latest /app/arcane generate secret" class="mt-2" />
+<Snippet text="docker run --rm ghcr.io/getarcaneapp/arcane:latest /app/arcane generate secret" class="mt-2" />
 
 Standalone Arcane Binary:
 

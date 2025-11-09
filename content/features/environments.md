@@ -22,7 +22,7 @@ Remote Environments let Arcane manage containers on other hosts through a stripp
 ```yaml
 services:
   arcane-agent:
-    image: ghcr.io/ofkm/arcane-headless:latest
+    image: ghcr.io/getarcaneapp/arcane-headless:latest
     container_name: arcane-agent
     ports:
       - '3553:3553'

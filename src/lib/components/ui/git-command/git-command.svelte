@@ -40,7 +40,7 @@ export type GitCommandProps = {
 		class: className,
 		agents = ['https', 'ssh', 'gh'],
 		agent = $bindable('https'),
-		repo = $bindable('ofkm/arcane'),
+		repo = $bindable('getarcaneapp/arcane'),
 		command = ''
 	}: GitCommandProps = $props();
 

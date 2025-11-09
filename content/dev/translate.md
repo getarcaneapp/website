@@ -14,6 +14,6 @@ Help the community by translating Arcane into you language.
 
 ## Adding a New Language
 
-Is your language missing from Crowdin? You can [request its addition](https://github.com/ofkm/arcane/issues/new?assignees=&labels=language-request&projects=&template=language-request.yml&title=%F0%9F%8C%90+Language+request%3A+%3Clanguage+name+in+english%3E).
+Is your language missing from Crowdin? You can [request its addition](https://github.com/getarcaneapp/arcane/issues/new?assignees=&labels=language-request&projects=&template=language-request.yml&title=%F0%9F%8C%90+Language+request%3A+%3Clanguage+name+in+english%3E).
 
 Make Sure to include the [ISO 639-1 Language Code](https://www.andiamo.co.uk/resources/iso-language-codes/) and the Native Language name
