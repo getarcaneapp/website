@@ -3,6 +3,32 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.8.1 - 2025-11-10
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.8.1)
+
+
+### Bug fixes
+
+* null checks for tag arrays in template viewer([55c592e](https://github.com/getarcaneapp/arcane/commit/55c592e42250d5b4a97748caaa1423f495fde536) by @kmendell)
+* template details page now loading when no env is found([b7203ce](https://github.com/getarcaneapp/arcane/commit/b7203ce2d71c588f4c0444ad51608c85341d3b64) by @kmendell)
+* header showing background in non-glass ui mode([d4811f1](https://github.com/getarcaneapp/arcane/commit/d4811f14cd554d0368d6ec0b709300f4e2de4700) by @kmendell)
+* individual image update checks not using credentials([64cd997](https://github.com/getarcaneapp/arcane/commit/64cd997573777cc49ad27c9ca271f243f5ed9a41) by @kmendell)
+* normzalize project name on load([754b426](https://github.com/getarcaneapp/arcane/commit/754b4262e4f84e4c2dbd27f4e79373b9a118a090) by @kmendell)
+* discord notifications unable to be saved due to zod validations([fae1c94](https://github.com/getarcaneapp/arcane/commit/fae1c94caa8fa64a496a30bc9bc981aea5cbd782) by @kmendell)
+* clear notification values from database is disabled([b8d10c9](https://github.com/getarcaneapp/arcane/commit/b8d10c9cff05147f815a516702b6e827159bfb8a) by @kmendell)
+* remove entrypoint to fix file permission issues ([#879](https://github.com/getarcaneapp/arcane/pull/879) by @kmendell)
+* tooltip showing on env switcher in sidebar hover mode([757baf6](https://github.com/getarcaneapp/arcane/commit/757baf68b95704336f712a678364fea4b2bed62c) by @kmendell)
+
+### Dependencies
+
+* bump golangci/golangci-lint-action from 8 to 9 ([#872](https://github.com/getarcaneapp/arcane/pull/872) by @dependabot[bot])
+
+
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.8.0...v1.8.1
+
+
 ## v1.8.0 - 2025-11-07
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.8.0)
