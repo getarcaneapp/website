@@ -12,9 +12,12 @@ on:
       - "svelte.config.js"
       - "wrangler.jsonc"
 
+permissions:
+  id-token: write
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-latest
 
     permissions:
       contents: read

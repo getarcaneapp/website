@@ -11,10 +11,11 @@ on:
 
 jobs:
   check-typos:
-    runs-on: ubuntu-slim
+    runs-on: depot-ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
