@@ -20,7 +20,7 @@ description: 'Release notes for Arcane'
 
 * check for image locally before pulling when deploying project([7269ece](https://github.com/getarcaneapp/arcane/commit/7269ece30728cacf4fa61d29461121ab687de62a) by @kmendell)
 * show popover when project name is missing for better user UX([f77044e](https://github.com/getarcaneapp/arcane/commit/f77044e60a71655f28330667150e7fcf8695ebab) by @kmendell)
-* seperate prefefined networks from the rest in usage count([313bbbd](https://github.com/getarcaneapp/arcane/commit/313bbbd46a1d7501246769da921e6693ad8bfc8a) by @kmendell)
+* separate prefefined networks from the rest in usage count([313bbbd](https://github.com/getarcaneapp/arcane/commit/313bbbd46a1d7501246769da921e6693ad8bfc8a) by @kmendell)
 * environment switcher not showing added or removed items without refresh([34c1ddc](https://github.com/getarcaneapp/arcane/commit/34c1ddc87dc3af693b54804e9f7c2b997add5710) by @kmendell)
 * environment data initialization on refreshes ([#925](https://github.com/getarcaneapp/arcane/pull/925) by @cabaucom376)
 * missing tooltip provider ([#927](https://github.com/getarcaneapp/arcane/pull/927) by @cabaucom376)
