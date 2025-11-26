@@ -20,7 +20,7 @@ For Linux users, you can use our installation script to set up Arcane and all it
 
 To uninstall:
 
-<Snippet text="curl -fsSL https://getarcane.app/uninstall.sh | bash" />
+<Snippet text="curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove-all" />
 
 ## Docker Compose (Recommended)
 
