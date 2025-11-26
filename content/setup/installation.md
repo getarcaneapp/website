@@ -12,6 +12,20 @@ import { Link } from '$lib/components/ui/link/index.js';
 > [!NOTE] This guide is for the full installation of Arcane.
 > If you are looking to setup a remote environment see <Link href="/docs/features/environments">here</Link>. For enhanced security with a Docker socket proxy, see the <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link> guide.
 
+## Convenience Script
+
+For Linux users, you can use our installation script to set up Arcane and all its dependencies (Docker, Node.js, Go) automatically.
+
+<Snippet text="curl -fsSL https://getarcane.app/install.sh | bash" />
+
+To uninstall:
+
+<Snippet text="curl -fsSL https://getarcane.app/uninstall.sh | bash" />
+
+## Docker Compose (Recommended)
+
+If you prefer to use Docker Compose manually or are on a different platform:
+
 ## 1. Create **_compose.yaml_**:
 
 ```yaml
