@@ -1,0 +1,160 @@
+name: Update SBOM
+
+on:
+    workflow_dispatch:
+    schedule:
+        # Run daily at 6 AM UTC
+        - cron: "0 6 * * *"
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    update-sbom:
+        runs-on: depot-ubuntu-latest
+
+        steps:
+            - name: Checkout website
+              uses: actions/checkout@v6
+
+            - name: Get latest arcane release
+              id: release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  RELEASE=$(gh api repos/getarcaneapp/arcane/releases/latest --jq '.tag_name')
+                  echo "version=$RELEASE" >> "$GITHUB_OUTPUT"
+                  echo "Latest release: $RELEASE"
+
+            - name: Check if SBOM already exists
+              id: check
+              run: |
+                  VERSION="${{ steps.release.outputs.version }}"
+                  if [ -f "static/sbom/version.txt" ]; then
+                    CURRENT=$(cat static/sbom/version.txt)
+                    if [ "$CURRENT" = "$VERSION" ]; then
+                      echo "skip=true" >> "$GITHUB_OUTPUT"
+                      echo "SBOM already up to date ($VERSION)"
+                    else
+                      echo "skip=false" >> "$GITHUB_OUTPUT"
+                      echo "Updating SBOM from $CURRENT to $VERSION"
+                    fi
+                  else
+                    echo "skip=false" >> "$GITHUB_OUTPUT"
+                    echo "No existing SBOM, will create"
+                  fi
+
+            - name: Checkout arcane repo
+              if: steps.check.outputs.skip != 'true'
+              uses: actions/checkout@v6
+              with:
+                  repository: getarcaneapp/arcane
+                  ref: ${{ steps.release.outputs.version }}
+                  path: arcane
+                  fetch-depth: 1
+
+            - name: Set up Depot CLI
+              if: steps.check.outputs.skip != 'true'
+              uses: depot/setup-action@v1
+
+            - name: Generate SBOM for manager image
+              if: steps.check.outputs.skip != 'true'
+              uses: depot/build-push-action@v1
+              with:
+                  project: np622krb2x
+                  context: arcane
+                  file: arcane/docker/Dockerfile
+                  platforms: linux/amd64,linux/arm64
+                  push: false
+                  sbom: true
+                  sbom-dir: sbom-output/manager
+                  build-args: |
+                      VERSION=${{ steps.release.outputs.version }}
+                      REVISION=sbom-generation
+
+            - name: Generate SBOM for agent image
+              if: steps.check.outputs.skip != 'true'
+              uses: depot/build-push-action@v1
+              with:
+                  project: np622krb2x
+                  context: arcane
+                  file: arcane/docker/Dockerfile-agent
+                  platforms: linux/amd64,linux/arm64
+                  push: false
+                  sbom: true
+                  sbom-dir: sbom-output/agent
+                  build-args: |
+                      VERSION=${{ steps.release.outputs.version }}
+                      REVISION=sbom-generation
+
+            - name: Copy SBOM files
+              if: steps.check.outputs.skip != 'true'
+              run: |
+                  VERSION="${{ steps.release.outputs.version }}"
+                  mkdir -p static/sbom/manager static/sbom/agent
+
+                  # Copy SBOM files
+                  cp sbom-output/manager/*.spdx.json static/sbom/manager/ || true
+                  cp sbom-output/agent/*.spdx.json static/sbom/agent/ || true
+
+                  # Save version
+                  echo "$VERSION" > static/sbom/version.txt
+
+                  # Create metadata file
+                  cat > static/sbom/metadata.json << EOF
+                  {
+                    "version": "$VERSION",
+                    "updated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+                    "images": {
+                      "manager": {
+                        "name": "ghcr.io/getarcaneapp/arcane",
+                        "architectures": ["linux/amd64", "linux/arm64"],
+                        "sbomFiles": {
+                          "amd64": "/sbom/manager/linux_amd64.spdx.json",
+                          "arm64": "/sbom/manager/linux_arm64.spdx.json"
+                        }
+                      },
+                      "agent": {
+                        "name": "ghcr.io/getarcaneapp/arcane-headless",
+                        "architectures": ["linux/amd64", "linux/arm64"],
+                        "sbomFiles": {
+                          "amd64": "/sbom/agent/linux_amd64.spdx.json",
+                          "arm64": "/sbom/agent/linux_arm64.spdx.json"
+                        }
+                      }
+                    }
+                  }
+                  EOF
+
+                  echo "SBOM files generated for $VERSION"
+                  ls -la static/sbom/
+                  ls -la static/sbom/manager/
+                  ls -la static/sbom/agent/
+
+            - name: Create pull request
+              if: steps.check.outputs.skip != 'true'
+              uses: peter-evans/create-pull-request@v7
+              with:
+                  token: ${{ secrets.ARCANE_BOT_TOKEN }}
+                  commit-message: "chore(sbom): update to ${{ steps.release.outputs.version }}"
+                  committer: "getarcaneappbot <info@getarcane.app>"
+                  author: "getarcaneappbot <info@getarcane.app>"
+                  signoff: true
+                  title: "chore(sbom): update to ${{ steps.release.outputs.version }}"
+                  body: |
+                      Updates the Software Bill of Materials (SBOM) for Arcane container images to ${{ steps.release.outputs.version }}.
+
+                      ## Changes
+                      - Updated SBOM for `ghcr.io/getarcaneapp/arcane` (manager)
+                      - Updated SBOM for `ghcr.io/getarcaneapp/arcane-headless` (agent)
+                      - Both linux/amd64 and linux/arm64 architectures
+
+                      ---
+                      *This PR was automatically generated.*
+                  branch: "chore/sbom-${{ steps.release.outputs.version }}"
+                  base: main
+                  labels: "chore(sbom)"
+                  add-paths: |
+                      static/sbom/
+                  delete-branch: true

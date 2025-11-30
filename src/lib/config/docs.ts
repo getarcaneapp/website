@@ -1,17 +1,10 @@
-import {
-	cli,
-	configuration,
-	development,
-	features,
-	guides,
-	setup,
-	templates,
-} from '$velite/index.js';
+import { cli, configuration, development, features, guides, setup, templates } from '$velite/index.js';
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
 	{ href: '/generator', label: 'Compose Generator' },
-	{ href: '/changelog', label: 'Changelog' },
+	{ href: '/sbom', label: 'SBOM' },
+	{ href: '/changelog', label: 'Changelog' }
 ];
 
 export type NavItem = {
@@ -39,13 +32,11 @@ function sortDocs<T extends { title: string; order?: number }>(arr: T[]) {
 	});
 }
 
-function mapLeafDocs(
-	docs: Array<{ title: string; path: string; order?: number }>,
-): SidebarNavItem[] {
+function mapLeafDocs(docs: Array<{ title: string; path: string; order?: number }>): SidebarNavItem[] {
 	return sortDocs(docs).map((d) => ({
 		title: d.title,
 		href: toHref(d.path),
-		items: [],
+		items: []
 	}));
 }
 
@@ -60,7 +51,7 @@ const SECTION_BUILDERS: Array<{
 	{ key: 'cli', title: 'CLI', source: cli },
 	{ key: 'guides', title: 'Guides', source: guides },
 	{ key: 'templates', title: 'Templates', source: templates },
-	{ key: 'development', title: 'Development', source: development },
+	{ key: 'development', title: 'Development', source: development }
 ];
 
 const COMMUNITY_GROUP: SidebarNavItem = {
@@ -70,23 +61,19 @@ const COMMUNITY_GROUP: SidebarNavItem = {
 			title: 'Discord',
 			href: 'https://discord.gg/WyXYpdyV3Z',
 			external: true,
-			items: [],
-		},
-	],
+			items: []
+		}
+	]
 };
 
-export const SidebarNavItems: SidebarNavItem[] = SECTION_BUILDERS.map(
-	({ title, source }) => ({
-		title,
-		items: mapLeafDocs(source),
-	}),
-);
+export const SidebarNavItems: SidebarNavItem[] = SECTION_BUILDERS.map(({ title, source }) => ({
+	title,
+	items: mapLeafDocs(source)
+}));
 
 SidebarNavItems.push(COMMUNITY_GROUP);
 
-const flat: SidebarNavItem[] = SECTION_BUILDERS.flatMap((s) =>
-	mapLeafDocs(s.source),
-);
+const flat: SidebarNavItem[] = SECTION_BUILDERS.flatMap((s) => mapLeafDocs(s.source));
 
 export function findNeighbors(pathName: string): {
 	previous: SidebarNavItem | null;
@@ -97,6 +84,6 @@ export function findNeighbors(pathName: string): {
 	if (idx === -1) return { previous: null, next: null };
 	return {
 		previous: flat[idx - 1] ?? null,
-		next: flat[idx + 1] ?? null,
+		next: flat[idx + 1] ?? null
 	};
 }
