@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "src/**"
+      - "static/sbom/**"
       - "content/**"
       - "package.json"
       - "pnpm-lock.yaml"
