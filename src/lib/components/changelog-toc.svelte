@@ -1,57 +1,57 @@
 <script lang="ts" module>
-// Velite TocEntry type structure
-type TocEntry = {
-	title: string;
-	url: string;
-	items: TocEntry[];
-};
+	// Velite TocEntry type structure
+	type TocEntry = {
+		title: string;
+		url: string;
+		items: TocEntry[];
+	};
 
-function flattenToc(items: TocEntry[] = [], depth = 0) {
-	const out: Array<{ title: string; url: string; depth: number }> = [];
-	for (const item of items) {
-		out.push({ title: item.title, url: item.url, depth });
-		if (item.items && item.items.length) {
-			out.push(...flattenToc(item.items, depth + 1));
+	function flattenToc(items: TocEntry[] = [], depth = 0) {
+		const out: Array<{ title: string; url: string; depth: number }> = [];
+		for (const item of items) {
+			out.push({ title: item.title, url: item.url, depth });
+			if (item.items && item.items.length) {
+				out.push(...flattenToc(item.items, depth + 1));
+			}
 		}
+		return out;
 	}
-	return out;
-}
 
-function useActiveItem(getItemIds: () => string[]) {
-	let activeId = $state<string | null>(null);
-	const itemIds = $derived(getItemIds().map((id) => id.replace('#', '')));
+	function useActiveItem(getItemIds: () => string[]) {
+		let activeId = $state<string | null>(null);
+		const itemIds = $derived(getItemIds().map((id) => id.replace('#', '')));
 
-	$effect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) {
-						activeId = entry.target.id;
+		$effect(() => {
+			const observer = new IntersectionObserver(
+				(entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) {
+							activeId = entry.target.id;
+						}
 					}
-				}
-			},
-			{ rootMargin: '0px 0px -70% 0px', threshold: 0 },
-		);
+				},
+				{ rootMargin: '0px 0px -70% 0px', threshold: 0 }
+			);
 
-		for (const id of itemIds ?? []) {
-			const el = document.getElementById(id);
-			if (el) observer.observe(el);
-		}
-
-		return () => {
 			for (const id of itemIds ?? []) {
 				const el = document.getElementById(id);
-				if (el) observer.unobserve(el);
+				if (el) observer.observe(el);
+			}
+
+			return () => {
+				for (const id of itemIds ?? []) {
+					const el = document.getElementById(id);
+					if (el) observer.unobserve(el);
+				}
+			};
+		});
+
+		return {
+			get current() {
+				return activeId;
 			}
 		};
-	});
-
-	return {
-		get current() {
-			return activeId;
-		},
-	};
-}
+	}
 </script>
 
 <script lang="ts">
@@ -105,7 +105,7 @@ function useActiveItem(getItemIds: () => string[]) {
 					</div>
 					{#if collapsed && hasMore}
 						<div
-							class="from-background pointer-events-none absolute bottom-0 left-0 z-10 h-20 w-full bg-gradient-to-t to-transparent"
+							class="from-background pointer-events-none absolute bottom-0 left-0 z-10 h-20 w-full bg-linear-to-t"
 						></div>
 						<Button
 							variant="secondary"

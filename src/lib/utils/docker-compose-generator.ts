@@ -1,122 +1,129 @@
-import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
+import { getAllFields } from '$lib/config/compose-generator.js';
 
 function generateRandomKey(): string {
 	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-export function generateDockerCompose(config: DockerComposeConfig): string {
-	const environment = [`PUID=${config.puid}`, `PGID=${config.pgid}`];
+export function generateDockerCompose(config: Record<string, string | boolean>): string {
+	const fields = getAllFields();
+	const environment: string[] = [];
 
-	const encryptionKey = config.encryptionKey || generateRandomKey();
-	const jwtSecret = config.jwtSecret || generateRandomKey();
+	// Build environment variables from config
+	for (const field of fields) {
+		if (!field.includeInCompose || !field.envName) continue;
 
-	environment.push(`APP_URL=${config.appUrl}`);
-	environment.push(`ENCRYPTION_KEY=${encryptionKey}`);
-	environment.push(`JWT_SECRET=${jwtSecret}`);
+		const value = config[field.key];
 
-	// Default SQLite database
+		// Skip if depends on a toggle that's disabled
+		if (field.dependsOn && !config[field.dependsOn]) continue;
+
+		// Handle different value types
+		if (typeof value === 'boolean') {
+			environment.push(`${field.envName}=${value}`);
+		} else if (typeof value === 'string' && value.trim()) {
+			environment.push(`${field.envName}=${value}`);
+		} else if (field.canGenerate) {
+			// Auto-generate secrets if empty
+			environment.push(`${field.envName}=${generateRandomKey()}`);
+		}
+	}
+
+	// Add SQLite database URL if not using external database
 	if (!config.enableDatabase) {
 		environment.push(
 			'DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
 		);
 	}
 
-	const services: any = {
+	const port = (config.port as string) || '3552';
+	const dataPath = (config.dataPath as string) || 'arcane-data';
+	const dockerSocket = (config.dockerSocket as string) || '/var/run/docker.sock';
+
+	const services: Record<string, unknown> = {
 		arcane: {
 			image: 'ghcr.io/getarcaneapp/arcane:latest',
 			container_name: 'arcane',
 			restart: 'unless-stopped',
-			ports: [`${config.port}:3552`],
-			volumes: [`${config.dockerSocket}:/var/run/docker.sock`, `${config.dataPath}:/app/data`],
+			ports: [`${port}:3552`],
+			volumes: [`${dockerSocket}:/var/run/docker.sock`, `${dataPath}:/app/data`],
 			environment
 		}
 	};
 
-	// Add external database if enabled (PostgreSQL only)
-	if (config.enableDatabase && config.dbType === 'postgres') {
+	const volumes: Record<string, { driver: string }> = {
+		[dataPath]: { driver: 'local' }
+	};
+
+	// Add PostgreSQL service if enabled
+	if (config.enableDatabase) {
+		const dbName = (config.dbName as string) || 'arcane';
+		const dbUser = (config.dbUser as string) || 'arcane';
+		const dbPassword = (config.dbPassword as string) || 'changeme';
+		const dbPort = (config.dbPort as string) || '5432';
+
 		services.postgres = {
 			image: 'postgres:17-alpine',
 			container_name: 'arcane-postgres',
 			restart: 'unless-stopped',
-			environment: [
-				`POSTGRES_DB=${config.dbName}`,
-				`POSTGRES_USER=${config.dbUser}`,
-				`POSTGRES_PASSWORD=${config.dbPassword}`
-			],
-			volumes: [`postgres-data:/var/lib/postgresql/data`],
-			ports: [`${config.dbPort}:5432`]
+			environment: [`POSTGRES_DB=${dbName}`, `POSTGRES_USER=${dbUser}`, `POSTGRES_PASSWORD=${dbPassword}`],
+			volumes: ['postgres-data:/var/lib/postgresql/data'],
+			ports: [`${dbPort}:5432`]
 		};
 
-		services.arcane.environment.push(
-			`DATABASE_URL=postgresql://${config.dbUser}:${config.dbPassword}@postgres:5432/${config.dbName}`
+		// Add DATABASE_URL to arcane service
+		(services.arcane as { environment: string[] }).environment.push(
+			`DATABASE_URL=postgresql://${dbUser}:${dbPassword}@postgres:5432/${dbName}`
 		);
-		services.arcane.depends_on = ['postgres'];
-	}
 
-	// Add OIDC configuration
-	if (config.enableOIDC) {
-		services.arcane.environment.push(
-			'OIDC_ENABLED=true',
-			`OIDC_CLIENT_ID=${config.oidcClientId}`,
-			`OIDC_CLIENT_SECRET=${config.oidcClientSecret}`,
-			`OIDC_ISSUER_URL=${config.oidcIssuerUrl}`,
-			`OIDC_SCOPES=${config.oidcScopes}`
-		);
-	}
-
-	// Create volumes section
-	const volumes: any = {
-		[config.dataPath]: {
-			driver: 'local'
-		}
-	};
-
-	if (config.enableDatabase && config.dbType === 'postgres') {
+		(services.arcane as { depends_on?: string[] }).depends_on = ['postgres'];
 		volumes['postgres-data'] = { driver: 'local' };
 	}
 
-	const compose = {
-		services,
-		volumes
-	};
+	return formatYaml(services, volumes);
+}
 
-	return `# Arcane Docker Compose Configuration
-# Generated at ${new Date().toLocaleString()}
+function formatYaml(services: Record<string, unknown>, volumes: Record<string, { driver: string }>): string {
+	const lines: string[] = [
+		'# Arcane Docker Compose Configuration',
+		`# Generated at ${new Date().toLocaleString()}`,
+		'',
+		'services:'
+	];
 
-services:
-${Object.entries(compose.services)
-	.map(([serviceName, serviceConfig]) => {
-		const yamlLines = [`  ${serviceName}:`];
-		Object.entries(serviceConfig as any).forEach(([key, value]) => {
+	for (const [serviceName, serviceConfig] of Object.entries(services)) {
+		lines.push(`  ${serviceName}:`);
+		for (const [key, value] of Object.entries(serviceConfig as Record<string, unknown>)) {
 			if (Array.isArray(value)) {
-				yamlLines.push(`    ${key}:`);
-				value.forEach((item) => yamlLines.push(`      - ${item}`));
+				lines.push(`    ${key}:`);
+				for (const item of value) {
+					lines.push(`      - ${item}`);
+				}
 			} else if (typeof value === 'object' && value !== null) {
-				yamlLines.push(`    ${key}:`);
-				Object.entries(value).forEach(([subKey, subValue]) => {
+				lines.push(`    ${key}:`);
+				for (const [subKey, subValue] of Object.entries(value as Record<string, unknown>)) {
 					if (Array.isArray(subValue)) {
-						yamlLines.push(`      ${subKey}:`);
-						subValue.forEach((item) => yamlLines.push(`        - ${item}`));
+						lines.push(`      ${subKey}:`);
+						for (const item of subValue) {
+							lines.push(`        - ${item}`);
+						}
 					} else {
-						yamlLines.push(`      ${subKey}: ${subValue}`);
+						lines.push(`      ${subKey}: ${subValue}`);
 					}
-				});
+				}
 			} else {
-				yamlLines.push(`    ${key}: ${value}`);
+				lines.push(`    ${key}: ${value}`);
 			}
-		});
-		return yamlLines.join('\n');
-	})
-	.join('\n\n')}
+		}
+		lines.push('');
+	}
 
-volumes:
-${Object.entries(compose.volumes)
-	.map(([volumeName, volumeConfig]) => {
-		const yamlLines = [`  ${volumeName}:`];
-		Object.entries(volumeConfig as any).forEach(([key, value]) => {
-			yamlLines.push(`    ${key}: ${value}`);
-		});
-		return yamlLines.join('\n');
-	})
-	.join('\n')}`;
+	lines.push('volumes:');
+	for (const [volumeName, volumeConfig] of Object.entries(volumes)) {
+		lines.push(`  ${volumeName}:`);
+		for (const [key, value] of Object.entries(volumeConfig)) {
+			lines.push(`    ${key}: ${value}`);
+		}
+	}
+
+	return lines.join('\n');
 }

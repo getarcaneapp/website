@@ -1,236 +1,276 @@
 <script lang="ts">
-import Database from '@lucide/svelte/icons/database';
-import FileText from '@lucide/svelte/icons/file-text';
-import Settings from '@lucide/svelte/icons/settings';
-import { Button } from '$lib/components/ui/button/index.js';
-import * as Card from '$lib/components/ui/card/index.js';
-import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-import { Input } from '$lib/components/ui/input/index.js';
-import { Label } from '$lib/components/ui/label/index.js';
-import * as Tabs from '$lib/components/ui/tabs/index.js';
-import type { DockerComposeConfig } from '$lib/types/compose-config.type.js';
-import { generateDockerCompose } from '$lib/utils/docker-compose-generator.js';
-import DockerComposeDialog from './docker-compose-dialog.svelte';
+	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import Database from '@lucide/svelte/icons/database';
+	import FileText from '@lucide/svelte/icons/file-text';
+	import Key from '@lucide/svelte/icons/key';
+	import Settings from '@lucide/svelte/icons/settings';
+	import Shield from '@lucide/svelte/icons/shield';
+	import Cog from '@lucide/svelte/icons/cog';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import { generatorConfig, getDefaultConfigValues } from '$lib/config/compose-generator.js';
+	import type { GeneratorField, GeneratorSection } from '$lib/types/compose-generator.type.js';
+	import { generateDockerCompose } from '$lib/utils/docker-compose-generator.js';
+	import DockerComposeDialog from './docker-compose-dialog.svelte';
 
-let config = $state<DockerComposeConfig>({
-	// Basic settings
-	appUrl: 'http://localhost:3552',
-	port: '3552',
-	puid: '1000',
-	pgid: '1000',
-	dataPath: 'arcane-data',
-	dockerSocket: '/var/run/docker.sock',
-	encryptionKey: '',
-	jwtSecret: '',
+	// Icon mapping
+	const icons: Record<string, typeof Settings> = {
+		settings: Settings,
+		database: Database,
+		key: Key,
+		shield: Shield,
+		cog: Cog
+	};
 
-	// Database settings
-	enableDatabase: false,
-	dbType: 'postgres',
-	dbName: 'arcane',
-	dbUser: 'arcane',
-	dbPassword: 'your_secure_password',
-	dbPort: '5432',
+	let config = $state<Record<string, string | boolean>>(getDefaultConfigValues());
 
-	// Authentication
-	enableOIDC: false,
-	oidcClientId: '',
-	oidcClientSecret: '',
-	oidcIssuerUrl: 'https://your-provider.com',
-	oidcScopes: 'openid email profile',
-});
+	let generatedCompose = $state('');
+	let dialogOpen = $state(false);
 
-let generatedCompose = $state('');
-let dialogOpen = $state(false);
+	// Tab animation state
+	let activeTab = $state(generatorConfig[0].id);
+	let slideDirection = $state<'left' | 'right'>('right');
 
-function handleGenerateDockerCompose() {
-	generatedCompose = generateDockerCompose(config);
-	dialogOpen = true;
-}
+	// Derived values for navigation
+	let currentTabIndex = $derived(generatorConfig.findIndex((t) => t.id === activeTab));
+	let canGoPrev = $derived(currentTabIndex > 0);
+	let canGoNext = $derived(currentTabIndex < generatorConfig.length - 1);
+	let prevTab = $derived(canGoPrev ? generatorConfig[currentTabIndex - 1] : null);
+	let nextTab = $derived(canGoNext ? generatorConfig[currentTabIndex + 1] : null);
 
-function generateRandomKey() {
-	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
-		byte.toString(16).padStart(2, '0'),
-	).join('');
-}
+	function handleTabChange(newTab: string) {
+		const currentIndex = generatorConfig.findIndex((t) => t.id === activeTab);
+		const newIndex = generatorConfig.findIndex((t) => t.id === newTab);
+		slideDirection = newIndex > currentIndex ? 'right' : 'left';
+		activeTab = newTab;
+	}
+
+	function goToPrevTab() {
+		if (prevTab) {
+			handleTabChange(prevTab.id);
+		}
+	}
+
+	function goToNextTab() {
+		if (nextTab) {
+			handleTabChange(nextTab.id);
+		}
+	}
+
+	function handleGenerateDockerCompose() {
+		generatedCompose = generateDockerCompose(config);
+		dialogOpen = true;
+	}
+
+	function generateRandomKey() {
+		return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join(
+			''
+		);
+	}
+
+	function shouldShowField(field: GeneratorField): boolean {
+		if (!field.dependsOn) return true;
+		return config[field.dependsOn] === true;
+	}
+
+	function getIcon(iconName: string) {
+		return icons[iconName] || Settings;
+	}
+
+	function handleCheckboxChange(key: string, checked: boolean) {
+		config[key] = checked;
+	}
+
+	function handleSelectChange(key: string, value: string | undefined) {
+		if (value) {
+			config[key] = value;
+		}
+	}
 </script>
 
-<div class="mx-auto w-full max-w-4xl space-y-6 px-4 sm:px-6">
+<div class="generator-wrapper mx-auto w-full max-w-4xl space-y-6 px-4 sm:px-6">
 	<div class="space-y-6">
-		<Tabs.Root value="basic">
-			<Tabs.List class="grid w-full grid-cols-2">
-				<Tabs.Trigger value="basic">
-					<Settings class="mr-2 size-4" />
-					Basic
-				</Tabs.Trigger>
-				<Tabs.Trigger value="database">
-					<Database class="mr-2 size-4" />
-					<span class="hidden sm:inline">Database & Auth</span>
-					<span class="sm:hidden">DB & Auth</span>
-				</Tabs.Trigger>
+		<Tabs.Root value={activeTab} onValueChange={handleTabChange}>
+			<Tabs.List class="grid w-full grid-cols-3">
+				{#each generatorConfig as tab}
+					{@const IconComponent = getIcon(tab.icon)}
+					<Tabs.Trigger value={tab.id}>
+						<IconComponent class="mr-2 size-4" />
+						<span class="hidden sm:inline">{tab.label}</span>
+						<span class="sm:hidden">{tab.shortLabel || tab.label}</span>
+					</Tabs.Trigger>
+				{/each}
 			</Tabs.List>
 
-			<Tabs.Content value="basic">
-				<Card.Root class="mt-6">
-					<Card.Header>
-						<Card.Title>Basic Configuration</Card.Title>
-						<Card.Description>Core Arcane settings</Card.Description>
-					</Card.Header>
-					<Card.Content class="space-y-4">
-						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-							<div class="space-y-2">
-								<Label for="appUrl">App URL</Label>
-								<Input id="appUrl" bind:value={config.appUrl} placeholder="http://localhost:3552" />
-							</div>
-							<div class="space-y-2">
-								<Label for="port">Port</Label>
-								<Input id="port" bind:value={config.port} placeholder="8080" />
-							</div>
-							<div class="space-y-2">
-								<Label for="dataPath">Data Volume</Label>
-								<Input id="dataPath" bind:value={config.dataPath} placeholder="arcane-data" />
-							</div>
-							<div class="space-y-2">
-								<Label for="puid">PUID (User ID)</Label>
-								<Input id="puid" bind:value={config.puid} placeholder="1000" />
-							</div>
-							<div class="space-y-2">
-								<Label for="pgid">PGID (Group ID)</Label>
-								<Input id="pgid" bind:value={config.pgid} placeholder="1000" />
-							</div>
-						</div>
-						<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-							<div class="space-y-2">
-								<Label for="encryptionKey">Encryption Key (Optional)</Label>
-								<div class="flex flex-col gap-2 sm:flex-row">
-									<Input
-										id="encryptionKey"
-										bind:value={config.encryptionKey}
-										placeholder="Auto-generated if empty"
-										class="flex-1"
-									/>
-									<Button
-										type="button"
-										variant="outline"
-										onclick={() => (config.encryptionKey = generateRandomKey())}
-										class="w-full sm:w-auto"
-									>
-										Generate
-									</Button>
-								</div>
-							</div>
-							<div class="space-y-2">
-								<Label for="jwtSecret">JWT Secret (Optional)</Label>
-								<div class="flex flex-col gap-2 sm:flex-row">
-									<Input
-										id="jwtSecret"
-										bind:value={config.jwtSecret}
-										placeholder="Auto-generated if empty"
-										class="flex-1"
-									/>
-									<Button
-										type="button"
-										variant="outline"
-										onclick={() => (config.jwtSecret = generateRandomKey())}
-										class="w-full sm:w-auto"
-									>
-										Generate
-									</Button>
-								</div>
-							</div>
-						</div>
-					</Card.Content>
-				</Card.Root>
-			</Tabs.Content>
-
-			<Tabs.Content value="database" class="space-y-4">
-				<Card.Root class="mt-6">
-					<Card.Header>
-						<Card.Title>Database Configuration</Card.Title>
-						<Card.Description
-							>By default, Arcane uses SQLite. Enable this for external PostgreSQL database.</Card.Description
+			<div class="relative overflow-hidden">
+				{#each generatorConfig as tab (tab.id)}
+					{#if activeTab === tab.id}
+						<div
+							class="tab-content space-y-4"
+							class:slide-in-right={slideDirection === 'right'}
+							class:slide-in-left={slideDirection === 'left'}
 						>
-					</Card.Header>
-					<Card.Content class="space-y-4">
-						<div class="flex items-center space-x-2">
-							<Checkbox id="enableDatabase" bind:checked={config.enableDatabase} />
-							<Label for="enableDatabase" class="text-sm sm:text-base">Use external PostgreSQL database</Label>
+							{#each tab.sections as section}
+								<Card.Root class="mt-6">
+									<Card.Header>
+										<Card.Title>{section.title}</Card.Title>
+										<Card.Description>{section.description}</Card.Description>
+									</Card.Header>
+									<Card.Content class="space-y-4">
+										{#each section.fields as field}
+											{#if shouldShowField(field)}
+												{#if field.type === 'checkbox'}
+													<div class="flex items-center space-x-2">
+														<Checkbox
+															id={field.key}
+															checked={config[field.key] === true}
+															onCheckedChange={(checked) => handleCheckboxChange(field.key, checked === true)}
+														/>
+														<Label for={field.key} class="text-sm sm:text-base">{field.label}</Label>
+													</div>
+												{:else if field.type === 'select'}
+													<div class="space-y-2">
+														<Label for={field.key}>{field.label}</Label>
+														<Select.Root
+															type="single"
+															value={config[field.key] as string}
+															onValueChange={(value) => handleSelectChange(field.key, value)}
+														>
+															<Select.Trigger class="w-full">
+																{config[field.key] || field.placeholder || 'Select...'}
+															</Select.Trigger>
+															<Select.Content>
+																{#each field.options || [] as option}
+																	<Select.Item value={option.value}>{option.label}</Select.Item>
+																{/each}
+															</Select.Content>
+														</Select.Root>
+													</div>
+												{:else if field.canGenerate}
+													<div class="space-y-2">
+														<Label for={field.key}>{field.label}</Label>
+														<div class="flex flex-col gap-2 sm:flex-row">
+															<Input
+																id={field.key}
+																type={field.type === 'password' ? 'password' : 'text'}
+																bind:value={config[field.key]}
+																placeholder={field.placeholder}
+																class="flex-1"
+															/>
+															<Button
+																type="button"
+																variant="outline"
+																onclick={() => (config[field.key] = generateRandomKey())}
+																class="w-full sm:w-auto"
+															>
+																Generate
+															</Button>
+														</div>
+													</div>
+												{:else}
+													<div class="space-y-2">
+														<Label for={field.key}>{field.label}</Label>
+														<Input
+															id={field.key}
+															type={field.type === 'password' ? 'password' : 'text'}
+															bind:value={config[field.key]}
+															placeholder={field.placeholder}
+														/>
+													</div>
+												{/if}
+											{/if}
+										{/each}
+									</Card.Content>
+								</Card.Root>
+							{/each}
 						</div>
-
-						{#if config.enableDatabase}
-							<div class="space-y-4">
-								<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-									<div class="space-y-2">
-										<Label for="dbName">Database Name</Label>
-										<Input id="dbName" bind:value={config.dbName} />
-									</div>
-									<div class="space-y-2">
-										<Label for="dbUser">Database User</Label>
-										<Input id="dbUser" bind:value={config.dbUser} />
-									</div>
-									<div class="space-y-2">
-										<Label for="dbPassword">Database Password</Label>
-										<Input id="dbPassword" type="password" bind:value={config.dbPassword} />
-									</div>
-									<div class="space-y-2">
-										<Label for="dbPort">Database Port</Label>
-										<Input id="dbPort" bind:value={config.dbPort} />
-									</div>
-								</div>
-							</div>
-						{/if}
-					</Card.Content>
-				</Card.Root>
-
-				<Card.Root>
-					<Card.Header>
-						<Card.Title>OIDC Authentication</Card.Title>
-						<Card.Description>Single Sign-On configuration</Card.Description>
-					</Card.Header>
-					<Card.Content class="space-y-4">
-						<div class="flex items-center space-x-2">
-							<Checkbox id="enableOIDC" bind:checked={config.enableOIDC} />
-							<Label for="enableOIDC" class="text-sm sm:text-base">Enable OIDC Authentication</Label>
-						</div>
-
-						{#if config.enableOIDC}
-							<div class="space-y-4">
-								<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-									<div class="space-y-2">
-										<Label for="oidcClientId">Client ID</Label>
-										<Input id="oidcClientId" bind:value={config.oidcClientId} />
-									</div>
-									<div class="space-y-2">
-										<Label for="oidcClientSecret">Client Secret</Label>
-										<Input id="oidcClientSecret" type="password" bind:value={config.oidcClientSecret} />
-									</div>
-								</div>
-								<div class="space-y-2">
-									<Label for="oidcIssuerUrl">OIDC Issuer URL</Label>
-									<Input id="oidcIssuerUrl" bind:value={config.oidcIssuerUrl} placeholder="https://sso.example.com" />
-								</div>
-								<div class="space-y-2">
-									<Label for="oidcScopes">Scopes</Label>
-									<Input id="oidcScopes" bind:value={config.oidcScopes} placeholder="openid email profile" />
-								</div>
-							</div>
-						{/if}
-					</Card.Content>
-				</Card.Root>
-			</Tabs.Content>
+					{/if}
+				{/each}
+			</div>
 		</Tabs.Root>
 
-		<div class="flex justify-center">
+		<!-- Navigation arrows -->
+		<div class="flex items-center justify-between gap-4">
+			<Button variant="outline" size="sm" onclick={goToPrevTab} disabled={!canGoPrev} class="flex items-center gap-2">
+				<ChevronLeft class="h-4 w-4" />
+				<span class="hidden sm:inline">{prevTab?.label || 'Previous'}</span>
+			</Button>
+
 			<Button
 				onclick={handleGenerateDockerCompose}
 				data-umami-event="compose-generated"
 				size="lg"
-				class="w-full sm:w-auto sm:min-w-48"
+				class="flex-1 sm:min-w-48 sm:flex-none"
 			>
 				<FileText class="mr-2 h-4 w-4" />
 				Generate Docker Compose
+			</Button>
+
+			<Button variant="outline" size="sm" onclick={goToNextTab} disabled={!canGoNext} class="flex items-center gap-2">
+				<span class="hidden sm:inline">{nextTab?.label || 'Next'}</span>
+				<ChevronRight class="h-4 w-4" />
 			</Button>
 		</div>
 	</div>
 </div>
 
 <DockerComposeDialog bind:open={dialogOpen} {generatedCompose} />
+
+<style>
+	.generator-wrapper {
+		animation: fadeInUp 0.5s ease-out both;
+	}
+
+	.tab-content {
+		animation-duration: 0.4s;
+		animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		animation-fill-mode: both;
+	}
+
+	.slide-in-right {
+		animation-name: slideInRight;
+	}
+
+	.slide-in-left {
+		animation-name: slideInLeft;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes slideInRight {
+		from {
+			opacity: 0;
+			transform: translateX(12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes slideInLeft {
+		from {
+			opacity: 0;
+			transform: translateX(-12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+</style>
