@@ -1,6 +1,6 @@
 ---
 title: 'GPU Monitoring Setup'
-description: 'Setup GPU monitoring for NVIDIA, AMD, and Intel GPUs'
+description: 'Setup GPU monitoring for NVIDIA GPUs'
 order: 3
 ---
 
@@ -35,64 +35,6 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    restart: unless-stopped
-
-volumes:
-  arcane-data:
-```
-
-## AMD GPU Setup
-
-Configure Arcane with AMD GPU support in your `compose.yaml`:
-
-```yaml
-services:
-  arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
-    container_name: arcane
-    ports:
-      - '3552:3552'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - arcane-data:/app/data
-    devices:
-      - /dev/dri:/dev/dri
-      - /dev/kfd:/dev/kfd
-    environment:
-      - APP_URL=http://localhost:3552
-      - PUID=1000
-      - PGID=1000
-      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
-      - ROCR_VISIBLE_DEVICES=all
-    restart: unless-stopped
-
-volumes:
-  arcane-data:
-```
-
-## Intel GPU Setup
-
-Configure Arcane with Intel GPU support in your `compose.yaml`:
-
-```yaml
-services:
-  arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
-    container_name: arcane
-    ports:
-      - '3552:3552'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - arcane-data:/app/data
-    devices:
-      - /dev/dri:/dev/dri
-    environment:
-      - APP_URL=http://localhost:3552
-      - PUID=1000
-      - PGID=1000
-      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
     restart: unless-stopped
 
 volumes:
