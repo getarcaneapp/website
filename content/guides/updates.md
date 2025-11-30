@@ -21,7 +21,7 @@ Keep selected containers and projects up to date automatically when new images a
 To prevent updates for a project or container, add this label:
 
 ```
-com.ofkm.arcane.updater=false
+com.getarcaneapp.arcane.updater=false
 ```
 
 ### Compose Example
@@ -32,5 +32,5 @@ services:
     image: ghcr.io/acme/myapp:1
     # Exclude this service from auto updates
     labels:
-      - com.ofkm.arcane.updater=false
+      - com.getarcaneapp.arcane.updater=false
 ```
