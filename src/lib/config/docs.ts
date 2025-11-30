@@ -2,6 +2,7 @@ import { cli, configuration, development, features, guides, setup, templates } f
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
+	{ href: '/api-reference', label: 'API' },
 	{ href: '/generator', label: 'Compose Generator' },
 	{ href: '/sbom', label: 'SBOM' },
 	{ href: '/changelog', label: 'Changelog' }

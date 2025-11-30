@@ -8,7 +8,7 @@ const docSchema = s
 		path: s.path(),
 		published: s.boolean().default(true),
 		order: s.number().optional(),
-		toc: s.toc(),
+		toc: s.toc()
 	})
 	.transform((data) => {
 		const segments = data.path.split('/');
@@ -17,62 +17,68 @@ const docSchema = s
 			...data,
 			slug: segments.join('/'),
 			section: segments[0],
-			segments,
+			segments
 		};
 	});
 
 const indexPage = defineCollection({
 	name: 'indexPage',
 	pattern: './index.md',
-	schema: docSchema,
+	schema: docSchema
 });
 
 const setup = defineCollection({
 	name: 'setup',
 	pattern: './setup/**/*.md',
-	schema: docSchema,
+	schema: docSchema
 });
 
 const configuration = defineCollection({
 	name: 'configuration',
 	pattern: './configuration/**/*.md',
-	schema: docSchema,
+	schema: docSchema
 });
 
 const features = defineCollection({
 	name: 'features',
 	pattern: './features/**/*.md',
-	schema: docSchema,
+	schema: docSchema
 });
 
 const guides = defineCollection({
 	name: 'guides',
 	pattern: './guides/**/*.md',
-	schema: docSchema,
+	schema: docSchema
 });
 
 const development = defineCollection({
 	name: 'development',
 	pattern: './dev/**/*.md',
-	schema: docSchema,
+	schema: docSchema
 });
 
 const templates = defineCollection({
 	name: 'templates',
 	pattern: ['./templates.md', './templates/**/*.md'],
-	schema: docSchema,
+	schema: docSchema
 });
 
 const changelog = defineCollection({
 	name: 'changelog',
 	pattern: './changelog.md',
-	schema: docSchema,
+	schema: docSchema
 });
 
 const cli = defineCollection({
 	name: 'cli',
 	pattern: './cli/**/*.md',
-	schema: docSchema,
+	schema: docSchema
+});
+
+const api = defineCollection({
+	name: 'api',
+	pattern: './api.md',
+	schema: docSchema
 });
 
 export default defineConfig({
@@ -87,6 +93,7 @@ export default defineConfig({
 		templates,
 		changelog,
 		cli,
+		api
 	},
-	output: { assets: 'static' },
+	output: { assets: 'static' }
 });
