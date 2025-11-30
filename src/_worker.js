@@ -1,5 +1,5 @@
 // Cloudflare Worker for Arcane Documentation Website
-// Handles redirects and serves static assets
+// Handles redirects and serves static assets with SPA fallback
 
 /**
  * @typedef {Object} Env
@@ -23,7 +23,26 @@ export default {
 			return Response.redirect(redirectUrl.toString(), 301);
 		}
 
-		// Serve static assets for all other requests
-		return env.ASSETS.fetch(request);
-	},
+		// Try to serve static assets first
+		const response = await env.ASSETS.fetch(request);
+
+		// If the asset exists, return it
+		if (response.status !== 404) {
+			return response;
+		}
+
+		// For 404s on HTML pages (not static files like .js, .css, images),
+		// serve the SPA fallback (index.html)
+		const pathname = url.pathname;
+		const hasExtension = pathname.includes('.') && !pathname.endsWith('/');
+
+		if (!hasExtension) {
+			// This is likely a SPA route, serve index.html
+			const fallbackRequest = new Request(new URL('/index.html', url.origin), request);
+			return env.ASSETS.fetch(fallbackRequest);
+		}
+
+		// For actual missing static files, return the 404
+		return response;
+	}
 };
