@@ -89,7 +89,7 @@ jobs:
                       VERSION=${{ steps.release.outputs.version }}
                       REVISION=sbom-generation
 
-            - name: Copy SBOM files
+            - name: Copy SBOM files and cleanup
               if: steps.check.outputs.skip != 'true'
               run: |
                   VERSION="${{ steps.release.outputs.version }}"
@@ -132,6 +132,9 @@ jobs:
                   ls -la static/sbom/
                   ls -la static/sbom/manager/
                   ls -la static/sbom/agent/
+
+                  # Clean up cloned repo and build output
+                  rm -rf arcane sbom-output
 
             - name: Create pull request
               if: steps.check.outputs.skip != 'true'
