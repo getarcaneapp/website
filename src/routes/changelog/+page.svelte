@@ -1,15 +1,17 @@
 <script lang="ts">
 	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import ChangelogToc from '$lib/components/changelog-toc.svelte';
+	import * as Toc from '$lib/components/ui/toc/index.js';
+	import { UseToc } from '$lib/hooks/use-toc.svelte.js';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
 
 	const Markdown = $derived(data.component);
 	const doc = $derived(data.metadata);
-	const toc = $derived(doc.toc ?? []);
 
 	const githubEditUrl = $derived(`https://github.com/getarcaneapp/website/edit/main/content/${doc.path}.md`);
+
+	const toc = new UseToc();
 </script>
 
 <svelte:head>
@@ -19,7 +21,7 @@
 
 <div class="container mx-auto flex min-w-0 flex-1 px-4 py-6 lg:py-8">
 	<div class="mx-auto flex w-full max-w-6xl gap-8">
-		<div class="flex w-full min-w-0 flex-1 flex-col gap-8">
+		<div bind:this={toc.ref} class="flex w-full min-w-0 flex-1 flex-col gap-8">
 			<div class="flex flex-col gap-2">
 				<h1 class="scroll-m-20 text-4xl font-semibold tracking-tight">
 					{doc.title}
@@ -51,6 +53,11 @@
 			</div>
 		</div>
 
-		<ChangelogToc {toc} />
+		<aside class="hidden w-48 shrink-0 lg:block">
+			<div class="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto pb-4">
+				<p class="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">On this page</p>
+				<Toc.Root toc={toc.current} />
+			</div>
+		</aside>
 	</div>
 </div>

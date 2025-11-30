@@ -1,5 +1,6 @@
 export type EnvConfig = {
 	name: string;
 	description: string;
-	value: string;
+	defaultValue: string;
+	exampleValue?: string;
 };
