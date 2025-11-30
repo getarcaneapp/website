@@ -39,6 +39,27 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
+      - name: Checkout arcane repo
+        uses: actions/checkout@v6
+        with:
+          repository: getarcaneapp/arcane
+          path: arcane
+          ref: copilot/implement-api-auth-and-ui
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+
+      - name: Install swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+
+      - name: Generate swagger.yaml
+        run: |
+          cd arcane/backend/cmd
+          swag init -d ./,../internal,../internal/dto -g ./main.go -ot yaml -o ../../../static -md ../../../content/api.md --parseInternal
+
+      - name: Remove arcane repo folder
+        run: rm -rf arcane
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
