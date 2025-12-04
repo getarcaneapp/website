@@ -15,24 +15,41 @@ on:
 
 permissions:
   id-token: write
+  contents: read
+  deployments: write
 
 jobs:
   deploy:
     runs-on: depot-ubuntu-latest
-
-    permissions:
-      contents: read
-      deployments: write
-
     environment:
       name: production
       url: https://getarcane.app
 
     steps:
-      - name: Checkout
+      - name: Checkout arcane website repo
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Checkout arcane repo
+        uses: actions/checkout@v6
+        with:
+          repository: getarcaneapp/arcane
+          path: arcane
+          ref: main
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+
+      - name: Install swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+
+      - name: Generate swagger.yaml
+        run: |
+          swag init -d ./arcane/backend/cmd,./arcane/backend/internal,./arcane/backend/internal/dto -g ./main.go -ot yaml -o ./static/apiref -md ./content --parseInternal
+
+      - name: Remove arcane repo folder
+        run: rm -rf arcane
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
