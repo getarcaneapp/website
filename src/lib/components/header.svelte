@@ -13,10 +13,18 @@
 
 	let version: string | undefined = $state('');
 
+	interface ArcaneConfig {
+		version: string;
+		revision: string;
+	}
+
 	async function readVersionFile(): Promise<string> {
 		try {
-			const response = await fetch('https://raw.githubusercontent.com/getarcaneapp/arcane/refs/heads/main/.version');
-			return await response.text();
+			const response = await fetch(
+				'https://raw.githubusercontent.com/getarcaneapp/arcane/refs/heads/main/.arcane.json'
+			);
+			const data: ArcaneConfig = await response.json();
+			return data.version;
 		} catch (error) {
 			console.error('Error reading version file:', error);
 			return '';
@@ -25,8 +33,8 @@
 
 	onMount(() => {
 		readVersionFile().then((v) => {
-			if (v.trim()) {
-				version = v.trim();
+			if (v) {
+				version = v;
 			}
 		});
 	});
