@@ -60,9 +60,9 @@ jobs:
         run: go work sync && go mod download
 
       - name: Generate swagger.yaml
-        working-directory: ./arcane
+        working-directory: ./arcane/backend
         run: |
-          swag init -d ./backend/cmd,./backend/internal,./types -g ./backend/cmd/main.go -ot yaml -o ../static/apiref -md ../content --parseInternal
+          swag init -d ./cmd,./internal,../types -g ./cmd/main.go -ot yaml -o ../../static/apiref -md ../../content --parseInternal
 
       - name: Remove arcane repo folder
         run: rm -rf arcane
