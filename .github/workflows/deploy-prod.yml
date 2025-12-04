@@ -40,6 +40,9 @@ jobs:
 
       - name: Setup Go
         uses: actions/setup-go@v6
+        with:
+          go-version: arcane/go.work
+          cache-dependency-path: arcane/go.work.sum
 
       - name: Install swag
         run: go install github.com/swaggo/swag/cmd/swag@latest
