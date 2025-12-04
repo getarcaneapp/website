@@ -55,9 +55,14 @@ jobs:
       - name: Install swag
         run: go install github.com/swaggo/swag/cmd/swag@latest
 
+      - name: Download Go modules
+        working-directory: ./arcane
+        run: go work sync && go mod download
+
       - name: Generate swagger.yaml
+        working-directory: ./arcane
         run: |
-          swag init -d ./arcane/backend/cmd,./arcane/backend/internal,./arcane/types -g ./main.go -ot yaml -o ./static/apiref -md ./content --parseInternal
+          swag init -d ./backend/cmd,./backend/internal,./types -g ./backend/cmd/main.go -ot yaml -o ../static/apiref -md ../content --parseInternal
 
       - name: Remove arcane repo folder
         run: rm -rf arcane
