@@ -1,47 +1,51 @@
 <script lang="ts">
-import '../app.css';
-import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-import ArrowRight from '@lucide/svelte/icons/arrow-right';
-import Code from '@lucide/svelte/icons/code';
-import { ModeWatcher } from 'mode-watcher';
-import Header from '$lib/components/header.svelte';
+	import '../app.css';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Code from '@lucide/svelte/icons/code';
+	import { ModeWatcher } from 'mode-watcher';
+	import Header from '$lib/components/header.svelte';
 
-let { children } = $props();
+	let { children } = $props();
 
-let showBanner = $state(false);
-let isDev = $state(false);
-let isDeprecatedDomain = $state(false);
-let version: string | undefined = $state();
+	let showBanner = $state(false);
+	let isDev = $state(false);
+	let isDeprecatedDomain = $state(false);
+	let version: string | undefined = $state();
 
-async function readVersionFile(): Promise<string> {
-	try {
-		const res = await fetch(
-			'https://raw.githubusercontent.com/getarcaneapp/arcane/refs/heads/main/.version',
-		);
-		return await res.text();
-	} catch {
-		return '';
-	}
-}
-
-const PROD_HOSTS = ['arcane.ofkm.dev', 'getarcane.app'];
-const PROD_DOCS_URL = 'https://getarcane.app/docs';
-
-if (typeof window !== 'undefined') {
-	const host = window.location.hostname;
-	const isProd = PROD_HOSTS.includes(host);
-
-	// Check if accessing via deprecated domain
-	if (host === 'arcane.ofkm.dev') {
-		isDeprecatedDomain = true;
+	interface ArcaneConfig {
+		version: string;
+		revision: string;
 	}
 
-	if (!isProd) {
-		showBanner = true;
-		isDev = host === 'localhost' || host === '127.0.0.1';
-		readVersionFile().then((v) => (version = v?.trim() || undefined));
+	async function readVersionFile(): Promise<string> {
+		try {
+			const res = await fetch('https://raw.githubusercontent.com/getarcaneapp/arcane/refs/heads/main/.arcane.json');
+			const data: ArcaneConfig = await res.json();
+			return data.version;
+		} catch {
+			return '';
+		}
 	}
-}
+
+	const PROD_HOSTS = ['arcane.ofkm.dev', 'getarcane.app'];
+	const PROD_DOCS_URL = 'https://getarcane.app/docs';
+
+	if (typeof window !== 'undefined') {
+		const host = window.location.hostname;
+		const isProd = PROD_HOSTS.includes(host);
+
+		// Check if accessing via deprecated domain
+		if (host === 'arcane.ofkm.dev') {
+			isDeprecatedDomain = true;
+		}
+
+		if (!isProd) {
+			showBanner = true;
+			isDev = host === 'localhost' || host === '127.0.0.1';
+			readVersionFile().then((v) => (version = v || undefined));
+		}
+	}
 </script>
 
 <ModeWatcher disableTransitions={false} />
@@ -63,7 +67,7 @@ if (typeof window !== 'undefined') {
 					This domain is deprecated. Please visit the new domain:
 					<a
 						href={`https://getarcane.app${typeof window !== 'undefined' ? window.location.pathname : ''}`}
-						class="font-semibold text-current underline hover:opacity-80 inline-flex items-center gap-1"
+						class="inline-flex items-center gap-1 font-semibold text-current underline hover:opacity-80"
 					>
 						getarcane.app
 						<ArrowRight class="size-3" />
