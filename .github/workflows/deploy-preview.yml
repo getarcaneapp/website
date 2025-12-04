@@ -39,34 +39,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: Checkout arcane repo
-        uses: actions/checkout@v6
-        with:
-          repository: getarcaneapp/arcane
-          path: arcane
-          ref: main
-
-      - name: Setup Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: "1.25.4"
-          cache-dependency-path: arcane/go.work.sum
-
-      - name: Install swag
-        run: go install github.com/swaggo/swag/cmd/swag@latest
-
-      - name: Download Go modules
-        working-directory: ./arcane
-        run: go work sync && go mod download
-
-      - name: Generate swagger.yaml
-        working-directory: ./arcane/backend
-        run: |
-          swag init -d ./cmd,./internal,../types -g ./cmd/main.go -ot yaml -o ../../static/apiref -md ../../content --parseInternal
-
-      - name: Remove arcane repo folder
-        run: rm -rf arcane
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
