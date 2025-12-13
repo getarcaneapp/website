@@ -155,7 +155,7 @@ Here's a minimal GitHub setup:
 
 Don't want to maintain your own? Contribute to our community registry:
 
-**GitHub:** [https://github.com/getarcaneapp/arcane-templates](https://github.com/getarcaneapp/arcane-templates)
+**GitHub:** [https://github.com/getarcaneapp/templates](https://github.com/getarcaneapp/templates)
 
 Submit pull requests to add your templates to the community collection!
 
