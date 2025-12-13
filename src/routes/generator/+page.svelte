@@ -65,14 +65,6 @@
 								>Choose services and options. Your YAML updates live.</Card.Description
 							>
 						</div>
-						<div class="hidden items-center gap-2 sm:flex">
-							<span
-								class="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-600 ring-1 ring-green-500/20 dark:text-green-400"
-							>
-								<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500"></span>
-								Live Preview
-							</span>
-						</div>
 					</div>
 				</Card.Header>
 
