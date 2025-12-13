@@ -3,35 +3,33 @@
 -->
 
 <script lang="ts">
-import CheckIcon from '@lucide/svelte/icons/check';
-import CopyIcon from '@lucide/svelte/icons/copy';
-import XIcon from '@lucide/svelte/icons/x';
-import { scale } from 'svelte/transition';
-import { Button } from '$lib/components/ui/button/index.js';
-import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
-import { cn } from '$lib/utils/utils.js';
-import type { CopyButtonProps } from './types.js';
+	import CheckIcon from '@lucide/svelte/icons/check';
+	import CopyIcon from '@lucide/svelte/icons/copy';
+	import XIcon from '@lucide/svelte/icons/x';
+	import { scale } from 'svelte/transition';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
+	import { cn } from '$lib/utils.js';
+	import type { CopyButtonProps } from './types.js';
 
-let {
-	ref = $bindable(null),
-	text,
-	icon,
-	animationDuration = 500,
-	variant = 'ghost',
-	size = 'icon',
-	onCopy,
-	class: className,
-	tabindex = -1,
-	children,
-	...rest
-}: CopyButtonProps = $props();
+	let {
+		ref = $bindable(null),
+		text,
+		icon,
+		animationDuration = 500,
+		variant = 'ghost',
+		size: sizeProp = 'icon',
+		onCopy,
+		class: className,
+		tabindex = -1,
+		children,
+		...rest
+	}: CopyButtonProps = $props();
 
-// this way if the user passes text then the button will be the default size
-if (size === 'icon' && children) {
-	size = 'default';
-}
+	// this way if the user passes text then the button will be the default size
+	const size = $derived(sizeProp === 'icon' && children ? 'default' : sizeProp);
 
-const clipboard = new UseClipboard();
+	const clipboard = new UseClipboard();
 </script>
 
 <Button

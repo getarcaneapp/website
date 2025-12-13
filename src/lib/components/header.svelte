@@ -41,7 +41,7 @@
 </script>
 
 <header
-	class="border-border/60 supports-backdrop-filter:bg-[oklch(0.97_0_0/0.75) sticky top-0 z-50 w-full border-b bg-[oklch(1_0_0/0.85)]/50 shadow-[0_1px_0_0_oklch(0.92_0_0)_inset,0_4px_12px_-2px_oklch(0.7_0_0/0.15),0_12px_32px_-8px_oklch(0.7_0_0/0.12)] backdrop-blur-xl dark:bg-[oklch(0.18_0.006_285.823/0.72)] dark:shadow-[0_1px_0_0_oklch(0.28_0.006_285.823)_inset,0_4px_12px_-2px_oklch(0.05_0_0/0.5),0_12px_32px_-8px_oklch(0.05_0_0/0.35)] dark:supports-backdrop-filter:bg-[oklch(0.16_0.006_285.823/0.65)]"
+	class="border-border/40 sticky top-0 z-50 w-full border-b bg-white/80 shadow-[0_1px_3px_oklch(0_0_0/0.04),0_4px_12px_-2px_oklch(0_0_0/0.06)] backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300 dark:bg-[oklch(0.14_0.006_285.823/0.85)] dark:shadow-[0_1px_3px_oklch(0_0_0/0.2),0_4px_16px_-2px_oklch(0_0_0/0.25)]"
 >
 	<div class="container-wrapper px-6">
 		<div class="flex h-16 items-center gap-2 **:data-[slot=separator]:h-4!">
@@ -61,7 +61,7 @@
 				{#if version}
 					<Badge
 						variant="default"
-						class="border-border/60 dark:border-primary/60 text-foreground/90 border bg-[oklch(1_0_0/0.6)] text-xs font-bold shadow-[0_0_0_1px_oklch(0.92_0_0/0.6),0_2px_4px_-1px_oklch(0.7_0_0/0.25)] backdrop-blur supports-backdrop-filter:bg-[oklch(0.98_0_0/0.55)] dark:bg-[oklch(0.22_0.006_285.823/0.55)] dark:shadow-[0_0_0_1px_oklch(0.28_0.006_285.823/0.7),0_2px_4px_-1px_oklch(0.05_0_0/0.6)] dark:supports-backdrop-filter:bg-[oklch(0.25_0.006_285.823/0.45)]"
+						class="border border-purple-500/30 bg-purple-50/80 text-xs font-semibold text-purple-700 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20"
 					>
 						v{version}
 					</Badge>

@@ -4,36 +4,38 @@
 -->
 
 <script lang="ts" module>
-import { tv, type VariantProps } from 'tailwind-variants';
+	import { tv, type VariantProps } from 'tailwind-variants';
 
-const style = tv({
-	base: 'border-border w-full rounded-lg border',
-	variants: {
-		variant: {
-			default: 'bg-card',
-			secondary: 'bg-secondary/50 border-transparent',
-		},
-	},
-});
+	const style = tv({
+		base: 'border-border w-full rounded-lg border',
+		variants: {
+			variant: {
+				default: 'bg-card',
+				secondary: 'bg-secondary/50 border-transparent'
+			}
+		}
+	});
 
-type Variant = VariantProps<typeof style>['variant'];
+	type Variant = VariantProps<typeof style>['variant'];
 
-export type GitCommandProps = {
-	variant?: Variant;
-	class?: string;
-	agents?: string[];
-	agent?: string;
-	repo?: string;
-	command?: string;
-};
+	export type GitCommandProps = {
+		variant?: Variant;
+		class?: string;
+		agents?: string[];
+		agent?: string;
+		repo?: string;
+		command?: string;
+	};
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils/utils';
+	import { cn } from '$lib/utils.js';
 	import CopyButton from '$lib/components/ui/copy-button/copy-button.svelte';
 	import { ClipboardIcon, TerminalIcon } from '@lucide/svelte';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
+
+	type ChildProps = { props: Record<string, unknown> };
 
 	let {
 		variant = 'default',
@@ -82,7 +84,7 @@ export type GitCommandProps = {
 		<Tooltip.Provider delayDuration={0}>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					{#snippet child({ props })}
+					{#snippet child({ props }: ChildProps)}
 						<CopyButton {...props} text={commandText} class="size-6 [&_svg]:size-3" variant="ghost" size="sm">
 							{#snippet icon()}
 								<ClipboardIcon />

@@ -97,10 +97,13 @@
 <div class="generator-wrapper mx-auto w-full max-w-4xl space-y-6 px-4 sm:px-6">
 	<div class="space-y-6">
 		<Tabs.Root value={activeTab} onValueChange={handleTabChange}>
-			<Tabs.List class="grid w-full grid-cols-3">
+			<Tabs.List class="bg-muted/50 grid w-full grid-cols-3 rounded-xl p-1">
 				{#each generatorConfig as tab}
 					{@const IconComponent = getIcon(tab.icon)}
-					<Tabs.Trigger value={tab.id}>
+					<Tabs.Trigger
+						value={tab.id}
+						class="data-[state=active]:bg-background rounded-lg transition-all duration-200 data-[state=active]:text-purple-600 data-[state=active]:shadow-sm dark:data-[state=active]:text-purple-400"
+					>
 						<IconComponent class="mr-2 size-4" />
 						<span class="hidden sm:inline">{tab.label}</span>
 						<span class="sm:hidden">{tab.shortLabel || tab.label}</span>
@@ -117,32 +120,36 @@
 							class:slide-in-left={slideDirection === 'left'}
 						>
 							{#each tab.sections as section}
-								<Card.Root class="mt-6">
-									<Card.Header>
-										<Card.Title>{section.title}</Card.Title>
-										<Card.Description>{section.description}</Card.Description>
+								<Card.Root class="border-border/50 mt-6">
+									<Card.Header class="pb-4">
+										<Card.Title class="text-lg font-semibold">{section.title}</Card.Title>
+										<Card.Description class="text-muted-foreground">{section.description}</Card.Description>
 									</Card.Header>
 									<Card.Content class="space-y-4">
 										{#each section.fields as field}
 											{#if shouldShowField(field)}
 												{#if field.type === 'checkbox'}
-													<div class="flex items-center space-x-2">
+													<div
+														class="hover:bg-muted/50 flex items-center space-x-3 rounded-lg p-2 transition-colors duration-200"
+													>
 														<Checkbox
 															id={field.key}
 															checked={config[field.key] === true}
 															onCheckedChange={(checked) => handleCheckboxChange(field.key, checked === true)}
 														/>
-														<Label for={field.key} class="text-sm sm:text-base">{field.label}</Label>
+														<Label for={field.key} class="cursor-pointer text-sm sm:text-base">{field.label}</Label>
 													</div>
 												{:else if field.type === 'select'}
 													<div class="space-y-2">
-														<Label for={field.key}>{field.label}</Label>
+														<Label for={field.key} class="font-medium">{field.label}</Label>
 														<Select.Root
 															type="single"
 															value={config[field.key] as string}
 															onValueChange={(value) => handleSelectChange(field.key, value)}
 														>
-															<Select.Trigger class="w-full">
+															<Select.Trigger
+																class="border-border/50 w-full focus:border-purple-500/50 focus:ring-purple-500/20"
+															>
 																{config[field.key] || field.placeholder || 'Select...'}
 															</Select.Trigger>
 															<Select.Content>
@@ -154,20 +161,20 @@
 													</div>
 												{:else if field.canGenerate}
 													<div class="space-y-2">
-														<Label for={field.key}>{field.label}</Label>
+														<Label for={field.key} class="font-medium">{field.label}</Label>
 														<div class="flex flex-col gap-2 sm:flex-row">
 															<Input
 																id={field.key}
 																type={field.type === 'password' ? 'password' : 'text'}
 																bind:value={config[field.key]}
 																placeholder={field.placeholder}
-																class="flex-1"
+																class="border-border/50 flex-1 focus:border-purple-500/50 focus:ring-purple-500/20"
 															/>
 															<Button
 																type="button"
 																variant="outline"
 																onclick={() => (config[field.key] = generateRandomKey())}
-																class="w-full sm:w-auto"
+																class="w-full border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5 sm:w-auto"
 															>
 																Generate
 															</Button>
@@ -175,12 +182,13 @@
 													</div>
 												{:else}
 													<div class="space-y-2">
-														<Label for={field.key}>{field.label}</Label>
+														<Label for={field.key} class="font-medium">{field.label}</Label>
 														<Input
 															id={field.key}
 															type={field.type === 'password' ? 'password' : 'text'}
 															bind:value={config[field.key]}
 															placeholder={field.placeholder}
+															class="border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
 														/>
 													</div>
 												{/if}
@@ -197,7 +205,13 @@
 
 		<!-- Navigation arrows -->
 		<div class="flex items-center justify-between gap-4">
-			<Button variant="outline" size="sm" onclick={goToPrevTab} disabled={!canGoPrev} class="flex items-center gap-2">
+			<Button
+				variant="outline"
+				size="sm"
+				onclick={goToPrevTab}
+				disabled={!canGoPrev}
+				class="border-border/50 flex items-center gap-2 hover:border-purple-500/30 disabled:opacity-40"
+			>
 				<ChevronLeft class="h-4 w-4" />
 				<span class="hidden sm:inline">{prevTab?.label || 'Previous'}</span>
 			</Button>
@@ -206,13 +220,19 @@
 				onclick={handleGenerateDockerCompose}
 				data-umami-event="compose-generated"
 				size="lg"
-				class="flex-1 sm:min-w-48 sm:flex-none"
+				class="group flex-1 bg-linear-to-r from-purple-600 via-violet-600 to-purple-600 bg-size-[200%_auto] text-white shadow-lg shadow-purple-500/25 transition-all duration-500 hover:bg-right hover:shadow-xl hover:shadow-purple-500/40 sm:min-w-48 sm:flex-none"
 			>
-				<FileText class="mr-2 h-4 w-4" />
+				<FileText class="mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
 				Generate Docker Compose
 			</Button>
 
-			<Button variant="outline" size="sm" onclick={goToNextTab} disabled={!canGoNext} class="flex items-center gap-2">
+			<Button
+				variant="outline"
+				size="sm"
+				onclick={goToNextTab}
+				disabled={!canGoNext}
+				class="border-border/50 flex items-center gap-2 hover:border-purple-500/30 disabled:opacity-40"
+			>
 				<span class="hidden sm:inline">{nextTab?.label || 'Next'}</span>
 				<ChevronRight class="h-4 w-4" />
 			</Button>

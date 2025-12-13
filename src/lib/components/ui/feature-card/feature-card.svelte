@@ -1,56 +1,69 @@
 <script lang="ts">
-import type { Icon as IconType } from '@lucide/svelte';
-import type { HTMLAttributes } from 'svelte/elements';
-import { cn } from '$lib/utils.js';
+	import type { Icon as IconType } from '@lucide/svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { cn } from '$lib/utils.js';
 
-interface Props extends HTMLAttributes<HTMLDivElement> {
-	icon: typeof IconType;
-	title: string;
-	description: string;
-	fullWidth?: boolean;
-}
+	interface Props extends HTMLAttributes<HTMLDivElement> {
+		icon: typeof IconType;
+		title: string;
+		description: string;
+		fullWidth?: boolean;
+	}
 
-let {
-	icon,
-	title,
-	description,
-	fullWidth = false,
-	class: className,
-	...restProps
-}: Props = $props();
+	let { icon, title, description, fullWidth = false, class: className, ...restProps }: Props = $props();
 
-const Icon = icon as typeof IconType;
+	const Icon = $derived(icon as typeof IconType);
 </script>
 
 <div
 	class={cn(
 		// Base layout
-		'group relative overflow-hidden rounded-xl p-6 transition-all duration-400 ease-out',
-		// Surface + blur + subtle translucent elevated layer (lighten by ~0.1 L in light, slightly brighter surface in dark)
-		'bg-[oklch(1_0_0/0.78)] backdrop-blur supports-[backdrop-filter]:bg-[oklch(0.99_0_0/0.65)] dark:bg-[oklch(0.30_0.006_285.823/0.55)] dark:supports-[backdrop-filter]:bg-[oklch(0.26_0.006_285.823/0.5)]',
-		// Border & ring layering
-		'border-border/50 dark:border-border/40 border',
-		// Elevation shadows (multi-layer) + hover elevation ramp
-		'shadow-[0_0_0_1px_oklch(0.92_0_0/0.65),0_1px_2px_0_oklch(0.7_0_0/0.22),0_3px_6px_-1px_oklch(0.7_0_0/0.18)] dark:shadow-[0_0_0_1px_oklch(0.28_0.006_285.823/0.55),0_1.5px_2px_-1px_oklch(0.05_0_0/0.55),0_6px_14px_-4px_oklch(0.05_0_0/0.45)]',
-		'hover:shadow-[0_0_0_1px_oklch(0.92_0_0/0.7),0_4px_8px_-1px_oklch(0.7_0_0/0.25),0_14px_28px_-6px_oklch(0.7_0_0/0.25)] dark:hover:shadow-[0_0_0_1px_oklch(0.30_0.006_285.823/0.6),0_4px_10px_-2px_oklch(0.05_0_0/0.55),0_18px_36px_-8px_oklch(0.05_0_0/0.45)]',
-		// Subtle motion & lift
-		'will-change-transform hover:translate-y-[-3px]',
-		// Highlight gradients via pseudo elements
-		'before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(145deg,oklch(1_0_0/0.12),transparent_55%)] before:opacity-0 before:transition-opacity before:duration-500 hover:before:opacity-100',
-		'after:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_30%_25%,oklch(1_0_0/0.09),transparent_60%)] after:opacity-0 after:transition-opacity after:duration-500 group-hover:after:opacity-100',
+		'group relative overflow-hidden rounded-2xl p-6 transition-all duration-500 ease-out',
+		// Glassmorphism surface
+		'bg-white/70 backdrop-blur-xl dark:bg-[oklch(0.18_0.006_285.823/0.6)]',
+		// Border with gradient effect on hover
+		'border border-[oklch(0.92_0_0/0.8)] dark:border-[oklch(1_0_0/0.08)]',
+		// Multi-layer shadow for depth
+		'shadow-[0_1px_2px_oklch(0_0_0/0.05),0_4px_12px_-2px_oklch(0_0_0/0.08),0_12px_24px_-4px_oklch(0_0_0/0.06)]',
+		'dark:shadow-[0_1px_2px_oklch(0_0_0/0.2),0_8px_20px_-4px_oklch(0_0_0/0.35),0_20px_40px_-8px_oklch(0_0_0/0.25)]',
+		// Hover elevation and glow
+		'hover:shadow-[0_4px_12px_oklch(0.606_0.25_292.717/0.1),0_16px_32px_-4px_oklch(0.606_0.25_292.717/0.15),0_24px_48px_-8px_oklch(0_0_0/0.08)]',
+		'dark:hover:shadow-[0_4px_16px_oklch(0.606_0.25_292.717/0.15),0_20px_40px_-4px_oklch(0.606_0.25_292.717/0.2),0_32px_64px_-8px_oklch(0_0_0/0.3)]',
+		// Subtle lift on hover
+		'hover:-translate-y-1.5',
+		// Animated border gradient (pseudo element)
+		'before:absolute before:inset-0 before:-z-10 before:rounded-2xl before:p-px',
+		'before:bg-[linear-gradient(135deg,oklch(0.606_0.25_292.717/0),oklch(0.606_0.25_292.717/0),oklch(0.7_0.2_300/0))]',
+		'before:opacity-0 before:transition-opacity before:duration-500',
+		'hover:before:bg-[linear-gradient(135deg,oklch(0.606_0.25_292.717/0.4),oklch(0.7_0.2_300/0.3),oklch(0.606_0.25_292.717/0.2))]',
+		'hover:before:opacity-100',
+		// Shine overlay effect
+		'after:absolute after:inset-0 after:-z-10 after:bg-[linear-gradient(115deg,transparent_30%,oklch(1_0_0/0.08)_50%,transparent_70%)]',
+		'after:-translate-x-full after:transition-transform after:duration-700',
+		'hover:after:translate-x-full',
 		// Full-width layout variant
-		fullWidth && 'col-span-full sm:col-span-2 md:col-span-3',
+		fullWidth && 'col-span-full sm:col-span-2 lg:col-span-3',
 		className
 	)}
 	{...restProps}
 >
+	<!-- Subtle inner glow on hover -->
+	<div
+		class="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_50%_0%,oklch(0.606_0.25_292.717/0.08),transparent_50%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+		aria-hidden="true"
+	></div>
+
 	<div class="relative z-10">
 		<div
-			class="from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br transition-all duration-300 group-hover:scale-110"
+			class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-purple-500/15 via-violet-500/10 to-purple-600/5 ring-1 ring-purple-500/20 transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_0_20px_oklch(0.606_0.25_292.717/0.25)] group-hover:ring-purple-500/40"
 		>
-			<Icon class="text-primary h-6 w-6" />
+			<Icon
+				class="h-6 w-6 text-purple-600 transition-transform duration-300 group-hover:scale-110 dark:text-purple-400"
+			/>
 		</div>
-		<h3 class="text-foreground mb-2 text-lg font-semibold transition-colors duration-300">
+		<h3
+			class="text-foreground mb-2 text-lg font-semibold tracking-tight transition-colors duration-300 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+		>
 			{title}
 		</h3>
 		<p class="text-muted-foreground text-sm leading-relaxed">

@@ -1,4 +1,5 @@
 import type { Icon as IconType } from '@lucide/svelte';
+import BookOpen from '@lucide/svelte/icons/book-open';
 import ChartBar from '@lucide/svelte/icons/chart-bar';
 import Clock from '@lucide/svelte/icons/clock';
 import Globe from '@lucide/svelte/icons/globe';
@@ -50,6 +51,11 @@ export const features: Feature[] = [
 		icon: ChartBar,
 		title: 'Resource Visualization',
 		description: 'Visual graphs for CPU, memory, and network usage.',
+	},
+	{
+		icon: BookOpen,
+		title: 'Fully Documented API',
+		description: 'RESTful API built with Huma on Gin, featuring built-in OpenAPI 3.1 documentation.',
 		fullWidth: true,
 	},
 ];

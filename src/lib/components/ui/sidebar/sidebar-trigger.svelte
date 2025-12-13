@@ -1,20 +1,19 @@
 <script lang="ts">
-import PanelLeftIcon from '@lucide/svelte/icons/panel-left';
-import type { ComponentProps } from 'svelte';
-import { Button } from '$lib/components/ui/button/index.js';
-import { cn } from '$lib/utils.js';
-import { useSidebar } from './context.svelte.js';
+	import PanelLeftIcon from '@lucide/svelte/icons/panel-left';
+	import type { HTMLButtonAttributes } from 'svelte/elements';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { cn } from '$lib/utils.js';
+	import { useSidebar } from './context.svelte.js';
 
-let {
-	ref = $bindable(null),
-	class: className,
-	onclick,
-	...restProps
-}: ComponentProps<typeof Button> & {
-	onclick?: (e: MouseEvent) => void;
-} = $props();
+	type Props = Omit<HTMLButtonAttributes, 'type'> & {
+		ref?: HTMLButtonElement | null;
+		class?: string;
+		onclick?: (e: MouseEvent) => void;
+	};
 
-const sidebar = useSidebar();
+	let { ref = $bindable(null), class: className, onclick, ...restProps }: Props = $props();
+
+	const sidebar = useSidebar();
 </script>
 
 <Button
