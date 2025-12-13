@@ -3,17 +3,11 @@
 -->
 
 <script lang="ts">
-import { FileIcon } from '@lucide/svelte';
-import { cn } from '$lib/utils/utils';
-import type { TreeViewFileProps } from './types';
+	import { FileIcon } from '@lucide/svelte';
+	import { cn } from '$lib/utils.js';
+	import type { TreeViewFileProps } from './types.js';
 
-let {
-	name,
-	icon,
-	type = 'button',
-	class: className,
-	...rest
-}: TreeViewFileProps = $props();
+	let { name, icon, type = 'button', class: className, ...rest }: TreeViewFileProps = $props();
 </script>
 
 <button {type} class={cn('flex place-items-center gap-1 pl-[3px]', className)} {...rest}>

@@ -101,7 +101,9 @@
 	</div>
 {/if}
 
-<div class="bg-background text-foreground flex min-h-screen flex-col">
+<div class="text-foreground relative flex min-h-screen flex-col">
+	<!-- Global background -->
+	<div class="bg-background fixed inset-0 -z-50" aria-hidden="true"></div>
 	<Header />
 	<main class="flex-1">
 		{@render children()}

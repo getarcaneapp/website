@@ -1,104 +1,102 @@
 <script lang="ts">
-import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
-import type { Component } from 'svelte';
-import { tick } from 'svelte';
-import type { HTMLAttributes } from 'svelte/elements';
-import { goto } from '$app/navigation';
-import { Button } from '$lib/components/ui/button/index.js';
-import * as Command from '$lib/components/ui/command/index.js';
-import * as Dialog from '$lib/components/ui/dialog/index.js';
-import { SidebarNavItems } from '$lib/config/docs.js';
-import { useIsMac } from '$lib/hooks/is-mac.svelte.js';
-import { cn } from '$lib/utils.js';
-import CommandMenuItem from './command-search-item.svelte';
+	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
+	import type { Component } from 'svelte';
+	import { tick } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { goto } from '$app/navigation';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Command from '$lib/components/ui/command/index.js';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { SidebarNavItems } from '$lib/config/docs.js';
+	import { useIsMac } from '$lib/hooks/is-mac.svelte.js';
+	import { cn } from '$lib/utils.js';
+	import CommandMenuItem from './command-search-item.svelte';
 
-const isMac = useIsMac();
-let open = $state(false);
+	type KbdProps = HTMLAttributes<HTMLElement> & { content: string | Component };
 
-type SearchDoc = {
-	id: string;
-	title: string;
-	description: string;
-	section: string;
-	href: string;
-	headings: string[];
-	content: string;
-};
+	const isMac = useIsMac();
+	let open = $state(false);
 
-let query = $state('');
-let allDocs = $state<SearchDoc[]>([]);
-let results = $state<SearchDoc[]>([]);
-let loading = $state(false);
+	type SearchDoc = {
+		id: string;
+		title: string;
+		description: string;
+		section: string;
+		href: string;
+		headings: string[];
+		content: string;
+	};
 
-async function ensureIndex() {
-	if (allDocs.length) return;
-	loading = true;
-	try {
-		const res = await fetch('/api/command');
-		const json = (await res.json()) as { docs: SearchDoc[] };
-		allDocs = json.docs;
-	} finally {
-		loading = false;
+	let query = $state('');
+	let allDocs = $state<SearchDoc[]>([]);
+	let results = $state<SearchDoc[]>([]);
+	let loading = $state(false);
+
+	async function ensureIndex() {
+		if (allDocs.length) return;
+		loading = true;
+		try {
+			const res = await fetch('/api/command');
+			const json = (await res.json()) as { docs: SearchDoc[] };
+			allDocs = json.docs;
+		} finally {
+			loading = false;
+		}
 	}
-}
 
-function score(doc: SearchDoc, q: string) {
-	const ql = q.toLowerCase();
-	let s = 0;
-	if (doc.title.toLowerCase().includes(ql)) s += 5;
-	if (doc.section.toLowerCase().includes(ql)) s += 3;
-	if (doc.description.toLowerCase().includes(ql)) s += 2;
-	if (doc.headings.join(' ').toLowerCase().includes(ql)) s += 2;
-	if (doc.content.toLowerCase().includes(ql)) s += 1;
-	return s;
-}
-
-async function onQueryChange() {
-	const q = query.trim();
-	if (!q) {
-		results = [];
-		return;
+	function score(doc: SearchDoc, q: string) {
+		const ql = q.toLowerCase();
+		let s = 0;
+		if (doc.title.toLowerCase().includes(ql)) s += 5;
+		if (doc.section.toLowerCase().includes(ql)) s += 3;
+		if (doc.description.toLowerCase().includes(ql)) s += 2;
+		if (doc.headings.join(' ').toLowerCase().includes(ql)) s += 2;
+		if (doc.content.toLowerCase().includes(ql)) s += 1;
+		return s;
 	}
-	await ensureIndex();
-	results = allDocs
-		.map((d) => ({ d, s: score(d, q) }))
-		.filter((x) => x.s > 0)
-		.sort((a, b) => b.s - a.s)
-		.slice(0, 50)
-		.map((x) => x.d);
-}
 
-async function runCommand(command: () => unknown) {
-	open = false;
-	await tick();
-	command();
-}
-
-function handleKeydown(e: KeyboardEvent) {
-	if ((e.key === 'l' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
-		if (
-			(e.target instanceof HTMLElement && e.target.isContentEditable) ||
-			e.target instanceof HTMLInputElement ||
-			e.target instanceof HTMLTextAreaElement ||
-			e.target instanceof HTMLSelectElement
-		) {
+	async function onQueryChange() {
+		const q = query.trim();
+		if (!q) {
+			results = [];
 			return;
 		}
-
-		e.preventDefault();
-		open = !open;
-		if (open) ensureIndex();
+		await ensureIndex();
+		results = allDocs
+			.map((d) => ({ d, s: score(d, q) }))
+			.filter((x) => x.s > 0)
+			.sort((a, b) => b.s - a.s)
+			.slice(0, 50)
+			.map((x) => x.d);
 	}
-}
+
+	async function runCommand(command: () => unknown) {
+		open = false;
+		await tick();
+		command();
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if ((e.key === 'l' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
+			if (
+				(e.target instanceof HTMLElement && e.target.isContentEditable) ||
+				e.target instanceof HTMLInputElement ||
+				e.target instanceof HTMLTextAreaElement ||
+				e.target instanceof HTMLSelectElement
+			) {
+				return;
+			}
+
+			e.preventDefault();
+			open = !open;
+			if (open) ensureIndex();
+		}
+	}
 </script>
 
 <svelte:document onkeydown={handleKeydown} />
 
-{#snippet CommandMenuKbd({
-	class: className,
-	content,
-	...restProps
-}: HTMLAttributes<HTMLElement> & { content: string | Component })}
+{#snippet CommandMenuKbd({ class: className, content, ...restProps }: KbdProps)}
 	{@const Content = content}
 	<kbd
 		class={cn(
@@ -122,7 +120,7 @@ function handleKeydown(e: KeyboardEvent) {
 				{...props}
 				variant="secondary"
 				class={cn(
-					'bg-background dark:bg-surface text-muted-foreground dark:text-surface-foreground/60 border-border/50 relative h-8 w-full justify-start border pl-2.5 font-normal shadow-sm sm:pr-12 md:w-40 lg:w-56 xl:w-64 dark:border-transparent dark:shadow-none'
+					'bg-background/80 dark:bg-surface text-muted-foreground dark:text-surface-foreground/60 border-border/50 relative h-9 w-full justify-start border pl-3 font-normal shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-purple-500/30 hover:shadow-md sm:pr-12 md:w-40 lg:w-56 xl:w-64 dark:border-white/10 dark:shadow-none dark:hover:border-purple-400/30'
 				)}
 				onclick={() => (open = true)}
 			>
@@ -137,7 +135,7 @@ function handleKeydown(e: KeyboardEvent) {
 	</Dialog.Trigger>
 	<Dialog.Content
 		showCloseButton={false}
-		class="bg-background rounded-xl border-none bg-clip-padding p-2 pb-2 shadow-2xl ring-4 ring-neutral-200/80 dark:bg-neutral-900 dark:shadow-2xl dark:ring-neutral-800"
+		class="bg-background/95 border-border/50 rounded-2xl border bg-clip-padding p-2 pb-2 shadow-[0_8px_32px_-4px_oklch(0_0_0/0.15),0_16px_48px_-8px_oklch(0_0_0/0.1)] ring-1 ring-purple-500/10 backdrop-blur-xl dark:bg-neutral-900/95 dark:shadow-[0_8px_32px_-4px_oklch(0_0_0/0.4),0_16px_48px_-8px_oklch(0_0_0/0.3)] dark:ring-purple-400/10"
 	>
 		<Dialog.Header class="sr-only">
 			<Dialog.Title>Search documentation...</Dialog.Title>

@@ -3,18 +3,12 @@
 -->
 
 <script lang="ts">
-import { FolderIcon, FolderOpenIcon } from '@lucide/svelte';
-import * as Collapsible from '$lib/components/ui/collapsible/index.js';
-import { cn } from '$lib/utils/utils';
-import type { TreeViewFolderProps } from './types';
+	import { FolderIcon, FolderOpenIcon } from '@lucide/svelte';
+	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
+	import { cn } from '$lib/utils.js';
+	import type { TreeViewFolderProps } from './types.js';
 
-let {
-	name,
-	open = $bindable(true),
-	class: className,
-	icon,
-	children,
-}: TreeViewFolderProps = $props();
+	let { name, open = $bindable(true), class: className, icon, children }: TreeViewFolderProps = $props();
 </script>
 
 <Collapsible.Root bind:open>

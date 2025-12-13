@@ -1,13 +1,13 @@
 <script lang="ts">
-import type { SVGAttributes } from 'svelte/elements';
+	import type { SVGAttributes } from 'svelte/elements';
 
-let { ...restProps }: SVGAttributes<SVGElement> = $props();
+	let { class: className, ...restProps }: SVGAttributes<SVGElement> = $props();
 </script>
 
 <svg
 	xmlns="http://www.w3.org/2000/svg"
 	version="1.0"
-	class="size-12"
+	class="transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(109,40,217,0.5)] {className}"
 	id="Layer_1"
 	x="0px"
 	y="0px"

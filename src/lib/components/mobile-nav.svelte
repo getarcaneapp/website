@@ -1,17 +1,17 @@
 <script lang="ts">
-import type { HTMLAnchorAttributes } from 'svelte/elements';
-import { Button, type ButtonProps } from '$lib/components/ui/button/index.js';
-import * as Popover from '$lib/components/ui/popover/index.js';
-import { mainNavItems, SidebarNavItems } from '$lib/config/docs.js';
-import { cn } from '$lib/utils.js';
+	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import { Button, type ButtonProps } from '$lib/components/ui/button/index.js';
+	import * as Popover from '$lib/components/ui/popover/index.js';
+	import { mainNavItems, SidebarNavItems } from '$lib/config/docs.js';
+	import { cn } from '$lib/utils.js';
 
-type MobileLinkProps = HTMLAnchorAttributes & {
-	content?: string;
-};
+	type MobileLinkProps = HTMLAnchorAttributes & {
+		content?: string;
+	};
 
-let { class: className, ...restProps }: ButtonProps = $props();
+	let { class: className, ...restProps }: ButtonProps = $props();
 
-let open = $state(false);
+	let open = $state(false);
 </script>
 
 {#snippet MobileLink({ href, content, class: className, ...props }: MobileLinkProps)}
@@ -35,7 +35,7 @@ let open = $state(false);
 				{...restProps}
 				variant="ghost"
 				class={cn(
-					'extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 !p-0 hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent',
+					'extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent',
 					className
 				)}
 			>
@@ -61,7 +61,7 @@ let open = $state(false);
 		{/snippet}
 	</Popover.Trigger>
 	<Popover.Content
-		class="bg-background/90 no-scrollbar h-(--bits-popover-content-available-height) w-(--bits-popover-content-available-width) overflow-y-auto rounded-none border-none p-0 shadow-none backdrop-blur duration-100"
+		class="bg-background/95 no-scrollbar h-(--bits-popover-content-available-height) w-(--bits-popover-content-available-width) overflow-y-auto rounded-none border-none p-0 shadow-none backdrop-blur-2xl duration-200"
 		align="start"
 		side="bottom"
 		alignOffset={-16}
@@ -70,7 +70,7 @@ let open = $state(false);
 	>
 		<div class="flex flex-col gap-12 overflow-auto px-6 py-6">
 			<div class="flex flex-col gap-4">
-				<div class="text-muted-foreground text-sm font-medium">Menu</div>
+				<div class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">Menu</div>
 				<div class="flex flex-col gap-3">
 					{@render MobileLink({ href: '/', content: 'Home' })}
 					{#each mainNavItems as item, i (i)}
@@ -81,7 +81,7 @@ let open = $state(false);
 			<div class="flex flex-col gap-8">
 				{#each SidebarNavItems as group (group.title)}
 					<div class="flex flex-col gap-4">
-						<div class="text-muted-foreground text-sm font-medium">
+						<div class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
 							{group.title}
 						</div>
 						<div class="flex flex-col gap-3">
