@@ -56,7 +56,7 @@ services:
       - OIDC_CLIENT_SECRET="your_super_secret_client_secret_from_provider"
       - OIDC_ISSUER_URL="https://auth.example.com"
       - OIDC_SCOPES=openid email profile groups
-      - OIDC_ADMIN_CLIAM=groups
+      - OIDC_ADMIN_CLAIM=groups
       - OIDC_ADMIN_VALUE=_arcane_admins
       - OIDC_MERGE_ACCOUNTS=true
 ```
