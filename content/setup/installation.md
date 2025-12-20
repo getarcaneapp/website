@@ -92,10 +92,10 @@ docker compose up -d
 Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. After your first initial login, you will be asked to change the default admin password. The default credentials are shown below.
 
 Username:
-<Snippet text="arcane" class="mt-2 max-w-[300px]" />
+<Snippet text="arcane" class="mt-2 max-w-75" />
 
 Password:
-<Snippet text="arcane-admin" class="mt-2 max-w-[300px]" />
+<Snippet text="arcane-admin" class="mt-2 max-w-75" />
 
 ## 6. Using a Custom Domain or Reverse Proxy?
 
@@ -104,6 +104,6 @@ Password:
 >
 > See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for detailed instructions on configuring Nginx, Apache, and other reverse proxies.
 
-## Beta Builds
+## Next (Preview) Builds
 
-Interested in trying out the latest features before they are officially released? Check out our <Link href="/docs/setup/beta">Beta Builds</Link> guide for information on how to use the `:next` images.
+Interested in trying out the latest features before they are officially released? Check out our <Link href="/docs/setup/next-images">Next Builds</Link> guide for information on how to use the `:next` or `:next-distroless` images.
