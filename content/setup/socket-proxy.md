@@ -1,6 +1,7 @@
 ---
 title: 'Socket Proxy Setup'
 description: 'Secure your Docker socket by using a proxy layer with Arcane.'
+order: 4
 ---
 
 <script lang="ts">

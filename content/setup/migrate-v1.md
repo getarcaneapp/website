@@ -1,6 +1,7 @@
 ---
 title: 'Migrate to 1.0'
 description: 'Changes and Migration to Arcane 1.0'
+order: 2
 ---
 
 <script lang="ts">

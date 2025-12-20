@@ -1,6 +1,7 @@
 ---
 title: 'Installation'
 description: 'Get Arcane running fast with Docker Compose.'
+order: 1
 ---
 
 <script lang="ts">
@@ -102,3 +103,7 @@ Password:
 > Arcane uses WebSockets for real-time communication. If you're setting up Arcane behind a reverse proxy or custom domain, you'll need to ensure WebSocket support is properly configured.
 >
 > See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for detailed instructions on configuring Nginx, Apache, and other reverse proxies.
+
+## Beta Builds
+
+Interested in trying out the latest features before they are officially released? Check out our <Link href="/docs/setup/beta">Beta Builds</Link> guide for information on how to use the `:next` images.
