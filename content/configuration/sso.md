@@ -28,8 +28,6 @@ All the OIDC Urls are discovered from the issuer url/the providers `.well-known/
 
 You can also configure OIDC using environment variables:
 
-> **Note:** Environment variables always override UI settings. If the settings are configured from the Environment then removed from the environment, the values still stay in the database and OIDC is still configured, unless turned off via the UI. 
-
 <OidcTable />
 
 ## Admin Role Assignment

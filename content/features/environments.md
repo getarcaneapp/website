@@ -58,6 +58,14 @@ Start the Agent:
 docker compose up -d
 ```
 
+## Managing Environment Settings
+
+To update the configuration of an existing environment:
+
+1. Navigate to **Environments** from the sidebar.
+2. Choose the environment you want to modify from the list.
+3. Edit the settings as needed and save your changes.
+
 ## Standalone Binary
 
 If you prefer to run the agent via the static binary you can do so with the instructions below:
@@ -82,10 +90,3 @@ PORT=3553
 
 You can also skip creating a `.env` file and just use inline environment variables:
 <Snippet text="ENVIRONMENT=production GIN_MODE=release PORT=3553 AGENT_MODE=true AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MANAGER_API_URL=http://10.1.1.4:3552 ./arcane-agent" class="mt-2 mb-2 w-full" />
-
-
-## Troubleshooting
-
-- Connection errors: Ensure port 3553 is reachable from the Manager to the Agent host.
-- Docker access issues: Verify `/var/run/docker.sock` is mounted and the container user has permissions.
-- Logs: `docker logs -f arcane-agent`
