@@ -153,7 +153,7 @@ Via Docker Container:
 
 Standalone Arcane Binary:
 
-<Snippet text="arcane generate secret" class="mt-2" />
+<Snippet text="arcane-cli generate secret" class="mt-2" />
 
 ## 4. Start the Project:
 

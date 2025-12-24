@@ -22,25 +22,25 @@ export interface CLICommand {
 
 export const ARCANE_COMMANDS: Record<string, CLICommand> = {
 	root: {
-		name: 'arcane',
-		description: 'Runs the Arcane server or agent. Use `arcane [command]` to run other commands.',
-		usage: 'arcane',
+		name: 'arcane-cli',
+		description: 'Runs the Arcane server or agent. Use `arcane-cli [command]` to run other commands.',
+		usage: 'arcane-cli',
 		flags: []
 	},
 
 	generate: {
-		name: 'arcane generate',
+		name: 'arcane-cli generate',
 		description: "Generate secrets for Arcane's backend",
 		aliases: ['generate', 'gen', 'g'],
-		usage: 'arcane generate [command]',
+		usage: 'arcane-cli generate [command]',
 		flags: [{ name: '-h, --help', description: 'help for generate' }],
 		subcommands: [{ name: 'secret', description: 'Generate cryptographic secrets' }]
 	},
 
 	secret: {
-		name: 'arcane generate secret',
+		name: 'arcane-cli generate secret',
 		description: 'Generate secure cryptographic secrets for ENCRYPTION_KEY and JWT_SECRET.',
-		usage: 'arcane generate secret [flags]',
+		usage: 'arcane-cli generate secret [flags]',
 		flags: [
 			{
 				name: '-f, --format string',
@@ -55,31 +55,31 @@ export const ARCANE_COMMANDS: Record<string, CLICommand> = {
 			}
 		],
 		examples: [
-			'# Generate a base64-encoded 32-byte secret (default)\narcane generate secret',
-			'# Generate a secret formatted for Docker Compose .env\narcane generate secret --format env',
-			'# Generate a 64-byte secret in hex format\narcane generate secret --length 64 --format hex'
+			'# Generate a base64-encoded 32-byte secret (default)\narcane-cli generate secret',
+			'# Generate a secret formatted for Docker Compose .env\narcane-cli generate secret --format env',
+			'# Generate a 64-byte secret in hex format\narcane-cli generate secret --length 64 --format hex'
 		]
 	},
 
 	version: {
-		name: 'arcane version',
+		name: 'arcane-cli version',
 		description: 'Print version information for the arcane binary.',
-		usage: 'arcane version',
+		usage: 'arcane-cli version',
 		flags: []
 	},
 
 	help: {
-		name: 'arcane help',
+		name: 'arcane-cli help',
 		description: 'Show help for a specific command or general help.',
-		usage: 'arcane help [command]',
+		usage: 'arcane-cli help [command]',
 		flags: [],
-		examples: ['arcane help generate', 'arcane help generate secret']
+		examples: ['arcane-cli help generate', 'arcane-cli help generate secret']
 	},
 
 	upgrade: {
-		name: 'arcane upgrade',
+		name: 'arcane-cli upgrade',
 		description: 'Upgrade an Arcane container from outside the container itself.',
-		usage: 'arcane upgrade [flags]',
+		usage: 'arcane-cli upgrade [flags]',
 		flags: [
 			{
 				name: '-a, --auto',

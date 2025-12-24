@@ -53,9 +53,9 @@ description: 'Release notes for Arcane'
 * image pull progress not streaming from remote environments ([#1175](https://github.com/getarcaneapp/arcane/pull/1175) by @kmendell)
 * improve Monaco IntelliSense based on compose spec ([#1190](https://github.com/getarcaneapp/arcane/pull/1190) by @kmendell)
 * padding on bottom of other resource layouts([8a9960a](https://github.com/getarcaneapp/arcane/commit/8a9960a2bf0409429154fdcd0a54708739242a33) by @kmendell)
-* settings state only allows one setting to be updated([56ad326](https://github.com/getarcaneapp/arcane/commit/56ad326a3c7c1914a2b3dd551dafab6f7a41cf85) by @kmendell)
+* settings state only allows one setting to be updated([56ad326](https://github.com/getarcaneapp/arcane/commit/56ad326a3c7c1914a2b3dd551dafab6f8a41cf85) by @kmendell)
 * auto updater issues with certain network modes ([#1205](https://github.com/getarcaneapp/arcane/pull/1205) by @kmendell)
-* mobile layout and performence issues([9816512](https://github.com/getarcaneapp/arcane/commit/981651263da009d8a2d6556448d107aa66367dbe) by @kmendell)
+* mobile layout and performance issues([9816512](https://github.com/getarcaneapp/arcane/commit/981651263da009d8a2d6556448d107aa66367dbe) by @kmendell)
 * image update available notifications now being sent([9500c9d](https://github.com/getarcaneapp/arcane/commit/9500c9d5ffa2cbd5d529133bad2792fb1c60187a) by @kmendell)
 
 ### CLI - Bug fixes
@@ -432,7 +432,7 @@ description: 'Release notes for Arcane'
 
 ### New features
 
-* arcane cli `generate secret` command ([#760](https://github.com/ofkm/arcane/pull/760) by @kmendell)
+* arcane-cli `generate secret` command ([#760](https://github.com/ofkm/arcane/pull/760) by @kmendell)
 * notification system for container and image updates ([#730](https://github.com/ofkm/arcane/pull/730) by @kmendell)
 * add hostname to dashboard([492222d](https://github.com/ofkm/arcane/commit/492222d26872fd51879760345bdfa4bfe1c66e39) by @kmendell)
 * arcane self-updater ([#744](https://github.com/ofkm/arcane/pull/744) by @kmendell)
@@ -442,7 +442,7 @@ description: 'Release notes for Arcane'
 * text inputs not using correct string or number type for input boxes([215d8ed](https://github.com/ofkm/arcane/commit/215d8ed6e3847f7405607118f0ac986f089e5ae2) by @kmendell)
 * project env interpolation not parsing env files in correct order ([#751](https://github.com/ofkm/arcane/pull/751) by @kmendell)
 * load project services concurrently ([#758](https://github.com/ofkm/arcane/pull/758) by @kmendell)
-* only log entrypoint when running the base arcane command([e95093f](https://github.com/ofkm/arcane/commit/e95093f2ad90b878d43ffb91b8d7a12eaf654f0c) by @kmendell)
+* only log entrypoint when running the base arcane-cli command([e95093f](https://github.com/ofkm/arcane/commit/e95093f2ad90b878d43ffb91b8d7a12eaf654f0c) by @kmendell)
 * refresh environment on all pages([44501d4](https://github.com/ofkm/arcane/commit/44501d492f88f5b8e6f938e4844b3568406012e9) by @kmendell)
 * properly persist local vs environment settings ([#775](https://github.com/ofkm/arcane/pull/775) by @kmendell)
 * remove default route from customize overview ([#776](https://github.com/ofkm/arcane/pull/776) by @cabaucom376)
