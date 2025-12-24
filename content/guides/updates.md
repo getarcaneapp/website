@@ -10,7 +10,8 @@ Keep selected containers and projects up to date automatically when new images a
 - If using private registries, credentials are configured in Arcanes Registry Credentials.
 
 ## Enable auto updates
-1. Go to Settings → Docker.
+1. Go to Environments → Select the Environment to Edit → Settings → Select the Docker Tab.
+2. Enable Image Polling and select a time option or enter a custom value.
 2. Turn on Auto updates.
 3. Set the check interval (60-1440 minutes).
 4. Save.
