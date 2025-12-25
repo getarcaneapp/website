@@ -8,6 +8,9 @@ order: 2
 import { Snippet } from '$lib/components/ui/snippet/index.js';
 </script>
 
+> [!NOTE]
+> The Arcane CLI is a very new feature and may be buggy. Feedback is greatly appreciated!
+
 The Arcane CLI stores its configuration in a YAML file on your local machine.
 
 ## Config File Location

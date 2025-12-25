@@ -9,6 +9,9 @@ import { Snippet } from '$lib/components/ui/snippet/index.js';
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
+> [!NOTE]
+> The Arcane CLI is a very new feature and may be buggy. Feedback is greatly appreciated!
+
 The Arcane CLI is the official tool for interacting with your Arcane server from the terminal. It allows you to manage containers, images, environments, and more.
 
 ## Installation
