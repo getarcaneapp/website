@@ -26,7 +26,7 @@ description: 'Release notes for Arcane'
 ### CLI - Bug fixes
 
 * use proper timeouts for specific commands([267dd09](https://github.com/getarcaneapp/arcane/commit/267dd091a6311cab3a26ea35e07f116c01afd195) by @kmendell)
-* incorrect return type for settings reponse([e3c323b](https://github.com/getarcaneapp/arcane/commit/e3c323b2c59b28e34096231300dd9dba32b29a6c) by @kmendell)
+* incorrect return type for settings response([e3c323b](https://github.com/getarcaneapp/arcane/commit/e3c323b2c59b28e34096231300dd9dba32b29a6c) by @kmendell)
 
 ### Dependencies
 
