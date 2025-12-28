@@ -14,7 +14,7 @@ description: 'Release notes for Arcane'
 * button flex 'bouncy' layout issue([51977fc](https://github.com/getarcaneapp/arcane/commit/51977fc0a8cbb58f30afa2ce5e62d00895424bd1) by @kmendell)
 * add generate command back to built in cli([875a96a](https://github.com/getarcaneapp/arcane/commit/875a96a5ec7519cc4e9e9060ec53bc1399c4c257) by @kmendell)
 * correctly fetch dynamic image/container items on dashboard([7965948](https://github.com/getarcaneapp/arcane/commit/7965948fc3d726fcd40144d7a9feb568ceb26913) by @kmendell)
-* allow litteral quotes in oidc env values ([#1272](https://github.com/getarcaneapp/arcane/pull/1272) by @kmendell)
+* allow literal quotes in oidc env values ([#1272](https://github.com/getarcaneapp/arcane/pull/1272) by @kmendell)
 
 
 
