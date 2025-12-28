@@ -536,17 +536,17 @@ install_arcane() {
     
     # Determine the download URL
     if [[ "$ARCANE_VERSION" == "latest" ]]; then
-        DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/latest/download/arcane-linux-${ARCH}"
+        DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/latest/download/arcane_linux_${ARCH}"
     else
-        DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/download/${ARCANE_VERSION}/arcane-linux-${ARCH}"
+        DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/download/${ARCANE_VERSION}/arcane_linux_${ARCH}"
     fi
     
     # For macOS
     if [[ "$OS" == "macos" ]]; then
         if [[ "$ARCANE_VERSION" == "latest" ]]; then
-            DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/latest/download/arcane-darwin-${ARCH}"
+            DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/latest/download/arcane_darwin_${ARCH}"
         else
-            DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/download/${ARCANE_VERSION}/arcane-darwin-${ARCH}"
+            DOWNLOAD_URL="https://github.com/getarcaneapp/arcane/releases/download/${ARCANE_VERSION}/arcane_darwin_${ARCH}"
         fi
     fi
     
