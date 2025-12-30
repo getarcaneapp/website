@@ -42,6 +42,7 @@ services:
       - /host/path/to/projects:/app/data/projects
     environment:
       - APP_URL=http://localhost:3552
+      - AGENT_MODE=true
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
@@ -68,6 +69,7 @@ where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
 > - Set the projects directory in Arcane to `/opt/docker`
 >
 > This ensures that file paths in your compose files (like `./config` or relative volume mounts) resolve correctly both inside Arcane and when Docker executes on the host.
+> Projects are only available if `AGENT_MODE` is set to `true` or if `UI_CONFIGURATION_DISABLED` is set to `true`, see <Link href="/docs/configuration/environment">.
 
 ## 3. Generating secrets
 
