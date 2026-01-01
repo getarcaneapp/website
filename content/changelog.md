@@ -11,8 +11,8 @@ description: 'Release notes for Arcane'
 ### Backend - Bug fixes
 
 * checkbox mismatch between glass and non glass ui mode([a5a1d98](https://github.com/getarcaneapp/arcane/commit/a5a1d982acd49bb9c5f2cdac79dc2d458b436b69) by @kmendell)
-* inconsistent sorting on db resources, casuing sorting issue in the frontend([3aa60e8](https://github.com/getarcaneapp/arcane/commit/3aa60e82fb6fc8e1aac7034d59205e48771b4291) by @kmendell)
-* security agents false postive for malicious execution([baca054](https://github.com/getarcaneapp/arcane/commit/baca0540b342a3fdfee3a5fdc4a93f791d747b39) by @kmendell)
+* inconsistent sorting on db resources, causing sorting issue in the frontend([3aa60e8](https://github.com/getarcaneapp/arcane/commit/3aa60e82fb6fc8e1aac7034d59205e48771b4291) by @kmendell)
+* security agents false positive for malicious execution([baca054](https://github.com/getarcaneapp/arcane/commit/baca0540b342a3fdfee3a5fdc4a93f791d747b39) by @kmendell)
 * show confirmation dialog when removing volumes([037bcf6](https://github.com/getarcaneapp/arcane/commit/037bcf69ec10414be9a45d914e6f9e8861907926) by @kmendell)
 * add environment selector on error page to avoid a 'stuck state' ([#1298](https://github.com/getarcaneapp/arcane/pull/1298) by @kmendell)
 * allow skipping tls verification for oidc endpoints ([#1300](https://github.com/getarcaneapp/arcane/pull/1300) by @kmendell)
