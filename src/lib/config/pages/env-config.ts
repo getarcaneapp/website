@@ -76,5 +76,15 @@ export const envConfig: EnvConfig[] = [
 		name: 'UI_CONFIGURATION_DISABLED',
 		description: 'Disables UI-based settings changes; forces env-driven configuration',
 		defaultValue: 'false'
+	},
+	{
+		name: 'FILE_PERM',
+		description: 'Configure the permissions of created files by arcane',
+		defaultValue: '0644'
+	},
+	{
+		name: 'DIR_PERM',
+		description: 'Configure the permissions of created directories by arcane',
+		defaultValue: '0755'
 	}
 ];
