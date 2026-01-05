@@ -108,9 +108,6 @@ services:
       # Enable auto updates (default behavior). Use false to disable.
       - com.getarcaneapp.arcane.updater=true
 
-      # Or: monitor-only mode
-      # - com.getarcaneapp.arcane.monitor-only=true
-
       # Optional: dependencies
       - com.getarcaneapp.arcane.depends-on=db,redis
 
