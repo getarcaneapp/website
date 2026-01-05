@@ -28,6 +28,9 @@ services:
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
       - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
       - NVIDIA_VISIBLE_DEVICES=all
+      - GPU_MONITORING_ENABLED=true
+      - GPU_TYPE=nvidia // or AUTO for auto-detection
+
     deploy:
       resources:
         reservations:
