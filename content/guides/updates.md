@@ -41,14 +41,6 @@ com.getarcaneapp.arcane.updater=false
 
 Accepted “false” values are: `false`, `0`, `no`, `off` (case-insensitive).
 
-### Monitor-only mode (detect updates, don’t apply)
-
-To allow Arcane to *check* the image but never recreate the container automatically:
-
-```
-com.getarcaneapp.arcane.monitor-only=true
-```
-
 Accepted “true” values are: `true`, `1`, `yes`, `on` (case-insensitive).
 
 ### Lifecycle hooks
