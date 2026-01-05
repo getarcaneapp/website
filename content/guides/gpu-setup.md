@@ -29,7 +29,7 @@ services:
       - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
       - NVIDIA_VISIBLE_DEVICES=all
       - GPU_MONITORING_ENABLED=true
-      - GPU_TYPE=nvidia // or AUTO for auto-detection
+      - GPU_TYPE=nvidia
     deploy:
       resources:
         reservations:
