@@ -71,6 +71,35 @@ Once your repository is connected, you can create a project that syncs from it.
 
 Arcane will clone the repository, read the compose file, and create a project. If `Auto Sync` is enabled, it will periodically check for changes in the repository and automatically update and redeploy your project.
 
+### Import Multiple Syncs via JSON
+
+If have mutilpe syncs you want to create at one time you can import mutiple via a json content or file.
+
+The file is a simple JSON Array as shown below:
+
+```json
+[
+  {
+    "syncName": "project-name",
+    "gitRepo": "my-git-repo",
+    "branch": "main",
+    "dockerComposePath": "compose/myproject/compose.yaml",
+    "autoSync": true,
+    "syncInterval": 5,
+    "enabled": true
+  },
+    {
+    "syncName": "project-name2",
+    "gitRepo": "my-git-repo",
+    "branch": "main",
+    "dockerComposePath": "compose/myproject2/compose.yaml",
+    "autoSync": true,
+    "syncInterval": 5,
+    "enabled": true
+  }
+]
+```
+
 > [!IMPORTANT]
 > The Redployment will only happenn if the project is currently running.
 
