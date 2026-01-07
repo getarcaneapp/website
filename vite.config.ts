@@ -4,27 +4,10 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	optimizeDeps: {
-		exclude: ['@lucide/svelte']
-	},
 	plugins: [tailwindcss(), enhancedImages(), sveltekit()],
 	server: {
 		fs: {
 			allow: ['..', './content']
-		}
-	},
-	build: {
-		rolldownOptions: {
-			output: {
-				advancedChunks: {
-					groups: [
-						{
-							test: /node_modules\/@lucide\/svelte/,
-							name: 'icons'
-						}
-					]
-				}
-			}
 		}
 	}
 });
