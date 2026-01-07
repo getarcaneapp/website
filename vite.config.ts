@@ -5,21 +5,26 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	optimizeDeps: {
-		exclude: ['@lucide/svelte'],
+		exclude: ['@lucide/svelte']
 	},
 	plugins: [tailwindcss(), enhancedImages(), sveltekit()],
 	server: {
 		fs: {
-			allow: ['..', './content'],
-		},
+			allow: ['..', './content']
+		}
 	},
 	build: {
-		rollupOptions: {
+		rolldownOptions: {
 			output: {
-				manualChunks: {
-					icons: ['@lucide/svelte'],
-				},
-			},
-		},
-	},
+				advancedChunks: {
+					groups: [
+						{
+							test: /node_modules\/@lucide\/svelte/,
+							name: 'icons'
+						}
+					]
+				}
+			}
+		}
+	}
 });
