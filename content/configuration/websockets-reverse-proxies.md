@@ -60,7 +60,8 @@ The key lines for WebSocket support are:
 
 ## Apache Configuration
 
-If you are using Apache 2.4.47 or later, you need to use a `ProxyPass` rule with `upgrade=websocket`:
+With [`mod_proxy_http`](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html#examples)
+in Apache 2.4.47 or later, you need to use a `ProxyPassMatch` rule with `upgrade=websocket`:
 
 ```apache
 Define HOST arcane.example.com
@@ -69,7 +70,7 @@ Define PORT 3552
 <VirtualHost *:443>
   ServerName ${HOST}
 
-  ProxyPassMatch ^/(.*)\/ws$  ws://127.0.0.1:${PORT}/$1/ws upgrade=websocket
+  ProxyPassMatch ^/(.*)\/ws\/(.*)$  ws://127.0.0.1:${PORT}/$1/ws/$2 upgrade=websocket
   ProxyPass / http://127.0.0.1:${PORT}/
   ProxyPassReverse / http://127.0.0.1:${PORT}/
 
