@@ -65,7 +65,6 @@ const allDocs: CollectionDoc[] = [
 	...features,
 	...guides,
 	...development,
-	...templates
 	...templates,
 	...cli,
 	...api,
