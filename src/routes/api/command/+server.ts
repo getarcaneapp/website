@@ -1,5 +1,16 @@
 import { json } from '@sveltejs/kit';
-import { configuration, development, features, guides, indexPage, setup, templates } from '$velite/index.js';
+import {
+	api,
+	changelog,
+	cli,
+	configuration,
+	development,
+	features,
+	guides,
+	indexPage,
+	setup,
+	templates
+} from '$velite/index.js';
 
 export const prerender = true;
 
@@ -36,7 +47,7 @@ function headingsFromToc(toc: any): string[] {
 			walk(it.items);
 		}
 	}
-	walk((toc as any)?.items);
+	walk((toc as any)?.items || toc); // Velite s.toc() can be an array or { items: [] } depending on version/config
 	return out;
 }
 function pathToHref(pathOrSlug: string): string {
@@ -55,27 +66,60 @@ const allDocs: CollectionDoc[] = [
 	...guides,
 	...development,
 	...templates
+	...templates,
+	...cli,
+	...api,
+	...changelog
 ];
 
 export function GET() {
 	const docs = allDocs
 		.filter((d) => (d as any).published !== false)
-		.map((d) => {
+		.flatMap((d) => {
 			const filePath = `/content/${d.path}.md`;
 			const raw = rawDocs[filePath] || '';
 			const text = mdToText(stripCodeBlocks(stripFrontmatter(raw)));
-			const headings = headingsFromToc((d as any).toc);
+			const toc = (d as any).toc;
 			const slugish = (d as any).slug ?? d.path;
+			const pageHref = pathToHref(slugish);
 
-			return {
+			const results: any[] = [];
+
+			// Add the main page
+			results.push({
 				id: slugish,
 				title: d.title,
 				description: d.description,
 				section: (d as any).section,
-				href: pathToHref(slugish),
-				headings,
-				content: text.slice(0, 10_000)
-			};
+				href: pageHref,
+				headings: headingsFromToc(toc),
+				content: text.slice(0, 10_000),
+				type: 'page'
+			});
+
+			// Add each heading from TOC as a searchable item
+			function walk(items?: any[]) {
+				if (!items) return;
+				for (const it of items) {
+					if (it.title && it.url) {
+						results.push({
+							id: `${slugish}${it.url}`,
+							title: it.title,
+							description: `Section in ${d.title}`,
+							section: (d as any).section,
+							href: `${pageHref}${it.url}`,
+							headings: [],
+							content: '',
+							type: 'heading',
+							parentTitle: d.title
+						});
+					}
+					walk(it.items);
+				}
+			}
+			walk((toc as any)?.items || (Array.isArray(toc) ? toc : []));
+
+			return results;
 		});
 
 	return json({ docs });
