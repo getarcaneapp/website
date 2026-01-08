@@ -73,7 +73,7 @@ Arcane will clone the repository, read the compose file, and create a project. I
 
 ### Import Multiple Syncs via JSON
 
-If have mutilpe syncs you want to create at one time you can import mutiple via a json content or file.
+If have mutilpe syncs you want to create at one time you can import multiple via a json content or file.
 
 The file is a simple JSON Array as shown below:
 
