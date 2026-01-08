@@ -25,6 +25,8 @@
 		href: string;
 		headings: string[];
 		content: string;
+		type?: 'page' | 'heading';
+		parentTitle?: string;
 	};
 
 	let query = $state('');
@@ -47,11 +49,19 @@
 	function score(doc: SearchDoc, q: string) {
 		const ql = q.toLowerCase();
 		let s = 0;
+
+		// exact match boost
+		if (doc.title.toLowerCase() === ql) s += 10;
+
 		if (doc.title.toLowerCase().includes(ql)) s += 5;
 		if (doc.section.toLowerCase().includes(ql)) s += 3;
 		if (doc.description.toLowerCase().includes(ql)) s += 2;
 		if (doc.headings.join(' ').toLowerCase().includes(ql)) s += 2;
 		if (doc.content.toLowerCase().includes(ql)) s += 1;
+
+		// type boost
+		if (doc.type === 'page') s += 0.5;
+
 		return s;
 	}
 
@@ -159,12 +169,19 @@
 					>
 						{#each results as r (r.id)}
 							<CommandMenuItem
-								value={`${r.title} ${r.section}`}
+								value={`${r.title} ${r.section} ${r.parentTitle ?? ''}`}
 								keywords={[r.description, ...r.headings]}
 								onSelect={() => runCommand(() => goto(r.href))}
 							>
 								<ArrowRightIcon />
-								{r.title}
+								<div class="flex flex-col">
+									<span>{r.title}</span>
+									{#if r.parentTitle}
+										<span class="text-muted-foreground text-[0.65rem] leading-none font-normal">
+											{r.parentTitle}
+										</span>
+									{/if}
+								</div>
 								<span class="text-muted-foreground ml-auto font-mono text-xs font-normal tabular-nums">
 									{r.section}
 								</span>

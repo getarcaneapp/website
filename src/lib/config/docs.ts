@@ -24,12 +24,12 @@ function toHref(path: string) {
 	return `/docs/${path}`;
 }
 
-function sortDocs<T extends { title: string; order?: number }>(arr: T[]) {
+export function sortDocs<T extends { title: string; order?: number }>(arr: T[]) {
 	return [...arr].sort((a, b) => {
-		const ao = a.order ?? 1e9;
-		const bo = b.order ?? 1e9;
+		const ao = a.order ?? Number.MAX_SAFE_INTEGER;
+		const bo = b.order ?? Number.MAX_SAFE_INTEGER;
 		if (ao !== bo) return ao - bo;
-		return a.title.localeCompare(b.title);
+		return a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' });
 	});
 }
 
