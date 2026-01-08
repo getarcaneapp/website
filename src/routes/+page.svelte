@@ -126,6 +126,25 @@
 				</a>
 
 				<a
+					href="https://graphite.dev"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="group inline-flex items-center gap-2 transition-all duration-300 hover:scale-105"
+					aria-label="Graphite"
+				>
+					<img
+						src="/img/graphite.png"
+						alt="Graphite"
+						class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+						decoding="async"
+						loading="lazy"
+					/>
+					<span class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300">
+						Graphite
+					</span>
+				</a>
+
+				<a
 					href="https://depot.dev"
 					target="_blank"
 					rel="noopener noreferrer"
