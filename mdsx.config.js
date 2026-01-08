@@ -11,10 +11,11 @@ export const mdsxConfig = defineConfig({
 	extensions: ['.md'],
 	remarkPlugins: [remarkGfm],
 	rehypePlugins: [rehypeSlug],
+	svelteConfigPath: false,
 	blueprints: {
 		default: {
 			path: resolve(__dirname, './src/lib/components/mdsx/blueprint.svelte'),
-			rehypePlugins: [],
-		},
-	},
+			rehypePlugins: []
+		}
+	}
 });
