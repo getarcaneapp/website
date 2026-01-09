@@ -3,6 +3,31 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.12.1 - 2026-01-09
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.12.1)
+
+
+### Backend - Bug fixes
+
+* include file editors not scrolling([52a004e](https://github.com/getarcaneapp/arcane/commit/52a004ea4869489091dca1efba0be0e1dccdd7b0) by @kmendell)
+* resources not respecting multiple filters ([#1391](https://github.com/getarcaneapp/arcane/pull/1391) by @kmendell)
+* dont remove .env content from git sync([95b7ac2](https://github.com/getarcaneapp/arcane/commit/95b7ac2982c19ec2d31b6843256a14c198101c93) by @kmendell)
+* use unique icon for redeploy([84210cc](https://github.com/getarcaneapp/arcane/commit/84210cc3acf6864566153a8cc77f6397b38b44a3) by @kmendell)
+* predefined networks being incorrectly sorted ([#1395](https://github.com/getarcaneapp/arcane/pull/1395) by @kmendell)
+* volume size and created not sorting correctly([dc7f88c](https://github.com/getarcaneapp/arcane/commit/dc7f88c0ea1b33632f2a3dc49d9001c524ffc35a) by @kmendell)
+* git repository sheet layout being cutoff([9052c4b](https://github.com/getarcaneapp/arcane/commit/9052c4b0ff6dd8c0de8a3ad325c5a9b10af04566) by @kmendell)
+* disable font ligatures([f4c07a1](https://github.com/getarcaneapp/arcane/commit/f4c07a11bb16db51725bc943df83c77fff454f28) by @kmendell)
+
+
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.12.0...v1.12.1
+
+---
+title: 'Changelog'
+description: 'Release notes for Arcane'
+---
+
 ## v1.12.0 - 2026-01-08
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.12.0)
