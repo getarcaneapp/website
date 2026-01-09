@@ -62,10 +62,11 @@ where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
 
 > [!IMPORTANT]
 > To manage existing compose projects, you must mount your projects folder with **matching paths** inside and outside the container.
+> All Paths MUST be absolute paths, ie: `/opt/docker` NOT `opt/docker`
 >
 > For example, if your projects are at `/opt/docker` on the host:
 > - Mount: `/opt/docker:/opt/docker` (not `/opt/docker:/app/data/projects`)
-> - Set the projects directory in Arcane to `/opt/docker`
+> - Set the projects directory in Arcane to `/opt/docker` or set `PROJECTS_DIR=/opt/docker` in the environment for this to take effect immediately on startup of Arcane.
 >
 > This ensures that file paths in your compose files (like `./config` or relative volume mounts) resolve correctly both inside Arcane and when Docker executes on the host.
 
