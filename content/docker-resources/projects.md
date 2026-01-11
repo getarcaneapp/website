@@ -1,6 +1,7 @@
 ---
 title: 'Projects'
 description: 'Learn how to manage Docker compose projects with Arcane'
+order: 1
 ---
 
 <script lang="ts">

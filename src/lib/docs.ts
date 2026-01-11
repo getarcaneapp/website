@@ -3,11 +3,12 @@ import type { Component } from 'svelte';
 import {
 	cli,
 	configuration,
-	development,
-	features,
+	contributing,
+	dockerResources,
+	gettingStarted,
 	guides,
 	indexPage,
-	setup,
+	remoteManagement,
 	templates,
 } from '$velite/index.js';
 
@@ -15,13 +16,14 @@ type CollectionDoc = (typeof indexPage)[number];
 
 const allDocs: CollectionDoc[] = [
 	...indexPage,
-	...setup,
+	...gettingStarted,
+	...dockerResources,
 	...configuration,
-	...features,
-	...guides,
-	...development,
-	...templates,
+	...remoteManagement,
 	...cli,
+	...guides,
+	...templates,
+	...contributing,
 ];
 
 interface DocModule {

@@ -1,7 +1,7 @@
 ---
 title: 'LXC Container Setup'
 description: 'Run Arcane inside an LXC container with full system metrics visibility'
-order: 4
+order: 3
 ---
 
 Running Arcane inside an LXC container (such as on Proxmox) requires additional configuration to access host system metrics. This guide covers how to properly mount the necessary filesystems for full functionality.

@@ -1,6 +1,7 @@
 ---
 title: 'Volumes'
 description: 'Learn how to manage Docker volumes with Arcane'
+order: 4
 ---
 
 ## What Can You Do With Volumes in Arcane?

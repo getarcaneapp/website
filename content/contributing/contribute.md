@@ -1,7 +1,7 @@
 ---
 title: Contributing to Arcane
 description: Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
-blueprint: default
+order: 1
 ---
 
 <script lang="ts">

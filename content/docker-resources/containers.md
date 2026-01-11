@@ -1,6 +1,7 @@
 ---
 title: 'Containers'
 description: 'Learn how to manage Docker containers with Arcane'
+order: 2
 ---
 
 ## What Can You Do With Containers in Arcane?

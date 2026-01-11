@@ -2,11 +2,12 @@ import { getDoc } from '$lib/docs.js';
 import {
 	cli,
 	configuration,
-	development,
-	features,
+	contributing,
+	dockerResources,
+	gettingStarted,
 	guides,
 	indexPage,
-	setup,
+	remoteManagement,
 	templates,
 } from '$velite/index.js';
 import type { EntryGenerator, PageLoad } from './$types.js';
@@ -15,13 +16,14 @@ export const prerender = true;
 
 const ALL_DOCS = [
 	...indexPage,
-	...setup,
+	...gettingStarted,
+	...dockerResources,
 	...configuration,
-	...features,
+	...remoteManagement,
+	...cli,
 	...guides,
 	...templates,
-	...development,
-	...cli,
+	...contributing,
 ];
 
 export const entries: EntryGenerator = () => {

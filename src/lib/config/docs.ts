@@ -1,4 +1,13 @@
-import { cli, configuration, development, features, guides, setup, templates } from '$velite/index.js';
+import {
+	cli,
+	configuration,
+	contributing,
+	dockerResources,
+	gettingStarted,
+	guides,
+	remoteManagement,
+	templates
+} from '$velite/index.js';
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
@@ -46,13 +55,14 @@ const SECTION_BUILDERS: Array<{
 	title: string;
 	source: any[];
 }> = [
-	{ key: 'setup', title: 'Setup', source: setup },
+	{ key: 'getting-started', title: 'Getting Started', source: gettingStarted },
+	{ key: 'docker-resources', title: 'Docker Resources', source: dockerResources },
 	{ key: 'configuration', title: 'Configuration', source: configuration },
-	{ key: 'features', title: 'Features', source: features },
+	{ key: 'remote-management', title: 'Remote Management', source: remoteManagement },
 	{ key: 'cli', title: 'CLI', source: cli },
 	{ key: 'guides', title: 'Guides', source: guides },
 	{ key: 'templates', title: 'Templates', source: templates },
-	{ key: 'development', title: 'Development', source: development }
+	{ key: 'contributing', title: 'Contributing', source: contributing }
 ];
 
 const COMMUNITY_GROUP: SidebarNavItem = {

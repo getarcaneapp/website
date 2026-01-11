@@ -1,6 +1,7 @@
 ---
 title: 'Auto Updates'
 description: 'Configure automatic updates for containers and projects'
+order: 1
 ---
 
 Keep selected containers and projects up to date automatically when new images are available.

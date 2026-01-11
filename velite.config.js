@@ -27,9 +27,15 @@ const indexPage = defineCollection({
 	schema: docSchema
 });
 
-const setup = defineCollection({
-	name: 'setup',
-	pattern: './setup/**/*.md',
+const gettingStarted = defineCollection({
+	name: 'gettingStarted',
+	pattern: './getting-started/**/*.md',
+	schema: docSchema
+});
+
+const dockerResources = defineCollection({
+	name: 'dockerResources',
+	pattern: './docker-resources/**/*.md',
 	schema: docSchema
 });
 
@@ -39,9 +45,15 @@ const configuration = defineCollection({
 	schema: docSchema
 });
 
-const features = defineCollection({
-	name: 'features',
-	pattern: './features/**/*.md',
+const remoteManagement = defineCollection({
+	name: 'remoteManagement',
+	pattern: './remote-management/**/*.md',
+	schema: docSchema
+});
+
+const cli = defineCollection({
+	name: 'cli',
+	pattern: './cli/**/*.md',
 	schema: docSchema
 });
 
@@ -51,27 +63,21 @@ const guides = defineCollection({
 	schema: docSchema
 });
 
-const development = defineCollection({
-	name: 'development',
-	pattern: './dev/**/*.md',
+const templates = defineCollection({
+	name: 'templates',
+	pattern: './templates/**/*.md',
 	schema: docSchema
 });
 
-const templates = defineCollection({
-	name: 'templates',
-	pattern: ['./templates.md', './templates/**/*.md'],
+const contributing = defineCollection({
+	name: 'contributing',
+	pattern: './contributing/**/*.md',
 	schema: docSchema
 });
 
 const changelog = defineCollection({
 	name: 'changelog',
 	pattern: './changelog.md',
-	schema: docSchema
-});
-
-const cli = defineCollection({
-	name: 'cli',
-	pattern: './cli/**/*.md',
 	schema: docSchema
 });
 
@@ -85,14 +91,15 @@ export default defineConfig({
 	root: './content',
 	collections: {
 		indexPage,
-		setup,
+		gettingStarted,
+		dockerResources,
 		configuration,
-		features,
-		guides,
-		development,
-		templates,
-		changelog,
+		remoteManagement,
 		cli,
+		guides,
+		templates,
+		contributing,
+		changelog,
 		api
 	},
 	output: { assets: 'static' }
