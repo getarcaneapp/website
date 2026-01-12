@@ -11,7 +11,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE] This guide is for the full installation of Arcane.
-> If you are looking to setup a remote environment see <Link href="/docs/features/environments">here</Link>. For enhanced security with a Docker socket proxy, see the <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link> guide.
+> If you are looking to setup a remote environment see <Link href="/docs/remote-management/environments">here</Link>. For enhanced security with a Docker socket proxy, see the <Link href="/docs/configuration/socket-proxy">Socket Proxy Setup</Link> guide.
 
 ## Convenience Script
 
@@ -107,4 +107,4 @@ Password:
 
 ## Next (Preview) Builds
 
-Interested in trying out the latest features before they are officially released? Check out our <Link href="/docs/setup/next-images">Next Builds</Link> guide for information on how to use the `:next` or `:next-distroless` images.
+Interested in trying out the latest features before they are officially released? Check out our <Link href="/docs/guides/next-images">Next Builds</Link> guide for information on how to use the `:next` or `:next-distroless` images.

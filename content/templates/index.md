@@ -1,11 +1,8 @@
 ---
 title: 'Using Templates'
 description: 'Templates help you quickly deploy common applications and services with Docker Compose. Arcane supports both local templates and remote registries.'
+order: 1
 ---
-
-# Using Templates
-
-Templates help you quickly deploy common applications and services with Docker Compose. Arcane supports both local templates and remote registries.
 
 ## Quick Start
 

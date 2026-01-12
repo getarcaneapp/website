@@ -1,6 +1,7 @@
 ---
 title: 'Template Registries'
 description: 'Want to share templates with your team or the community? Create your own template registry!'
+order: 2
 ---
 
 <script lang="ts">
@@ -23,7 +24,7 @@ Create a JSON manifest file that lists your templates (include the `$schema` fie
 - **Option A: GitHub (Recommended)**
   1. Create a GitHub repository
   2. Add your `registry.json` file
-  3. Add template directories with `docker-compose.yml` files
+  3. Add template directories with `compose.yaml` files
   4. Use raw GitHub URLs for file access
 
 - **Option B: Web Server**
@@ -90,7 +91,7 @@ docker-templates/
 
 ## Testing Your Registry
 
-1. Validate JSON syntax and schema (Draft 07) against `https://github.com/getarcaneapp/arcane-templates/schema.json`
+1. Validate JSON syntax and schema (Draft 07) against `https://github.com/getarcaneapp/templates/schema.json`
 2. Test URLs: ensure all file URLs are accessible (HTTPS)
 3. Add to Arcane: Settings → Templates → Add Registry
 4. Verify: templates appear and download correctly
@@ -128,7 +129,7 @@ Here's a minimal GitHub setup:
 2. **Add registry.json:**
    ```json
    {
-     "$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
+     "$schema": "https://github.com/getarcaneapp/templates/schema.json",
      "name": "My Templates",
      "description": "Custom Docker templates",
      "version": "1.0.0",

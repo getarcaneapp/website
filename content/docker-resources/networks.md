@@ -1,6 +1,7 @@
 ---
 title: 'Networks'
 description: 'Learn how to manage Docker networks with Arcane'
+order: 5
 ---
 
 ## What Can You Do With Networks in Arcane?

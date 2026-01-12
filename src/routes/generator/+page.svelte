@@ -35,7 +35,7 @@
 				<Button
 					variant="outline"
 					size="lg"
-					href="/docs/setup/installation"
+					href="/docs/getting-started/installation"
 					class="group w-full border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5 sm:w-auto"
 				>
 					<BookOpen class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />

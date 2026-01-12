@@ -1,6 +1,7 @@
 ---
 title: Translating Arcane
 description: Help translate Arcane into your language
+order: 2
 ---
 
 Help the community by translating Arcane into you language.

@@ -53,7 +53,7 @@
 			<Button
 				variant="default"
 				size="lg"
-				href="/docs/setup/installation"
+				href="/docs/getting-started/installation"
 				class="group relative overflow-hidden bg-linear-to-r from-purple-600 via-violet-600 to-purple-600 bg-size-[200%_auto] text-white shadow-lg shadow-purple-500/25 transition-all duration-500 hover:bg-right hover:shadow-xl hover:shadow-purple-500/40"
 			>
 				<Sparkles class="size-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />

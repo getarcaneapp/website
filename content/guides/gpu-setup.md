@@ -1,7 +1,7 @@
 ---
 title: 'GPU Monitoring Setup'
 description: 'Setup GPU monitoring for NVIDIA GPUs'
-order: 3
+order: 2
 ---
 
 > [!IMPORTANT]

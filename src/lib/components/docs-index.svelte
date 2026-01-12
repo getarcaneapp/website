@@ -1,18 +1,27 @@
 <script lang="ts">
 	import { Link } from '$lib/components/ui/link/index.js';
-	import { configuration, development, features, guides, setup, templates } from '$velite/index.js';
+	import {
+		configuration,
+		contributing,
+		dockerResources,
+		gettingStarted,
+		guides,
+		remoteManagement,
+		templates
+	} from '$velite/index.js';
 	import { sortDocs } from '$lib/config/docs.js';
 
 	type Doc = { title: string; path: string; order?: number };
 
 	let {
 		sections = [
-			{ title: 'Getting Started', collections: [setup] },
+			{ title: 'Getting Started', collections: [gettingStarted] },
+			{ title: 'Docker Resources', collections: [dockerResources] },
 			{ title: 'Configuration', collections: [configuration] },
-			{ title: 'Features', collections: [features] },
+			{ title: 'Remote Management', collections: [remoteManagement] },
 			{ title: 'Templates', collections: [templates] },
 			{ title: 'Guides', collections: [guides] },
-			{ title: 'Development', collections: [development] }
+			{ title: 'Contributing', collections: [contributing] }
 		]
 	} = $props();
 

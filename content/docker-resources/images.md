@@ -1,6 +1,7 @@
 ---
 title: 'Images'
 description: 'Learn how to manage Docker images with Arcane'
+order: 3
 ---
 
 ## What Can You Do With Images in Arcane?
