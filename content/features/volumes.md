@@ -3,11 +3,25 @@ title: 'Volumes'
 description: 'Learn how to manage Docker volumes with Arcane'
 ---
 
+<script lang="ts">
+import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+</script>
+
 ## What Can You Do With Volumes in Arcane?
 
 - **View Volumes:** See a list of all Docker volumes on your system, along with details like name, driver, and usage.
 - **Create Volumes:** Add a new volume by providing a name and (optionally) driver or labels.
 - **Remove Volumes:** Delete volumes you no longer need. Arcane will warn you if a volume is currently in use by a container.
+
+## Screenshot
+
+<ScreenshotFrame
+	src="/img/screenshots/volumes-page.jpeg"
+	alt="Volumes page in Arcane"
+	caption="Volumes page in Arcane."
+	loading="lazy"
+	decoding="async"
+/>
 
 ## How to Use
 

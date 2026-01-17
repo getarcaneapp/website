@@ -3,6 +3,10 @@ title: 'Images'
 description: 'Learn how to manage Docker images with Arcane'
 ---
 
+<script lang="ts">
+import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+</script>
+
 ## What Can You Do With Images in Arcane?
 
 - **View Images:** See a list of all Docker images on your system, including their tags, size, and when they were created.
@@ -10,6 +14,16 @@ description: 'Learn how to manage Docker images with Arcane'
 - **Inspect Images:** Click on an image to see more details, such as its ID, tags, creation date, and configuration.
 - **Remove Images:** Delete images you no longer need. Arcane will warn you if an image is in use by a container.
 - **Prune Images:** Clean up unused images to free up disk space. You can remove dangling images (those without tags) or all images not used by any container.
+
+## Screenshot
+
+<ScreenshotFrame
+  src="/img/screenshots/images-page.png"
+  alt="Images page in Arcane"
+  caption="Images page in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## How to Use
 

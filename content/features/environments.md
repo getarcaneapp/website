@@ -5,11 +5,22 @@ description: 'Learn how to set up and manage remote Docker hosts using the Arcan
 
 <script lang="ts">
 import { Snippet } from '$lib/components/ui/snippet/index.js';
+import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
 ## Overview
 
 Remote Environments let Arcane manage containers on other hosts through a stripped down version of Arcane itself. You run the Agent on a remote machine (with access to its Docker daemon), and the Manager (main server) connects to its API with an API key generated on the initial setup.
+
+## Screenshot
+
+<ScreenshotFrame
+  src="/img/screenshots/environments-page.jpeg"
+  alt="Remote environments page in Arcane"
+  caption="Remote environments page in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## Requirements
 

@@ -5,11 +5,22 @@ description: 'Learn how to manage Docker compose projects with Arcane'
 
 <script lang="ts">
 import { Link } from '$lib/components/ui/link/index.js';
+import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
 ## What is a Project?
 
 A `Project` is a collection of services defined in a `compose.yaml` file.
+
+## Screenshot
+
+<ScreenshotFrame
+  src="/img/screenshots/projects-page.jpeg"
+  alt="Projects page in Arcane"
+  caption="Projects page in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## How to Use Projects
 
