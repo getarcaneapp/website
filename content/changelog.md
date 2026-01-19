@@ -3,6 +3,34 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.13.2 - 2026-01-19
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.13.2)
+
+> [!IMPORTANT]
+> Huge shoutout to @PvtSec for reporting GHSA-2jv8-39rp-cqqr, We recomend upgrading arcane to this version ASAP to fix that issue. 
+
+### Backend - Bug fixes
+
+* apply auth check before proxying request to environments ([#1532](https://github.com/getarcaneapp/arcane/pull/1532) by @kmendell)
+* allow HTTP_PROXY and HTTPS_PROXY environment variables ([#1534](https://github.com/getarcaneapp/arcane/pull/1534) by @kmendell)
+* use image pull timeout for project pull ([#1533](https://github.com/getarcaneapp/arcane/pull/1533) by @kmendell)
+* update color of port badge to be more distinguishable([b0e8b54](https://github.com/getarcaneapp/arcane/commit/b0e8b54ec7c416ef089476106f23c365a74724cd) by @kmendell)
+
+### Dependencies
+
+* bump go version to 1.25.6([501baaf](https://github.com/getarcaneapp/arcane/commit/501baaf7708e8fc83b030650abd04919880da2e4) by @kmendell)
+* bump pnpm to 10.28.1([c5ef93e](https://github.com/getarcaneapp/arcane/commit/c5ef93e54db76e44b932953af9f8303868fb52c0) by @kmendell)
+
+
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.13.1...v1.13.2
+
+---
+title: 'Changelog'
+description: 'Release notes for Arcane'
+---
+
 ## v1.13.1 - 2026-01-19
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.13.1)
