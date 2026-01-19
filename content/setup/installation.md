@@ -105,6 +105,10 @@ Password:
 >
 > See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for detailed instructions on configuring Nginx, Apache, and other reverse proxies.
 
+## 7. Behind an Outbound HTTP Proxy?
+
+If Arcane needs to reach the internet through an outbound HTTP/HTTPS proxy (e.g., for pulling templates or checking for updates), see the <Link href="/docs/configuration/proxy">HTTP Proxy Configuration Guide</Link>.
+
 ## Next (Preview) Builds
 
 Interested in trying out the latest features before they are officially released? Check out our <Link href="/docs/setup/next-images">Next Builds</Link> guide for information on how to use the `:next` or `:next-distroless` images.
