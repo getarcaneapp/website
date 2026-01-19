@@ -3,6 +3,40 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.13.1 - 2026-01-19
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.13.1)
+
+
+### Backend - Bug fixes
+
+* ability to resize editor panels horizontally ([#1500](https://github.com/getarcaneapp/arcane/pull/1500) by @kmendell)
+* allow oidc endpoints to be defined manually ([#1510](https://github.com/getarcaneapp/arcane/pull/1510) by @kmendell)
+* remove file line from db debug logs([fbe204c](https://github.com/getarcaneapp/arcane/commit/fbe204c5ce919282a65313cfc0c889b763eebd64) by @kmendell)
+* self update binary path for remote environments([974c675](https://github.com/getarcaneapp/arcane/commit/974c675550a0d5408f662d13fe3f8b07edb2267e) by @kmendell)
+* generic webhooks do not allow ports ([#1517](https://github.com/getarcaneapp/arcane/pull/1517) by @kmendell)
+* logo color not applying on refreshes([fe53985](https://github.com/getarcaneapp/arcane/commit/fe539851d621a35c1ebaa08217151e65bbaae64c) by @kmendell)
+
+### Dependencies
+
+* bump @sveltejs/kit from 2.49.4 to 2.49.5 in the npm_and_yarn group across 1 directory ([#1492](https://github.com/getarcaneapp/arcane/pull/1492) by @dependabot[bot])
+* bump svelte from 5.46.3 to 5.46.4 in the npm_and_yarn group across 1 directory ([#1494](https://github.com/getarcaneapp/arcane/pull/1494) by @dependabot[bot])
+* bump devalue to 5.6.2([315b459](https://github.com/getarcaneapp/arcane/commit/315b4595c5239bd14e66d0e5ed394cb2a54aa3f4) by @kmendell)
+* bump prettier from 3.7.4 to 3.8.0 ([#1507](https://github.com/getarcaneapp/arcane/pull/1507) by @dependabot[bot])
+* bump github.com/danielgtaylor/huma/v2 from 2.34.1 to 2.34.2 in /backend ([#1504](https://github.com/getarcaneapp/arcane/pull/1504) by @dependabot[bot])
+* bump github.com/sirupsen/logrus from 1.9.3 to 1.9.4 in /cli ([#1503](https://github.com/getarcaneapp/arcane/pull/1503) by @dependabot[bot])
+
+### Other
+
+* fix context patterns through codebase ([#1450](https://github.com/getarcaneapp/arcane/pull/1450) by @kmendell)
+* cleanup unused setting key/values on startup ([#1519](https://github.com/getarcaneapp/arcane/pull/1519) by @kmendell)
+* run workflows on release/** branches([4ac7e3e](https://github.com/getarcaneapp/arcane/commit/4ac7e3ea614966747064d0610434039a30056bbc) by @kmendell)
+
+
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.13.0...v1.13.1
+
+
 ## v1.13.0 - 2026-01-15
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.13.0)
@@ -1207,5 +1241,6 @@ description: 'Release notes for Arcane'
 * update banner link not clickable ([69e95e0](https://github.com/ofkm/arcane/commit/69e95e0457f5a317f1b7928039bd3719dd70471d))
 * use correct running container count on dashboard ([3dad327](https://github.com/ofkm/arcane/commit/3dad32721a0e53e6f44e2f73959e1d315835d36a))
 * use correct time for auto update job ([e7a5a31](https://github.com/ofkm/arcane/commit/e7a5a3173f8f24ceccf34497915e1b845d377b43))
+
 
 
