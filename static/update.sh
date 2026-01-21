@@ -13,6 +13,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
@@ -89,7 +90,7 @@ run_cmd() {
 }
 
 print_banner() {
-    echo -e "${CYAN}"
+    echo -e "${PURPLE}"
     cat << 'EOF'
     _                            
    / \   _ __ ___ __ _ _ __   ___ 
@@ -292,6 +293,61 @@ apply_update() {
     log_success "Backup created at $BACKUP_PATH"
 }
 
+ensure_systemd_service() {
+    if ! command -v systemctl &> /dev/null; then
+        return 0
+    fi
+
+    if [[ ! -d /etc/systemd/system ]]; then
+        return 0
+    fi
+
+    if [[ -f /etc/systemd/system/arcane.service ]]; then
+        return 0
+    fi
+
+    log_step "Creating systemd service..."
+    progress "Creating service"
+
+    cat > /etc/systemd/system/arcane.service << EOF
+[Unit]
+Description=Arcane Docker Management UI
+Documentation=https://github.com/getarcaneapp/arcane
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=${ARCANE_USER}
+Group=${ARCANE_GROUP}
+ExecStart=${ARCANE_INSTALL_DIR}/arcane
+WorkingDirectory=${ARCANE_INSTALL_DIR}
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/var/log/arcane/arcane.log
+StandardError=append:/var/log/arcane/arcane-error.log
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=${ARCANE_INSTALL_DIR} /var/log/arcane
+PrivateTmp=true
+
+# Load environment from file
+EnvironmentFile=${ARCANE_INSTALL_DIR}/.env
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    run_cmd systemctl daemon-reload
+    run_cmd systemctl enable arcane
+
+    progress_done
+    log_success "Systemd service created and enabled"
+}
+
 print_completion() {
     OLD_VERSION="${OLD_VERSION:-unknown}"
     NEW_VERSION=$("$ARCANE_BIN" --version 2>/dev/null || echo "unknown")
@@ -370,6 +426,7 @@ main() {
     download_arcane
     stop_service
     apply_update
+    ensure_systemd_service
     start_service
     cleanup
     print_completion

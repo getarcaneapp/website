@@ -13,6 +13,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
@@ -27,8 +28,6 @@ ARCANE_GROUP="${ARCANE_GROUP:-arcane}"
 REMOVE_DATA="${REMOVE_DATA:-false}"
 REMOVE_USER="${REMOVE_USER:-false}"
 REMOVE_DOCKER="${REMOVE_DOCKER:-false}"
-REMOVE_GO="${REMOVE_GO:-false}"
-REMOVE_NODE="${REMOVE_NODE:-false}"
 FORCE="${FORCE:-false}"
 
 # Verbosity (default: minimal output)
@@ -97,7 +96,7 @@ run_cmd() {
 
 # Print banner
 print_banner() {
-    echo -e "${RED}"
+    echo -e "${PURPLE}"
     cat << 'EOF'
     _                            
    / \   _ __ ___ __ _ _ __   ___ 
@@ -155,11 +154,12 @@ stop_service() {
     progress "Stopping service"
     
     # systemd
-    if command -v systemctl &> /dev/null && [[ -f /etc/systemd/system/arcane.service ]]; then
+    if command -v systemctl &> /dev/null; then
         log_info "Stopping systemd service..."
         run_cmd systemctl stop arcane 2>/dev/null || true
         run_cmd systemctl disable arcane 2>/dev/null || true
         rm -f /etc/systemd/system/arcane.service
+        rm -f /lib/systemd/system/arcane.service
         run_cmd systemctl daemon-reload
         log_success "Systemd service removed"
     fi
@@ -293,63 +293,6 @@ remove_docker() {
     progress_done
 }
 
-# Remove Go (optional)
-remove_go() {
-    if [[ ! -d /usr/local/go ]]; then
-        return 0
-    fi
-    
-    if [[ "$REMOVE_GO" != "true" ]]; then
-        if ! confirm "Remove Go? (This may affect other applications)"; then
-            log_warn "Go preserved"
-            return 0
-        fi
-    fi
-    
-    log_step "Removing Go..."
-    progress "Removing Go"
-    
-    rm -rf /usr/local/go
-    rm -f /etc/profile.d/go.sh
-    
-    log_success "Go removed"
-    progress_done
-}
-
-# Remove Node.js/fnm (optional)
-remove_node() {
-    if ! command -v fnm &> /dev/null && ! command -v node &> /dev/null; then
-        return 0
-    fi
-    
-    if [[ "$REMOVE_NODE" != "true" ]]; then
-        if ! confirm "Remove Node.js and fnm? (This may affect other applications)"; then
-            log_warn "Node.js preserved"
-            return 0
-        fi
-    fi
-    
-    log_step "Removing Node.js and fnm..."
-    progress "Removing Node.js"
-    
-    # Remove fnm
-    rm -f /usr/local/bin/fnm
-    rm -rf /opt/fnm
-    rm -f /etc/profile.d/fnm.sh
-    
-    # Remove node symlinks
-    rm -f /usr/local/bin/node
-    rm -f /usr/local/bin/npm
-    rm -f /usr/local/bin/npx
-    rm -f /usr/local/bin/pnpm
-    
-    # Remove user fnm directories
-    rm -rf ~/.local/share/fnm 2>/dev/null || true
-    rm -rf ~/.fnm 2>/dev/null || true
-    
-    log_success "Node.js and fnm removed"
-    progress_done
-}
 
 # Print completion message
 print_completion() {
@@ -385,9 +328,7 @@ show_help() {
     echo "  --remove-data       Remove Arcane data directory"
     echo "  --remove-user       Remove Arcane user and group"
     echo "  --remove-docker     Remove Docker"
-    echo "  --remove-go         Remove Go"
-    echo "  --remove-node       Remove Node.js and fnm"
-    echo "  --remove-all        Remove everything (data, user, docker, go, node)"
+    echo "  --remove-all        Remove everything (data, user, docker)"
     echo ""
     echo "Environment Variables:"
     echo "  ARCANE_INSTALL_DIR  Installation directory (default: /opt/arcane)"
@@ -399,8 +340,6 @@ show_help() {
     echo "  REMOVE_DATA=true    Same as --remove-data"
     echo "  REMOVE_USER=true    Same as --remove-user"
     echo "  REMOVE_DOCKER=true  Same as --remove-docker"
-    echo "  REMOVE_GO=true      Same as --remove-go"
-    echo "  REMOVE_NODE=true    Same as --remove-node"
     echo ""
     echo "Examples:"
     echo "  # Interactive uninstall (minimal output, asks for confirmation)"
@@ -445,20 +384,10 @@ parse_args() {
                 REMOVE_DOCKER="true"
                 shift
                 ;;
-            --remove-go)
-                REMOVE_GO="true"
-                shift
-                ;;
-            --remove-node)
-                REMOVE_NODE="true"
-                shift
-                ;;
             --remove-all)
                 REMOVE_DATA="true"
                 REMOVE_USER="true"
                 REMOVE_DOCKER="true"
-                REMOVE_GO="true"
-                REMOVE_NODE="true"
                 shift
                 ;;
             *)
@@ -493,8 +422,6 @@ main() {
     remove_data
     remove_user
     remove_docker
-    remove_go
-    remove_node
     
     print_completion
 }

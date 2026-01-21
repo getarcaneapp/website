@@ -3,10 +3,8 @@
 # Arcane Installation Script
 # Usage: curl -fsSL https://getarcane.app/install.sh | bash
 #
-# This script installs Arcane and all its dependencies:
+# This script installs Arcane and its dependencies:
 # - Docker
-# - Node.js 25 (via fnm)
-# - Go 1.25+
 # - Arcane application
 # - systemd service for Arcane
 #
@@ -18,6 +16,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
@@ -29,8 +28,6 @@ ARCANE_DATA_DIR="${ARCANE_DATA_DIR:-/var/lib/arcane}"
 ARCANE_USER="${ARCANE_USER:-arcane}"
 ARCANE_GROUP="${ARCANE_GROUP:-arcane}"
 ARCANE_PORT="${ARCANE_PORT:-3552}"
-GO_VERSION="${GO_VERSION:-1.25.0}"
-NODE_VERSION="${NODE_VERSION:-25}"
 
 # Verbosity (default: minimal output)
 VERBOSE="${VERBOSE:-false}"
@@ -104,7 +101,7 @@ run_cmd() {
 
 # Print banner
 print_banner() {
-    echo -e "${CYAN}"
+    echo -e "${PURPLE}"
     cat << 'EOF'
     _                            
    / \   _ __ ___ __ _ _ __   ___ 
@@ -240,23 +237,23 @@ install_dependencies() {
     case $PKG_MGR in
         apt)
             run_cmd apt-get update -qq
-            run_cmd apt-get install -y -qq curl wget git ca-certificates gnupg lsb-release \
+            run_cmd apt-get install -y -qq curl wget ca-certificates gnupg lsb-release \
                 apt-transport-https software-properties-common unzip tar
             ;;
         dnf)
-            run_cmd dnf install -y -q curl wget git ca-certificates gnupg2 unzip tar
+            run_cmd dnf install -y -q curl wget ca-certificates gnupg2 unzip tar
             ;;
         yum)
-            run_cmd yum install -y -q curl wget git ca-certificates gnupg2 unzip tar
+            run_cmd yum install -y -q curl wget ca-certificates gnupg2 unzip tar
             ;;
         pacman)
-            run_cmd pacman -Sy --noconfirm --quiet curl wget git ca-certificates gnupg unzip tar
+            run_cmd pacman -Sy --noconfirm --quiet curl wget ca-certificates gnupg unzip tar
             ;;
         zypper)
-            run_cmd zypper install -y -q curl wget git ca-certificates gpg2 unzip tar
+            run_cmd zypper install -y -q curl wget ca-certificates gpg2 unzip tar
             ;;
         apk)
-            run_cmd apk add --no-cache curl wget git ca-certificates gnupg unzip tar bash
+            run_cmd apk add --no-cache curl wget ca-certificates gnupg unzip tar bash
             ;;
         brew)
             # Check for Homebrew
@@ -264,7 +261,7 @@ install_dependencies() {
                 log_info "Installing Homebrew..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
-            run_cmd brew install curl wget git gnupg
+            run_cmd brew install curl wget gnupg
             ;;
         *)
             progress_fail
@@ -397,148 +394,6 @@ install_docker() {
     fi
 }
 
-# Install Go
-install_go() {
-    log_step "Installing Go ${GO_VERSION}..."
-    progress "Installing Go"
-    
-    if command -v go &> /dev/null; then
-        CURRENT_GO_VERSION=$(go version | grep -oE 'go[0-9]+\.[0-9]+(\.[0-9]+)?' | sed 's/go//')
-        log_info "Go is already installed (version $CURRENT_GO_VERSION)"
-        
-        # Check if version is sufficient
-        REQUIRED_MAJOR=1
-        REQUIRED_MINOR=25
-        CURRENT_MAJOR=$(echo $CURRENT_GO_VERSION | cut -d. -f1)
-        CURRENT_MINOR=$(echo $CURRENT_GO_VERSION | cut -d. -f2)
-        
-        if [[ $CURRENT_MAJOR -ge $REQUIRED_MAJOR && $CURRENT_MINOR -ge $REQUIRED_MINOR ]]; then
-            log_success "Go version is sufficient"
-            progress_skip
-            return 0
-        else
-            log_warn "Go version is too old, upgrading..."
-        fi
-    fi
-    
-    # Determine download URL
-    GO_OS="linux"
-    if [[ "$OS" == "macos" ]]; then
-        GO_OS="darwin"
-    fi
-    
-    GO_URL="https://go.dev/dl/go${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
-    
-    # Remove existing Go installation
-    rm -rf /usr/local/go
-    
-    # Download and extract
-    log_info "Downloading Go from $GO_URL..."
-    curl -fsSL "$GO_URL" -o /tmp/go.tar.gz 2>/dev/null
-    tar -C /usr/local -xzf /tmp/go.tar.gz 2>/dev/null
-    rm /tmp/go.tar.gz
-    
-    # Set up PATH for all users
-    if [[ ! -f /etc/profile.d/go.sh ]]; then
-        cat > /etc/profile.d/go.sh << 'EOF'
-export PATH=$PATH:/usr/local/go/bin
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-EOF
-        chmod +x /etc/profile.d/go.sh
-    fi
-    
-    # Source for current session
-    export PATH=$PATH:/usr/local/go/bin
-    
-    # Verify installation
-    if /usr/local/go/bin/go version &> /dev/null; then
-        log_success "Go ${GO_VERSION} installed successfully"
-        progress_done
-    else
-        progress_fail
-        log_error "Go installation failed"
-        exit 1
-    fi
-}
-
-# Install Node.js via fnm (Fast Node Manager)
-install_node() {
-    log_step "Installing Node.js ${NODE_VERSION}..."
-    progress "Installing Node.js"
-    
-    # Check if Node.js is already installed with sufficient version
-    if command -v node &> /dev/null; then
-        CURRENT_NODE_VERSION=$(node --version | sed 's/v//' | cut -d. -f1)
-        if [[ $CURRENT_NODE_VERSION -ge $NODE_VERSION ]]; then
-            log_info "Node.js is already installed (version $(node --version))"
-            progress_skip
-            return 0
-        else
-            log_warn "Node.js version is too old, upgrading..."
-        fi
-    fi
-    
-    # Install fnm (Fast Node Manager) if not present
-    if ! command -v fnm &> /dev/null; then
-        log_info "Installing fnm (Fast Node Manager)..."
-        curl -fsSL https://fnm.vercel.app/install 2>/dev/null | bash -s -- --skip-shell &>/dev/null
-        
-        # Set up fnm for all users
-        export FNM_DIR="/opt/fnm"
-        mkdir -p "$FNM_DIR"
-        
-        # Move fnm to system location
-        if [[ -f "$HOME/.local/share/fnm/fnm" ]]; then
-            mv "$HOME/.local/share/fnm/fnm" /usr/local/bin/fnm
-        elif [[ -f "$HOME/.fnm/fnm" ]]; then
-            mv "$HOME/.fnm/fnm" /usr/local/bin/fnm
-        fi
-        
-        chmod +x /usr/local/bin/fnm
-    fi
-    
-    # Set up fnm environment
-    export FNM_DIR="/opt/fnm"
-    eval "$(fnm env --shell bash 2>/dev/null || true)"
-    
-    # Install Node.js
-    log_info "Installing Node.js ${NODE_VERSION} via fnm..."
-    run_cmd fnm install $NODE_VERSION
-    run_cmd fnm default $NODE_VERSION
-    run_cmd fnm use $NODE_VERSION
-    
-    # Create symlinks for system-wide access
-    FNM_NODE_PATH=$(fnm exec --using=$NODE_VERSION which node 2>/dev/null || echo "")
-    if [[ -n "$FNM_NODE_PATH" ]]; then
-        ln -sf "$FNM_NODE_PATH" /usr/local/bin/node
-        ln -sf "$(dirname $FNM_NODE_PATH)/npm" /usr/local/bin/npm
-        ln -sf "$(dirname $FNM_NODE_PATH)/npx" /usr/local/bin/npx
-    fi
-    
-    # Set up profile for all users
-    cat > /etc/profile.d/fnm.sh << 'EOF'
-export FNM_DIR="/opt/fnm"
-if command -v fnm &> /dev/null; then
-    eval "$(fnm env --shell bash)"
-fi
-EOF
-    chmod +x /etc/profile.d/fnm.sh
-    
-    # Install pnpm globally
-    log_info "Installing pnpm..."
-    run_cmd npm install -g pnpm@latest 2>/dev/null || true
-    
-    # Verify installation
-    if node --version &> /dev/null; then
-        log_success "Node.js $(node --version) installed successfully"
-        progress_done
-    else
-        progress_fail
-        log_error "Node.js installation failed"
-        exit 1
-    fi
-}
 
 # Create Arcane user and directories
 setup_arcane_user() {
@@ -601,11 +456,9 @@ install_arcane() {
     
     # Download binary
     if ! curl -fsSL "$DOWNLOAD_URL" -o "$ARCANE_INSTALL_DIR/arcane" 2>/dev/null; then
-        log_error "Failed to download Arcane binary"
-        log_info "Attempting to build from source..."
         progress_fail
-        build_arcane_from_source
-        return
+        log_error "Failed to download Arcane binary"
+        exit 1
     fi
     
     # Make executable
@@ -622,50 +475,10 @@ install_arcane() {
         log_success "Arcane installed successfully"
         progress_done
     else
-        log_warn "Binary may not be ready, attempting source build..."
         progress_fail
-        build_arcane_from_source
+        log_error "Downloaded binary failed to run"
+        exit 1
     fi
-}
-
-# Build Arcane from source (fallback)
-build_arcane_from_source() {
-    log_info "Building Arcane from source..."
-    progress "Building from source"
-    
-    # Clone repository
-    TEMP_DIR=$(mktemp -d)
-    run_cmd git clone --depth 1 https://github.com/getarcaneapp/arcane.git "$TEMP_DIR/arcane"
-    
-    cd "$TEMP_DIR/arcane/backend"
-    
-    # Build backend
-    export PATH=$PATH:/usr/local/go/bin
-    run_cmd go build -o "$ARCANE_INSTALL_DIR/arcane" ./cmd/main.go
-    
-    # Build frontend
-    cd "$TEMP_DIR/arcane/frontend"
-    if command -v pnpm &> /dev/null; then
-        run_cmd pnpm install
-        run_cmd pnpm build
-    elif command -v npm &> /dev/null; then
-        run_cmd npm install
-        run_cmd npm run build
-    fi
-    
-    # Copy frontend build
-    cp -r build/* "$ARCANE_INSTALL_DIR/frontend/" 2>/dev/null || true
-    
-    # Cleanup
-    rm -rf "$TEMP_DIR"
-    
-    # Set permissions
-    chown -R "$ARCANE_USER:$ARCANE_GROUP" "$ARCANE_INSTALL_DIR"
-    chmod +x "$ARCANE_INSTALL_DIR/arcane"
-    ln -sf "$ARCANE_INSTALL_DIR/arcane" /usr/local/bin/arcane
-    
-    log_success "Arcane built from source successfully"
-    progress_done
 }
 
 # Create Arcane configuration
@@ -750,7 +563,6 @@ ANALYTICS_DISABLED=false
 # Agent Mode (for remote Docker host management)
 # AGENT_MODE=false
 # AGENT_TOKEN=your-secure-agent-token
-# AGENT_BOOTSTRAP_TOKEN=your-bootstrap-token
 EOF
     
     chown "$ARCANE_USER:$ARCANE_GROUP" "$ENV_FILE"
@@ -990,7 +802,7 @@ print_completion() {
 # Cleanup function
 cleanup() {
     log_info "Cleaning up temporary files..."
-    rm -rf /tmp/go.tar.gz /tmp/arcane-* 2>/dev/null || true
+    rm -rf /tmp/arcane-* 2>/dev/null || true
 }
 
 # Uninstall function
@@ -1057,8 +869,6 @@ show_help() {
     echo "  ARCANE_INSTALL_DIR  Installation directory (default: /opt/arcane)"
     echo "  ARCANE_DATA_DIR     Data directory (default: /var/lib/arcane)"
     echo "  ARCANE_PORT         Port to run on (default: 3552)"
-    echo "  GO_VERSION          Go version to install (default: 1.25.0)"
-    echo "  NODE_VERSION        Node.js major version (default: 25)"
     echo "  VERBOSE=true        Same as --verbose"
     echo ""
     echo "Examples:"
@@ -1106,19 +916,19 @@ main() {
     check_requirements
     install_dependencies
     install_docker
-    install_go
-    install_node
     setup_arcane_user
     install_arcane
     create_arcane_config
     
-    # Create appropriate service based on OS
+    # Create appropriate service based on system manager
     if [[ "$OS" == "macos" ]]; then
         create_launchd_service
-    elif [[ "$OS" == "alpine" ]]; then
+    elif command -v systemctl &> /dev/null && [[ -d /etc/systemd/system ]]; then
+        create_systemd_service
+    elif command -v rc-service &> /dev/null; then
         create_openrc_service
     else
-        create_systemd_service
+        log_warn "No supported service manager found. Start Arcane manually with: arcane serve"
     fi
     
     start_arcane
