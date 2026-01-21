@@ -504,9 +504,26 @@ create_arcane_config() {
     
     # .env must be in same directory as the binary
     ENV_FILE="$ARCANE_INSTALL_DIR/.env"
+    HOST_IP=$(detect_host_ip)
+    log_info "Detected host IP: $HOST_IP"
     
     if [[ -f "$ENV_FILE" ]]; then
-        log_info "Environment file already exists, skipping..."
+        if grep -q '^APP_URL=' "$ENV_FILE"; then
+            CURRENT_APP_URL=$(grep '^APP_URL=' "$ENV_FILE" | head -1 | cut -d= -f2-)
+            if [[ "$CURRENT_APP_URL" == http://localhost* || "$CURRENT_APP_URL" == http://127.0.0.1* ]]; then
+                if [[ "$OS" == "macos" ]]; then
+                    sed -i '' "s|^APP_URL=.*|APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
+                else
+                    sed -i "s|^APP_URL=.*|APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
+                fi
+                log_info "Updated APP_URL in existing environment file"
+            else
+                log_info "Environment file already exists, leaving APP_URL unchanged"
+            fi
+        else
+            echo "APP_URL=http://${HOST_IP}:${ARCANE_PORT}" >> "$ENV_FILE"
+            log_info "Added APP_URL to existing environment file"
+        fi
         progress_skip
         return 0
     fi
@@ -523,9 +540,6 @@ create_arcane_config() {
         ENCRYPTION_KEY=$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)
         JWT_SECRET=$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)
     fi
-    
-    HOST_IP=$(detect_host_ip)
-    log_info "Detected host IP: $HOST_IP"
     
     cat > "$ENV_FILE" << EOF
 # Arcane Environment Configuration
