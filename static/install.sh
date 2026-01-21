@@ -558,6 +558,10 @@ JWT_SECRET=${JWT_SECRET}
 # Docker Configuration
 DOCKER_HOST=unix:///var/run/docker.sock
 
+# Projects
+PROJECTS_DIRECTORY=/opt/arcane/projects
+DISK_USAGE_PATH=/opt/arcane/projects
+
 # Logging
 LOG_LEVEL=info
 LOG_JSON=false

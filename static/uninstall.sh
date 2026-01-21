@@ -210,7 +210,14 @@ remove_data() {
     log_step "Removing Arcane data..."
     
     if [[ -d "$ARCANE_DATA_DIR" ]]; then
-        if [[ "$REMOVE_DATA" == "true" ]] || confirm "Remove Arcane data directory ($ARCANE_DATA_DIR)? This will delete all your data!"; then
+        if [[ "$REMOVE_DATA" == "true" ]]; then
+            progress "Removing data"
+            rm -rf "$ARCANE_DATA_DIR"
+            log_info "Removed $ARCANE_DATA_DIR"
+            progress_done
+        elif [[ "$FORCE" == "true" ]]; then
+            log_warn "Data directory preserved at $ARCANE_DATA_DIR (use --remove-data to delete)"
+        elif confirm "Remove Arcane data directory ($ARCANE_DATA_DIR)? This will delete all your data!"; then
             progress "Removing data"
             rm -rf "$ARCANE_DATA_DIR"
             log_info "Removed $ARCANE_DATA_DIR"
@@ -233,7 +240,25 @@ remove_data() {
 remove_user() {
     log_step "Removing Arcane user and group..."
     
-    if [[ "$REMOVE_USER" == "true" ]] || confirm "Remove Arcane user and group?"; then
+    if [[ "$REMOVE_USER" == "true" ]]; then
+        progress "Removing user"
+        # Remove user
+        if id "$ARCANE_USER" &> /dev/null; then
+            userdel "$ARCANE_USER" 2>/dev/null || true
+            log_info "Removed user: $ARCANE_USER"
+        fi
+        
+        # Remove group
+        if getent group "$ARCANE_GROUP" &> /dev/null; then
+            groupdel "$ARCANE_GROUP" 2>/dev/null || true
+            log_info "Removed group: $ARCANE_GROUP"
+        fi
+        
+        log_success "User and group removed"
+        progress_done
+    elif [[ "$FORCE" == "true" ]]; then
+        log_warn "User and group preserved (use --remove-user to delete)"
+    elif confirm "Remove Arcane user and group?"; then
         progress "Removing user"
         # Remove user
         if id "$ARCANE_USER" &> /dev/null; then
@@ -261,6 +286,10 @@ remove_docker() {
     fi
     
     if [[ "$REMOVE_DOCKER" != "true" ]]; then
+        if [[ "$FORCE" == "true" ]]; then
+            log_warn "Docker preserved (use --remove-docker to delete)"
+            return 0
+        fi
         if ! confirm "Remove Docker? (This may affect other applications)"; then
             log_warn "Docker preserved"
             return 0
