@@ -112,7 +112,7 @@ print_banner() {
  / ___ \| | | (_| (_| | | | |  __/
 /_/   \_\_|  \___\__,_|_| |_|\___|
                                   
-Docker Management UI
+Modern Docker Management, Designed for Everyone.
 EOF
     echo -e "${NC}"
     if [[ "$VERBOSE" == "true" ]]; then

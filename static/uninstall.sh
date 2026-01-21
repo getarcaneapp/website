@@ -105,6 +105,7 @@ print_banner() {
  / ___ \| | | (_| (_| | | | |  __/
 /_/   \_\_|  \___\__,_|_| |_|\___|
                                   
+Modern Docker Management, Designed for Everyone.
 Uninstallation Script
 EOF
     echo -e "${NC}"
