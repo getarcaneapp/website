@@ -11,6 +11,21 @@
 
 set -e
 
+CURRENT_STEP=""
+
+handle_error() {
+    progress_fail
+    if [[ -n "$CURRENT_STEP" ]]; then
+        log_error "Script failed during: $CURRENT_STEP"
+    else
+        log_error "Script failed"
+    fi
+    log_warn "Re-run with --verbose for full output"
+    exit 1
+}
+
+trap 'handle_error' ERR
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -60,6 +75,7 @@ log_error() {
 }
 
 log_step() {
+    CURRENT_STEP="$1"
     if [[ "$VERBOSE" == "true" ]]; then
         echo -e "\n${CYAN}${BOLD}==> $1${NC}\n"
     fi
@@ -67,6 +83,7 @@ log_step() {
 
 # Minimal progress indicator
 progress() {
+    CURRENT_STEP="$1"
     if [[ "$VERBOSE" != "true" ]]; then
         echo -ne "${CYAN}●${NC} $1... "
     fi
