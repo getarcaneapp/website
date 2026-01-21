@@ -119,6 +119,13 @@ check_root() {
     fi
 }
 
+auto_force_if_piped() {
+    if [[ "$FORCE" != "true" && ! -t 0 ]]; then
+        FORCE="true"
+        log_warn "Non-interactive shell detected; proceeding with --force"
+    fi
+}
+
 # Prompt for confirmation
 confirm() {
     local prompt="$1"
@@ -469,6 +476,7 @@ main() {
     
     print_banner
     check_root
+    auto_force_if_piped
     
     echo -e "${YELLOW}${BOLD}WARNING: This will uninstall Arcane from your system.${NC}"
     echo ""
