@@ -254,23 +254,22 @@ install_dependencies() {
     case $PKG_MGR in
         apt)
             run_cmd apt-get update -qq
-            run_cmd apt-get install -y -qq curl wget ca-certificates gnupg lsb-release \
-                apt-transport-https software-properties-common unzip tar
+            run_cmd apt-get install -y -qq curl ca-certificates gnupg
             ;;
         dnf)
-            run_cmd dnf install -y -q curl wget ca-certificates gnupg2 unzip tar
+            run_cmd dnf install -y -q curl ca-certificates gnupg2
             ;;
         yum)
-            run_cmd yum install -y -q curl wget ca-certificates gnupg2 unzip tar
+            run_cmd yum install -y -q curl ca-certificates gnupg2
             ;;
         pacman)
-            run_cmd pacman -Sy --noconfirm --quiet curl wget ca-certificates gnupg unzip tar
+            run_cmd pacman -Sy --noconfirm --quiet curl ca-certificates gnupg
             ;;
         zypper)
-            run_cmd zypper install -y -q curl wget ca-certificates gpg2 unzip tar
+            run_cmd zypper install -y -q curl ca-certificates gpg2
             ;;
         apk)
-            run_cmd apk add --no-cache curl wget ca-certificates gnupg unzip tar bash
+            run_cmd apk add --no-cache curl ca-certificates bash
             ;;
         brew)
             # Check for Homebrew
@@ -278,7 +277,7 @@ install_dependencies() {
                 log_info "Installing Homebrew..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
-            run_cmd brew install curl wget gnupg
+            run_cmd brew install curl
             ;;
         *)
             progress_fail
