@@ -524,17 +524,7 @@ create_arcane_config() {
         JWT_SECRET=$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)
     fi
     
-    # Detect host IP address for APP_URL
-    HOST_IP=$(ip -4 route get 1 2>/dev/null | awk '{print $7; exit}' || \
-              hostname -I 2>/dev/null | awk '{print $1}' || \
-              ifconfig 2>/dev/null | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1 || \
-              echo "localhost")
-    
-    # Fallback to localhost if no IP found
-    if [[ -z "$HOST_IP" || "$HOST_IP" == " " ]]; then
-        HOST_IP="localhost"
-    fi
-    
+    HOST_IP=$(detect_host_ip)
     log_info "Detected host IP: $HOST_IP"
     
     cat > "$ENV_FILE" << EOF
@@ -590,6 +580,20 @@ EOF
     
     log_success "Configuration created at $ENV_FILE"
     progress_done
+}
+
+detect_host_ip() {
+    local ip
+    ip=$(ip -4 route get 1 2>/dev/null | awk '{print $7; exit}' || \
+          hostname -I 2>/dev/null | awk '{print $1}' || \
+          ifconfig 2>/dev/null | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1 || \
+          echo "localhost")
+
+    if [[ -z "$ip" || "$ip" == " " ]]; then
+        ip="localhost"
+    fi
+
+    echo "$ip"
 }
 
 # Create systemd service
@@ -784,12 +788,15 @@ start_arcane() {
 
 # Print completion message
 print_completion() {
+    if [[ -z "$HOST_IP" ]]; then
+        HOST_IP=$(detect_host_ip)
+    fi
     echo ""
     echo -e "${GREEN}${BOLD}════════════════════════════════════════════════════════════════${NC}"
     echo -e "${GREEN}${BOLD}                    Installation Complete!                       ${NC}"
     echo -e "${GREEN}${BOLD}════════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo -e "  ${BOLD}Access Arcane:${NC} ${BLUE}http://localhost:${ARCANE_PORT}${NC}"
+    echo -e "  ${BOLD}Access Arcane:${NC} ${BLUE}http://${HOST_IP}:${ARCANE_PORT}${NC}"
     echo ""
     if [[ "$VERBOSE" == "true" ]]; then
         echo -e "${BOLD}Service Management:${NC}"
