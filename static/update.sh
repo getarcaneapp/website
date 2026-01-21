@@ -121,10 +121,10 @@ detect_os() {
 
     if [[ -f /etc/os-release ]]; then
         . /etc/os-release
-        OS=$ID
-        OS_NAME=$PRETTY_NAME
+        OS="linux"
+        OS_NAME=${PRETTY_NAME:-Linux}
     elif [[ -f /etc/redhat-release ]]; then
-        OS="rhel"
+        OS="linux"
         OS_NAME=$(cat /etc/redhat-release)
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         OS="macos"

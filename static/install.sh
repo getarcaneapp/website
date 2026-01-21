@@ -137,15 +137,20 @@ detect_os() {
     
     if [[ -f /etc/os-release ]]; then
         . /etc/os-release
-        OS=$ID
-        OS_VERSION=$VERSION_ID
-        OS_NAME=$PRETTY_NAME
+        OS="linux"
+        OS_ID=${ID:-linux}
+        OS_LIKE=${ID_LIKE:-}
+        OS_VERSION=${VERSION_ID:-}
+        OS_NAME=${PRETTY_NAME:-Linux}
     elif [[ -f /etc/redhat-release ]]; then
-        OS="rhel"
+        OS="linux"
+        OS_ID="rhel"
+        OS_LIKE="rhel fedora"
         OS_VERSION=$(cat /etc/redhat-release | grep -oE '[0-9]+\.[0-9]+' | head -1)
         OS_NAME=$(cat /etc/redhat-release)
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         OS="macos"
+        OS_ID="macos"
         OS_VERSION=$(sw_vers -productVersion)
         OS_NAME="macOS $OS_VERSION"
     else
@@ -177,6 +182,35 @@ detect_os() {
     progress_done
 }
 
+# Detect package manager (Linux) or Homebrew (macOS)
+detect_package_manager() {
+    log_step "Detecting package manager..."
+    progress "Detecting package manager"
+
+    if [[ "$OS" == "macos" ]]; then
+        PKG_MGR="brew"
+    elif command -v apt-get &> /dev/null; then
+        PKG_MGR="apt"
+    elif command -v dnf &> /dev/null; then
+        PKG_MGR="dnf"
+    elif command -v yum &> /dev/null; then
+        PKG_MGR="yum"
+    elif command -v pacman &> /dev/null; then
+        PKG_MGR="pacman"
+    elif command -v zypper &> /dev/null; then
+        PKG_MGR="zypper"
+    elif command -v apk &> /dev/null; then
+        PKG_MGR="apk"
+    else
+        progress_fail
+        log_error "Unsupported package manager. Install dependencies manually."
+        exit 1
+    fi
+
+    log_info "Package manager: $PKG_MGR"
+    progress_done
+}
+
 # Check system requirements
 check_requirements() {
     log_step "Checking system requirements..."
@@ -203,37 +237,28 @@ install_dependencies() {
     log_step "Installing system dependencies..."
     progress "Installing dependencies"
     
-    case $OS in
-        ubuntu|pop)
+    case $PKG_MGR in
+        apt)
             run_cmd apt-get update -qq
             run_cmd apt-get install -y -qq curl wget git ca-certificates gnupg lsb-release \
                 apt-transport-https software-properties-common unzip tar
             ;;
-        debian)
-            run_cmd apt-get update -qq
-            run_cmd apt-get install -y -qq curl wget git ca-certificates gnupg lsb-release \
-                apt-transport-https unzip tar
-            ;;
-        fedora)
+        dnf)
             run_cmd dnf install -y -q curl wget git ca-certificates gnupg2 unzip tar
             ;;
-        centos|rhel|rocky|almalinux)
-            if command -v dnf &> /dev/null; then
-                run_cmd dnf install -y -q curl wget git ca-certificates gnupg2 unzip tar
-            else
-                run_cmd yum install -y -q curl wget git ca-certificates gnupg2 unzip tar
-            fi
+        yum)
+            run_cmd yum install -y -q curl wget git ca-certificates gnupg2 unzip tar
             ;;
-        arch|manjaro)
+        pacman)
             run_cmd pacman -Sy --noconfirm --quiet curl wget git ca-certificates gnupg unzip tar
             ;;
-        opensuse*|sles)
+        zypper)
             run_cmd zypper install -y -q curl wget git ca-certificates gpg2 unzip tar
             ;;
-        alpine)
+        apk)
             run_cmd apk add --no-cache curl wget git ca-certificates gnupg unzip tar bash
             ;;
-        macos)
+        brew)
             # Check for Homebrew
             if ! command -v brew &> /dev/null; then
                 log_info "Installing Homebrew..."
@@ -243,7 +268,7 @@ install_dependencies() {
             ;;
         *)
             progress_fail
-            log_error "Unsupported operating system: $OS"
+            log_error "Unsupported package manager: $PKG_MGR"
             exit 1
             ;;
     esac
@@ -270,36 +295,58 @@ install_docker() {
         return 0
     fi
     
-    case $OS in
-        ubuntu|debian|pop)
+    case $PKG_MGR in
+        apt)
             # Remove old versions
             run_cmd apt-get remove -y docker docker-engine docker.io containerd runc 2>/dev/null || true
             
-            # Add Docker's official GPG key
-            install -m 0755 -d /etc/apt/keyrings
-            curl -fsSL https://download.docker.com/linux/$OS/gpg 2>/dev/null | gpg --dearmor -o /etc/apt/keyrings/docker.gpg 2>/dev/null
-            chmod a+r /etc/apt/keyrings/docker.gpg
+            DOCKER_REPO_OS=""
+            DOCKER_CODENAME="${VERSION_CODENAME:-}"
+            if [[ -z "$DOCKER_CODENAME" && -n "$UBUNTU_CODENAME" ]]; then
+                DOCKER_CODENAME="$UBUNTU_CODENAME"
+            fi
+            if [[ "$OS_ID" == "ubuntu" || "$OS_ID" == "pop" || "$OS_ID" == "linuxmint" || "$OS_ID" == "zorin" || "$OS_ID" == "elementary" || "$OS_ID" == "neon" || "$OS_LIKE" == *"ubuntu"* ]]; then
+                DOCKER_REPO_OS="ubuntu"
+            elif [[ "$OS_ID" == "debian" || "$OS_ID" == "kali" || "$OS_LIKE" == *"debian"* ]]; then
+                DOCKER_REPO_OS="debian"
+            fi
             
-            # Set up repository
-            echo \
-                "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$OS \
-                $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-                tee /etc/apt/sources.list.d/docker.list > /dev/null
-            
-            # Install Docker
-            run_cmd apt-get update -qq
-            run_cmd apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            if [[ -n "$DOCKER_REPO_OS" && -n "$DOCKER_CODENAME" ]]; then
+                # Add Docker's official GPG key
+                install -m 0755 -d /etc/apt/keyrings
+                curl -fsSL https://download.docker.com/linux/${DOCKER_REPO_OS}/gpg 2>/dev/null | gpg --dearmor -o /etc/apt/keyrings/docker.gpg 2>/dev/null
+                chmod a+r /etc/apt/keyrings/docker.gpg
+                
+                # Set up repository
+                echo \
+                    "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/${DOCKER_REPO_OS} \
+                    ${DOCKER_CODENAME} stable" | \
+                    tee /etc/apt/sources.list.d/docker.list > /dev/null
+                
+                # Install Docker
+                run_cmd apt-get update -qq
+                run_cmd apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            else
+                log_warn "Docker repo not available for this distro; installing distro packages instead"
+                run_cmd apt-get update -qq
+                run_cmd apt-get install -y -qq docker.io
+                run_cmd apt-get install -y -qq docker-compose-plugin docker-compose || true
+            fi
             ;;
-        fedora)
+        dnf)
             run_cmd dnf remove -y docker docker-client docker-client-latest docker-common \
                 docker-latest docker-latest-logrotate docker-logrotate docker-selinux \
                 docker-engine-selinux docker-engine 2>/dev/null || true
             
             run_cmd dnf -y install dnf-plugins-core
-            run_cmd dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            if [[ "$OS_ID" == "fedora" || "$OS_LIKE" == *"fedora"* ]]; then
+                run_cmd dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            else
+                run_cmd dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+            fi
             run_cmd dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             ;;
-        centos|rhel|rocky|almalinux)
+        yum)
             run_cmd yum remove -y docker docker-client docker-client-latest docker-common \
                 docker-latest docker-latest-logrotate docker-logrotate docker-engine 2>/dev/null || true
             
@@ -307,17 +354,17 @@ install_docker() {
             run_cmd yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
             run_cmd yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             ;;
-        arch|manjaro)
+        pacman)
             run_cmd pacman -S --noconfirm docker docker-compose
             ;;
-        opensuse*|sles)
+        zypper)
             run_cmd zypper install -y docker docker-compose
             ;;
-        alpine)
+        apk)
             run_cmd apk add --no-cache docker docker-compose
             run_cmd rc-update add docker boot 2>/dev/null || true
             ;;
-        macos)
+        brew)
             progress_fail
             log_error "Please install Docker Desktop for macOS manually:"
             log_info "https://docs.docker.com/desktop/install/mac-install/"
@@ -326,7 +373,7 @@ install_docker() {
             ;;
         *)
             progress_fail
-            log_error "Docker installation not supported for $OS"
+            log_error "Docker installation not supported for this system"
             exit 1
             ;;
     esac
@@ -1055,6 +1102,7 @@ main() {
     print_banner
     check_root
     detect_os
+    detect_package_manager
     check_requirements
     install_dependencies
     install_docker

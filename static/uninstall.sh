@@ -263,36 +263,24 @@ remove_docker() {
     log_step "Removing Docker..."
     progress "Removing Docker"
     
-    # Detect OS
-    if [[ -f /etc/os-release ]]; then
-        . /etc/os-release
-        OS=$ID
+    if command -v apt-get &> /dev/null; then
+        run_cmd apt-get remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker.io docker-compose 2>/dev/null || true
+        run_cmd apt-get autoremove -y 2>/dev/null || true
+        rm -f /etc/apt/sources.list.d/docker.list
+        rm -f /etc/apt/keyrings/docker.gpg
+    elif command -v dnf &> /dev/null; then
+        run_cmd dnf remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker docker-compose 2>/dev/null || true
+    elif command -v yum &> /dev/null; then
+        run_cmd yum remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker docker-compose 2>/dev/null || true
+    elif command -v pacman &> /dev/null; then
+        run_cmd pacman -Rns --noconfirm docker docker-compose 2>/dev/null || true
+    elif command -v zypper &> /dev/null; then
+        run_cmd zypper remove -y docker docker-compose 2>/dev/null || true
+    elif command -v apk &> /dev/null; then
+        run_cmd apk del docker docker-compose 2>/dev/null || true
+    else
+        log_warn "Unsupported package manager. Remove Docker manually."
     fi
-    
-    case $OS in
-        ubuntu|debian|pop)
-            run_cmd apt-get remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            run_cmd apt-get autoremove -y 2>/dev/null || true
-            rm -f /etc/apt/sources.list.d/docker.list
-            rm -f /etc/apt/keyrings/docker.gpg
-            ;;
-        fedora)
-            run_cmd dnf remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            ;;
-        centos|rhel|rocky|almalinux)
-            if command -v dnf &> /dev/null; then
-                run_cmd dnf remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            else
-                run_cmd yum remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            fi
-            ;;
-        arch|manjaro)
-            run_cmd pacman -Rns --noconfirm docker docker-compose 2>/dev/null || true
-            ;;
-        alpine)
-            run_cmd apk del docker docker-compose 2>/dev/null || true
-            ;;
-    esac
     
     log_success "Docker removed"
     progress_done
