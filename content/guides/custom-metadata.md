@@ -44,4 +44,4 @@ services:
       - com.getarcaneapp.arcane.icon=https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx.png
 ```
 
-The individual label is used for the conatiner icon only, and the top level x-arcane block is also only used for the project only. Each icon is independent of each other. 
+The individual label is used for the container icon only, and the top level x-arcane block is also only used for the project only. Each icon is independent of each other. 
