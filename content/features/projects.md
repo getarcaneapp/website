@@ -48,7 +48,6 @@ A `Project` is a collection of services defined in a `compose.yaml` file.
 - `Redeploy:` Click `Redeploy` to pull the latest images and restart the project (equivalent to docker pull && docker up -d).
 - `Destroy:` Click `Destroy` to down and destroy all resources made by the project, this has two options one to remove volumes, amd one to remove the actual project files on the disk.
 
-
 ## Where Are My Projects Stored?
 
 Arcane saves your project definitions (files, and `.env` files) in its data directory (by default `/app/data/projects` or where you `Projects Directory` is set to in the arcane settings).
