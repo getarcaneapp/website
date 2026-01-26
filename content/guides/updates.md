@@ -25,7 +25,7 @@ Keep selected containers and projects up to date automatically when new images a
 
 Arcane checks for updates by comparing image digests (when possible). For tags like `latest` or `next`, a tag can point to a different digest over time, so digest comparison is the most reliable way to detect changes.
 
-This logic is very similar to how watchtower worked/works ith Changes to support arcanes logic, so should be familiar to those who have used that. 
+This logic is very similar to how watchtower worked/works with changes to support Arcane's logic, so it should be familiar to those who have used that tool. 
 
 ## Container labels (per-service / per-container)
 
