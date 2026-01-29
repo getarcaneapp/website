@@ -166,5 +166,10 @@ export const envConfig: EnvConfig[] = [
 		name: 'GPU_TYPE',
 		description: 'Type of GPU (auto, nvidia, intel, etc.)',
 		defaultValue: 'auto'
+	},
+	{
+		name: 'ARCANE_BACKUP_VOLUME_NAME',
+		description: 'Name of the Docker volume used for backups',
+		defaultValue: 'arcane-backups'
 	}
 ];
