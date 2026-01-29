@@ -42,3 +42,33 @@ services:
 volumes:
   arcane-data:
 ```
+
+## AMD GPU Setup
+
+Configure Arcane with AMD GPU support in your `compose.yaml`:
+
+```yaml
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/arcane:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+    environment:
+      - APP_URL=http://localhost:3552
+      - PUID=1000
+      - PGID=1000
+      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
+      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
+      - GPU_MONITORING_ENABLED=true
+      - GPU_TYPE=amd
+    devices:
+      - /dev/dri:/dev/dri
+    restart: unless-stopped
+
+volumes:
+  arcane-data:
+```
