@@ -164,7 +164,7 @@ export const envConfig: EnvConfig[] = [
 	},
 	{
 		name: 'GPU_TYPE',
-		description: 'Type of GPU (auto, nvidia, intel, etc.)',
+		description: 'Type of GPU (auto, nvidia, intel, amd)',
 		defaultValue: 'auto'
 	},
 	{
