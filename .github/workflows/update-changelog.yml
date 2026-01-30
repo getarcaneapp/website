@@ -18,7 +18,7 @@ jobs:
 
       - name: Get latest release
         id: latest
-        uses: fjogeleit/http-request-action@v1
+        uses: fjogeleit/http-request-action@v2
         with:
           url: "https://api.github.com/repos/getarcaneapp/arcane/releases/latest"
           method: "GET"
