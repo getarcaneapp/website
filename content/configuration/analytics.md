@@ -5,6 +5,15 @@ description: 'Analytics Notice for Arcane'
 
 The analytics heartbeat is a lightweight check-in used to understand *which servers are running* and *which build/version they are on*. It does **not** collect personal data, user data, or project data.
 
+> [!NOTE]
+> The heartbeat endpoint is commonly blocked by ad blockers or privacy tools. If you do not see check-ins, try disabling those tools or allowlisting `checkin.getarcane.app`.
+>
+> If you wish to send these analytics and are having an issue, try these steps:
+> - Temporarily disable ad blockers or privacy extensions.
+> - Allowlist `checkin.getarcane.app` (and your Arcane domain if you use a proxy).
+> - Try a different network or DNS filter to rule out upstream blocking.
+> - Check the Arcane logs for `analytics heartbeat` messages.
+
 ## What is sent
 
 The heartbeat sends a small JSON payload with **only** the following fields:

@@ -11,11 +11,11 @@
 </script>
 
 <Sidebar.Root
-	class="sticky top-16 z-30 hidden h-[calc(100vh-4rem)] bg-transparent lg:flex"
+	class="sticky top-16 z-30 hidden h-auto max-h-[calc(100vh-4rem)] bg-transparent lg:flex"
 	collapsible="none"
 	{...restProps}
 >
-	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto pr-2 pb-12">
+	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto pr-2 pb-6">
 		{#each navItems as item (item.title)}
 			<Sidebar.Group>
 				<Sidebar.GroupLabel class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
