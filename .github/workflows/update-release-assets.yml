@@ -1,0 +1,257 @@
+name: Update Arcane Release Assets
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  update-release-assets:
+    runs-on: depot-ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get latest release
+        run: |
+          set -euo pipefail
+          curl -sSL \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/getarcaneapp/arcane/releases/latest" \
+            -o release.json
+
+      - name: Check current assets
+        id: check
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERSION=$(jq -r .tag_name release.json)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          CHANGELOG_UP_TO_DATE=false
+          if [[ -f content/changelog.md ]] && grep -qE "^##[[:space:]]+$VERSION\\b" content/changelog.md; then
+            CHANGELOG_UP_TO_DATE=true
+          fi
+
+          SBOM_UP_TO_DATE=false
+          if [[ -f static/sbom/version.txt ]]; then
+            CURRENT=$(cat static/sbom/version.txt)
+            if [[ "$CURRENT" == "$VERSION" ]]; then
+              SBOM_UP_TO_DATE=true
+            fi
+          fi
+
+          if [[ "$CHANGELOG_UP_TO_DATE" == "true" && "$SBOM_UP_TO_DATE" == "true" ]]; then
+            echo "skip_all=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip_all=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [[ "$CHANGELOG_UP_TO_DATE" == "true" ]]; then
+            echo "do_changelog=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "do_changelog=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [[ "$SBOM_UP_TO_DATE" == "true" ]]; then
+            echo "do_sbom=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "do_sbom=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build updated changelog
+        id: changelog
+        if: steps.check.outputs.do_changelog == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG="${{ steps.check.outputs.version }}"
+          DATE=$(jq -r .published_at release.json | cut -dT -f1)
+          URL=$(jq -r .html_url release.json)
+          BODY=$(jq -r '.body // ""' release.json)
+
+          CURRENT_FILE=/tmp/changelog.current.md
+          if [[ -f content/changelog.md ]]; then
+            cp content/changelog.md "$CURRENT_FILE"
+          fi
+
+          # If changelog exists and already has this tag, skip
+          if [[ -f "$CURRENT_FILE" ]] && grep -qE "^##[[:space:]]+$TAG\\b" "$CURRENT_FILE"; then
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          SECTION_FILE=/tmp/section.md
+          {
+            echo "## $TAG${DATE:+ - $DATE}"
+            echo
+            echo "[Release]($URL)"
+            echo
+            printf "%s\n" "$BODY"
+          } > "$SECTION_FILE"
+
+          DEFAULT_FM="---"$'\n'"title: 'Changelog'"$'\n'"description: 'Release notes for Arcane'"$'\n'"---"
+
+          if [[ -f "$CURRENT_FILE" ]]; then
+            if head -n1 "$CURRENT_FILE" | grep -q '^---$'; then
+              END_LINE=$(awk '/^---$/{i++} i==2{print NR; exit}' "$CURRENT_FILE" || true)
+              if [[ -n "${END_LINE:-}" ]]; then
+                head -n "$END_LINE" "$CURRENT_FILE" > content/changelog.md
+                echo >> content/changelog.md
+                cat "$SECTION_FILE" >> content/changelog.md
+                echo >> content/changelog.md
+                tail -n +"$((END_LINE+1))" "$CURRENT_FILE" >> content/changelog.md
+              else
+                printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
+                cat "$SECTION_FILE" >> content/changelog.md
+                echo >> content/changelog.md
+                cat "$CURRENT_FILE" >> content/changelog.md
+              fi
+            else
+              printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
+              cat "$SECTION_FILE" >> content/changelog.md
+              echo >> content/changelog.md
+              cat "$CURRENT_FILE" >> content/changelog.md
+            fi
+          else
+            printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
+            cat "$SECTION_FILE" >> content/changelog.md
+            echo >> content/changelog.md
+          fi
+
+          echo "updated=true" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout arcane repo
+        if: steps.check.outputs.do_sbom == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: getarcaneapp/arcane
+          ref: ${{ steps.check.outputs.version }}
+          path: arcane
+          fetch-depth: 1
+
+      - name: Set up Depot CLI
+        if: steps.check.outputs.do_sbom == 'true'
+        uses: depot/setup-action@v1
+
+      - name: Generate SBOM for manager image
+        if: steps.check.outputs.do_sbom == 'true'
+        uses: depot/build-push-action@v1
+        with:
+          project: np622krb2x
+          context: arcane
+          file: arcane/docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: false
+          sbom: true
+          sbom-dir: sbom-output/manager
+          build-args: |
+            VERSION=${{ steps.check.outputs.version }}
+            REVISION=sbom-generation
+
+      - name: Generate SBOM for agent image
+        if: steps.check.outputs.do_sbom == 'true'
+        uses: depot/build-push-action@v1
+        with:
+          project: np622krb2x
+          context: arcane
+          file: arcane/docker/Dockerfile-agent
+          platforms: linux/amd64,linux/arm64
+          push: false
+          sbom: true
+          sbom-dir: sbom-output/agent
+          build-args: |
+            VERSION=${{ steps.check.outputs.version }}
+            REVISION=sbom-generation
+
+      - name: Copy SBOM files and cleanup
+        if: steps.check.outputs.do_sbom == 'true'
+        run: |
+          VERSION="${{ steps.check.outputs.version }}"
+          mkdir -p static/sbom/manager static/sbom/agent
+
+          # Copy SBOM files
+          cp sbom-output/manager/*.spdx.json static/sbom/manager/ || true
+          cp sbom-output/agent/*.spdx.json static/sbom/agent/ || true
+
+          # Save version
+          echo "$VERSION" > static/sbom/version.txt
+
+          # Create metadata file
+          cat > static/sbom/metadata.json << EOF
+          {
+            "version": "$VERSION",
+            "updated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "images": {
+              "manager": {
+                "name": "ghcr.io/getarcaneapp/arcane",
+                "architectures": ["linux/amd64", "linux/arm64"],
+                "sbomFiles": {
+                  "amd64": "/sbom/manager/linux_amd64.spdx.json",
+                  "arm64": "/sbom/manager/linux_arm64.spdx.json"
+                }
+              },
+              "agent": {
+                "name": "ghcr.io/getarcaneapp/arcane-headless",
+                "architectures": ["linux/amd64", "linux/arm64"],
+                "sbomFiles": {
+                  "amd64": "/sbom/agent/linux_amd64.spdx.json",
+                  "arm64": "/sbom/agent/linux_arm64.spdx.json"
+                }
+              }
+            }
+          }
+          EOF
+
+          echo "SBOM files generated for $VERSION"
+          ls -la static/sbom/
+          ls -la static/sbom/manager/
+          ls -la static/sbom/agent/
+
+          # Clean up cloned repo and build output
+          rm -rf arcane sbom-output
+
+      - name: Check for changes
+        id: changes
+        if: steps.check.outputs.skip_all != 'true'
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.ARCANE_BOT_TOKEN }}
+          commit-message: "chore(release): update assets for ${{ steps.check.outputs.version }}"
+          committer: "getarcaneappbot <info@getarcane.app>"
+          author: "getarcaneappbot <info@getarcane.app>"
+          signoff: true
+          title: "chore(release): update assets for ${{ steps.check.outputs.version }}"
+          body: |
+            Updates Arcane release assets for ${{ steps.check.outputs.version }}.
+
+            ## Changes
+            - Changelog entry (if new)
+            - SBOM files for manager and agent images (if new)
+
+            ---
+            *This PR was automatically generated.*
+          branch: "chore/release-assets-${{ steps.check.outputs.version }}"
+          base: main
+          labels: "docs(changelog),chore(sbom)"
+          add-paths: |
+            content/changelog.md
+            static/sbom/
+          delete-branch: true

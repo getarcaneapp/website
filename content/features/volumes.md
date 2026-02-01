@@ -44,3 +44,33 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 3. Confirm the deletion in the dialog.
 
 > **Note:** You cannot remove a volume that is currently used by a container.
+
+## Backups and Restores
+
+Arcane now performs safer backups and restores with clearer safeguards.
+
+### Backup storage and /backups mount warning
+
+Backups are stored in a dedicated Docker volume that is mounted into the helper container at `/backups`. If the Arcane container itself does **not** have a host-backed mount at `/backups`, a warning appears in the backups UI so you know backups live only inside Docker storage. To keep backups on the host, mount a host path into the Arcane container at `/backups`.
+
+### Backup creation now checks exit codes
+
+When a backup is created, Arcane waits for the backup container to finish and checks its exit code. If the `tar` operation fails, the backup is not recorded in the database and you’ll see an error instead of a silent failure.
+
+### Restore is now safer
+
+Restore now extracts the backup into a temporary directory first. Only if extraction succeeds does Arcane wipe the volume and move the extracted data into place. The restore container’s exit code is checked, and failures return an error with a warning that the volume may be partially changed.
+
+## Internal Helper Containers
+
+Arcane creates short‑lived helper containers for volume operations. These containers are labeled `com.getarcaneapp.internal.container=true` and are hidden from the main Containers list by default. If you need to see them, use the **Show Internal Containers** toggle in the Containers view.
+
+## Configuring the Backup Volume Name (New)
+
+To avoid name collisions with user volumes, the backup volume name is now configurable. Set the environment variable:
+
+```
+ARCANE_BACKUP_VOLUME_NAME=<your-name>
+```
+
+If not set, Arcane defaults to `arcane-backups`.

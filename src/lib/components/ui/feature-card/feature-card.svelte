@@ -18,7 +18,7 @@
 <div
 	class={cn(
 		// Base layout
-		'group relative overflow-hidden rounded-2xl p-6 transition-all duration-500 ease-out',
+		'group relative flex h-full min-h-[200px] flex-col overflow-hidden rounded-2xl p-6 transition-all duration-500 ease-out',
 		// Glassmorphism surface
 		'bg-white/70 backdrop-blur-xl dark:bg-[oklch(0.18_0.006_285.823/0.6)]',
 		// Border with gradient effect on hover
