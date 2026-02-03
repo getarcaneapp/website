@@ -17,14 +17,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Get latest release
+      - name: Fetch releases list
+        id: releases
         run: |
           set -euo pipefail
+          RELEASES_JSON=/tmp/releases.json
           curl -sSL \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/getarcaneapp/arcane/releases/latest" \
-            -o release.json
+            "https://api.github.com/repos/getarcaneapp/arcane/releases?per_page=100" \
+            -o "$RELEASES_JSON"
+          echo "releases_json=$RELEASES_JSON" >> "$GITHUB_OUTPUT"
 
       - name: Check current assets
         id: check
@@ -32,12 +35,28 @@ jobs:
         run: |
           set -euo pipefail
 
-          VERSION=$(jq -r .tag_name release.json)
+          RELEASES_JSON="${{ steps.releases.outputs.releases_json }}"
+          VERSION=$(jq -r '[.[] | select(.draft == false and .prerelease == false)][0].tag_name // ""' "$RELEASES_JSON")
+          if [[ -z "$VERSION" ]]; then
+            echo "No releases found in $RELEASES_JSON" >&2
+            exit 1
+          fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
           CHANGELOG_UP_TO_DATE=false
-          if [[ -f content/changelog.md ]] && grep -qE "^##[[:space:]]+$VERSION\\b" content/changelog.md; then
+          if [[ -f content/changelog.md ]]; then
             CHANGELOG_UP_TO_DATE=true
+            while IFS= read -r tag; do
+              if ! grep -qE "^##[[:space:]]+$tag\\b" content/changelog.md; then
+                CHANGELOG_UP_TO_DATE=false
+                break
+              fi
+            done < <(jq -r '.[] | select(.draft == false and .prerelease == false) | .tag_name' "$RELEASES_JSON")
+
+            FM_COUNT=$(grep -c "^title: 'Changelog'$" content/changelog.md || true)
+            if [[ "$FM_COUNT" -ne 1 ]]; then
+              CHANGELOG_UP_TO_DATE=false
+            fi
           fi
 
           SBOM_UP_TO_DATE=false
@@ -66,68 +85,12 @@ jobs:
             echo "do_sbom=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build updated changelog
-        id: changelog
+      - name: Update changelog
         if: steps.check.outputs.do_changelog == 'true'
         shell: bash
         run: |
           set -euo pipefail
-
-          TAG="${{ steps.check.outputs.version }}"
-          DATE=$(jq -r .published_at release.json | cut -dT -f1)
-          URL=$(jq -r .html_url release.json)
-          BODY=$(jq -r '.body // ""' release.json)
-
-          CURRENT_FILE=/tmp/changelog.current.md
-          if [[ -f content/changelog.md ]]; then
-            cp content/changelog.md "$CURRENT_FILE"
-          fi
-
-          # If changelog exists and already has this tag, skip
-          if [[ -f "$CURRENT_FILE" ]] && grep -qE "^##[[:space:]]+$TAG\\b" "$CURRENT_FILE"; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          SECTION_FILE=/tmp/section.md
-          {
-            echo "## $TAG${DATE:+ - $DATE}"
-            echo
-            echo "[Release]($URL)"
-            echo
-            printf "%s\n" "$BODY"
-          } > "$SECTION_FILE"
-
-          DEFAULT_FM="---"$'\n'"title: 'Changelog'"$'\n'"description: 'Release notes for Arcane'"$'\n'"---"
-
-          if [[ -f "$CURRENT_FILE" ]]; then
-            if head -n1 "$CURRENT_FILE" | grep -q '^---$'; then
-              END_LINE=$(awk '/^---$/{i++} i==2{print NR; exit}' "$CURRENT_FILE" || true)
-              if [[ -n "${END_LINE:-}" ]]; then
-                head -n "$END_LINE" "$CURRENT_FILE" > content/changelog.md
-                echo >> content/changelog.md
-                cat "$SECTION_FILE" >> content/changelog.md
-                echo >> content/changelog.md
-                tail -n +"$((END_LINE+1))" "$CURRENT_FILE" >> content/changelog.md
-              else
-                printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
-                cat "$SECTION_FILE" >> content/changelog.md
-                echo >> content/changelog.md
-                cat "$CURRENT_FILE" >> content/changelog.md
-              fi
-            else
-              printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
-              cat "$SECTION_FILE" >> content/changelog.md
-              echo >> content/changelog.md
-              cat "$CURRENT_FILE" >> content/changelog.md
-            fi
-          else
-            printf "%s\n\n" "$DEFAULT_FM" > content/changelog.md
-            cat "$SECTION_FILE" >> content/changelog.md
-            echo >> content/changelog.md
-          fi
-
-          echo "updated=true" >> "$GITHUB_OUTPUT"
+          RELEASES_JSON="${{ steps.releases.outputs.releases_json }}" REPO="getarcaneapp/arcane" CHANGELOG="content/changelog.md" bash scripts/update-changelog.sh
 
       - name: Checkout arcane repo
         if: steps.check.outputs.do_sbom == 'true'
