@@ -17,6 +17,19 @@
 		return out;
 	}
 
+	function parseVersionTitle(title: string) {
+		const match = title.match(/^(v?\d[\w.-]*)\s*-\s*(\d{4}-\d{2}-\d{2})/i);
+		if (!match) return { version: title, date: undefined };
+		return { version: match[1], date: match[2] };
+	}
+
+	function formatDateLabel(date?: string) {
+		if (!date) return '';
+		const parsed = new Date(`${date}T00:00:00Z`);
+		if (Number.isNaN(parsed.getTime())) return date;
+		return parsed.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+	}
+
 	function useActiveItem(getItemIds: () => string[]) {
 		let activeId = $state<string | null>(null);
 		const itemIds = $derived(getItemIds().map((id) => id.replace('#', '')));
@@ -76,30 +89,38 @@
 </script>
 
 {#if versions.length}
-	<aside class={cn('hidden w-48 shrink-0 lg:block', className)}>
-		<div class="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto pb-4">
-			<div class="flex flex-col gap-2">
-				<p class="text-muted-foreground mb-1 text-xs font-semibold tracking-wider uppercase">Versions</p>
-				<nav class="relative flex flex-col gap-0.5">
-					<div class={cn('flex flex-col gap-0.5', collapsed && hasMore && 'pb-10')}>
+	<aside class={cn('hidden w-56 shrink-0 lg:block', className)}>
+		<div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pb-6">
+			<div class="rounded-2xl border border-border/70 bg-background/70 p-4 shadow-sm backdrop-blur-md">
+				<p class="text-muted-foreground mb-3 text-xs font-semibold tracking-wider uppercase">Versions</p>
+				<nav class="relative flex flex-col gap-1">
+					<div class={cn('flex flex-col gap-1', collapsed && hasMore && 'pb-10')}>
 						{#each visibleVersions as item (item.url)}
 							{@const isActive = item.url === `#${active.current}`}
+							{@const parsed = parseVersionTitle(item.title)}
 							<a
 								href={item.url}
 								class={cn(
-									'group flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-all',
-									'hover:bg-muted/50 hover:text-foreground',
-									isActive ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground'
+									'group flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm transition-all',
+									'hover:bg-muted/60 hover:text-foreground',
+									isActive ? 'bg-muted text-foreground font-semibold shadow-sm' : 'text-muted-foreground'
 								)}
 								data-active={isActive}
 							>
+								<span class="flex flex-col gap-1">
+									<span class="truncate">{parsed.version}</span>
+									{#if parsed.date}
+										<span class="text-muted-foreground text-[0.7rem] uppercase tracking-[0.14em]">
+											{formatDateLabel(parsed.date)}
+										</span>
+									{/if}
+								</span>
 								<span
 									class={cn(
-										'flex h-1 w-1 shrink-0 rounded-full transition-all',
+										'flex h-2 w-2 shrink-0 rounded-full transition-all',
 										isActive ? 'bg-primary' : 'bg-muted-foreground/40 group-hover:bg-muted-foreground'
 									)}
 								></span>
-								<span class="truncate">{item.title}</span>
 							</a>
 						{/each}
 					</div>
@@ -117,7 +138,9 @@
 						</Button>
 					{/if}
 					{#if !collapsed && hasMore}
-						<Button variant="ghost" size="sm" class="mt-1 w-full" onclick={() => (collapsed = true)}>Show less</Button>
+						<Button variant="ghost" size="sm" class="mt-1 w-full" onclick={() => (collapsed = true)}>
+							Show less
+						</Button>
 					{/if}
 				</nav>
 			</div>
