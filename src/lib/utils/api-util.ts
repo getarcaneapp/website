@@ -15,7 +15,6 @@ export interface OpenApiIndex {
 
 export function indexOpenApi(spec: any): OpenApiIndex {
 	const tags: { name: string; description?: string }[] = spec.tags ?? [];
-	const tagMetaMap = new Map(tags.map((t) => [t.name, t]));
 	const endpointsByTag: Record<string, IndexedEndpoint[]> = {};
 	const allEndpoints: IndexedEndpoint[] = [];
 

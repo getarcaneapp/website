@@ -1,4 +1,3 @@
-import { untrack } from 'svelte';
 import { SvelteMap } from 'svelte/reactivity';
 
 export type HeadingKind = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -33,7 +32,6 @@ export const INDEX_ATTRIBUTE = 'data-toc-index';
 export class UseToc {
 	#ref = $state<HTMLElement>();
 	#toc = $state<Heading[]>([]);
-	#tocVersion = $state(0);
 
 	// This sets everything up once #ref is bound
 	set ref(ref: HTMLElement | undefined) {
@@ -42,14 +40,12 @@ export class UseToc {
 		if (!this.#ref) return;
 
 		this.#toc = getToc(this.#ref);
-		this.#tocVersion += 1;
 
 		// should detect if a heading is added / removed / updated
 		const mutationObserver = new MutationObserver(() => {
 			if (!this.#ref) return;
 
 			this.#toc = getToc(this.#ref);
-			this.#tocVersion += 1;
 		});
 
 		mutationObserver.observe(this.#ref, { childList: true, subtree: true });
@@ -75,7 +71,6 @@ export class UseToc {
 
 		// reactive to the table of contents
 		$effect(() => {
-			this.#tocVersion;
 			const sectionVisibility = new SvelteMap<Element, number>();
 
 			// Flatten all headings for easier access
@@ -88,7 +83,7 @@ export class UseToc {
 				return result;
 			};
 
-			const toc = untrack(() => this.#toc);
+			const toc = this.#toc;
 			const allHeadings = flattenHeadings(toc);
 
 			const observer = new IntersectionObserver((entries) => {
