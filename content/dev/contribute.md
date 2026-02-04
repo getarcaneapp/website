@@ -12,7 +12,7 @@ blueprint: default
 
 Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
 
-> **Using AI tools?** Please read our <Link href="AI_POLICY.md">AI Usage Policy</Link> before contributing.
+> **Using AI tools?** Please read our <Link href="https://github.com/getarcaneapp/arcane/blob/main/AI_POLICY.md">AI Usage Policy</Link> before contributing.
 
 ## 🌟 Ways to Contribute
 
