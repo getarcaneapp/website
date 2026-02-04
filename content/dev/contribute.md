@@ -12,6 +12,8 @@ blueprint: default
 
 Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
 
+> **Using AI tools?** Please read our <Link href="AI_POLICY.md">AI Usage Policy</Link> before contributing.
+
 ## 🌟 Ways to Contribute
 
 - 🐛 **Report bugs** using our issue templates
@@ -124,6 +126,24 @@ Press `Ctrl/Cmd+Shift+B` to run the default build task (Start Environment).
 ## 🛠️ Development Commands
 
 **Note**: All commands should be run from the project root directory (`arcane/`).
+
+### Justfile Shortcuts
+
+We provide a `Justfile` for common workflows. Run `just --list` to see everything.
+
+```bash
+# Dev environment
+just dev docker
+
+# Tests
+just test all
+
+# Linting
+just lint frontend
+
+# Formatting
+just format frontend
+```
 
 ### Environment Management
 ```bash
