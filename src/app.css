@@ -15,7 +15,8 @@
 
 /* ===== Custom Animations ===== */
 @keyframes float {
-	0%, 100% {
+	0%,
+	100% {
 		transform: translateY(0px) rotate(0deg);
 	}
 	50% {
@@ -24,7 +25,8 @@
 }
 
 @keyframes float-slow {
-	0%, 100% {
+	0%,
+	100% {
 		transform: translateY(0px) translateX(0px);
 	}
 	33% {
@@ -36,7 +38,8 @@
 }
 
 @keyframes pulse-glow {
-	0%, 100% {
+	0%,
+	100% {
 		opacity: 0.4;
 		transform: scale(1);
 	}
@@ -77,7 +80,8 @@
 }
 
 @keyframes subtle-bounce {
-	0%, 100% {
+	0%,
+	100% {
 		transform: translateY(0);
 	}
 	50% {
@@ -262,7 +266,7 @@
 
 /* ===== Stunning Visual Effects ===== */
 @utility glow-primary {
-	box-shadow: 
+	box-shadow:
 		0 0 20px oklch(0.606 0.25 292.717 / 0.3),
 		0 0 40px oklch(0.606 0.25 292.717 / 0.2),
 		0 0 60px oklch(0.606 0.25 292.717 / 0.1);
@@ -311,7 +315,7 @@
 	background: oklch(1 0 0 / 0.6);
 	backdrop-filter: blur(20px);
 	border: 1px solid oklch(0.92 0 0 / 0.8);
-	box-shadow: 
+	box-shadow:
 		0 4px 6px -1px oklch(0 0 0 / 0.1),
 		0 2px 4px -2px oklch(0 0 0 / 0.1),
 		inset 0 1px 0 oklch(1 0 0 / 0.5);
@@ -321,7 +325,7 @@
 .dark\:glass-card {
 	background: oklch(0.2 0.006 285.823 / 0.5);
 	border-color: oklch(1 0 0 / 0.1);
-	box-shadow: 
+	box-shadow:
 		0 4px 6px -1px oklch(0 0 0 / 0.3),
 		0 2px 4px -2px oklch(0 0 0 / 0.2),
 		inset 0 1px 0 oklch(1 0 0 / 0.05);
@@ -419,10 +423,9 @@
 }
 
 .docs-shell {
-	position: absolute;
+	position: fixed;
 	inset: 0;
-	background:
-		linear-gradient(180deg, oklch(0.99 0.01 300 / 0.95), var(--background) 35%, var(--background));
+	background: linear-gradient(180deg, oklch(0.99 0.01 300 / 0.95), var(--background) 35%, var(--background));
 	z-index: -10;
 }
 
@@ -439,8 +442,7 @@
 }
 
 .dark .docs-shell {
-	background:
-		linear-gradient(180deg, oklch(0.14 0.02 285), var(--background) 35%, var(--background));
+	background: linear-gradient(180deg, oklch(0.14 0.02 285), var(--background) 35%, var(--background));
 }
 
 .dark .docs-shell::before {

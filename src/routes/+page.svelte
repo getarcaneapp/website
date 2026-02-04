@@ -8,6 +8,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
 	import { features } from '$lib/config/features.js';
+	import { imageFadeIn } from '$lib/utils/image-fade.js';
 
 	interface StatsHistoryEntry {
 		date: string;
@@ -94,20 +95,20 @@
 
 		<section class="relative mt-10 mb-16">
 			<div
-				class="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-background/70 px-6 py-12 shadow-[0_30px_70px_-60px_oklch(0_0_0/0.6)] backdrop-blur md:px-12"
+				class="border-border/60 bg-background/70 relative overflow-hidden rounded-[2.5rem] border px-6 py-12 shadow-[0_30px_70px_-60px_oklch(0_0_0/0.6)] backdrop-blur md:px-12"
 			>
 				<div class="relative flex flex-col items-center text-center">
 					<h1 class="relative mt-6 mb-4 flex flex-col items-center gap-4 font-black tracking-tight">
-						<span
-							class="relative inline-block w-full px-4 sm:max-w-[520px] md:max-w-[680px] lg:max-w-[840px] xl:max-w-[900px]"
-						>
+						<span class="relative inline-block w-full px-4 sm:max-w-130 md:max-w-170 lg:max-w-210 xl:max-w-225">
 							<span class="sr-only">Arcane</span>
 							<enhanced:img
 								src="../../static/img/logo-full.svg"
 								alt="Arcane — Modern Docker Management"
 								decoding="async"
 								loading="eager"
-								class="mx-auto h-auto w-full object-contain drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] transition-all duration-500 select-none hover:drop-shadow-[0_4px_22px_rgba(147,51,234,0.28)]"
+								fetchpriority="high"
+								use:imageFadeIn
+								class="mx-auto h-auto w-full object-contain opacity-0 drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] transition-all duration-500 select-none hover:drop-shadow-[0_4px_22px_rgba(147,51,234,0.28)] data-[loaded=true]:opacity-100"
 								sizes="(min-width: 1280px) 900px, (min-width: 1024px) 840px, (min-width: 640px) 520px, 90vw"
 							/>
 						</span>
@@ -161,225 +162,238 @@
 			</div>
 		</section>
 
-	<section class="relative mb-20">
-		<div class="mb-6 flex flex-col gap-2">
-			<p class="text-muted-foreground text-xs font-semibold tracking-[0.35em] uppercase">Capabilities</p>
-			<h2 class="font-heading text-3xl font-semibold tracking-tight">Everything you need to run Arcane</h2>
-			<p class="text-muted-foreground max-w-2xl text-base">
-				Monitor containers, handle volumes, orchestrate updates, and keep logs within reach — without dropping into
-				the CLI.
-			</p>
-		</div>
-		<div class="rounded-[2rem] border border-border/60 bg-card/70 p-6 shadow-[0_22px_55px_-55px_oklch(0_0_0/0.55)] md:p-8">
-			<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-				{#each features as feature, i (feature.title)}
-					<div
-						style="animation-delay: {i * 100}ms;"
-						class="animate-in fade-in slide-in-from-bottom-4 fill-mode-backwards duration-500"
-					>
-						<FeatureCard
-							icon={feature.icon}
-							title={feature.title}
-							description={feature.description}
-							fullWidth={feature.fullWidth}
-						/>
-					</div>
-				{/each}
+		<section class="relative mb-20">
+			<div class="mb-6 flex flex-col gap-2">
+				<p class="text-muted-foreground text-xs font-semibold tracking-[0.35em] uppercase">Capabilities</p>
+				<h2 class="font-heading text-3xl font-semibold tracking-tight">Everything you need to run Arcane</h2>
+				<p class="text-muted-foreground max-w-2xl text-base">
+					Monitor containers, handle volumes, orchestrate updates, and keep logs within reach — without dropping into
+					the CLI.
+				</p>
 			</div>
-		</div>
-	</section>
+			<div
+				class="border-border/60 bg-card/70 rounded-4xl border p-6 shadow-[0_22px_55px_-55px_oklch(0_0_0/0.55)] md:p-8"
+			>
+				<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+					{#each features as feature, i (feature.title)}
+						<div
+							style="animation-delay: {i * 100}ms;"
+							class="animate-in fade-in slide-in-from-bottom-4 fill-mode-backwards duration-500"
+						>
+							<FeatureCard
+								icon={feature.icon}
+								title={feature.title}
+								description={feature.description}
+								fullWidth={feature.fullWidth}
+							/>
+						</div>
+					{/each}
+				</div>
+			</div>
+		</section>
 
-	<section class="relative mb-20">
-		<div
-			class="border-border/60 bg-background/70 relative overflow-hidden rounded-[2.5rem] border px-6 py-8 shadow-[0_24px_60px_-55px_oklch(0_0_0/0.5)] backdrop-blur-xl md:px-10"
-		>
-			<div class="relative">
-				<div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-					<div class="space-y-2">
-						<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">Heartbeat status</p>
-						<h2 class="text-foreground text-2xl font-semibold tracking-tight">Analytics Heartbeat</h2>
-						<p class="text-muted-foreground max-w-xl text-sm leading-relaxed">
-							Live, anonymized check-ins from running Arcane servers.
+		<section class="relative mb-20">
+			<div
+				class="border-border/60 bg-background/70 relative overflow-hidden rounded-[2.5rem] border px-6 py-8 shadow-[0_24px_60px_-55px_oklch(0_0_0/0.5)] backdrop-blur-xl md:px-10"
+			>
+				<div class="relative">
+					<div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+						<div class="space-y-2">
+							<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">Heartbeat status</p>
+							<h2 class="text-foreground text-2xl font-semibold tracking-tight">Analytics Heartbeat</h2>
+							<p class="text-muted-foreground max-w-xl text-sm leading-relaxed">
+								Live, anonymized check-ins from running Arcane servers.
 								<a
 									href={resolve('/docs/configuration/analytics')}
 									class="text-foreground font-medium underline underline-offset-4"
 								>
 									Learn more
 								</a>
-						</p>
-					</div>
+							</p>
+						</div>
 
-					<div class="flex flex-wrap items-center gap-2 text-xs">
-						<div class="border-border/60 bg-background/70 flex items-center gap-2 rounded-full border px-3 py-1.5">
-							<span class="text-muted-foreground">Active</span>
-							<span class="text-foreground font-semibold">{stats ? stats.total : '—'}</span>
-						</div>
-						<div class="border-border/60 bg-background/70 flex items-center gap-2 rounded-full border px-3 py-1.5">
-							<span class="text-muted-foreground">Last update</span>
-							<span class="text-foreground font-semibold">{latestDateLabel ?? '—'}</span>
-						</div>
-						<div class="border-border/60 bg-background/70 flex items-center gap-2 rounded-full border px-3 py-1.5">
-							<span class="text-muted-foreground">Versions</span>
-							<span class="text-foreground font-semibold">{versionBreakdown.length || '—'}</span>
-						</div>
-						{#if versionBreakdown.length}
+						<div class="flex flex-wrap items-center gap-2 text-xs">
 							<div class="border-border/60 bg-background/70 flex items-center gap-2 rounded-full border px-3 py-1.5">
-								<span class="text-muted-foreground">Most common</span>
-								<span class="text-foreground font-semibold">
-									v{versionBreakdown[0].version} ({versionBreakdown[0].count})
-								</span>
+								<span class="text-muted-foreground">Active</span>
+								<span class="text-foreground font-semibold">{stats ? stats.total : '—'}</span>
 							</div>
-						{/if}
-					</div>
-				</div>
-
-				<div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_240px]">
-					<div class="space-y-4">
-						<div>
-							<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">By version</p>
+							<div class="border-border/60 bg-background/70 flex items-center gap-2 rounded-full border px-3 py-1.5">
+								<span class="text-muted-foreground">Last update</span>
+								<span class="text-foreground font-semibold">{latestDateLabel ?? '—'}</span>
+							</div>
+							<div class="border-border/60 bg-background/70 flex items-center gap-2 rounded-full border px-3 py-1.5">
+								<span class="text-muted-foreground">Versions</span>
+								<span class="text-foreground font-semibold">{versionBreakdown.length || '—'}</span>
+							</div>
 							{#if versionBreakdown.length}
-								<div class="mt-3 flex flex-wrap gap-2 text-xs">
-									{#each versionBreakdown as version (version.version)}
-										<span class="border-border/60 bg-background/70 rounded-full border px-2.5 py-1">
-											v{version.version} · {version.count}
-										</span>
-									{/each}
+								<div class="border-border/60 bg-background/70 flex items-center gap-2 rounded-full border px-3 py-1.5">
+									<span class="text-muted-foreground">Most common</span>
+									<span class="text-foreground font-semibold">
+										v{versionBreakdown[0].version} ({versionBreakdown[0].count})
+									</span>
 								</div>
-							{:else}
-								<p class="text-muted-foreground mt-2 text-sm">No version data yet.</p>
+							{/if}
+						</div>
+					</div>
+
+					<div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_240px]">
+						<div class="space-y-4">
+							<div>
+								<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">By version</p>
+								{#if versionBreakdown.length}
+									<div class="mt-3 flex flex-wrap gap-2 text-xs">
+										{#each versionBreakdown as version (version.version)}
+											<span class="border-border/60 bg-background/70 rounded-full border px-2.5 py-1">
+												v{version.version} · {version.count}
+											</span>
+										{/each}
+									</div>
+								{:else}
+									<p class="text-muted-foreground mt-2 text-sm">No version data yet.</p>
+								{/if}
+							</div>
+
+							{#if typeBreakdown.length}
+								<div>
+									<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">By type</p>
+									<div class="mt-3 flex flex-wrap gap-2 text-xs">
+										{#each typeBreakdown as type (type.type)}
+											<span class="border-border/60 bg-background/70 rounded-full border px-2.5 py-1">
+												{type.type} · {type.count}
+											</span>
+										{/each}
+									</div>
+								</div>
 							{/if}
 						</div>
 
-						{#if typeBreakdown.length}
-							<div>
-								<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">By type</p>
-								<div class="mt-3 flex flex-wrap gap-2 text-xs">
-									{#each typeBreakdown as type (type.type)}
-										<span class="border-border/60 bg-background/70 rounded-full border px-2.5 py-1">
-											{type.type} · {type.count}
-										</span>
+						<div>
+							<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">Recent activity</p>
+							{#if history.length}
+								<div class="mt-3 flex items-end gap-1" aria-label="Recent heartbeat activity">
+									{#each history as entry (entry.date)}
+										<div
+											class="w-2 rounded-sm bg-purple-500/70"
+											style={`height: ${Math.max(8, Math.round((entry.count / historyMax) * 44))}px`}
+											title={`${entry.date}: ${entry.count}`}
+										>
+											<span class="sr-only">{entry.date}: {entry.count}</span>
+										</div>
 									{/each}
 								</div>
-							</div>
-						{/if}
+							{:else}
+								<p class="text-muted-foreground mt-3 text-sm">No activity yet.</p>
+							{/if}
+						</div>
 					</div>
 
-					<div>
-						<p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">Recent activity</p>
-						{#if history.length}
-							<div class="mt-3 flex items-end gap-1" aria-label="Recent heartbeat activity">
-								{#each history as entry (entry.date)}
-									<div
-										class="w-2 rounded-sm bg-purple-500/70"
-										style={`height: ${Math.max(8, Math.round((entry.count / historyMax) * 44))}px`}
-										title={`${entry.date}: ${entry.count}`}
-									>
-										<span class="sr-only">{entry.date}: {entry.count}</span>
-									</div>
-								{/each}
-							</div>
-						{:else}
-							<p class="text-muted-foreground mt-3 text-sm">No activity yet.</p>
-						{/if}
+					{#if statusError}
+						<p class="text-muted-foreground mt-4 text-xs">{statusError}</p>
+					{/if}
+				</div>
+			</div>
+		</section>
+
+		<section class="py-12">
+			<div
+				class="border-border/60 bg-background/70 rounded-4xl border px-6 py-8 text-center shadow-[0_20px_45px_-45px_oklch(0_0_0/0.5)] backdrop-blur"
+			>
+				<p class="text-muted-foreground mx-auto max-w-3xl text-sm leading-relaxed italic">
+					Shoutout to the shadcn and shadcn-svelte teams — their design language inspired this documentation experience.
+					Much of the UX polish pays homage to their incredible work, so be sure to explore their ecosystems!
+				</p>
+
+				<div class="mx-auto mt-6 flex max-w-3xl flex-col items-center justify-center gap-4 text-center">
+					<span class="text-muted-foreground text-sm font-medium tracking-wider uppercase">Supported by</span>
+					<div class="flex flex-wrap items-center justify-center gap-8">
+						<a
+							href="https://greptile.com"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group inline-flex items-center transition-all duration-300 hover:scale-105"
+							aria-label="Greptile"
+						>
+							<enhanced:img
+								src="../../static/img/greptile.svg"
+								alt="Greptile"
+								use:imageFadeIn
+								class="h-7 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70"
+								decoding="async"
+								loading="lazy"
+							/>
+						</a>
+
+						<a
+							href="https://graphite.dev"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group inline-flex items-center gap-2 transition-all duration-300 hover:scale-105"
+							aria-label="Graphite"
+						>
+							<img
+								src="/img/graphite.png"
+								alt="Graphite"
+								use:imageFadeIn
+								class="h-7 w-auto rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70"
+								decoding="async"
+								loading="lazy"
+							/>
+							<span
+								class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300"
+							>
+								Graphite
+							</span>
+						</a>
+
+						<a
+							href="https://depot.dev"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group inline-flex items-center transition-all duration-300 hover:scale-105"
+							aria-label="Depot"
+						>
+							<img
+								src="/img/depot-logo-horizontal-on-light.svg"
+								alt="Depot"
+								use:imageFadeIn
+								class="h-7 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70 dark:hidden"
+								decoding="async"
+								loading="lazy"
+							/>
+							<img
+								src="/img/depot-logo-horizontal-on-dark.svg"
+								alt="Depot"
+								use:imageFadeIn
+								class="hidden h-7 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70 dark:block"
+								decoding="async"
+								loading="lazy"
+							/>
+						</a>
+
+						<a
+							href="https://orbstack.dev"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group inline-flex items-center gap-2 transition-all duration-300 hover:scale-105"
+							aria-label="OrbStack"
+						>
+							<img
+								src="/img/orbstack.png"
+								alt="OrbStack"
+								use:imageFadeIn
+								class="h-7 w-auto rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70"
+								decoding="async"
+								loading="lazy"
+							/>
+							<span
+								class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300"
+							>
+								OrbStack
+							</span>
+						</a>
 					</div>
 				</div>
-
-				{#if statusError}
-					<p class="text-muted-foreground mt-4 text-xs">{statusError}</p>
-				{/if}
 			</div>
-		</div>
-	</section>
-
-	<section class="py-12">
-		<div class="rounded-[2rem] border border-border/60 bg-background/70 px-6 py-8 text-center shadow-[0_20px_45px_-45px_oklch(0_0_0/0.5)] backdrop-blur">
-			<p class="text-muted-foreground mx-auto max-w-3xl text-sm leading-relaxed italic">
-				Shoutout to the shadcn and shadcn-svelte teams — their design language inspired this documentation experience.
-				Much of the UX polish pays homage to their incredible work, so be sure to explore their ecosystems!
-			</p>
-
-			<div class="mx-auto mt-6 flex max-w-3xl flex-col items-center justify-center gap-4 text-center">
-				<span class="text-muted-foreground text-sm font-medium tracking-wider uppercase">Supported by</span>
-				<div class="flex flex-wrap items-center justify-center gap-8">
-					<a
-						href="https://greptile.com"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="group inline-flex items-center transition-all duration-300 hover:scale-105"
-						aria-label="Greptile"
-					>
-						<enhanced:img
-							src="../../static/img/greptile.svg"
-							alt="Greptile"
-							class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-							decoding="async"
-							loading="lazy"
-						/>
-					</a>
-
-					<a
-						href="https://graphite.dev"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="group inline-flex items-center gap-2 transition-all duration-300 hover:scale-105"
-						aria-label="Graphite"
-					>
-						<img
-							src="/img/graphite.png"
-							alt="Graphite"
-							class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-							decoding="async"
-							loading="lazy"
-						/>
-						<span class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300">
-							Graphite
-						</span>
-					</a>
-
-					<a
-						href="https://depot.dev"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="group inline-flex items-center transition-all duration-300 hover:scale-105"
-						aria-label="Depot"
-					>
-						<img
-							src="/img/depot-logo-horizontal-on-light.svg"
-							alt="Depot"
-							class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:hidden"
-							decoding="async"
-							loading="lazy"
-						/>
-						<img
-							src="/img/depot-logo-horizontal-on-dark.svg"
-							alt="Depot"
-							class="hidden h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:block"
-							decoding="async"
-							loading="lazy"
-						/>
-					</a>
-
-					<a
-						href="https://orbstack.dev"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="group inline-flex items-center gap-2 transition-all duration-300 hover:scale-105"
-						aria-label="OrbStack"
-					>
-						<img
-							src="/img/orbstack.png"
-							alt="OrbStack"
-							class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-							decoding="async"
-							loading="lazy"
-						/>
-						<span class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300">
-							OrbStack
-						</span>
-					</a>
-				</div>
-			</div>
-		</div>
-	</section>
+		</section>
 	</ContentWrapper>
 </div>

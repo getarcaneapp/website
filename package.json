@@ -1,9 +1,8 @@
 {
 	"name": "arcane-website",
-	"private": true,
 	"version": "1.0.0",
+	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"velite": "velite",
@@ -19,9 +18,22 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"format": "prettier --write .",
-		"lint": "prettier --check .",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check",
 		"knip": "knip"
+	},
+	"dependencies": {
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/enhanced-img": "^0.10.0",
+		"@types/js-yaml": "^4.0.9",
+		"js-yaml": "^4.1.1",
+		"mode-watcher": "^1.1.0",
+		"rehype-pretty-code": "^0.14.1",
+		"rehype-slug": "^6.0.0",
+		"remark-code-import": "^1.2.0",
+		"remark-gfm": "^4.0.1",
+		"unist-builder": "^4.0.0",
+		"unist-util-visit": "^5.1.0"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.11.0",
@@ -37,8 +49,8 @@
 		"isomorphic-dompurify": "^2.35.0",
 		"knip": "^5.83.0",
 		"mdsx": "^0.0.7",
+		"oxfmt": "^0.28.0",
 		"package-manager-detector": "^1.6.0",
-		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"runed": "^0.37.1",
@@ -55,17 +67,5 @@
 		"vite": "8.0.0-beta.12",
 		"wrangler": "^4.62.0"
 	},
-	"dependencies": {
-		"@sveltejs/adapter-static": "^3.0.10",
-		"@sveltejs/enhanced-img": "^0.10.0",
-		"@types/js-yaml": "^4.0.9",
-		"js-yaml": "^4.1.1",
-		"mode-watcher": "^1.1.0",
-		"rehype-pretty-code": "^0.14.1",
-		"rehype-slug": "^6.0.0",
-		"remark-code-import": "^1.2.0",
-		"remark-gfm": "^4.0.1",
-		"unist-builder": "^4.0.0",
-		"unist-util-visit": "^5.1.0"
-	}
+	"packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"
 }

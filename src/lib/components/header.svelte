@@ -43,7 +43,7 @@
 <header class="sticky top-0 z-50 w-full bg-transparent py-3">
 	<div class="container-wrapper px-4 sm:px-6">
 		<div
-			class="border-border/60 bg-background/80 shadow-[0_18px_45px_-35px_oklch(0_0_0/0.55)] flex h-16 items-center gap-2 rounded-2xl border px-3 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 dark:bg-[oklch(0.14_0.006_285.823/0.8)] dark:shadow-[0_18px_45px_-35px_oklch(0_0_0/0.7)] **:data-[slot=separator]:h-4!"
+			class="flex h-16 items-center gap-2 rounded-2xl border border-white/35 bg-white/40 px-3 shadow-[0_18px_45px_-35px_oklch(0_0_0/0.55)] backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 **:data-[slot=separator]:h-4! dark:border-white/10 dark:bg-black/35 dark:shadow-[0_18px_45px_-35px_oklch(0_0_0/0.7)]"
 		>
 			<Button href="/" variant="ghost" size="icon" class="hidden size-8 lg:flex">
 				<Logo class="size-5" />

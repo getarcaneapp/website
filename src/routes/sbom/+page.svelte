@@ -26,7 +26,7 @@
 	let sbomData = $state<SbomData>({
 		metadata: null,
 		manager: { amd64: null, arm64: null },
-		agent: { amd64: null, arm64: null },
+		agent: { amd64: null, arm64: null }
 	});
 
 	let loading = $state(true);
@@ -54,7 +54,7 @@
 	const packageCounts = $derived({
 		total: packages.length,
 		goModules: packages.filter((p) => p.type === 'go-module').length,
-		debPackages: packages.filter((p) => p.type === 'deb').length,
+		debPackages: packages.filter((p) => p.type === 'deb').length
 	});
 
 	async function loadSbomData() {
@@ -74,7 +74,7 @@
 				fetch('/sbom/manager/linux_amd64.spdx.json').then((r) => (r.ok ? r.json() : null)),
 				fetch('/sbom/manager/linux_arm64.spdx.json').then((r) => (r.ok ? r.json() : null)),
 				fetch('/sbom/agent/linux_amd64.spdx.json').then((r) => (r.ok ? r.json() : null)),
-				fetch('/sbom/agent/linux_arm64.spdx.json').then((r) => (r.ok ? r.json() : null)),
+				fetch('/sbom/agent/linux_arm64.spdx.json').then((r) => (r.ok ? r.json() : null))
 			]);
 
 			sbomData.manager.amd64 = managerAmd64;
@@ -136,7 +136,7 @@
 <div class="docs-theme relative isolate">
 	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
 	<div class="container mx-auto flex min-w-0 flex-1 px-4 py-6 lg:py-8">
-		<div class="mx-auto flex w-full max-w-[1600px] flex-col gap-8">
+		<div class="mx-auto flex w-full max-w-400 flex-col gap-8">
 			<!-- Header -->
 			<header class="sbom-hero">
 				<div class="sbom-hero__title">
@@ -153,164 +153,159 @@
 				</p>
 			</header>
 
-		{#if loading}
-			<div class="flex flex-col items-center justify-center gap-4 py-16">
-				<div class="border-primary size-8 animate-spin rounded-full border-2 border-t-transparent"></div>
-				<p class="text-muted-foreground">Loading SBOM data...</p>
-			</div>
-		{:else if error}
-			<div class="bg-destructive/10 border-destructive/20 flex flex-col items-center gap-4 rounded-lg border p-8">
-				<AlertTriangle class="text-destructive size-12" />
-				<p class="text-destructive text-center">{error}</p>
-				<p class="text-muted-foreground text-center text-sm">
-					SBOM data is generated from the latest release. If this is a new deployment, it may take a few minutes for
-					the data to be available.
-				</p>
-			</div>
-		{:else}
-			<!-- Version info -->
-			{#if sbomData.metadata}
-				<div class="sbom-meta">
-					<div class="sbom-meta__left">
-						<div class="sbom-meta__pill">
-							<Badge variant="outline" class="font-mono">
-								{sbomData.metadata.version}
-							</Badge>
-							<span class="text-muted-foreground text-sm">
-								Updated {new Date(sbomData.metadata.updated).toLocaleDateString('en-US', {
-									year: 'numeric',
-									month: 'long',
-									day: 'numeric',
-								})}
-							</span>
+			{#if loading}
+				<div class="flex flex-col items-center justify-center gap-4 py-16">
+					<div class="border-primary size-8 animate-spin rounded-full border-2 border-t-transparent"></div>
+					<p class="text-muted-foreground">Loading SBOM data...</p>
+				</div>
+			{:else if error}
+				<div class="bg-destructive/10 border-destructive/20 flex flex-col items-center gap-4 rounded-lg border p-8">
+					<AlertTriangle class="text-destructive size-12" />
+					<p class="text-destructive text-center">{error}</p>
+					<p class="text-muted-foreground text-center text-sm">
+						SBOM data is generated from the latest release. If this is a new deployment, it may take a few minutes for
+						the data to be available.
+					</p>
+				</div>
+			{:else}
+				<!-- Version info -->
+				{#if sbomData.metadata}
+					<div class="sbom-meta">
+						<div class="sbom-meta__left">
+							<div class="sbom-meta__pill">
+								<Badge variant="outline" class="font-mono">
+									{sbomData.metadata.version}
+								</Badge>
+								<span class="text-muted-foreground text-sm">
+									Updated {new Date(sbomData.metadata.updated).toLocaleDateString('en-US', {
+										year: 'numeric',
+										month: 'long',
+										day: 'numeric'
+									})}
+								</span>
+							</div>
+							<p class="sbom-meta__note">Export the raw SPDX 2.3 JSON if you need to automate audits.</p>
 						</div>
-						<p class="sbom-meta__note">Export the raw SPDX 2.3 JSON if you need to automate audits.</p>
+						<Button variant="outline" size="sm" onclick={downloadSbom} disabled={!currentSbom} class="sbom-download">
+							<Download class="mr-2 size-4" />
+							Download SPDX JSON
+						</Button>
 					</div>
-					<Button variant="outline" size="sm" onclick={downloadSbom} disabled={!currentSbom} class="sbom-download">
-						<Download class="mr-2 size-4" />
-						Download SPDX JSON
-					</Button>
+				{/if}
+
+				<!-- Image & Architecture Selection -->
+				<div class="sbom-controls">
+					<div class="sbom-control">
+						<p class="sbom-control__label">Image</p>
+						<Tabs.Root bind:value={selectedImage} class="w-full sm:w-auto">
+							<Tabs.List>
+								<Tabs.Trigger value="manager">
+									<Package class="mr-2 size-4" />
+									Arcane (Manager)
+								</Tabs.Trigger>
+								<Tabs.Trigger value="agent">
+									<Cpu class="mr-2 size-4" />
+									Arcane Headless (Agent)
+								</Tabs.Trigger>
+							</Tabs.List>
+						</Tabs.Root>
+					</div>
+
+					<div class="sbom-control">
+						<p class="sbom-control__label">Architecture</p>
+						<Tabs.Root bind:value={selectedArch}>
+							<Tabs.List>
+								<Tabs.Trigger value="amd64">linux/amd64</Tabs.Trigger>
+								<Tabs.Trigger value="arm64">linux/arm64</Tabs.Trigger>
+							</Tabs.List>
+						</Tabs.Root>
+					</div>
+				</div>
+
+				<!-- Stats -->
+				<div class="sbom-stats">
+					<div class="sbom-stat">
+						<p class="sbom-stat__label">Total Packages</p>
+						<p class="sbom-stat__value">{packageCounts.total}</p>
+					</div>
+					<div class="sbom-stat">
+						<p class="sbom-stat__label">Go Modules</p>
+						<p class="sbom-stat__value">{packageCounts.goModules}</p>
+					</div>
+					<div class="sbom-stat">
+						<p class="sbom-stat__label">System Packages</p>
+						<p class="sbom-stat__value">{packageCounts.debPackages}</p>
+					</div>
+				</div>
+
+				<!-- Filters -->
+				<div class="sbom-filters">
+					<label class="sbom-search">
+						<span class="sbom-search__label">Filter packages</span>
+						<input type="text" placeholder="Search packages..." bind:value={searchQuery} class="sbom-search__input" />
+					</label>
+					<div class="sbom-filter-tabs">
+						<p class="sbom-control__label">Package type</p>
+						<Tabs.Root bind:value={packageFilter}>
+							<Tabs.List>
+								<Tabs.Trigger value="all">All</Tabs.Trigger>
+								<Tabs.Trigger value="go-module">Go Modules</Tabs.Trigger>
+								<Tabs.Trigger value="deb">System</Tabs.Trigger>
+							</Tabs.List>
+						</Tabs.Root>
+					</div>
+				</div>
+
+				<!-- Package Table -->
+				<div class="sbom-table">
+					<Table.Root>
+						<Table.Header>
+							<Table.Row class="sbom-table__head">
+								<Table.Head class="w-[320px]">Package</Table.Head>
+								<Table.Head class="w-42.5">Version</Table.Head>
+								<Table.Head class="w-30">Type</Table.Head>
+								<Table.Head>License</Table.Head>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{#each filteredPackages as pkg (pkg.name + pkg.version)}
+								<Table.Row class="sbom-table__row">
+									<Table.Cell class="sbom-table__package">{pkg.name}</Table.Cell>
+									<Table.Cell class="sbom-table__version">{pkg.version}</Table.Cell>
+									<Table.Cell>
+										<Badge variant={getTypeColor(pkg.type)}>
+											{pkg.type === 'go-module' ? 'Go' : pkg.type === 'deb' ? 'Deb' : 'Other'}
+										</Badge>
+									</Table.Cell>
+									<Table.Cell class="sbom-table__license">
+										{formatLicense(pkg.license)}
+									</Table.Cell>
+								</Table.Row>
+							{:else}
+								<Table.Row>
+									<Table.Cell colspan={4} class="text-muted-foreground py-8 text-center">
+										No packages found matching your search.
+									</Table.Cell>
+								</Table.Row>
+							{/each}
+						</Table.Body>
+					</Table.Root>
+				</div>
+
+				<!-- Footer info -->
+				<div class="text-muted-foreground text-center text-sm">
+					<p>
+						SBOM generated using <a
+							href="https://depot.dev"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-foreground underline underline-offset-4">Depot</a
+						>
+						during the container build process.
+					</p>
+					<p>Format: SPDX 2.3 JSON</p>
 				</div>
 			{/if}
-
-			<!-- Image & Architecture Selection -->
-			<div class="sbom-controls">
-				<div class="sbom-control">
-					<p class="sbom-control__label">Image</p>
-					<Tabs.Root bind:value={selectedImage} class="w-full sm:w-auto">
-						<Tabs.List>
-							<Tabs.Trigger value="manager">
-								<Package class="mr-2 size-4" />
-								Arcane (Manager)
-							</Tabs.Trigger>
-							<Tabs.Trigger value="agent">
-								<Cpu class="mr-2 size-4" />
-								Arcane Headless (Agent)
-							</Tabs.Trigger>
-						</Tabs.List>
-					</Tabs.Root>
-				</div>
-
-				<div class="sbom-control">
-					<p class="sbom-control__label">Architecture</p>
-					<Tabs.Root bind:value={selectedArch}>
-						<Tabs.List>
-							<Tabs.Trigger value="amd64">linux/amd64</Tabs.Trigger>
-							<Tabs.Trigger value="arm64">linux/arm64</Tabs.Trigger>
-						</Tabs.List>
-					</Tabs.Root>
-				</div>
-			</div>
-
-			<!-- Stats -->
-			<div class="sbom-stats">
-				<div class="sbom-stat">
-					<p class="sbom-stat__label">Total Packages</p>
-					<p class="sbom-stat__value">{packageCounts.total}</p>
-				</div>
-				<div class="sbom-stat">
-					<p class="sbom-stat__label">Go Modules</p>
-					<p class="sbom-stat__value">{packageCounts.goModules}</p>
-				</div>
-				<div class="sbom-stat">
-					<p class="sbom-stat__label">System Packages</p>
-					<p class="sbom-stat__value">{packageCounts.debPackages}</p>
-				</div>
-			</div>
-
-			<!-- Filters -->
-			<div class="sbom-filters">
-				<label class="sbom-search">
-					<span class="sbom-search__label">Filter packages</span>
-					<input
-						type="text"
-						placeholder="Search packages..."
-						bind:value={searchQuery}
-						class="sbom-search__input"
-					/>
-				</label>
-				<div class="sbom-filter-tabs">
-					<p class="sbom-control__label">Package type</p>
-					<Tabs.Root bind:value={packageFilter}>
-						<Tabs.List>
-							<Tabs.Trigger value="all">All</Tabs.Trigger>
-							<Tabs.Trigger value="go-module">Go Modules</Tabs.Trigger>
-							<Tabs.Trigger value="deb">System</Tabs.Trigger>
-						</Tabs.List>
-					</Tabs.Root>
-				</div>
-			</div>
-
-			<!-- Package Table -->
-			<div class="sbom-table">
-				<Table.Root>
-					<Table.Header>
-						<Table.Row class="sbom-table__head">
-							<Table.Head class="w-[320px]">Package</Table.Head>
-							<Table.Head class="w-[170px]">Version</Table.Head>
-							<Table.Head class="w-[120px]">Type</Table.Head>
-							<Table.Head>License</Table.Head>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{#each filteredPackages as pkg (pkg.name + pkg.version)}
-							<Table.Row class="sbom-table__row">
-								<Table.Cell class="sbom-table__package">{pkg.name}</Table.Cell>
-								<Table.Cell class="sbom-table__version">{pkg.version}</Table.Cell>
-								<Table.Cell>
-									<Badge variant={getTypeColor(pkg.type)}>
-										{pkg.type === 'go-module' ? 'Go' : pkg.type === 'deb' ? 'Deb' : 'Other'}
-									</Badge>
-								</Table.Cell>
-								<Table.Cell class="sbom-table__license">
-									{formatLicense(pkg.license)}
-								</Table.Cell>
-							</Table.Row>
-						{:else}
-							<Table.Row>
-								<Table.Cell colspan={4} class="text-muted-foreground py-8 text-center">
-									No packages found matching your search.
-								</Table.Cell>
-							</Table.Row>
-						{/each}
-					</Table.Body>
-				</Table.Root>
-			</div>
-
-			<!-- Footer info -->
-			<div class="text-muted-foreground text-center text-sm">
-				<p>
-					SBOM generated using <a
-						href="https://depot.dev"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-foreground underline underline-offset-4">Depot</a
-					>
-					during the container build process.
-				</p>
-				<p>Format: SPDX 2.3 JSON</p>
-			</div>
-		{/if}
 		</div>
 	</div>
 </div>

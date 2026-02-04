@@ -5,13 +5,13 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	optimizeDeps: {
-		exclude: ['@lucide/svelte'],
+		exclude: ['@lucide/svelte']
 	},
 	plugins: [tailwindcss(), enhancedImages(), sveltekit()],
 	server: {
 		fs: {
-			allow: ['..', './content'],
-		},
+			allow: ['..', './content']
+		}
 	},
 	build: {
 		rollupOptions: {
@@ -20,8 +20,8 @@ export default defineConfig({
 					if (id.includes('@lucide/svelte')) {
 						return 'icons';
 					}
-				},
-			},
-		},
-	},
+				}
+			}
+		}
+	}
 });

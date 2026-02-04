@@ -31,7 +31,7 @@
 
 {#if isDeprecatedDomain}
 	<div
-		class="sticky top-0 z-[60] border-b border-amber-500 bg-amber-500/10 text-amber-600 backdrop-blur-sm dark:bg-amber-500/15 dark:text-amber-400"
+		class="sticky top-0 z-60 border-b border-amber-500 bg-amber-500/10 text-amber-600 backdrop-blur-sm dark:bg-amber-500/15 dark:text-amber-400"
 	>
 		<div class="container-wrapper px-6 py-2">
 			<div class="flex items-center justify-center gap-2 text-center text-[12px] font-medium">

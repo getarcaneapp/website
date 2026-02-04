@@ -13,17 +13,11 @@ export const codeVariants = tv({
 	variants: {
 		variant: {
 			default: 'border-border bg-card',
-			secondary: 'bg-secondary/50 border-transparent',
-		},
-	},
+			secondary: 'bg-secondary/50 border-transparent'
+		}
+	}
 });
 
 export type CodeVariant = VariantProps<typeof codeVariants>['variant'];
 
-export {
-	Root,
-	CopyButton,
-	Overflow,
-	type CodeRootProps as RootProps,
-	type CodeCopyButtonProps as CopyButtonProps,
-};
+export { Root, CopyButton, Overflow, type CodeRootProps as RootProps, type CodeCopyButtonProps as CopyButtonProps };
