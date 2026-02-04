@@ -3,21 +3,35 @@
 # Arcane Installation Script
 # Usage: curl -fsSL https://getarcane.app/install.sh | bash
 #
-# This script installs Arcane and all its dependencies:
+# This script installs Arcane and its dependencies:
 # - Docker
-# - Node.js 25 (via fnm)
-# - Go 1.25+
 # - Arcane application
 # - systemd service for Arcane
 #
 
 set -e
 
+CURRENT_STEP=""
+
+handle_error() {
+    progress_fail
+    if [[ -n "$CURRENT_STEP" ]]; then
+        log_error "Script failed during: $CURRENT_STEP"
+    else
+        log_error "Script failed"
+    fi
+    log_warn "Re-run with --verbose for full output"
+    exit 1
+}
+
+trap 'handle_error' ERR
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
@@ -29,8 +43,6 @@ ARCANE_DATA_DIR="${ARCANE_DATA_DIR:-/var/lib/arcane}"
 ARCANE_USER="${ARCANE_USER:-arcane}"
 ARCANE_GROUP="${ARCANE_GROUP:-arcane}"
 ARCANE_PORT="${ARCANE_PORT:-3552}"
-GO_VERSION="${GO_VERSION:-1.25.0}"
-NODE_VERSION="${NODE_VERSION:-25}"
 
 # Verbosity (default: minimal output)
 VERBOSE="${VERBOSE:-false}"
@@ -63,6 +75,7 @@ log_error() {
 }
 
 log_step() {
+    CURRENT_STEP="$1"
     if [[ "$VERBOSE" == "true" ]]; then
         echo -e "\n${CYAN}${BOLD}==> $1${NC}\n"
     fi
@@ -70,6 +83,7 @@ log_step() {
 
 # Minimal progress indicator
 progress() {
+    CURRENT_STEP="$1"
     if [[ "$VERBOSE" != "true" ]]; then
         echo -ne "${CYAN}●${NC} $1... "
     fi
@@ -104,7 +118,7 @@ run_cmd() {
 
 # Print banner
 print_banner() {
-    echo -e "${CYAN}"
+    echo -e "${PURPLE}"
     cat << 'EOF'
     _                            
    / \   _ __ ___ __ _ _ __   ___ 
@@ -112,7 +126,7 @@ print_banner() {
  / ___ \| | | (_| (_| | | | |  __/
 /_/   \_\_|  \___\__,_|_| |_|\___|
                                   
-Docker Management UI
+Modern Docker Management, Designed for Everyone.
 EOF
     echo -e "${NC}"
     if [[ "$VERBOSE" == "true" ]]; then
@@ -137,15 +151,20 @@ detect_os() {
     
     if [[ -f /etc/os-release ]]; then
         . /etc/os-release
-        OS=$ID
-        OS_VERSION=$VERSION_ID
-        OS_NAME=$PRETTY_NAME
+        OS="linux"
+        OS_ID=${ID:-linux}
+        OS_LIKE=${ID_LIKE:-}
+        OS_VERSION=${VERSION_ID:-}
+        OS_NAME=${PRETTY_NAME:-Linux}
     elif [[ -f /etc/redhat-release ]]; then
-        OS="rhel"
+        OS="linux"
+        OS_ID="rhel"
+        OS_LIKE="rhel fedora"
         OS_VERSION=$(cat /etc/redhat-release | grep -oE '[0-9]+\.[0-9]+' | head -1)
         OS_NAME=$(cat /etc/redhat-release)
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         OS="macos"
+        OS_ID="macos"
         OS_VERSION=$(sw_vers -productVersion)
         OS_NAME="macOS $OS_VERSION"
     else
@@ -177,6 +196,35 @@ detect_os() {
     progress_done
 }
 
+# Detect package manager (Linux) or Homebrew (macOS)
+detect_package_manager() {
+    log_step "Detecting package manager..."
+    progress "Detecting package manager"
+
+    if [[ "$OS" == "macos" ]]; then
+        PKG_MGR="brew"
+    elif command -v apt-get &> /dev/null; then
+        PKG_MGR="apt"
+    elif command -v dnf &> /dev/null; then
+        PKG_MGR="dnf"
+    elif command -v yum &> /dev/null; then
+        PKG_MGR="yum"
+    elif command -v pacman &> /dev/null; then
+        PKG_MGR="pacman"
+    elif command -v zypper &> /dev/null; then
+        PKG_MGR="zypper"
+    elif command -v apk &> /dev/null; then
+        PKG_MGR="apk"
+    else
+        progress_fail
+        log_error "Unsupported package manager. Install dependencies manually."
+        exit 1
+    fi
+
+    log_info "Package manager: $PKG_MGR"
+    progress_done
+}
+
 # Check system requirements
 check_requirements() {
     log_step "Checking system requirements..."
@@ -203,47 +251,37 @@ install_dependencies() {
     log_step "Installing system dependencies..."
     progress "Installing dependencies"
     
-    case $OS in
-        ubuntu|pop)
+    case $PKG_MGR in
+        apt)
             run_cmd apt-get update -qq
-            run_cmd apt-get install -y -qq curl wget git ca-certificates gnupg lsb-release \
-                apt-transport-https software-properties-common unzip tar
+            run_cmd apt-get install -y -qq curl ca-certificates gnupg
             ;;
-        debian)
-            run_cmd apt-get update -qq
-            run_cmd apt-get install -y -qq curl wget git ca-certificates gnupg lsb-release \
-                apt-transport-https unzip tar
+        dnf)
+            run_cmd dnf install -y -q curl ca-certificates gnupg2
             ;;
-        fedora)
-            run_cmd dnf install -y -q curl wget git ca-certificates gnupg2 unzip tar
+        yum)
+            run_cmd yum install -y -q curl ca-certificates gnupg2
             ;;
-        centos|rhel|rocky|almalinux)
-            if command -v dnf &> /dev/null; then
-                run_cmd dnf install -y -q curl wget git ca-certificates gnupg2 unzip tar
-            else
-                run_cmd yum install -y -q curl wget git ca-certificates gnupg2 unzip tar
-            fi
+        pacman)
+            run_cmd pacman -Sy --noconfirm --quiet curl ca-certificates gnupg
             ;;
-        arch|manjaro)
-            run_cmd pacman -Sy --noconfirm --quiet curl wget git ca-certificates gnupg unzip tar
+        zypper)
+            run_cmd zypper install -y -q curl ca-certificates gpg2
             ;;
-        opensuse*|sles)
-            run_cmd zypper install -y -q curl wget git ca-certificates gpg2 unzip tar
+        apk)
+            run_cmd apk add --no-cache curl ca-certificates bash
             ;;
-        alpine)
-            run_cmd apk add --no-cache curl wget git ca-certificates gnupg unzip tar bash
-            ;;
-        macos)
+        brew)
             # Check for Homebrew
             if ! command -v brew &> /dev/null; then
                 log_info "Installing Homebrew..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
-            run_cmd brew install curl wget git gnupg
+            run_cmd brew install curl
             ;;
         *)
             progress_fail
-            log_error "Unsupported operating system: $OS"
+            log_error "Unsupported package manager: $PKG_MGR"
             exit 1
             ;;
     esac
@@ -270,36 +308,58 @@ install_docker() {
         return 0
     fi
     
-    case $OS in
-        ubuntu|debian|pop)
+    case $PKG_MGR in
+        apt)
             # Remove old versions
             run_cmd apt-get remove -y docker docker-engine docker.io containerd runc 2>/dev/null || true
             
-            # Add Docker's official GPG key
-            install -m 0755 -d /etc/apt/keyrings
-            curl -fsSL https://download.docker.com/linux/$OS/gpg 2>/dev/null | gpg --dearmor -o /etc/apt/keyrings/docker.gpg 2>/dev/null
-            chmod a+r /etc/apt/keyrings/docker.gpg
+            DOCKER_REPO_OS=""
+            DOCKER_CODENAME="${VERSION_CODENAME:-}"
+            if [[ -z "$DOCKER_CODENAME" && -n "$UBUNTU_CODENAME" ]]; then
+                DOCKER_CODENAME="$UBUNTU_CODENAME"
+            fi
+            if [[ "$OS_ID" == "ubuntu" || "$OS_ID" == "pop" || "$OS_ID" == "linuxmint" || "$OS_ID" == "zorin" || "$OS_ID" == "elementary" || "$OS_ID" == "neon" || "$OS_LIKE" == *"ubuntu"* ]]; then
+                DOCKER_REPO_OS="ubuntu"
+            elif [[ "$OS_ID" == "debian" || "$OS_ID" == "kali" || "$OS_LIKE" == *"debian"* ]]; then
+                DOCKER_REPO_OS="debian"
+            fi
             
-            # Set up repository
-            echo \
-                "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$OS \
-                $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-                tee /etc/apt/sources.list.d/docker.list > /dev/null
-            
-            # Install Docker
-            run_cmd apt-get update -qq
-            run_cmd apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            if [[ -n "$DOCKER_REPO_OS" && -n "$DOCKER_CODENAME" ]]; then
+                # Add Docker's official GPG key
+                install -m 0755 -d /etc/apt/keyrings
+                curl -fsSL https://download.docker.com/linux/${DOCKER_REPO_OS}/gpg 2>/dev/null | gpg --dearmor -o /etc/apt/keyrings/docker.gpg 2>/dev/null
+                chmod a+r /etc/apt/keyrings/docker.gpg
+                
+                # Set up repository
+                echo \
+                    "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/${DOCKER_REPO_OS} \
+                    ${DOCKER_CODENAME} stable" | \
+                    tee /etc/apt/sources.list.d/docker.list > /dev/null
+                
+                # Install Docker
+                run_cmd apt-get update -qq
+                run_cmd apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            else
+                log_warn "Docker repo not available for this distro; installing distro packages instead"
+                run_cmd apt-get update -qq
+                run_cmd apt-get install -y -qq docker.io
+                run_cmd apt-get install -y -qq docker-compose-plugin docker-compose || true
+            fi
             ;;
-        fedora)
+        dnf)
             run_cmd dnf remove -y docker docker-client docker-client-latest docker-common \
                 docker-latest docker-latest-logrotate docker-logrotate docker-selinux \
                 docker-engine-selinux docker-engine 2>/dev/null || true
             
             run_cmd dnf -y install dnf-plugins-core
-            run_cmd dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            if [[ "$OS_ID" == "fedora" || "$OS_LIKE" == *"fedora"* ]]; then
+                run_cmd dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            else
+                run_cmd dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+            fi
             run_cmd dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             ;;
-        centos|rhel|rocky|almalinux)
+        yum)
             run_cmd yum remove -y docker docker-client docker-client-latest docker-common \
                 docker-latest docker-latest-logrotate docker-logrotate docker-engine 2>/dev/null || true
             
@@ -307,17 +367,17 @@ install_docker() {
             run_cmd yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
             run_cmd yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             ;;
-        arch|manjaro)
+        pacman)
             run_cmd pacman -S --noconfirm docker docker-compose
             ;;
-        opensuse*|sles)
+        zypper)
             run_cmd zypper install -y docker docker-compose
             ;;
-        alpine)
+        apk)
             run_cmd apk add --no-cache docker docker-compose
             run_cmd rc-update add docker boot 2>/dev/null || true
             ;;
-        macos)
+        brew)
             progress_fail
             log_error "Please install Docker Desktop for macOS manually:"
             log_info "https://docs.docker.com/desktop/install/mac-install/"
@@ -326,7 +386,7 @@ install_docker() {
             ;;
         *)
             progress_fail
-            log_error "Docker installation not supported for $OS"
+            log_error "Docker installation not supported for this system"
             exit 1
             ;;
     esac
@@ -350,148 +410,6 @@ install_docker() {
     fi
 }
 
-# Install Go
-install_go() {
-    log_step "Installing Go ${GO_VERSION}..."
-    progress "Installing Go"
-    
-    if command -v go &> /dev/null; then
-        CURRENT_GO_VERSION=$(go version | grep -oE 'go[0-9]+\.[0-9]+(\.[0-9]+)?' | sed 's/go//')
-        log_info "Go is already installed (version $CURRENT_GO_VERSION)"
-        
-        # Check if version is sufficient
-        REQUIRED_MAJOR=1
-        REQUIRED_MINOR=25
-        CURRENT_MAJOR=$(echo $CURRENT_GO_VERSION | cut -d. -f1)
-        CURRENT_MINOR=$(echo $CURRENT_GO_VERSION | cut -d. -f2)
-        
-        if [[ $CURRENT_MAJOR -ge $REQUIRED_MAJOR && $CURRENT_MINOR -ge $REQUIRED_MINOR ]]; then
-            log_success "Go version is sufficient"
-            progress_skip
-            return 0
-        else
-            log_warn "Go version is too old, upgrading..."
-        fi
-    fi
-    
-    # Determine download URL
-    GO_OS="linux"
-    if [[ "$OS" == "macos" ]]; then
-        GO_OS="darwin"
-    fi
-    
-    GO_URL="https://go.dev/dl/go${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
-    
-    # Remove existing Go installation
-    rm -rf /usr/local/go
-    
-    # Download and extract
-    log_info "Downloading Go from $GO_URL..."
-    curl -fsSL "$GO_URL" -o /tmp/go.tar.gz 2>/dev/null
-    tar -C /usr/local -xzf /tmp/go.tar.gz 2>/dev/null
-    rm /tmp/go.tar.gz
-    
-    # Set up PATH for all users
-    if [[ ! -f /etc/profile.d/go.sh ]]; then
-        cat > /etc/profile.d/go.sh << 'EOF'
-export PATH=$PATH:/usr/local/go/bin
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-EOF
-        chmod +x /etc/profile.d/go.sh
-    fi
-    
-    # Source for current session
-    export PATH=$PATH:/usr/local/go/bin
-    
-    # Verify installation
-    if /usr/local/go/bin/go version &> /dev/null; then
-        log_success "Go ${GO_VERSION} installed successfully"
-        progress_done
-    else
-        progress_fail
-        log_error "Go installation failed"
-        exit 1
-    fi
-}
-
-# Install Node.js via fnm (Fast Node Manager)
-install_node() {
-    log_step "Installing Node.js ${NODE_VERSION}..."
-    progress "Installing Node.js"
-    
-    # Check if Node.js is already installed with sufficient version
-    if command -v node &> /dev/null; then
-        CURRENT_NODE_VERSION=$(node --version | sed 's/v//' | cut -d. -f1)
-        if [[ $CURRENT_NODE_VERSION -ge $NODE_VERSION ]]; then
-            log_info "Node.js is already installed (version $(node --version))"
-            progress_skip
-            return 0
-        else
-            log_warn "Node.js version is too old, upgrading..."
-        fi
-    fi
-    
-    # Install fnm (Fast Node Manager) if not present
-    if ! command -v fnm &> /dev/null; then
-        log_info "Installing fnm (Fast Node Manager)..."
-        curl -fsSL https://fnm.vercel.app/install 2>/dev/null | bash -s -- --skip-shell &>/dev/null
-        
-        # Set up fnm for all users
-        export FNM_DIR="/opt/fnm"
-        mkdir -p "$FNM_DIR"
-        
-        # Move fnm to system location
-        if [[ -f "$HOME/.local/share/fnm/fnm" ]]; then
-            mv "$HOME/.local/share/fnm/fnm" /usr/local/bin/fnm
-        elif [[ -f "$HOME/.fnm/fnm" ]]; then
-            mv "$HOME/.fnm/fnm" /usr/local/bin/fnm
-        fi
-        
-        chmod +x /usr/local/bin/fnm
-    fi
-    
-    # Set up fnm environment
-    export FNM_DIR="/opt/fnm"
-    eval "$(fnm env --shell bash 2>/dev/null || true)"
-    
-    # Install Node.js
-    log_info "Installing Node.js ${NODE_VERSION} via fnm..."
-    run_cmd fnm install $NODE_VERSION
-    run_cmd fnm default $NODE_VERSION
-    run_cmd fnm use $NODE_VERSION
-    
-    # Create symlinks for system-wide access
-    FNM_NODE_PATH=$(fnm exec --using=$NODE_VERSION which node 2>/dev/null || echo "")
-    if [[ -n "$FNM_NODE_PATH" ]]; then
-        ln -sf "$FNM_NODE_PATH" /usr/local/bin/node
-        ln -sf "$(dirname $FNM_NODE_PATH)/npm" /usr/local/bin/npm
-        ln -sf "$(dirname $FNM_NODE_PATH)/npx" /usr/local/bin/npx
-    fi
-    
-    # Set up profile for all users
-    cat > /etc/profile.d/fnm.sh << 'EOF'
-export FNM_DIR="/opt/fnm"
-if command -v fnm &> /dev/null; then
-    eval "$(fnm env --shell bash)"
-fi
-EOF
-    chmod +x /etc/profile.d/fnm.sh
-    
-    # Install pnpm globally
-    log_info "Installing pnpm..."
-    run_cmd npm install -g pnpm@latest 2>/dev/null || true
-    
-    # Verify installation
-    if node --version &> /dev/null; then
-        log_success "Node.js $(node --version) installed successfully"
-        progress_done
-    else
-        progress_fail
-        log_error "Node.js installation failed"
-        exit 1
-    fi
-}
 
 # Create Arcane user and directories
 setup_arcane_user() {
@@ -554,11 +472,9 @@ install_arcane() {
     
     # Download binary
     if ! curl -fsSL "$DOWNLOAD_URL" -o "$ARCANE_INSTALL_DIR/arcane" 2>/dev/null; then
-        log_error "Failed to download Arcane binary"
-        log_info "Attempting to build from source..."
         progress_fail
-        build_arcane_from_source
-        return
+        log_error "Failed to download Arcane binary"
+        exit 1
     fi
     
     # Make executable
@@ -575,50 +491,10 @@ install_arcane() {
         log_success "Arcane installed successfully"
         progress_done
     else
-        log_warn "Binary may not be ready, attempting source build..."
         progress_fail
-        build_arcane_from_source
+        log_error "Downloaded binary failed to run"
+        exit 1
     fi
-}
-
-# Build Arcane from source (fallback)
-build_arcane_from_source() {
-    log_info "Building Arcane from source..."
-    progress "Building from source"
-    
-    # Clone repository
-    TEMP_DIR=$(mktemp -d)
-    run_cmd git clone --depth 1 https://github.com/getarcaneapp/arcane.git "$TEMP_DIR/arcane"
-    
-    cd "$TEMP_DIR/arcane/backend"
-    
-    # Build backend
-    export PATH=$PATH:/usr/local/go/bin
-    run_cmd go build -o "$ARCANE_INSTALL_DIR/arcane" ./cmd/main.go
-    
-    # Build frontend
-    cd "$TEMP_DIR/arcane/frontend"
-    if command -v pnpm &> /dev/null; then
-        run_cmd pnpm install
-        run_cmd pnpm build
-    elif command -v npm &> /dev/null; then
-        run_cmd npm install
-        run_cmd npm run build
-    fi
-    
-    # Copy frontend build
-    cp -r build/* "$ARCANE_INSTALL_DIR/frontend/" 2>/dev/null || true
-    
-    # Cleanup
-    rm -rf "$TEMP_DIR"
-    
-    # Set permissions
-    chown -R "$ARCANE_USER:$ARCANE_GROUP" "$ARCANE_INSTALL_DIR"
-    chmod +x "$ARCANE_INSTALL_DIR/arcane"
-    ln -sf "$ARCANE_INSTALL_DIR/arcane" /usr/local/bin/arcane
-    
-    log_success "Arcane built from source successfully"
-    progress_done
 }
 
 # Create Arcane configuration
@@ -628,9 +504,26 @@ create_arcane_config() {
     
     # .env must be in same directory as the binary
     ENV_FILE="$ARCANE_INSTALL_DIR/.env"
+    HOST_IP=$(detect_host_ip)
+    log_info "Detected host IP: $HOST_IP"
     
     if [[ -f "$ENV_FILE" ]]; then
-        log_info "Environment file already exists, skipping..."
+        if grep -q '^APP_URL=' "$ENV_FILE"; then
+            CURRENT_APP_URL=$(grep '^APP_URL=' "$ENV_FILE" | head -1 | cut -d= -f2-)
+            if [[ "$CURRENT_APP_URL" == http://localhost* || "$CURRENT_APP_URL" == http://127.0.0.1* ]]; then
+                if [[ "$OS" == "macos" ]]; then
+                    sed -i '' "s|^APP_URL=.*|APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
+                else
+                    sed -i "s|^APP_URL=.*|APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
+                fi
+                log_info "Updated APP_URL in existing environment file"
+            else
+                log_info "Environment file already exists, leaving APP_URL unchanged"
+            fi
+        else
+            echo "APP_URL=http://${HOST_IP}:${ARCANE_PORT}" >> "$ENV_FILE"
+            log_info "Added APP_URL to existing environment file"
+        fi
         progress_skip
         return 0
     fi
@@ -647,19 +540,6 @@ create_arcane_config() {
         ENCRYPTION_KEY=$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)
         JWT_SECRET=$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)
     fi
-    
-    # Detect host IP address for APP_URL
-    HOST_IP=$(ip -4 route get 1 2>/dev/null | awk '{print $7; exit}' || \
-              hostname -I 2>/dev/null | awk '{print $1}' || \
-              ifconfig 2>/dev/null | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1 || \
-              echo "localhost")
-    
-    # Fallback to localhost if no IP found
-    if [[ -z "$HOST_IP" || "$HOST_IP" == " " ]]; then
-        HOST_IP="localhost"
-    fi
-    
-    log_info "Detected host IP: $HOST_IP"
     
     cat > "$ENV_FILE" << EOF
 # Arcane Environment Configuration
@@ -682,6 +562,10 @@ JWT_SECRET=${JWT_SECRET}
 # Docker Configuration
 DOCKER_HOST=unix:///var/run/docker.sock
 
+# Projects
+PROJECTS_DIRECTORY=/opt/arcane/projects
+DISK_USAGE_PATH=/opt/arcane/projects
+
 # Logging
 LOG_LEVEL=info
 LOG_JSON=false
@@ -703,7 +587,6 @@ ANALYTICS_DISABLED=false
 # Agent Mode (for remote Docker host management)
 # AGENT_MODE=false
 # AGENT_TOKEN=your-secure-agent-token
-# AGENT_BOOTSTRAP_TOKEN=your-bootstrap-token
 EOF
     
     chown "$ARCANE_USER:$ARCANE_GROUP" "$ENV_FILE"
@@ -711,6 +594,20 @@ EOF
     
     log_success "Configuration created at $ENV_FILE"
     progress_done
+}
+
+detect_host_ip() {
+    local ip
+    ip=$(ip -4 route get 1 2>/dev/null | awk '{print $7; exit}' || \
+          hostname -I 2>/dev/null | awk '{print $1}' || \
+          ifconfig 2>/dev/null | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1 || \
+          echo "localhost")
+
+    if [[ -z "$ip" || "$ip" == " " ]]; then
+        ip="localhost"
+    fi
+
+    echo "$ip"
 }
 
 # Create systemd service
@@ -905,12 +802,15 @@ start_arcane() {
 
 # Print completion message
 print_completion() {
+    if [[ -z "$HOST_IP" ]]; then
+        HOST_IP=$(detect_host_ip)
+    fi
     echo ""
     echo -e "${GREEN}${BOLD}════════════════════════════════════════════════════════════════${NC}"
     echo -e "${GREEN}${BOLD}                    Installation Complete!                       ${NC}"
     echo -e "${GREEN}${BOLD}════════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo -e "  ${BOLD}Access Arcane:${NC} ${BLUE}http://localhost:${ARCANE_PORT}${NC}"
+    echo -e "  ${BOLD}Access Arcane:${NC} ${BLUE}http://${HOST_IP}:${ARCANE_PORT}${NC}"
     echo ""
     if [[ "$VERBOSE" == "true" ]]; then
         echo -e "${BOLD}Service Management:${NC}"
@@ -943,7 +843,7 @@ print_completion() {
 # Cleanup function
 cleanup() {
     log_info "Cleaning up temporary files..."
-    rm -rf /tmp/go.tar.gz /tmp/arcane-* 2>/dev/null || true
+    rm -rf /tmp/arcane-* 2>/dev/null || true
 }
 
 # Uninstall function
@@ -1010,8 +910,6 @@ show_help() {
     echo "  ARCANE_INSTALL_DIR  Installation directory (default: /opt/arcane)"
     echo "  ARCANE_DATA_DIR     Data directory (default: /var/lib/arcane)"
     echo "  ARCANE_PORT         Port to run on (default: 3552)"
-    echo "  GO_VERSION          Go version to install (default: 1.25.0)"
-    echo "  NODE_VERSION        Node.js major version (default: 25)"
     echo "  VERBOSE=true        Same as --verbose"
     echo ""
     echo "Examples:"
@@ -1055,22 +953,23 @@ main() {
     print_banner
     check_root
     detect_os
+    detect_package_manager
     check_requirements
     install_dependencies
     install_docker
-    install_go
-    install_node
     setup_arcane_user
     install_arcane
     create_arcane_config
     
-    # Create appropriate service based on OS
+    # Create appropriate service based on system manager
     if [[ "$OS" == "macos" ]]; then
         create_launchd_service
-    elif [[ "$OS" == "alpine" ]]; then
+    elif command -v systemctl &> /dev/null && [[ -d /etc/systemd/system ]]; then
+        create_systemd_service
+    elif command -v rc-service &> /dev/null; then
         create_openrc_service
     else
-        create_systemd_service
+        log_warn "No supported service manager found. Start Arcane manually with: arcane serve"
     fi
     
     start_arcane

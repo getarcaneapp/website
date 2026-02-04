@@ -3,6 +3,10 @@ title: 'Containers'
 description: 'Learn how to manage Docker containers with Arcane'
 ---
 
+<script lang="ts">
+import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+</script>
+
 ## What Can You Do With Containers in Arcane?
 
 - **View Containers:** See all containers on your Docker host, including their names, IDs, images, and current status (like running or stopped).
@@ -11,6 +15,16 @@ description: 'Learn how to manage Docker containers with Arcane'
 - **Inspect Containers:** Click on a container to see detailed information, including configuration, network settings, mounts, and logs.
 - **Remove Containers:** Delete containers you no longer need. You can only remove stopped containers (unless you use the force option).
 - **View Logs:** Check the output and error logs for each container to help with troubleshooting.
+
+## Screenshot
+
+<ScreenshotFrame
+	src="/img/screenshots/containers-page.jpeg"
+	alt="Containers page in Arcane"
+	caption="Containers page in Arcane."
+	loading="lazy"
+	decoding="async"
+/>
 
 ## How to Use
 

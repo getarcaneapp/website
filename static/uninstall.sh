@@ -13,6 +13,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
@@ -27,8 +28,6 @@ ARCANE_GROUP="${ARCANE_GROUP:-arcane}"
 REMOVE_DATA="${REMOVE_DATA:-false}"
 REMOVE_USER="${REMOVE_USER:-false}"
 REMOVE_DOCKER="${REMOVE_DOCKER:-false}"
-REMOVE_GO="${REMOVE_GO:-false}"
-REMOVE_NODE="${REMOVE_NODE:-false}"
 FORCE="${FORCE:-false}"
 
 # Verbosity (default: minimal output)
@@ -97,7 +96,7 @@ run_cmd() {
 
 # Print banner
 print_banner() {
-    echo -e "${RED}"
+    echo -e "${PURPLE}"
     cat << 'EOF'
     _                            
    / \   _ __ ___ __ _ _ __   ___ 
@@ -105,6 +104,7 @@ print_banner() {
  / ___ \| | | (_| (_| | | | |  __/
 /_/   \_\_|  \___\__,_|_| |_|\___|
                                   
+Modern Docker Management, Designed for Everyone.
 Uninstallation Script
 EOF
     echo -e "${NC}"
@@ -115,6 +115,13 @@ check_root() {
     if [[ $EUID -ne 0 ]]; then
         log_error "This script must be run as root (use sudo)"
         exit 1
+    fi
+}
+
+auto_force_if_piped() {
+    if [[ "$FORCE" != "true" && ! -t 0 ]]; then
+        FORCE="true"
+        log_warn "Non-interactive shell detected; proceeding with --force"
     fi
 }
 
@@ -147,11 +154,12 @@ stop_service() {
     progress "Stopping service"
     
     # systemd
-    if command -v systemctl &> /dev/null && [[ -f /etc/systemd/system/arcane.service ]]; then
+    if command -v systemctl &> /dev/null; then
         log_info "Stopping systemd service..."
         run_cmd systemctl stop arcane 2>/dev/null || true
         run_cmd systemctl disable arcane 2>/dev/null || true
         rm -f /etc/systemd/system/arcane.service
+        rm -f /lib/systemd/system/arcane.service
         run_cmd systemctl daemon-reload
         log_success "Systemd service removed"
     fi
@@ -202,7 +210,14 @@ remove_data() {
     log_step "Removing Arcane data..."
     
     if [[ -d "$ARCANE_DATA_DIR" ]]; then
-        if [[ "$REMOVE_DATA" == "true" ]] || confirm "Remove Arcane data directory ($ARCANE_DATA_DIR)? This will delete all your data!"; then
+        if [[ "$REMOVE_DATA" == "true" ]]; then
+            progress "Removing data"
+            rm -rf "$ARCANE_DATA_DIR"
+            log_info "Removed $ARCANE_DATA_DIR"
+            progress_done
+        elif [[ "$FORCE" == "true" ]]; then
+            log_warn "Data directory preserved at $ARCANE_DATA_DIR (use --remove-data to delete)"
+        elif confirm "Remove Arcane data directory ($ARCANE_DATA_DIR)? This will delete all your data!"; then
             progress "Removing data"
             rm -rf "$ARCANE_DATA_DIR"
             log_info "Removed $ARCANE_DATA_DIR"
@@ -225,7 +240,25 @@ remove_data() {
 remove_user() {
     log_step "Removing Arcane user and group..."
     
-    if [[ "$REMOVE_USER" == "true" ]] || confirm "Remove Arcane user and group?"; then
+    if [[ "$REMOVE_USER" == "true" ]]; then
+        progress "Removing user"
+        # Remove user
+        if id "$ARCANE_USER" &> /dev/null; then
+            userdel "$ARCANE_USER" 2>/dev/null || true
+            log_info "Removed user: $ARCANE_USER"
+        fi
+        
+        # Remove group
+        if getent group "$ARCANE_GROUP" &> /dev/null; then
+            groupdel "$ARCANE_GROUP" 2>/dev/null || true
+            log_info "Removed group: $ARCANE_GROUP"
+        fi
+        
+        log_success "User and group removed"
+        progress_done
+    elif [[ "$FORCE" == "true" ]]; then
+        log_warn "User and group preserved (use --remove-user to delete)"
+    elif confirm "Remove Arcane user and group?"; then
         progress "Removing user"
         # Remove user
         if id "$ARCANE_USER" &> /dev/null; then
@@ -253,6 +286,10 @@ remove_docker() {
     fi
     
     if [[ "$REMOVE_DOCKER" != "true" ]]; then
+        if [[ "$FORCE" == "true" ]]; then
+            log_warn "Docker preserved (use --remove-docker to delete)"
+            return 0
+        fi
         if ! confirm "Remove Docker? (This may affect other applications)"; then
             log_warn "Docker preserved"
             return 0
@@ -262,98 +299,29 @@ remove_docker() {
     log_step "Removing Docker..."
     progress "Removing Docker"
     
-    # Detect OS
-    if [[ -f /etc/os-release ]]; then
-        . /etc/os-release
-        OS=$ID
+    if command -v apt-get &> /dev/null; then
+        run_cmd apt-get remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker.io docker-compose 2>/dev/null || true
+        run_cmd apt-get autoremove -y 2>/dev/null || true
+        rm -f /etc/apt/sources.list.d/docker.list
+        rm -f /etc/apt/keyrings/docker.gpg
+    elif command -v dnf &> /dev/null; then
+        run_cmd dnf remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker docker-compose 2>/dev/null || true
+    elif command -v yum &> /dev/null; then
+        run_cmd yum remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker docker-compose 2>/dev/null || true
+    elif command -v pacman &> /dev/null; then
+        run_cmd pacman -Rns --noconfirm docker docker-compose 2>/dev/null || true
+    elif command -v zypper &> /dev/null; then
+        run_cmd zypper remove -y docker docker-compose 2>/dev/null || true
+    elif command -v apk &> /dev/null; then
+        run_cmd apk del docker docker-compose 2>/dev/null || true
+    else
+        log_warn "Unsupported package manager. Remove Docker manually."
     fi
-    
-    case $OS in
-        ubuntu|debian|pop)
-            run_cmd apt-get remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            run_cmd apt-get autoremove -y 2>/dev/null || true
-            rm -f /etc/apt/sources.list.d/docker.list
-            rm -f /etc/apt/keyrings/docker.gpg
-            ;;
-        fedora)
-            run_cmd dnf remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            ;;
-        centos|rhel|rocky|almalinux)
-            if command -v dnf &> /dev/null; then
-                run_cmd dnf remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            else
-                run_cmd yum remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 2>/dev/null || true
-            fi
-            ;;
-        arch|manjaro)
-            run_cmd pacman -Rns --noconfirm docker docker-compose 2>/dev/null || true
-            ;;
-        alpine)
-            run_cmd apk del docker docker-compose 2>/dev/null || true
-            ;;
-    esac
     
     log_success "Docker removed"
     progress_done
 }
 
-# Remove Go (optional)
-remove_go() {
-    if [[ ! -d /usr/local/go ]]; then
-        return 0
-    fi
-    
-    if [[ "$REMOVE_GO" != "true" ]]; then
-        if ! confirm "Remove Go? (This may affect other applications)"; then
-            log_warn "Go preserved"
-            return 0
-        fi
-    fi
-    
-    log_step "Removing Go..."
-    progress "Removing Go"
-    
-    rm -rf /usr/local/go
-    rm -f /etc/profile.d/go.sh
-    
-    log_success "Go removed"
-    progress_done
-}
-
-# Remove Node.js/fnm (optional)
-remove_node() {
-    if ! command -v fnm &> /dev/null && ! command -v node &> /dev/null; then
-        return 0
-    fi
-    
-    if [[ "$REMOVE_NODE" != "true" ]]; then
-        if ! confirm "Remove Node.js and fnm? (This may affect other applications)"; then
-            log_warn "Node.js preserved"
-            return 0
-        fi
-    fi
-    
-    log_step "Removing Node.js and fnm..."
-    progress "Removing Node.js"
-    
-    # Remove fnm
-    rm -f /usr/local/bin/fnm
-    rm -rf /opt/fnm
-    rm -f /etc/profile.d/fnm.sh
-    
-    # Remove node symlinks
-    rm -f /usr/local/bin/node
-    rm -f /usr/local/bin/npm
-    rm -f /usr/local/bin/npx
-    rm -f /usr/local/bin/pnpm
-    
-    # Remove user fnm directories
-    rm -rf ~/.local/share/fnm 2>/dev/null || true
-    rm -rf ~/.fnm 2>/dev/null || true
-    
-    log_success "Node.js and fnm removed"
-    progress_done
-}
 
 # Print completion message
 print_completion() {
@@ -389,9 +357,7 @@ show_help() {
     echo "  --remove-data       Remove Arcane data directory"
     echo "  --remove-user       Remove Arcane user and group"
     echo "  --remove-docker     Remove Docker"
-    echo "  --remove-go         Remove Go"
-    echo "  --remove-node       Remove Node.js and fnm"
-    echo "  --remove-all        Remove everything (data, user, docker, go, node)"
+    echo "  --remove-all        Remove everything (data, user, docker)"
     echo ""
     echo "Environment Variables:"
     echo "  ARCANE_INSTALL_DIR  Installation directory (default: /opt/arcane)"
@@ -403,8 +369,6 @@ show_help() {
     echo "  REMOVE_DATA=true    Same as --remove-data"
     echo "  REMOVE_USER=true    Same as --remove-user"
     echo "  REMOVE_DOCKER=true  Same as --remove-docker"
-    echo "  REMOVE_GO=true      Same as --remove-go"
-    echo "  REMOVE_NODE=true    Same as --remove-node"
     echo ""
     echo "Examples:"
     echo "  # Interactive uninstall (minimal output, asks for confirmation)"
@@ -449,20 +413,10 @@ parse_args() {
                 REMOVE_DOCKER="true"
                 shift
                 ;;
-            --remove-go)
-                REMOVE_GO="true"
-                shift
-                ;;
-            --remove-node)
-                REMOVE_NODE="true"
-                shift
-                ;;
             --remove-all)
                 REMOVE_DATA="true"
                 REMOVE_USER="true"
                 REMOVE_DOCKER="true"
-                REMOVE_GO="true"
-                REMOVE_NODE="true"
                 shift
                 ;;
             *)
@@ -480,6 +434,7 @@ main() {
     
     print_banner
     check_root
+    auto_force_if_piped
     
     echo -e "${YELLOW}${BOLD}WARNING: This will uninstall Arcane from your system.${NC}"
     echo ""
@@ -496,8 +451,6 @@ main() {
     remove_data
     remove_user
     remove_docker
-    remove_go
-    remove_node
     
     print_completion
 }

@@ -39,7 +39,8 @@ The `OIDC_ADMIN_CLAIM` and `OIDC_ADMIN_VALUE` settings allow you to automaticall
 
 When a user logs in, Arcane checks if their token contains the specified claim with a matching value. If it does, they're granted admin access.
 
-> **Important:** The claim you want to use (e.g., `groups`) must be included in your `OIDC_SCOPES`. For example, if you want to use group membership for admin assignment, make sure `groups` is in your scopes: `openid email profile groups`
+> [!IMPORTANT]
+> The claim you want to use (e.g., `groups`) must be included in your `OIDC_SCOPES`. For example, if you want to use group membership for admin assignment, make sure `groups` is in your scopes: `openid email profile groups`
 
 ## Example Compose Configuration
 

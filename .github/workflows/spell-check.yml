@@ -23,13 +23,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if this is a changelog PR
         id: check_label
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "${{ contains(github.event.pull_request.labels.*.name, 'docs(changelog)') }}" == "true" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request_target" ]] \
+            && [[ "${{ contains(github.event.pull_request.labels.*.name, 'docs(changelog)') }}" == "true" ]] \
+            && [[ "${{ github.event.pull_request.head.repo.full_name }}" == "${{ github.repository }}" ]]; then
             echo "is_changelog_pr=true" >> $GITHUB_OUTPUT
             echo "should_fix=true" >> $GITHUB_OUTPUT
           else
@@ -38,7 +41,7 @@ jobs:
           fi
 
       - name: Run typos check
-        uses: crate-ci/typos@v1.42.0
+        uses: crate-ci/typos@v1.43.0
         with:
           config: ./.github/workflows/typos.toml
           write_changes: ${{ steps.check_label.outputs.should_fix }}

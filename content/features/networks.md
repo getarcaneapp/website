@@ -3,12 +3,26 @@ title: 'Networks'
 description: 'Learn how to manage Docker networks with Arcane'
 ---
 
+<script lang="ts">
+import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+</script>
+
 ## What Can You Do With Networks in Arcane?
 
 - **View Networks:** See a list of all Docker networks on your system, including their names, drivers, and subnets.
 - **Create Networks:** Add a new network by choosing a name, driver, and optional settings like subnet or gateway.
 - **Inspect Networks:** Click on a network to see details, including connected containers and configuration.
 - **Remove Networks:** Delete networks you no longer need. Arcane will warn you if a network is in use or is a default Docker network.
+
+## Screenshot
+
+<ScreenshotFrame
+	src="/img/screenshots/networks-page.jpeg"
+	alt="Networks page in Arcane"
+	caption="Networks page in Arcane."
+	loading="lazy"
+	decoding="async"
+/>
 
 ### Viewing Networks
 

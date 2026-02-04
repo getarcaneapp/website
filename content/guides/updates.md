@@ -25,7 +25,7 @@ Keep selected containers and projects up to date automatically when new images a
 
 Arcane checks for updates by comparing image digests (when possible). For tags like `latest` or `next`, a tag can point to a different digest over time, so digest comparison is the most reliable way to detect changes.
 
-This logic is very similar to how watchtower worked/works ith Changes to support arcanes logic, so should be familiar to those who have used that. 
+This logic is very similar to how watchtower worked/works with changes to support Arcane's logic, so it should be familiar to those who have used that tool. 
 
 ## Container labels (per-service / per-container)
 
@@ -43,40 +43,6 @@ Accepted “false” values are: `false`, `0`, `no`, `off` (case-insensitive).
 
 Accepted “true” values are: `true`, `1`, `yes`, `on` (case-insensitive).
 
-### Lifecycle hooks
-
-Lifecycle hooks let you run a command *inside the container* at specific times.
-
-#### Pre-check / post-check hooks
-
-Run before/after Arcane checks if an update is available:
-
-- `com.getarcaneapp.arcane.lifecycle.pre-check`
-- `com.getarcaneapp.arcane.lifecycle.post-check`
-
-#### Pre-update / post-update hooks
-
-Run before stopping the container and after the replacement container is started:
-
-- `com.getarcaneapp.arcane.lifecycle.pre-update`
-- `com.getarcaneapp.arcane.lifecycle.post-update`
-
-Hook values are treated as shell commands (executed as `/bin/sh -c <value>`).
-
-##### Hook timeouts
-
-You can set timeouts for the update hooks:
-
-- `com.getarcaneapp.arcane.lifecycle.pre-update-timeout`
-- `com.getarcaneapp.arcane.lifecycle.post-update-timeout`
-
-Timeout values can be either:
-- seconds (e.g. `90`)
-- or a Go duration string (e.g. `90s`, `2m`)
-
-##### Skipping an update from a hook
-
-If a lifecycle hook exits with code **75** (EX_TEMPFAIL), Arcane treats it as “skip this update”.
 
 ### Dependency ordering
 
@@ -111,12 +77,6 @@ services:
       # Optional: dependencies
       - com.getarcaneapp.arcane.depends-on=db,redis
 
-      # Optional: lifecycle hooks
-      - com.getarcaneapp.arcane.lifecycle.pre-update=echo "pre-update: draining" && ./bin/drain
-      - com.getarcaneapp.arcane.lifecycle.pre-update-timeout=2m
-      - com.getarcaneapp.arcane.lifecycle.post-update=./bin/smoke-test
-      - com.getarcaneapp.arcane.lifecycle.post-update-timeout=90
-
       # Optional: stop signal
       - com.getarcaneapp.arcane.stop-signal=SIGTERM
 
@@ -133,7 +93,5 @@ services:
 docker run -d \
   --name myapp \
   --label com.getarcaneapp.arcane.updater=true \
-  --label com.getarcaneapp.arcane.lifecycle.pre-update="echo draining && ./drain" \
-  --label com.getarcaneapp.arcane.lifecycle.pre-update-timeout=120 \
   ghcr.io/acme/myapp:latest
 ```

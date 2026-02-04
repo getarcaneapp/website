@@ -5,11 +5,22 @@ description: 'Learn how to manage Docker compose projects with Arcane'
 
 <script lang="ts">
 import { Link } from '$lib/components/ui/link/index.js';
+import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
 ## What is a Project?
 
 A `Project` is a collection of services defined in a `compose.yaml` file.
+
+## Screenshot
+
+<ScreenshotFrame
+  src="/img/screenshots/projects-page.jpeg"
+  alt="Projects page in Arcane"
+  caption="Projects page in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## How to Use Projects
 
@@ -33,14 +44,13 @@ A `Project` is a collection of services defined in a `compose.yaml` file.
 
 - `Up:` Click the `Up` button to pull and start all services in the project. 
 - `Down:` Click `Down` to down and remove all containers in the project.
-- `Restart:` Click `Restart` to stop and then start the project again, this does `NOT`` recreate the containers.
+- `Restart:` Click `Restart` to stop and then start the project again, this does `NOT` recreate the containers.
 - `Redeploy:` Click `Redeploy` to pull the latest images and restart the project (equivalent to docker pull && docker up -d).
-- `Destroy:` Click `Destroy` to down and destroy all resources made by the project, this has two options one to remove volumes, amd one to remove the actual project files on the disk.
-
+- `Destroy:` Click `Destroy` to down and destroy all resources made by the project. This has two options: one to remove volumes and one to remove the actual project files on the disk.
 
 ## Where Are My Projects Stored?
 
-Arcane saves your project definitions (files, and `.env` files) in its data directory (by default `/app/data/projects` or where you `Projects Directory` is set to in the arcane settings).
+Arcane saves your project definitions (files, and `.env` files) in its data directory (by default `/app/data/projects` or where your `Projects Directory` is set to in the Arcane settings).
 
 ## Git Integration
 
@@ -53,8 +63,17 @@ Before you can sync a project, you need to add a Git repository to Arcane.
 1. Go to `Customize > Git Repositories`.
 2. Click `Add Repository`.
 3. Enter the `Repository URL` and a `Name`.
-4. Configure authentication if needed (SSH Key or Personal Access Token).
-5. Click `Save`.
+4. Configure authentication if needed:
+    - **Personal Access Token**: For HTTPS repositories.
+    - **SSH Key**: Paste your private key for SSH repositories.
+5. If using **SSH**, configure the **Host Key Verification** mode:
+    - **Accept and Remember (Default)**: Automatically accepts the remote server's host key on first connection and saves it to the `known_hosts` file.
+    - **Strict**: Requires the remote host key to be pre-existing in the `known_hosts` file.
+    - **Skip Verification**: Disables host key checking entirely. This is **insecure** and should only be used if you understand the risks.
+6. Click `Save`.
+
+> [!NOTE]
+> Arcane manages its own `known_hosts` file. By default, this is stored at `~/.ssh/known_hosts`. You can override this path by setting the `SSH_KNOWN_HOSTS` environment variable in your environment.
 
 ### Syncing a Project from Git
 
@@ -62,10 +81,10 @@ Once your repository is connected, you can create a project that syncs from it.
 
 1. Go to the `Projects` page.
 2. Click the arrow next to "Create Project" and select `From Git Repo`.
-3. Enter a `Sync Name` this will also be the project name used within arcane.
+3. Enter a `Sync Name`, this will also be the project name used within Arcane.
 4. Select the `Repository` you want to use.
 5. Select the `Branch` from the dropdown menu.
-6. Specify the `Compose File Path` relative to the repository root or Click the `Folder Icon` to browse the Git Repo interactively (**Note** Only YAML/YML Files can be selected)
+6. Specify the `Compose File Path` relative to the repository root or click the `Folder Icon` to browse the Git Repo interactively (**Note** Only YAML/YML Files can be selected)
 7. (Optional) Enable `Auto Sync` to automatically poll for changes.
 8. Click `Create Sync`.
 
@@ -73,7 +92,7 @@ Arcane will clone the repository, read the compose file, and create a project. I
 
 ### Import Multiple Syncs via JSON
 
-If have mutilpe syncs you want to create at one time you can import multiple via a json content or file.
+If you have multiple syncs you want to create at one time you can import multiple via JSON content or file.
 
 The file is a simple JSON Array as shown below:
 
@@ -101,8 +120,8 @@ The file is a simple JSON Array as shown below:
 ```
 
 > [!IMPORTANT]
-> The Redployment will only happenn if the project is currently running.
+> The Redeployment will only happen if the project is currently running.
 
 ## Editing a Git Synced Project
 
-The Compose file is `Read-Only` for all projects synced from Git; however, the .env is still able to edited and used. If you want to use the environment file provided by arcanes editor make sure to add: `- env_file: .env` to your compose file. 
+The Compose file is `Read-Only` for all projects synced from Git; however, the .env is still able to be edited and used. If you want to use the environment file provided by Arcane's editor make sure to add: `- env_file: .env` to your compose file. 
