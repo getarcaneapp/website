@@ -16,8 +16,10 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			output: {
-				manualChunks: {
-					icons: ['@lucide/svelte'],
+				manualChunks(id) {
+					if (id.includes('@lucide/svelte')) {
+						return 'icons';
+					}
 				},
 			},
 		},
