@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,600,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -89,6 +90,7 @@
 	--breakpoint-4xl: 2000px;
 	--font-sans: 'Geist', sans-serif;
 	--font-mono: 'Geist Mono', monospace;
+	--font-heading: 'Geist', sans-serif;
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -316,7 +318,7 @@
 }
 
 .dark .glass-card,
-@utility dark\:glass-card {
+.dark\:glass-card {
 	background: oklch(0.2 0.006 285.823 / 0.5);
 	border-color: oklch(1 0 0 / 0.1);
 	box-shadow: 
@@ -330,11 +332,153 @@
 }
 
 @utility container-wrapper {
-	@apply 3xl:fixed:max-w-[calc(var(--breakpoint-2xl)+2rem)] mx-auto w-full px-2;
+	@apply 3xl:fixed:max-w-[1800px] mx-auto w-full px-2;
 }
 
 @utility container {
-	@apply 3xl:max-w-screen-2xl mx-auto max-w-[1400px] px-4 lg:px-8;
+	@apply 3xl:max-w-[1800px] mx-auto max-w-[1600px] px-4 lg:px-8;
+}
+
+/* ===== Docs Theme ===== */
+.docs-theme {
+	--font-sans: 'IBM Plex Sans', 'Geist', sans-serif;
+	--font-mono: 'IBM Plex Mono', 'Geist Mono', monospace;
+	--font-heading: 'Fraunces', 'IBM Plex Sans', serif;
+	--background: oklch(0.985 0.01 300);
+	--foreground: oklch(0.2 0.02 285);
+	--card: oklch(0.99 0.01 300);
+	--card-foreground: oklch(0.2 0.02 285);
+	--popover: oklch(0.99 0.01 300);
+	--popover-foreground: oklch(0.2 0.02 285);
+	--primary: oklch(0.606 0.25 292.717);
+	--primary-foreground: oklch(0.97 0.016 293);
+	--secondary: oklch(0.96 0.02 295);
+	--secondary-foreground: oklch(0.24 0.02 285);
+	--muted: oklch(0.96 0.02 295);
+	--muted-foreground: oklch(0.52 0.03 285);
+	--accent: oklch(0.93 0.05 295);
+	--accent-foreground: oklch(0.25 0.03 285);
+	--destructive: oklch(0.64 0.23 25);
+	--border: oklch(0.9 0.02 295);
+	--input: oklch(0.9 0.02 295);
+	--ring: oklch(0.7 0.12 292);
+	--sidebar: oklch(0.98 0.01 295);
+	--sidebar-foreground: oklch(0.2 0.02 285);
+	--sidebar-primary: oklch(0.32 0.09 292);
+	--sidebar-primary-foreground: oklch(0.98 0.01 300);
+	--sidebar-accent: oklch(0.94 0.02 295);
+	--sidebar-accent-foreground: oklch(0.2 0.02 285);
+	--sidebar-border: oklch(0.88 0.02 295);
+	--sidebar-ring: oklch(0.7 0.12 292);
+	--surface: oklch(0.2 0.02 285);
+	--surface-foreground: oklch(0.95 0.01 300);
+	--code: oklch(0.2 0.02 285);
+	--code-foreground: oklch(0.95 0.01 300);
+	--code-highlight: oklch(0.26 0.04 292);
+	--code-number: oklch(0.7 0.02 285);
+	--selection: oklch(0.78 0.12 292 / 0.35);
+	--selection-foreground: oklch(0.2 0.02 285);
+	overflow-x: clip;
+}
+
+.dark .docs-theme {
+	--background: oklch(0.14 0.02 285);
+	--foreground: oklch(0.97 0.01 300);
+	--card: oklch(0.18 0.02 285);
+	--card-foreground: oklch(0.97 0.01 300);
+	--popover: oklch(0.18 0.02 285);
+	--popover-foreground: oklch(0.97 0.01 300);
+	--primary: oklch(0.606 0.25 292.717);
+	--primary-foreground: oklch(0.14 0.02 285);
+	--secondary: oklch(0.2 0.02 285);
+	--secondary-foreground: oklch(0.97 0.01 300);
+	--muted: oklch(0.2 0.02 285);
+	--muted-foreground: oklch(0.72 0.03 285);
+	--accent: oklch(0.22 0.05 292);
+	--accent-foreground: oklch(0.97 0.01 300);
+	--destructive: oklch(0.7 0.19 25);
+	--border: oklch(1 0 0 / 12%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.62 0.18 292);
+	--sidebar: oklch(0.16 0.02 285);
+	--sidebar-foreground: oklch(0.97 0.01 300);
+	--sidebar-primary: oklch(0.606 0.25 292.717);
+	--sidebar-primary-foreground: oklch(0.14 0.02 285);
+	--sidebar-accent: oklch(0.22 0.05 292);
+	--sidebar-accent-foreground: oklch(0.97 0.01 300);
+	--sidebar-border: oklch(1 0 0 / 12%);
+	--sidebar-ring: oklch(0.62 0.18 292);
+	--surface: oklch(0.16 0.02 285);
+	--surface-foreground: oklch(0.95 0.01 300);
+	--code: oklch(0.17 0.03 285);
+	--code-foreground: oklch(0.95 0.01 300);
+	--code-highlight: oklch(0.22 0.05 292);
+	--code-number: oklch(0.7 0.02 285);
+	--selection: oklch(0.34 0.08 292 / 0.5);
+	--selection-foreground: oklch(0.97 0.01 300);
+}
+
+.docs-shell {
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(180deg, oklch(0.99 0.01 300 / 0.95), var(--background) 35%, var(--background));
+	z-index: -10;
+}
+
+.docs-shell::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(90deg, oklch(0.82 0.02 90 / 0.2) 1px, transparent 1px),
+		linear-gradient(180deg, oklch(0.82 0.02 90 / 0.2) 1px, transparent 1px);
+	background-size: 72px 72px;
+	opacity: 0.55;
+	pointer-events: none;
+}
+
+.dark .docs-shell {
+	background:
+		linear-gradient(180deg, oklch(0.14 0.02 285), var(--background) 35%, var(--background));
+}
+
+.dark .docs-shell::before {
+	background-image:
+		linear-gradient(90deg, oklch(0.4 0.03 260 / 0.35) 1px, transparent 1px),
+		linear-gradient(180deg, oklch(0.4 0.03 260 / 0.35) 1px, transparent 1px);
+	opacity: 0.4;
+}
+
+.docs-theme .mdsx {
+	font-size: 1.02rem;
+	line-height: 1.75;
+	color: color-mix(in oklab, var(--foreground) 85%, transparent);
+}
+
+.docs-theme .mdsx a {
+	color: var(--primary);
+	text-decoration-color: color-mix(in oklab, var(--primary) 55%, transparent);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.18em;
+}
+
+.docs-theme .mdsx a:hover {
+	color: var(--foreground);
+	text-decoration-color: var(--primary);
+}
+
+.docs-theme .mdsx :is(h2, h3, h4) {
+	letter-spacing: -0.012em;
+}
+
+.docs-theme .mdsx code:not(pre code) {
+	background-color: color-mix(in oklab, var(--primary) 12%, transparent);
+	color: var(--foreground);
+}
+
+.docs-theme .mdsx hr {
+	border-color: color-mix(in oklab, var(--border) 80%, transparent);
 }
 
 @utility no-scrollbar {

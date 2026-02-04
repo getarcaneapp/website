@@ -11,25 +11,25 @@
 </script>
 
 <Sidebar.Root
-	class="sticky top-16 z-30 hidden h-auto max-h-[calc(100vh-4rem)] bg-transparent lg:flex"
+	class="sticky top-[calc(var(--header-height)+var(--spacing)*4)] z-30 hidden h-auto max-h-[calc(100vh-var(--header-height)-var(--spacing)*4)] bg-transparent py-4 lg:flex"
 	collapsible="none"
 	{...restProps}
 >
-	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto pr-2 pb-6">
+	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto rounded-2xl border border-sidebar-border/80 bg-sidebar/80 p-3 shadow-sm backdrop-blur">
 		{#each navItems as item (item.title)}
 			<Sidebar.Group>
-				<Sidebar.GroupLabel class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+				<Sidebar.GroupLabel class="text-muted-foreground/80 text-[0.6rem] font-extrabold tracking-[0.26em] uppercase">
 					{item.title}
 				</Sidebar.GroupLabel>
 				<Sidebar.GroupContent>
 					{#if item.items.length}
-						<Sidebar.Menu class="gap-0.5">
+						<Sidebar.Menu class="gap-1">
 							{#each item.items as subItem (subItem.href)}
 								{#if subItem.items.length === 0}
 									<Sidebar.MenuItem>
 										<Sidebar.MenuButton
 											isActive={subItem.href === pathname}
-											class="3xl:fixed:w-full 3xl:fixed:max-w-48 hover:bg-accent/50 relative h-8 w-fit overflow-visible rounded-lg border border-transparent text-[0.8rem] font-medium transition-all duration-200 after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md hover:translate-x-0.5 data-[active=true]:border-purple-500/30 data-[active=true]:bg-purple-500/10 data-[active=true]:font-medium data-[active=true]:text-purple-600 dark:data-[active=true]:text-purple-400"
+											class="group relative h-8 w-full justify-start rounded-xl border border-transparent pl-6 pr-2.5 text-[0.8rem] font-medium text-muted-foreground transition-all duration-200 hover:border-border/80 hover:bg-accent/50 hover:text-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground after:absolute after:left-3 after:top-1/2 after:h-2.5 after:w-0.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:opacity-0 data-[active=true]:after:opacity-100"
 										>
 											{#snippet child({ props })}
 												{#if subItem.external}
