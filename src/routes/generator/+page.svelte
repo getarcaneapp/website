@@ -56,7 +56,7 @@
 		</section>
 
 		<section id="configure" class="mb-14 px-4 sm:mb-16">
-			<div class="mx-auto max-w-[1500px]">
+			<div class="mx-auto max-w-375">
 				<div class="mb-6 flex flex-col gap-2">
 					<p class="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase">Compose Generator</p>
 					<h2 class="text-2xl font-bold md:text-3xl">Configure your deployment</h2>

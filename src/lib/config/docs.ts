@@ -1,4 +1,12 @@
-import { cli, configuration, development, features, guides, setup, templates } from '$velite/index.js';
+import {
+	cli,
+	configuration,
+	development,
+	features,
+	guides,
+	setup,
+	templates
+} from '$velite/index.js';
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
@@ -33,7 +41,9 @@ export function sortDocs<T extends { title: string; order?: number }>(arr: T[]) 
 	});
 }
 
-function mapLeafDocs(docs: Array<{ title: string; path: string; order?: number }>): SidebarNavItem[] {
+function mapLeafDocs(
+	docs: Array<{ title: string; path: string; order?: number }>
+): SidebarNavItem[] {
 	return sortDocs(docs).map((d) => ({
 		title: d.title,
 		href: toHref(d.path),

@@ -17,7 +17,7 @@
 <div class="docs-theme relative isolate">
 	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
 	<div class="container mx-auto flex min-w-0 flex-1 px-4 py-6 lg:py-8">
-		<div class="mx-auto w-full max-w-[1600px]">
+		<div class="mx-auto w-full max-w-400">
 			<header
 				class="relative overflow-hidden rounded-3xl border border-border/70 bg-background/80 p-6 shadow-[0_18px_50px_-40px_oklch(0_0_0/0.35)] backdrop-blur md:p-8"
 			>

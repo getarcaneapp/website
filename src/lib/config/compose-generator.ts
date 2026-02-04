@@ -78,7 +78,8 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'encryptionKey',
 						envName: 'ENCRYPTION_KEY',
 						label: 'Encryption Key',
-						description: 'Encryption key for secure stored sensitive data (auto-generated if empty)',
+						description:
+							'Encryption key for secure stored sensitive data (auto-generated if empty)',
 						type: 'password',
 						defaultValue: '',
 						placeholder: 'Auto-generated if empty',

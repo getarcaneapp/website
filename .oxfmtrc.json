@@ -3,8 +3,13 @@
 	"useTabs": true,
 	"singleQuote": true,
 	"trailingComma": "none",
-	"printWidth": 120,
-	"experimentalTailwindcss": {},
-	"experimentalSortPackageJson": false,
-	"ignorePatterns": ["package-lock.json", "pnpm-lock.yaml", "*.md", "tsconfig.json", "svelte.config.js"]
+	"printWidth": 100,
+  "experimentalTailwindcss": {
+    "stylesheet": "./src/app.css",
+    "attributes": ["class"],
+    "functions": ["clsx", "cn"],
+    "preserveWhitespace": true
+  },
+	"experimentalSortPackageJson": true,
+	"ignorePatterns": ["package-lock.json", "pnpm-lock.yaml", "*.md", "tsconfig.json", "svelte.config.js", "src/*.json"],
 }

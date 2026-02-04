@@ -20,7 +20,9 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "oxfmt",
 		"format:check": "oxfmt --check",
-		"knip": "knip"
+		"knip": "knip",
+		"lint": "oxlint",
+    	"lint:fix": "oxlint --fix"
 	},
 	"dependencies": {
 		"@sveltejs/adapter-static": "^3.0.10",
@@ -50,6 +52,7 @@
 		"knip": "^5.83.0",
 		"mdsx": "^0.0.7",
 		"oxfmt": "^0.28.0",
+		"oxlint": "^1.43.0",
 		"package-manager-detector": "^1.6.0",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",

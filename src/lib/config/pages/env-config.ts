@@ -14,7 +14,8 @@ export const envConfig: EnvConfig[] = [
 	{
 		name: 'DATABASE_URL',
 		description: 'The database connection string (SQLite by default)',
-		defaultValue: 'file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
+		defaultValue:
+			'file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
 	},
 	{
 		name: 'GIT_WORK_DIR',

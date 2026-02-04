@@ -1,11 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,600,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @font-face {
 	font-family: 'Geist';
 	src: url('/fonts/Geist/geist.woff2') format('woff2');
 	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Fraunces';
+	src: url('/fonts/Fraunces/Fraunces-VariableFont_SOFT,WONK,opsz,wght.ttf') format('truetype');
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Fraunces';
+	src: url('/fonts/Fraunces/Fraunces-Italic-VariableFont_SOFT,WONK,opsz,wght.ttf') format('truetype');
+	font-style: italic;
+	font-weight: 100 900;
 	font-display: swap;
 }
 
@@ -303,7 +320,12 @@
 }
 
 @utility gradient-text {
-	background: linear-gradient(135deg, oklch(0.606 0.25 292.717), oklch(0.7 0.2 300), oklch(0.606 0.25 292.717));
+	background: linear-gradient(
+		135deg,
+		oklch(0.606 0.25 292.717),
+		oklch(0.7 0.2 300),
+		oklch(0.606 0.25 292.717)
+	);
 	background-size: 200% 200%;
 	animation: gradient-shift 4s ease infinite;
 	-webkit-background-clip: text;
@@ -425,7 +447,12 @@
 .docs-shell {
 	position: fixed;
 	inset: 0;
-	background: linear-gradient(180deg, oklch(0.99 0.01 300 / 0.95), var(--background) 35%, var(--background));
+	background: linear-gradient(
+		180deg,
+		oklch(0.99 0.01 300 / 0.95),
+		var(--background) 35%,
+		var(--background)
+	);
 	z-index: -10;
 }
 
@@ -442,7 +469,12 @@
 }
 
 .dark .docs-shell {
-	background: linear-gradient(180deg, oklch(0.14 0.02 285), var(--background) 35%, var(--background));
+	background: linear-gradient(
+		180deg,
+		oklch(0.14 0.02 285),
+		var(--background) 35%,
+		var(--background)
+	);
 }
 
 .dark .docs-shell::before {

@@ -54,7 +54,8 @@ export const features: Feature[] = [
 	{
 		icon: BookOpen,
 		title: 'Fully Documented API',
-		description: 'RESTful API built with Huma on Gin, featuring built-in OpenAPI 3.1 documentation.',
+		description:
+			'RESTful API built with Huma on Gin, featuring built-in OpenAPI 3.1 documentation.',
 		fullWidth: true
 	}
 ];
