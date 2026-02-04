@@ -4,6 +4,8 @@
 	import { tick } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -16,6 +18,11 @@
 
 	const isMac = useIsMac();
 	let open = $state(false);
+	const openExternal = (href: string) => {
+		if (typeof window !== 'undefined') {
+			window.open(href, '_blank', 'noopener,noreferrer');
+		}
+	};
 
 	type SearchDoc = {
 		id: string;
@@ -110,7 +117,7 @@
 	{@const Content = content}
 	<kbd
 		class={cn(
-			"bg-background dark:bg-background text-muted-foreground border-border/50 pointer-events-none flex h-5 items-center justify-center gap-1 rounded border px-1 font-sans text-[0.7rem] font-medium shadow-sm select-none dark:border dark:shadow-none [&_svg:not([class*='size-'])]:size-3",
+			"bg-muted/60 text-muted-foreground border-border/60 pointer-events-none flex h-5 items-center justify-center gap-1 rounded border px-1 font-sans text-[0.7rem] font-medium shadow-[0_2px_6px_-4px_oklch(0_0_0/0.35)] select-none dark:bg-surface/70 dark:text-surface-foreground/70 [&_svg:not([class*='size-'])]:size-3",
 			className
 		)}
 		{...restProps}
@@ -130,7 +137,7 @@
 				{...props}
 				variant="secondary"
 				class={cn(
-					'bg-background/80 dark:bg-surface text-muted-foreground dark:text-surface-foreground/60 border-border/50 relative h-9 w-full justify-start border pl-3 font-normal shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-purple-500/30 hover:shadow-md sm:pr-12 md:w-40 lg:w-56 xl:w-64 dark:border-white/10 dark:shadow-none dark:hover:border-purple-400/30'
+					'bg-background/80 text-muted-foreground border-border/60 relative h-9 w-full justify-start border pl-3 font-normal shadow-[0_8px_20px_-20px_oklch(0_0_0/0.45)] backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:text-foreground sm:pr-12 md:w-40 lg:w-56 xl:w-64 dark:bg-surface/80 dark:text-surface-foreground/70 dark:border-white/10 dark:hover:border-primary/40'
 				)}
 				onclick={() => (open = true)}
 			>
@@ -145,7 +152,7 @@
 	</Dialog.Trigger>
 	<Dialog.Content
 		showCloseButton={false}
-		class="bg-background/95 border-border/50 rounded-2xl border bg-clip-padding p-2 pb-2 shadow-[0_8px_32px_-4px_oklch(0_0_0/0.15),0_16px_48px_-8px_oklch(0_0_0/0.1)] ring-1 ring-purple-500/10 backdrop-blur-xl dark:bg-neutral-900/95 dark:shadow-[0_8px_32px_-4px_oklch(0_0_0/0.4),0_16px_48px_-8px_oklch(0_0_0/0.3)] dark:ring-purple-400/10"
+		class="bg-background/95 border-border/60 rounded-3xl border bg-clip-padding p-2 pb-2 shadow-[0_18px_50px_-20px_oklch(0_0_0/0.4)] backdrop-blur-xl dark:bg-surface/95 dark:shadow-[0_20px_60px_-25px_oklch(0_0_0/0.55)]"
 	>
 		<Dialog.Header class="sr-only">
 			<Dialog.Title>Search documentation...</Dialog.Title>
@@ -153,11 +160,11 @@
 		</Dialog.Header>
 
 		<Command.Root
-			class="**:data-[slot=command-input-wrapper]:bg-input/50 **:data-[slot=command-input-wrapper]:border-input rounded-none bg-transparent **:data-[slot=command-input]:!h-9 **:data-[slot=command-input]:py-0 **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:!h-9 **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border"
+			class="rounded-none bg-transparent **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:h-10 **:data-[slot=command-input-wrapper]:rounded-2xl **:data-[slot=command-input-wrapper]:border **:data-[slot=command-input-wrapper]:border-border/60 **:data-[slot=command-input-wrapper]:bg-background/80 **:data-[slot=command-input-wrapper]:px-2 **:data-[slot=command-input-wrapper]:shadow-[inset_0_1px_0_oklch(1_0_0/0.08)] **:data-[slot=command-input]:h-10 **:data-[slot=command-input]:py-0 **:data-[slot=command-input]:text-sm **:data-[slot=command-input]:placeholder:text-muted-foreground/70"
 		>
 			<Command.Input placeholder="Search documentation..." bind:value={query} oninput={onQueryChange} />
 			<Command.List class="no-scrollbar min-h-28 scroll-pt-2 scroll-pb-1.5 overflow-auto">
-				<Command.Empty class="text-muted-foreground py-12 text-center text-sm">
+				<Command.Empty class="text-muted-foreground py-10 text-center text-sm">
 					{#if loading}Building search index…{/if}
 					{#if !loading}Type to search documentation.{/if}
 				</Command.Empty>
@@ -165,14 +172,14 @@
 				{#if query}
 					<Command.Group
 						heading="Search results"
-						class="!p-0 [&_[data-command-group-heading]]:scroll-mt-16 [&_[data-command-group-heading]]:!p-3 [&_[data-command-group-heading]]:!pb-1"
+						class="!p-0 [&_[data-command-group-heading]]:scroll-mt-16 [&_[data-command-group-heading]]:!p-3 [&_[data-command-group-heading]]:!pb-1 [&_[data-command-group-heading]]:text-[0.65rem] [&_[data-command-group-heading]]:tracking-[0.3em] [&_[data-command-group-heading]]:uppercase"
 					>
 						{#each results as r (r.id)}
-							<CommandMenuItem
-								value={`${r.title} ${r.section} ${r.parentTitle ?? ''}`}
-								keywords={[r.description, ...r.headings]}
-								onSelect={() => runCommand(() => goto(r.href))}
-							>
+								<CommandMenuItem
+									value={`${r.title} ${r.section} ${r.parentTitle ?? ''}`}
+									keywords={[r.description, ...r.headings]}
+									onSelect={() => runCommand(() => goto(resolve(r.href as Pathname)))}
+								>
 								<ArrowRightIcon />
 								<div class="flex flex-col">
 									<span>{r.title}</span>
@@ -192,12 +199,21 @@
 					{#each SidebarNavItems as group (group.title)}
 						<Command.Group
 							heading={group.title}
-							class="!p-0 [&_[data-command-group-heading]]:scroll-mt-16 [&_[data-command-group-heading]]:!p-3 [&_[data-command-group-heading]]:!pb-1"
+							class="!p-0 [&_[data-command-group-heading]]:scroll-mt-16 [&_[data-command-group-heading]]:!p-3 [&_[data-command-group-heading]]:!pb-1 [&_[data-command-group-heading]]:text-[0.65rem] [&_[data-command-group-heading]]:tracking-[0.3em] [&_[data-command-group-heading]]:uppercase"
 						>
 							{#each group.items as item, i (i)}
 								<CommandMenuItem
 									value={item.title?.toString() ? `${group.title} ${item.title}` : ''}
-									onSelect={() => runCommand(() => item.href && goto(item.href))}
+									onSelect={() =>
+										runCommand(() => {
+											if (!item.href) return;
+											if (item.external) {
+												openExternal(item.href);
+												return;
+											}
+											goto(resolve(item.href as Pathname));
+										})
+									}
 								>
 									<ArrowRightIcon />
 									{item.title}

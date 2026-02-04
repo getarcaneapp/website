@@ -40,11 +40,11 @@
 	});
 </script>
 
-<header
-	class="border-border/40 sticky top-0 z-50 w-full border-b bg-white/80 shadow-[0_1px_3px_oklch(0_0_0/0.04),0_4px_12px_-2px_oklch(0_0_0/0.06)] backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300 dark:bg-[oklch(0.14_0.006_285.823/0.85)] dark:shadow-[0_1px_3px_oklch(0_0_0/0.2),0_4px_16px_-2px_oklch(0_0_0/0.25)]"
->
-	<div class="container-wrapper px-6">
-		<div class="flex h-16 items-center gap-2 **:data-[slot=separator]:h-4!">
+<header class="sticky top-0 z-50 w-full bg-transparent py-3">
+	<div class="container-wrapper px-4 sm:px-6">
+		<div
+			class="border-border/60 bg-background/80 shadow-[0_18px_45px_-35px_oklch(0_0_0/0.55)] flex h-16 items-center gap-2 rounded-2xl border px-3 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 dark:bg-[oklch(0.14_0.006_285.823/0.8)] dark:shadow-[0_18px_45px_-35px_oklch(0_0_0/0.7)] **:data-[slot=separator]:h-4!"
+		>
 			<Button href="/" variant="ghost" size="icon" class="hidden size-8 lg:flex">
 				<Logo class="size-5" />
 				<span class="sr-only">Arcane</span>
