@@ -1,8 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
-
 @font-face {
 	font-family: 'Geist';
 	src: url('/fonts/Geist/geist.woff2') format('woff2');
@@ -12,7 +10,7 @@
 
 @font-face {
 	font-family: 'Fraunces';
-	src: url('/fonts/Fraunces/Fraunces-VariableFont_SOFT,WONK,opsz,wght.ttf') format('truetype');
+	src: url('/fonts/Fraunces/Fraunces-VariableFont_SOFT,WONK,opsz,wght.woff2') format('woff2');
 	font-style: normal;
 	font-weight: 100 900;
 	font-display: swap;
@@ -20,9 +18,41 @@
 
 @font-face {
 	font-family: 'Fraunces';
-	src: url('/fonts/Fraunces/Fraunces-Italic-VariableFont_SOFT,WONK,opsz,wght.ttf') format('truetype');
+	src: url('/fonts/Fraunces/Fraunces-Italic-VariableFont_SOFT,WONK,opsz,wght.woff2') format('woff2');
 	font-style: italic;
 	font-weight: 100 900;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'IBM Plex Sans';
+	src: url('/fonts/IBMPlexSans/IBMPlexSans-VariableFont_wdth,wght.woff2') format('woff2');
+	font-style: normal;
+	font-weight: 100 700;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'IBM Plex Sans';
+	src: url('/fonts/IBMPlexSans/IBMPlexSans-Italic-VariableFont_wdth,wght.woff2') format('woff2');
+	font-style: italic;
+	font-weight: 100 700;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'IBM Plex Mono';
+	src: url('/fonts/IBMPlexMono/IBMPlexMono-Regular.woff2') format('woff2');
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'IBM Plex Mono';
+	src: url('/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2') format('woff2');
+	font-style: normal;
+	font-weight: 500;
 	font-display: swap;
 }
 

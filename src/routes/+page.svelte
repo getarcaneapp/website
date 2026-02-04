@@ -101,7 +101,7 @@
             <span class="relative inline-block w-full px-4 sm:max-w-130 md:max-w-170 lg:max-w-210 xl:max-w-225">
               <span class="sr-only">Arcane</span>
               <enhanced:img
-                src="../../static/img/logo-full.svg"
+                src="../lib/assets/logo-full.svg"
                 alt="Arcane — Modern Docker Management"
                 width="457"
                 height="112"
@@ -299,7 +299,7 @@
               class="group inline-flex items-center transition-all duration-300 hover:scale-105"
               aria-label="Greptile">
               <enhanced:img
-                src="../../static/img/greptile.svg"
+                src="../lib/assets/greptile.svg"
                 alt="Greptile"
                 width="102"
                 height="28"
@@ -315,8 +315,8 @@
               rel="noopener noreferrer"
               class="group inline-flex items-center gap-2 transition-all duration-300 hover:scale-105"
               aria-label="Graphite">
-              <img
-                src="/img/graphite.png"
+              <enhanced:img
+                src="../lib/assets/graphite.png"
                 alt="Graphite"
                 width="28"
                 height="28"
@@ -335,8 +335,8 @@
               rel="noopener noreferrer"
               class="group inline-flex items-center transition-all duration-300 hover:scale-105"
               aria-label="Depot">
-              <img
-                src="/img/depot-logo-horizontal-on-light.svg"
+              <enhanced:img
+                src="../lib/assets/depot-logo-horizontal-on-light.svg"
                 alt="Depot"
                 width="112"
                 height="28"
@@ -344,8 +344,8 @@
                 class="h-7 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70 dark:hidden"
                 decoding="async"
                 loading="lazy" />
-              <img
-                src="/img/depot-logo-horizontal-on-dark.svg"
+              <enhanced:img
+                src="../lib/assets/depot-logo-horizontal-on-dark.svg"
                 alt="Depot"
                 width="112"
                 height="28"
@@ -361,8 +361,8 @@
               rel="noopener noreferrer"
               class="group inline-flex items-center gap-2 transition-all duration-300 hover:scale-105"
               aria-label="OrbStack">
-              <img
-                src="/img/orbstack.png"
+              <enhanced:img
+                src="../lib/assets/orbstack.png"
                 alt="OrbStack"
                 width="28"
                 height="28"

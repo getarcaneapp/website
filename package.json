@@ -15,14 +15,14 @@
 		"preview:wrangler": "wrangler dev --local",
 		"deploy": "pnpm build && wrangler deploy",
 		"deploy:dry-run": "pnpm build && wrangler deploy --dry-run",
-		"prepare": "svelte-kit sync || echo ''",
+		"prepare": "husky",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "oxfmt",
 		"format:check": "oxfmt --check",
 		"knip": "knip",
 		"lint": "oxlint",
-    	"lint:fix": "oxlint --fix"
+		"lint:fix": "oxlint --fix"
 	},
 	"dependencies": {
 		"@sveltejs/adapter-static": "^3.0.10",
@@ -48,6 +48,7 @@
 		"@types/node": "^25.2.0",
 		"bits-ui": "^2.15.5",
 		"clsx": "^2.1.1",
+		"husky": "^9.1.7",
 		"isomorphic-dompurify": "^2.35.0",
 		"knip": "^5.83.0",
 		"mdsx": "^0.0.7",
