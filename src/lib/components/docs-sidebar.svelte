@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import type { ComponentProps } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { SidebarNavItem } from '$lib/config/docs.js';
@@ -11,11 +12,11 @@
 </script>
 
 <Sidebar.Root
-	class="sticky top-[calc(var(--header-height)+var(--spacing)*4)] z-30 hidden h-auto max-h-[calc(100vh-var(--header-height)-var(--spacing)*4)] bg-transparent py-4 lg:flex"
+	class="sticky top-[calc(var(--header-height)+var(--spacing)*4)] z-30 hidden h-auto max-h-[calc(100vh-var(--header-height)-var(--spacing)*4)] bg-transparent px-2 py-4 lg:flex lg:px-3"
 	collapsible="none"
 	{...restProps}
 >
-	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto rounded-2xl border border-sidebar-border/80 bg-sidebar/80 p-3 shadow-sm backdrop-blur">
+	<Sidebar.Content class="no-scrollbar h-full min-h-0 overflow-y-auto rounded-3xl border border-sidebar-border/60 bg-sidebar/70 p-4 shadow-[0_20px_45px_-35px_oklch(0_0_0/0.45)] backdrop-blur">
 		{#each navItems as item (item.title)}
 			<Sidebar.Group>
 				<Sidebar.GroupLabel class="text-muted-foreground/80 text-[0.6rem] font-extrabold tracking-[0.26em] uppercase">
@@ -33,12 +34,17 @@
 										>
 											{#snippet child({ props })}
 												{#if subItem.external}
-													<a href={subItem.href} {...props} target="_blank" rel="noopener noreferrer">
+													<a
+														href={`https://${subItem.href.replace(/^https?:\/\//, '')}`}
+														{...props}
+														target="_blank"
+														rel="noopener noreferrer"
+													>
 														{subItem.title}
 														<ExternalLink class="text-muted-foreground mb-1 inline size-3 align-text-bottom" />
 													</a>
 												{:else}
-													<a href={subItem.href} {...props}>{subItem.title}</a>
+													<a href={resolve(subItem.href)} {...props}>{subItem.title}</a>
 												{/if}
 											{/snippet}
 										</Sidebar.MenuButton>
