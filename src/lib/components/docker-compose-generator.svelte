@@ -118,7 +118,7 @@
 	let summaryOverflow = $derived(Math.max(summaryItems.length - 6, 0));
 </script>
 
-<div class="generator-wrapper mx-auto w-full max-w-[1500px] px-4 sm:px-6">
+<div class="generator-wrapper mx-auto w-full max-w-[1500px] px-0">
 	<Tabs.Root value={activeTab} onValueChange={handleTabChange}>
 		<div class="wizard-layout">
 			<div class="wizard-shell">
@@ -340,6 +340,7 @@
 <style>
 	.generator-wrapper {
 		animation: fadeInUp 0.5s ease-out both;
+		padding-left: 0.5rem;
 	}
 
 	.wizard-layout {
