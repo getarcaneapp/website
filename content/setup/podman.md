@@ -31,7 +31,7 @@ loginctl enable-linger <user>
 services:
   arcane:
     volumes:
-+     - /run/user/USER/podman/podman.sock:/var/run/docker.sock
++     - /run/user/$USER/podman/podman.sock:/var/run/docker.sock
 ```
 
 where USER is the id of your user.
