@@ -34,7 +34,7 @@ services:
 +     - /run/user/$USER/podman/podman.sock:/var/run/docker.sock
 ```
 
-where USER is the id of your user.
+where $USER is the id of your user.
 
 ## 3. Limitations:
 
