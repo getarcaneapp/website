@@ -11,12 +11,12 @@ const config = {
 	kit: {
 		adapter: adapter({
 			fallback: 'index.html',
-			pages: './build',
+			pages: './build'
 		}),
 		alias: {
-			'$velite/*': '.velite/*',
-		},
-	},
+			'$velite/*': '.velite/*'
+		}
+	}
 };
 
 export default config;
