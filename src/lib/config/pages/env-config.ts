@@ -18,6 +18,11 @@ export const envConfig: EnvConfig[] = [
 			'file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
 	},
 	{
+		name: 'PROJECTS_DIRECTORY',
+		description: 'Root directory Arcane scans for project definitions',
+		defaultValue: '/app/data/projects'
+	},
+	{
 		name: 'GIT_WORK_DIR',
 		description: 'The directory where git repositories are stored',
 		defaultValue: 'data/git'
@@ -35,13 +40,13 @@ export const envConfig: EnvConfig[] = [
 	{
 		name: 'JWT_SECRET',
 		description: 'Session secret',
-		defaultValue: '',
+		defaultValue: 'default-jwt-secret-change-me',
 		exampleValue: 'your-jwt-secret'
 	},
 	{
 		name: 'ENCRYPTION_KEY',
 		description: 'Encryption Key for secure stored sensitive data',
-		defaultValue: '',
+		defaultValue: 'arcane-dev-key-32-characters!!!',
 		exampleValue: 'your-32-byte-key'
 	},
 	{
@@ -83,6 +88,21 @@ export const envConfig: EnvConfig[] = [
 		name: 'OIDC_SKIP_TLS_VERIFY',
 		description: 'Skip TLS verification for OIDC provider',
 		defaultValue: 'false'
+	},
+	{
+		name: 'OIDC_AUTO_REDIRECT_TO_PROVIDER',
+		description: 'Automatically redirect users to the OIDC provider',
+		defaultValue: 'false'
+	},
+	{
+		name: 'OIDC_PROVIDER_NAME',
+		description: 'Provider display name shown on the login screen',
+		defaultValue: ''
+	},
+	{
+		name: 'OIDC_PROVIDER_LOGO_URL',
+		description: 'Provider logo URL shown on the login screen',
+		defaultValue: ''
 	},
 	{
 		name: 'DOCKER_HOST',
@@ -169,8 +189,48 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: 'auto'
 	},
 	{
+		name: 'EDGE_AGENT',
+		description: 'Enable edge agent mode',
+		defaultValue: 'false'
+	},
+	{
+		name: 'EDGE_RECONNECT_INTERVAL',
+		description: 'Edge agent reconnect interval in seconds',
+		defaultValue: '5'
+	},
+	{
 		name: 'ARCANE_BACKUP_VOLUME_NAME',
 		description: 'Name of the Docker volume used for backups',
 		defaultValue: 'arcane-backups'
+	},
+	{
+		name: 'DOCKER_API_TIMEOUT',
+		description: 'Docker API timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
+	},
+	{
+		name: 'DOCKER_IMAGE_PULL_TIMEOUT',
+		description: 'Docker image pull timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
+	},
+	{
+		name: 'GIT_OPERATION_TIMEOUT',
+		description: 'Git operation timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
+	},
+	{
+		name: 'HTTP_CLIENT_TIMEOUT',
+		description: 'HTTP client timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
+	},
+	{
+		name: 'REGISTRY_TIMEOUT',
+		description: 'Registry request timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
+	},
+	{
+		name: 'PROXY_REQUEST_TIMEOUT',
+		description: 'Proxy request timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
 	}
 ];

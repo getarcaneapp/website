@@ -35,10 +35,10 @@
 </svelte:head>
 
 <div class="flex min-w-0 flex-1">
-	<div use:attachToc class="mx-auto flex w-full max-w-400 min-w-0 flex-1 gap-10 px-6 py-8 md:px-8 lg:px-10">
+	<div use:attachToc class="mx-auto flex w-full max-w-400 min-w-0 flex-1 gap-10 px-4 py-6 sm:px-6 md:px-8 lg:px-10">
 		<article class="min-w-0 flex-1">
 			<header
-				class="border-border/70 bg-background/80 relative overflow-hidden rounded-3xl border p-6 shadow-[0_18px_50px_-40px_oklch(0_0_0/0.35)] backdrop-blur md:p-8"
+				class="border-border/70 bg-background/80 relative overflow-hidden rounded-3xl border p-5 shadow-[0_18px_50px_-40px_oklch(0_0_0/0.35)] backdrop-blur sm:p-6 md:p-8"
 			>
 				<div
 					class="text-muted-foreground flex flex-wrap items-center gap-2 text-[0.65rem] font-semibold tracking-[0.24em] uppercase"
@@ -61,11 +61,11 @@
 				{/if}
 			</header>
 
-			<div class="border-border/70 bg-card/80 mt-8 w-full rounded-3xl border p-6 shadow-sm backdrop-blur md:p-8">
+			<div class="border-border/70 bg-card/80 mt-8 w-full rounded-3xl border p-5 shadow-sm backdrop-blur sm:p-6 md:p-8">
 				<Markdown />
 			</div>
 
-			<footer class="border-border/70 bg-background/70 mt-8 rounded-2xl border px-4 py-3 shadow-sm backdrop-blur">
+			<footer class="border-border/70 bg-background/70 mt-8 rounded-2xl border px-3 py-3 shadow-sm backdrop-blur sm:px-4">
 				<div class="flex flex-wrap items-center justify-between gap-4">
 					<span class="text-muted-foreground text-sm">Help improve this page</span>
 					<a

@@ -295,6 +295,58 @@ export const generatorConfig: GeneratorConfig = [
 						placeholder: 'arcane-admins',
 						dependsOn: 'enableOIDC',
 						includeInCompose: true
+					},
+					{
+						key: 'oidcSkipTlsVerify',
+						envName: 'OIDC_SKIP_TLS_VERIFY',
+						label: 'Skip TLS Verify',
+						description: 'Skip TLS verification for the OIDC provider (use with caution)',
+						type: 'checkbox',
+						defaultValue: false,
+						dependsOn: 'enableOIDC',
+						includeInCompose: true
+					},
+					{
+						key: 'oidcAutoRedirectToProvider',
+						envName: 'OIDC_AUTO_REDIRECT_TO_PROVIDER',
+						label: 'Auto Redirect',
+						description: 'Automatically redirect users to the OIDC provider on login',
+						type: 'checkbox',
+						defaultValue: false,
+						dependsOn: 'enableOIDC',
+						includeInCompose: true
+					},
+					{
+						key: 'oidcMergeAccounts',
+						envName: 'OIDC_MERGE_ACCOUNTS',
+						label: 'Merge Accounts',
+						description: 'Link OIDC logins to existing local accounts by email',
+						type: 'checkbox',
+						defaultValue: false,
+						dependsOn: 'enableOIDC',
+						includeInCompose: true
+					},
+					{
+						key: 'oidcProviderName',
+						envName: 'OIDC_PROVIDER_NAME',
+						label: 'Provider Name',
+						description: 'Display name shown on the login screen',
+						type: 'text',
+						defaultValue: '',
+						placeholder: 'Arcane SSO',
+						dependsOn: 'enableOIDC',
+						includeInCompose: true
+					},
+					{
+						key: 'oidcProviderLogoUrl',
+						envName: 'OIDC_PROVIDER_LOGO_URL',
+						label: 'Provider Logo URL',
+						description: 'Logo URL shown on the login screen',
+						type: 'text',
+						defaultValue: '',
+						placeholder: 'https://example.com/logo.svg',
+						dependsOn: 'enableOIDC',
+						includeInCompose: true
 					}
 				]
 			}

@@ -560,6 +560,18 @@
 	:global(.changelog-entry__content) {
 		display: grid;
 		gap: 1rem;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	:global(.changelog-entry__content :is(p, li, a, code)) {
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	:global(.changelog-entry__content pre) {
+		max-width: 100%;
+		overflow-x: auto;
 	}
 
 	:global(.changelog-entry__body h3) {
