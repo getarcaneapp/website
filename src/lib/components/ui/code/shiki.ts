@@ -13,7 +13,7 @@ const bundledLanguages = {
 	json: () => import('@shikijs/langs/json'),
 	svelte: () => import('@shikijs/langs/svelte'),
 	typescript: () => import('@shikijs/langs/typescript'),
-	yaml: () => import('@shikijs/langs/yaml'),
+	yaml: () => import('@shikijs/langs/yaml')
 };
 
 /** The languages configured for the highlighter */
@@ -23,8 +23,8 @@ export type SupportedLanguage = keyof typeof bundledLanguages;
 export const highlighter = createHighlighterCore({
 	themes: [
 		import('@shikijs/themes/github-light-default'),
-		import('@shikijs/themes/github-dark-default'),
+		import('@shikijs/themes/github-dark-default')
 	],
 	langs: Object.entries(bundledLanguages).map(([_, lang]) => lang),
-	engine: createJavaScriptRegexEngine(),
+	engine: createJavaScriptRegexEngine()
 });

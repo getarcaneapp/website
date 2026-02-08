@@ -76,8 +76,7 @@
 	});
 
 	$effect(() => {
-		bulkActionKey;
-		if (!initialized) return;
+		if (!initialized || bulkActionKey === undefined) return;
 		if (bulkActionValue === null || bulkActionValue === undefined) return;
 		expanded = bulkActionValue;
 		saveExpandedState();

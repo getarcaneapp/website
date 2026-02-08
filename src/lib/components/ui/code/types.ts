@@ -21,10 +21,7 @@ export type CodeRootPropsWithoutHTML = WithChildren<{
 export type CodeRootProps = CodeRootPropsWithoutHTML &
 	WithoutChildren<HTMLAttributes<HTMLDivElement>>;
 
-export type CodeCopyButtonPropsWithoutHTML = Omit<
-	CopyButtonPropsWithoutHTML,
-	'text'
->;
+export type CodeCopyButtonPropsWithoutHTML = Omit<CopyButtonPropsWithoutHTML, 'text'>;
 
 export type CodeCopyButtonProps = CodeCopyButtonPropsWithoutHTML &
 	WithoutChildren<HTMLAttributes<HTMLButtonElement>>;

@@ -1,7 +1,9 @@
 import { getAllFields } from '$lib/config/compose-generator.js';
 
 function generateRandomKey(): string {
-	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join('');
+	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
+		byte.toString(16).padStart(2, '0')
+	).join('');
 }
 
 export function generateDockerCompose(config: Record<string, string | boolean>): string {
@@ -65,7 +67,11 @@ export function generateDockerCompose(config: Record<string, string | boolean>):
 			image: 'postgres:17-alpine',
 			container_name: 'arcane-postgres',
 			restart: 'unless-stopped',
-			environment: [`POSTGRES_DB=${dbName}`, `POSTGRES_USER=${dbUser}`, `POSTGRES_PASSWORD=${dbPassword}`],
+			environment: [
+				`POSTGRES_DB=${dbName}`,
+				`POSTGRES_USER=${dbUser}`,
+				`POSTGRES_PASSWORD=${dbPassword}`
+			],
 			volumes: ['postgres-data:/var/lib/postgresql/data'],
 			ports: [`${dbPort}:5432`]
 		};
@@ -82,7 +88,10 @@ export function generateDockerCompose(config: Record<string, string | boolean>):
 	return formatYaml(services, volumes);
 }
 
-function formatYaml(services: Record<string, unknown>, volumes: Record<string, { driver: string }>): string {
+function formatYaml(
+	services: Record<string, unknown>,
+	volumes: Record<string, { driver: string }>
+): string {
 	const lines: string[] = [
 		'# Arcane Docker Compose Configuration',
 		`# Generated at ${new Date().toLocaleString()}`,

@@ -52,6 +52,21 @@
 			name: 'OIDC_SKIP_TLS_VERIFY',
 			description: 'Skip TLS verification for the OIDC provider (use with caution)',
 			defaultValue: 'false'
+		},
+		{
+			name: 'OIDC_AUTO_REDIRECT_TO_PROVIDER',
+			description: 'Automatically redirect users to the OIDC provider on login',
+			defaultValue: 'false'
+		},
+		{
+			name: 'OIDC_PROVIDER_NAME',
+			description: 'Provider display name shown on the login screen',
+			defaultValue: '—'
+		},
+		{
+			name: 'OIDC_PROVIDER_LOGO_URL',
+			description: 'Provider logo URL shown on the login screen',
+			defaultValue: '—'
 		}
 	];
 
@@ -99,7 +114,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each oidcEnvConfig as env}
+			{#each oidcEnvConfig as env (env.name)}
 					<Table.Row>
 						<Table.Cell class="font-medium">
 							<code class="bg-muted rounded px-1 py-0.5">{env.name}</code>
@@ -139,7 +154,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each oidcManualConfig as env}
+			{#each oidcManualConfig as env (env.name)}
 					<Table.Row>
 						<Table.Cell class="font-medium">
 							<code class="bg-muted rounded px-1 py-0.5">{env.name}</code>
@@ -170,7 +185,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each oidcArcaneEndpoints as endpoint}
+			{#each oidcArcaneEndpoints as endpoint (endpoint.type)}
 					<Table.Row>
 						<Table.Cell class="font-medium">{endpoint.type}</Table.Cell>
 						<Table.Cell>

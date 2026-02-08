@@ -47,12 +47,6 @@
 	)}
 	{...restProps}
 >
-	<!-- Subtle inner glow on hover -->
-	<div
-		class="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_50%_0%,oklch(0.606_0.25_292.717/0.08),transparent_50%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-		aria-hidden="true"
-	></div>
-
 	<div class="relative z-10">
 		<div
 			class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-purple-500/15 via-violet-500/10 to-purple-600/5 ring-1 ring-purple-500/20 transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_0_20px_oklch(0.606_0.25_292.717/0.25)] group-hover:ring-purple-500/40"

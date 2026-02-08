@@ -7,7 +7,7 @@ import {
 	guides,
 	indexPage,
 	setup,
-	templates,
+	templates
 } from '$velite/index.js';
 import type { EntryGenerator, PageLoad } from './$types.js';
 
@@ -21,7 +21,7 @@ const ALL_DOCS = [
 	...guides,
 	...templates,
 	...development,
-	...cli,
+	...cli
 ];
 
 export const entries: EntryGenerator = () => {

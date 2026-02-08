@@ -23,7 +23,8 @@ export interface CLICommand {
 export const ARCANE_COMMANDS: Record<string, CLICommand> = {
 	root: {
 		name: 'arcane-cli',
-		description: 'Runs the Arcane server or agent. Use `arcane-cli [command]` to run other commands.',
+		description:
+			'Runs the Arcane server or agent. Use `arcane-cli [command]` to run other commands.',
 		usage: 'arcane-cli',
 		flags: []
 	},

@@ -14,5 +14,5 @@ export {
 	Root as Popover,
 	Content as PopoverContent,
 	Trigger as PopoverTrigger,
-	Close as PopoverClose,
+	Close as PopoverClose
 };
