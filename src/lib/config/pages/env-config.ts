@@ -13,8 +13,7 @@ export const envConfig: EnvConfig[] = [
 	},
 	{
 		name: 'LISTEN',
-		description:
-			'Interface the agent binds to (IP/hostname). Leave empty to bind all interfaces.',
+		description: 'Interface the agent binds to (IP/hostname). Leave empty to bind all interfaces.',
 		defaultValue: '(all interfaces)',
 		exampleValue: '127.0.0.1'
 	},
