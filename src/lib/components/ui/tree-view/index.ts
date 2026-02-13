@@ -13,5 +13,5 @@ export {
 	// ...
 	TreeView as Root,
 	TreeViewFile as File,
-	TreeViewFolder as Folder,
+	TreeViewFolder as Folder
 };

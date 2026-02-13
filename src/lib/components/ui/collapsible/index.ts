@@ -13,5 +13,5 @@ export {
 	//
 	Root as Collapsible,
 	Content as CollapsibleContent,
-	Trigger as CollapsibleTrigger,
+	Trigger as CollapsibleTrigger
 };

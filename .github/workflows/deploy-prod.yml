@@ -4,14 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/**"
-      - "static/sbom/**"
-      - "content/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - ".github/workflows/deploy-prod.yml"
-      - "svelte.config.js"
-      - "wrangler.jsonc"
+      - 'src/**'
+      - 'static/sbom/**'
+      - 'content/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy-prod.yml'
+      - 'svelte.config.js'
+      - 'wrangler.jsonc'
 
 permissions:
   id-token: write
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: latest
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install

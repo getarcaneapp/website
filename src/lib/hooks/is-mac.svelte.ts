@@ -6,6 +6,6 @@ export function useIsMac(): { readonly current: boolean } {
 	return {
 		get current(): boolean {
 			return isMac;
-		},
+		}
 	};
 }

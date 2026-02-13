@@ -5,21 +5,24 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	optimizeDeps: {
-		exclude: ['@lucide/svelte'],
+		exclude: ['@lucide/svelte']
 	},
 	plugins: [tailwindcss(), enhancedImages(), sveltekit()],
 	server: {
 		fs: {
-			allow: ['..', './content'],
-		},
+			allow: ['..', './content']
+		}
 	},
 	build: {
 		rollupOptions: {
 			output: {
-				manualChunks: {
-					icons: ['@lucide/svelte'],
-				},
-			},
+				manualChunks(id) {
+					if (id.includes('@lucide/svelte')) {
+						return 'icons';
+					}
+				}
+			}
 		},
-	},
+		minify: 'oxc'
+	}
 });

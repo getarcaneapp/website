@@ -134,7 +134,10 @@ AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 MANAGER_API_URL=http://10.1.1.4:3552
 ENVIRONMENT=production
 PORT=3553
+LISTEN=127.0.0.1
 ```
+
+LISTEN controls which interface the agent binds to. It’s interface-only (IP/hostname). Leave it empty to bind all interfaces.
 
 3. Run the following command to start the agent, make sure to replace the environment variables with yours:
 
@@ -142,4 +145,4 @@ PORT=3553
 
 You can also skip creating a `.env` file and just use inline environment variables:
 
-<Snippet text="ENVIRONMENT=production GIN_MODE=release PORT=3553 AGENT_MODE=true AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MANAGER_API_URL=http://10.1.1.4:3552 ./arcane-agent" class="mt-2 mb-2 w-full" />
+<Snippet text="ENVIRONMENT=production GIN_MODE=release PORT=3553 LISTEN=127.0.0.1 AGENT_MODE=true AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MANAGER_API_URL=http://10.1.1.4:3552 ./arcane-agent" class="mt-2 mb-2 w-full" />

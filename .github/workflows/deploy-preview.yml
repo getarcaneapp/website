@@ -4,13 +4,13 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - "src/**"
-      - "static/**"
-      - "content/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "svelte.config.js"
-      - "wrangler.jsonc"
+      - 'src/**'
+      - 'static/**'
+      - 'content/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'svelte.config.js'
+      - 'wrangler.jsonc'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -46,7 +46,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: latest
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
@@ -66,7 +66,7 @@ jobs:
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: "getarcaneappbot"
+          comment-author: 'getarcaneappbot'
           body-includes: Preview deployed successfully!
 
       - name: Comment preview URL

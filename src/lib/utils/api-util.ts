@@ -15,7 +15,6 @@ export interface OpenApiIndex {
 
 export function indexOpenApi(spec: any): OpenApiIndex {
 	const tags: { name: string; description?: string }[] = spec.tags ?? [];
-	const tagMetaMap = new Map(tags.map((t) => [t.name, t]));
 	const endpointsByTag: Record<string, IndexedEndpoint[]> = {};
 	const allEndpoints: IndexedEndpoint[] = [];
 
@@ -23,7 +22,8 @@ export function indexOpenApi(spec: any): OpenApiIndex {
 		for (const [path, methods] of Object.entries<any>(spec.paths)) {
 			for (const [method, operation] of Object.entries<any>(methods)) {
 				if (!operation || typeof operation !== 'object') continue;
-				const opTags: string[] = operation.tags && operation.tags.length ? operation.tags : ['_Untagged'];
+				const opTags: string[] =
+					operation.tags && operation.tags.length ? operation.tags : ['_Untagged'];
 				for (const tag of opTags) {
 					const entry: IndexedEndpoint = {
 						tag,
@@ -58,7 +58,9 @@ export function indexOpenApi(spec: any): OpenApiIndex {
 
 	// Sort endpoints inside each tag (path then method)
 	for (const list of Object.values(endpointsByTag)) {
-		list.sort((a, b) => (a.path === b.path ? a.method.localeCompare(b.method) : a.path.localeCompare(b.path)));
+		list.sort((a, b) =>
+			a.path === b.path ? a.method.localeCompare(b.method) : a.path.localeCompare(b.path)
+		);
 	}
 
 	return {

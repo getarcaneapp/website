@@ -5,8 +5,8 @@ export function useObserver(
 		attributes: true,
 		characterData: true,
 		childList: true,
-		subtree: true,
-	},
+		subtree: true
+	}
 ): void {
 	const element = $derived(ref());
 	$effect(() => {

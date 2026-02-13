@@ -83,7 +83,8 @@ export class UseToc {
 				return result;
 			};
 
-			const allHeadings = flattenHeadings(this.#toc);
+			const toc = this.#toc;
+			const allHeadings = flattenHeadings(toc);
 
 			const observer = new IntersectionObserver((entries) => {
 				entries.forEach((entry) => sectionVisibility.set(entry.target, entry.intersectionRatio));
@@ -110,8 +111,8 @@ export class UseToc {
 					activeIdx = +activeEl.getAttribute(INDEX_ATTRIBUTE)!;
 				}
 
-				resetActiveHeading(this.#toc);
-				setHeadingActive(this.#toc, activeIdx);
+				resetActiveHeading(toc);
+				setHeadingActive(toc, activeIdx);
 			});
 
 			const observe = (heading: Heading) => {
@@ -119,7 +120,7 @@ export class UseToc {
 				heading.children.forEach(observe);
 			};
 
-			this.#toc.forEach(observe);
+			toc.forEach(observe);
 
 			return () => observer.disconnect();
 		});

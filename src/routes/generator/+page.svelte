@@ -5,73 +5,105 @@
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import DockerComposeGenerator from '$lib/components/docker-compose-generator.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Card from '$lib/components/ui/card/index.js';
 </script>
 
-<ContentWrapper>
-	<section class="mt-8 mb-12 px-4 text-center sm:mt-12 sm:mb-16">
-		<div class="mx-auto max-w-3xl">
-			<!-- Decorative icon -->
-			<div class="mb-6 flex justify-center">
-				<div
-					class="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-purple-600 to-violet-600 shadow-lg shadow-purple-500/25"
-				>
-					<Zap class="h-8 w-8 text-white" />
+<div class="docs-theme relative isolate">
+	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
+	<ContentWrapper>
+		<section class="generator-hero px-4">
+			<div class="generator-hero__inner generator-offset mx-auto max-w-375">
+				<div class="generator-hero__intro">
+				<p class="generator-hero__eyebrow">Compose Generator</p>
+					<h1 class="generator-hero__title">Docker Compose Generator</h1>
+					<p class="generator-hero__subtitle">
+						Follow the guided steps to configure Arcane services, credentials, and storage. Your Compose file
+						is updated in real time.
+					</p>
+				</div>
+				<div class="generator-hero__links">
+					<Button
+						variant="outline"
+						size="sm"
+						href="/docs/setup/installation"
+						class="group border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5"
+					>
+						<BookOpen class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+						Setup Guide
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						href="/docs/configuration/environment"
+						class="group border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5"
+					>
+						<Settings class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
+						Environment Docs
+					</Button>
 				</div>
 			</div>
+		</section>
 
-			<h1 class="mb-4 text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
-				<span class="text-foreground">Docker Compose</span>
-				<br />
-				<span class="text-purple-600 dark:text-purple-400">Generator</span>
-			</h1>
-
-			<p class="text-muted-foreground mx-auto mt-4 mb-8 max-w-2xl text-lg leading-relaxed font-light sm:text-xl">
-				Interactively create a custom Docker Compose for Arcane. Configure databases, authentication, and more
-				<span class="text-foreground font-medium">in just a few clicks.</span>
-			</p>
-
-			<div class="flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-				<Button
-					variant="outline"
-					size="lg"
-					href="/docs/setup/installation"
-					class="group w-full border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5 sm:w-auto"
-				>
-					<BookOpen class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
-					Read Setup Guide
-				</Button>
-				<Button
-					variant="outline"
-					size="lg"
-					href="/docs/configuration/environment"
-					class="group w-full border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5 sm:w-auto"
-				>
-					<Settings class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
-					Environment Variable Docs
-				</Button>
+		<section id="configure" class="generator-workflow px-4">
+			<div class="generator-workflow__inner mx-auto max-w-375">
+				<DockerComposeGenerator />
 			</div>
-		</div>
-	</section>
+		</section>
+	</ContentWrapper>
+</div>
 
-	<section id="configure" class="mb-14 px-4 sm:mb-16">
-		<div class="mx-auto max-w-4xl">
-			<Card.Root class="overflow-hidden border-purple-500/10 dark:border-purple-400/10">
-				<Card.Header class="border-border/50 border-b bg-linear-to-r from-purple-500/5 via-transparent to-violet-500/5">
-					<div class="flex items-start justify-between gap-3">
-						<div>
-							<Card.Title class="text-xl font-bold">Configure Your Deployment</Card.Title>
-							<Card.Description class="text-muted-foreground"
-								>Choose services and options. Your YAML updates live.</Card.Description
-							>
-						</div>
-					</div>
-				</Card.Header>
+<style>
+	.generator-hero {
+		margin: 1.25rem 0 1rem;
+	}
 
-				<Card.Content class="p-0">
-					<DockerComposeGenerator />
-				</Card.Content>
-			</Card.Root>
-		</div>
-	</section>
-</ContentWrapper>
+	.generator-hero__eyebrow {
+		margin: 0 0 0.5rem;
+		font-size: 0.7rem;
+		letter-spacing: 0.32em;
+		text-transform: uppercase;
+		color: var(--muted-foreground);
+		font-weight: 600;
+	}
+
+	.generator-hero__title {
+		margin: 0.7rem 0 0.5rem;
+		font-size: clamp(1.9rem, 3vw, 2.6rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+	}
+
+	.generator-hero__subtitle {
+		margin: 0;
+		max-width: 42rem;
+		color: var(--muted-foreground);
+		font-size: 0.95rem;
+		line-height: 1.6;
+	}
+
+	.generator-hero__links {
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-top: 1rem;
+	}
+
+	.generator-workflow {
+		margin-bottom: 2rem;
+	}
+
+	.generator-offset {
+		padding-left: 8px;
+	}
+
+	@media (max-width: 640px) {
+		.generator-hero__links {
+			width: 100%;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.generator-offset {
+			padding-left: 0;
+		}
+	}
+</style>

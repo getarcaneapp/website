@@ -8,7 +8,7 @@ import {
 	guides,
 	indexPage,
 	setup,
-	templates,
+	templates
 } from '$velite/index.js';
 
 type CollectionDoc = (typeof indexPage)[number];
@@ -21,7 +21,7 @@ const allDocs: CollectionDoc[] = [
 	...guides,
 	...development,
 	...templates,
-	...cli,
+	...cli
 ];
 
 interface DocModule {
@@ -58,7 +58,7 @@ function resolveModule(slug: string): DocResolver | undefined {
 }
 
 export async function getDoc(
-	_slug: string,
+	_slug: string
 ): Promise<{ component: Component; metadata: DocMetadata }> {
 	const slug = _slug === '' ? 'index' : _slug;
 
@@ -82,11 +82,11 @@ export async function getDoc(
 		section: (veliteMeta as any).section,
 		segments: (veliteMeta as any).segments,
 		published: fm.published ?? (veliteMeta as any).published ?? true,
-		toc: fm.toc ?? (veliteMeta as any).toc,
+		toc: fm.toc ?? (veliteMeta as any).toc
 	};
 
 	return {
 		component: mod.default,
-		metadata,
+		metadata
 	};
 }

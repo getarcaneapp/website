@@ -38,7 +38,7 @@ useObserver(
 <Command.Item
 	bind:ref
 	class={cn(
-		'data-[selected=true]:border-input data-[selected=true]:bg-input/50 h-9 rounded-md border border-transparent !px-3 font-medium',
+		'data-[selected=true]:border-primary/30 data-[selected=true]:bg-primary/10 h-10 rounded-xl border border-transparent !px-3 text-sm font-medium transition-colors',
 		className
 	)}
 	{...restProps}

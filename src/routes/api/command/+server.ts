@@ -17,7 +17,8 @@ export const prerender = true;
 type CollectionDoc = (typeof indexPage)[number];
 
 const rawDocs = import.meta.glob('/content/**/*.md', {
-	as: 'raw',
+	query: '?raw',
+	import: 'default',
 	eager: true
 }) as Record<string, string>;
 

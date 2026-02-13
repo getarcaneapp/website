@@ -35,7 +35,6 @@
 
 	const Markdown = $derived(data.component);
 	const doc = $derived(data.metadata);
-	const githubEditUrl = $derived(`https://github.com/getarcaneapp/website/edit/main/content/${doc.path}.md`);
 
 	const flattenToc = (items: TocEntry[] = [], depth = 0) => {
 		const out: Array<{ title: string; url: string; depth: number }> = [];
@@ -190,109 +189,111 @@
 	</style>
 </svelte:head>
 
-<div class="changelog-shell relative overflow-hidden">
-	<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-		<div class="changelog-glow changelog-glow--left"></div>
-		<div class="changelog-glow changelog-glow--right"></div>
-		<div class="changelog-grid"></div>
-	</div>
-
-	<div class="container mx-auto flex min-w-0 flex-1 flex-col gap-10 px-4 pb-8 pt-24 lg:pb-12 lg:pt-28">
-		<section class="changelog-hero">
-			<div class="changelog-hero__content">
-				<p class="changelog-eyebrow">Release Notes</p>
-				<h1 class="changelog-title">{doc.title}</h1>
-				{#if doc.description}
-					<p class="changelog-subtitle">{doc.description}</p>
-				{/if}
+<div class="docs-theme relative isolate">
+	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
+		<div class="changelog-shell relative overflow-hidden">
+			<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+				<div class="changelog-grid"></div>
 			</div>
-			<div class="changelog-hero__meta">
-				<div class="changelog-meta-card">
-					<p class="changelog-meta-label">Latest release</p>
-					<p class="changelog-meta-value">{latestEntry?.version ?? '—'}</p>
-					<p class="changelog-meta-detail">{latestDateLabel ?? 'No date available'}</p>
-				</div>
-			</div>
-		</section>
 
-		<div class="changelog-layout">
-			<ChangelogToc toc={doc.toc} class="changelog-rail" maxVisibleVersions={12} />
-
-			<div class="changelog-main">
-				<div class="changelog-controls">
-					<label class="changelog-search">
-						<Search class="size-4" />
-						<Input
-							placeholder="Search releases, issues, or keywords"
-							bind:value={query}
-							aria-label="Search changelog"
-						/>
-					</label>
-					<div class="changelog-actions">
-						<Button size="sm" variant="outline" onclick={() => applyBulkAction(true)}>Expand all</Button>
-						<Button size="sm" variant="ghost" onclick={() => applyBulkAction(false)}>Collapse all</Button>
-					</div>
-				</div>
-
-				{#if ready}
-					<p class="changelog-count">
-						Showing {visibleCount} of {totalCount} releases
-					</p>
-				{/if}
-
-				<div class="changelog-body" data-ready={ready}>
-					<div class="changelog-source" bind:this={sourceRef}>
-						<Markdown />
-					</div>
-					{#if ready}
-						{#each filteredSections as section (section.id)}
-							{#snippet badge()}
-								{#if section.releaseUrl}
-									<a
-										href={section.releaseUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="changelog-entry__release"
-									>
-										Release
-										<ExternalLink class="size-3.5" />
-									</a>
-								{/if}
-							{/snippet}
-							<ReleaseNoteCard
-								id={section.id}
-								title={section.title}
-								description={section.dateLabel}
-								defaultExpanded={section.defaultExpanded}
-								contentNodes={section.contentNodes}
-								{badge}
-								{bulkActionKey}
-								{bulkActionValue}
-							>
-							</ReleaseNoteCard>
-						{/each}
+		<div class="container mx-auto flex min-w-0 flex-1 flex-col gap-10 px-4 pb-8 pt-24 lg:pb-12 lg:pt-28">
+			<section class="changelog-hero">
+				<div class="changelog-hero__content">
+					<p class="changelog-eyebrow">Release Notes</p>
+					<h1 class="changelog-title">{doc.title}</h1>
+					{#if doc.description}
+						<p class="changelog-subtitle">{doc.description}</p>
 					{/if}
 				</div>
-
-				{#if ready && query && visibleCount === 0}
-					<div class="changelog-empty">
-						<p>No releases match "{query}".</p>
-						<p>Try searching for a version number, issue id, or a keyword like "OIDC".</p>
+				<div class="changelog-hero__meta">
+					<div class="changelog-meta-card">
+						<p class="changelog-meta-label">Latest release</p>
+						<p class="changelog-meta-value">{latestEntry?.version ?? '—'}</p>
+						<p class="changelog-meta-detail">{latestDateLabel ?? 'No date available'}</p>
 					</div>
-				{/if}
+				</div>
+			</section>
 
-				<div class="mt-10 border-t pt-6">
-					<div class="flex flex-wrap items-center justify-between gap-4">
-						<div class="text-muted-foreground text-sm">Help improve this page</div>
-						<a
-							href={githubEditUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
-						>
-							Edit this page on GitHub
-							<ExternalLink class="text-muted-foreground mb-1 size-4 align-text-bottom" />
-						</a>
+			<div class="changelog-layout">
+				<ChangelogToc toc={doc.toc} class="changelog-rail" maxVisibleVersions={12} />
+
+				<div class="changelog-main">
+					<div class="changelog-controls">
+						<label class="changelog-search">
+							<Search class="size-4" />
+							<Input
+								placeholder="Search releases, issues, or keywords"
+								bind:value={query}
+								aria-label="Search changelog"
+							/>
+						</label>
+						<div class="changelog-actions">
+							<Button size="sm" variant="outline" onclick={() => applyBulkAction(true)}>Expand all</Button>
+							<Button size="sm" variant="ghost" onclick={() => applyBulkAction(false)}>Collapse all</Button>
+						</div>
+					</div>
+
+					{#if ready}
+						<p class="changelog-count">
+							Showing {visibleCount} of {totalCount} releases
+						</p>
+					{/if}
+
+					<div class="changelog-body" data-ready={ready}>
+						<div class="changelog-source" bind:this={sourceRef}>
+							<Markdown />
+						</div>
+						{#if ready}
+							{#each filteredSections as section (section.id)}
+								{#snippet badge()}
+									{#if section.releaseUrl}
+										{@const releasePath = section.releaseUrl.replace(/^https?:\/\//, '')}
+										<a
+											href={`https://${releasePath}`}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="changelog-entry__release"
+										>
+											Release
+											<ExternalLink class="size-3.5" />
+										</a>
+									{/if}
+								{/snippet}
+								<ReleaseNoteCard
+									id={section.id}
+									title={section.title}
+									description={section.dateLabel}
+									defaultExpanded={section.defaultExpanded}
+									contentNodes={section.contentNodes}
+									{badge}
+									{bulkActionKey}
+									{bulkActionValue}
+								>
+								</ReleaseNoteCard>
+							{/each}
+						{/if}
+					</div>
+
+					{#if ready && query && visibleCount === 0}
+						<div class="changelog-empty">
+							<p>No releases match "{query}".</p>
+							<p>Try searching for a version number, issue id, or a keyword like "OIDC".</p>
+						</div>
+					{/if}
+
+					<div class="mt-10 border-t pt-6">
+						<div class="flex flex-wrap items-center justify-between gap-4">
+							<div class="text-muted-foreground text-sm">Help improve this page</div>
+								<a
+									href={`https://github.com/getarcaneapp/website/edit/main/content/${doc.path}.md`}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
+							>
+								Edit this page on GitHub
+								<ExternalLink class="text-muted-foreground mb-1 size-4 align-text-bottom" />
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -305,29 +306,6 @@
 		--changelog-stroke: color-mix(in oklab, var(--border) 95%, var(--foreground) 5%);
 	}
 
-	.changelog-glow {
-		position: absolute;
-		border-radius: 999px;
-		filter: blur(80px);
-		opacity: 0.18;
-	}
-
-	.changelog-glow--left {
-		top: -120px;
-		left: -120px;
-		width: 360px;
-		height: 360px;
-		background: radial-gradient(circle, color-mix(in oklab, var(--muted-foreground) 16%, transparent), transparent 70%);
-	}
-
-	.changelog-glow--right {
-		bottom: -120px;
-		right: -120px;
-		width: 420px;
-		height: 420px;
-		background: radial-gradient(circle, color-mix(in oklab, var(--muted-foreground) 12%, transparent), transparent 70%);
-	}
-
 	.changelog-grid {
 		position: absolute;
 		inset: 0;
@@ -336,7 +314,6 @@
 			linear-gradient(to bottom, color-mix(in oklab, var(--border) 70%, transparent) 1px, transparent 1px);
 		background-size: 120px 120px;
 		opacity: 0.15;
-		mask-image: radial-gradient(circle at top, rgba(0, 0, 0, 0.7), transparent 70%);
 	}
 
 	.changelog-hero {
@@ -583,6 +560,18 @@
 	:global(.changelog-entry__content) {
 		display: grid;
 		gap: 1rem;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	:global(.changelog-entry__content :is(p, li, a, code)) {
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	:global(.changelog-entry__content pre) {
+		max-width: 100%;
+		overflow-x: auto;
 	}
 
 	:global(.changelog-entry__body h3) {
