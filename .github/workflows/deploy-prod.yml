@@ -3,15 +3,6 @@ name: Deploy Production Website
 on:
   push:
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'static/**'
-      - 'content/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - '.github/workflows/deploy-prod.yml'
-      - 'svelte.config.js'
-      - 'wrangler.jsonc'
 
 permissions:
   id-token: write
