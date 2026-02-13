@@ -43,6 +43,10 @@ ARCANE_DATA_DIR="${ARCANE_DATA_DIR:-/var/lib/arcane}"
 ARCANE_USER="${ARCANE_USER:-arcane}"
 ARCANE_GROUP="${ARCANE_GROUP:-arcane}"
 ARCANE_PORT="${ARCANE_PORT:-3552}"
+INSTALL_METADATA_DIR="${INSTALL_METADATA_DIR:-/etc/arcane}"
+INSTALL_METADATA_FILE="${INSTALL_METADATA_FILE:-${INSTALL_METADATA_DIR}/install-meta.env}"
+CREATED_ARCANE_USER="false"
+CREATED_ARCANE_GROUP="false"
 
 # Verbosity (default: minimal output)
 VERBOSE="${VERBOSE:-false}"
@@ -483,12 +487,14 @@ setup_arcane_user() {
     # Create arcane group if it doesn't exist
     if ! group_exists "$ARCANE_GROUP"; then
         create_group "$ARCANE_GROUP"
+        CREATED_ARCANE_GROUP="true"
         log_info "Created group: $ARCANE_GROUP"
     fi
     
     # Create arcane user if it doesn't exist
     if ! user_exists "$ARCANE_USER"; then
         create_user "$ARCANE_USER" "$ARCANE_GROUP" "$ARCANE_DATA_DIR"
+        CREATED_ARCANE_USER="true"
         log_info "Created user: $ARCANE_USER"
     fi
     
@@ -505,6 +511,19 @@ setup_arcane_user() {
     chown -R "$ARCANE_USER:$ARCANE_GROUP" "$ARCANE_INSTALL_DIR"
     chown -R "$ARCANE_USER:$ARCANE_GROUP" "$ARCANE_DATA_DIR"
     chown -R "$ARCANE_USER:$ARCANE_GROUP" /var/log/arcane
+
+    # Persist installation metadata for safer automated uninstall behavior
+    mkdir -p "$INSTALL_METADATA_DIR"
+    cat > "$INSTALL_METADATA_FILE" << EOF
+# Arcane install metadata
+ARCANE_USER=${ARCANE_USER}
+ARCANE_GROUP=${ARCANE_GROUP}
+ARCANE_INSTALL_DIR=${ARCANE_INSTALL_DIR}
+ARCANE_DATA_DIR=${ARCANE_DATA_DIR}
+CREATED_ARCANE_USER=${CREATED_ARCANE_USER}
+CREATED_ARCANE_GROUP=${CREATED_ARCANE_GROUP}
+EOF
+    chmod 600 "$INSTALL_METADATA_FILE" 2>/dev/null || true
     
     log_success "User and directories configured"
     progress_done
