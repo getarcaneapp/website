@@ -2,7 +2,7 @@ name: Update Arcane Release Assets
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -211,11 +211,11 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.ARCANE_BOT_TOKEN }}
-          commit-message: "chore(release): update assets for ${{ steps.check.outputs.version }}"
-          committer: "getarcaneappbot <info@getarcane.app>"
-          author: "getarcaneappbot <info@getarcane.app>"
+          commit-message: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
+          committer: 'getarcaneappbot <info@getarcane.app>'
+          author: 'getarcaneappbot <info@getarcane.app>'
           signoff: true
-          title: "chore(release): update assets for ${{ steps.check.outputs.version }}"
+          title: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
           body: |
             Updates Arcane release assets for ${{ steps.check.outputs.version }}.
 
@@ -225,9 +225,9 @@ jobs:
 
             ---
             *This PR was automatically generated.*
-          branch: "chore/release-assets-${{ steps.check.outputs.version }}"
+          branch: 'chore/release-assets-${{ steps.check.outputs.version }}'
           base: main
-          labels: "docs(changelog),chore(sbom)"
+          labels: 'docs(changelog),chore(sbom)'
           add-paths: |
             content/changelog.md
             static/sbom/
