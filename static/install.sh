@@ -415,22 +415,85 @@ install_docker() {
 setup_arcane_user() {
     log_step "Setting up Arcane user and directories..."
     progress "Setting up user"
+
+    user_exists() {
+        id "$1" &> /dev/null
+    }
+
+    group_exists() {
+        if command -v getent &> /dev/null; then
+            getent group "$1" &> /dev/null
+            return
+        fi
+        grep -qE "^${1}:" /etc/group 2>/dev/null
+    }
+
+    create_group() {
+        local group_name="$1"
+        if command -v groupadd &> /dev/null; then
+            groupadd --system "$group_name"
+            return
+        fi
+        if command -v addgroup &> /dev/null; then
+            addgroup -S "$group_name"
+            return
+        fi
+
+        progress_fail
+        log_error "Unable to create group '$group_name': no supported group management command found"
+        exit 1
+    }
+
+    create_user() {
+        local user_name="$1"
+        local group_name="$2"
+        local home_dir="$3"
+
+        if command -v useradd &> /dev/null; then
+            useradd --system --gid "$group_name" --shell /bin/false \
+                --home-dir "$home_dir" --create-home "$user_name"
+            return
+        fi
+
+        if command -v adduser &> /dev/null; then
+            adduser -S -D -h "$home_dir" -s /sbin/nologin -G "$group_name" "$user_name" 2>/dev/null || \
+                adduser -S -D -h "$home_dir" -s /bin/false -G "$group_name" "$user_name"
+            return
+        fi
+
+        progress_fail
+        log_error "Unable to create user '$user_name': no supported user management command found"
+        exit 1
+    }
+
+    add_user_to_group() {
+        local user_name="$1"
+        local group_name="$2"
+
+        if command -v usermod &> /dev/null; then
+            usermod -aG "$group_name" "$user_name" 2>/dev/null || true
+            return
+        fi
+
+        if command -v addgroup &> /dev/null; then
+            addgroup "$user_name" "$group_name" 2>/dev/null || true
+        fi
+    }
     
     # Create arcane group if it doesn't exist
-    if ! getent group "$ARCANE_GROUP" &> /dev/null; then
-        groupadd --system "$ARCANE_GROUP"
+    if ! group_exists "$ARCANE_GROUP"; then
+        create_group "$ARCANE_GROUP"
         log_info "Created group: $ARCANE_GROUP"
     fi
     
     # Create arcane user if it doesn't exist
-    if ! id "$ARCANE_USER" &> /dev/null; then
-        useradd --system --gid "$ARCANE_GROUP" --shell /bin/false \
-            --home-dir "$ARCANE_DATA_DIR" --create-home "$ARCANE_USER"
+    if ! user_exists "$ARCANE_USER"; then
+        create_user "$ARCANE_USER" "$ARCANE_GROUP" "$ARCANE_DATA_DIR"
         log_info "Created user: $ARCANE_USER"
     fi
     
     # Add arcane user to docker group
-    usermod -aG docker "$ARCANE_USER" 2>/dev/null || true
+    add_user_to_group "$ARCANE_USER" "docker"
     
     # Create directories
     mkdir -p "$ARCANE_INSTALL_DIR"
@@ -886,8 +949,18 @@ uninstall() {
     read -p "Remove Arcane user and group? [y/N] " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        userdel "$ARCANE_USER" 2>/dev/null || true
-        groupdel "$ARCANE_GROUP" 2>/dev/null || true
+        if command -v userdel &> /dev/null; then
+            userdel "$ARCANE_USER" 2>/dev/null || true
+        elif command -v deluser &> /dev/null; then
+            deluser "$ARCANE_USER" 2>/dev/null || true
+        fi
+
+        if command -v groupdel &> /dev/null; then
+            groupdel "$ARCANE_GROUP" 2>/dev/null || true
+        elif command -v delgroup &> /dev/null; then
+            delgroup "$ARCANE_GROUP" 2>/dev/null || true
+        fi
+
         log_info "User and group removed"
     fi
     
