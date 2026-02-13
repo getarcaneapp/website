@@ -15,11 +15,23 @@ import { Link } from '$lib/components/ui/link/index.js';
 
 ## Convenience Script
 
-For Linux users, you can use our installation script to set up Arcane and all its dependencies (Docker, Node.js, Go) automatically.
+For Linux users, you can use our installation script to set up Arcane and its required dependencies (including Docker) automatically.
 
 <Snippet text="curl -fsSL https://getarcane.app/install.sh | bash" />
 
 To uninstall:
+
+### Safe uninstall (interactive, recommended)
+
+This version does **not** force removal and will ask before deleting Arcane data, user/group, or Docker.
+
+<Snippet text="curl -fsSL https://getarcane.app/uninstall.sh -o /tmp/arcane-uninstall.sh && sudo bash /tmp/arcane-uninstall.sh" />
+
+### Full cleanup (forced, destructive)
+
+> [!WARNING]
+> This removes **Arcane + Arcane data + Arcane user/group + Docker packages**.
+> Only use this on hosts where removing Docker is intended.
 
 <Snippet text="curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove-all" />
 

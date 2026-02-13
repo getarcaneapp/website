@@ -1,7 +1,8 @@
 #!/bin/bash
 #
 # Arcane Uninstallation Script
-# Usage: curl -fsSL https://getarcane.app/uninstall.sh | bash
+# Usage (safe defaults): curl -fsSL https://getarcane.app/uninstall.sh | sudo bash
+# Full cleanup (includes Docker): curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove-all
 #
 # This script removes Arcane and optionally its dependencies
 #
@@ -123,6 +124,36 @@ auto_force_if_piped() {
         FORCE="true"
         log_warn "Non-interactive shell detected; proceeding with --force"
     fi
+}
+
+print_removal_plan() {
+    local data_action="preserved"
+    local user_action="preserved"
+    local docker_action="preserved"
+
+    if [[ "$REMOVE_DATA" == "true" ]]; then
+        data_action="removed"
+    fi
+
+    if [[ "$REMOVE_USER" == "true" ]]; then
+        user_action="removed"
+    fi
+
+    if [[ "$REMOVE_DOCKER" == "true" ]]; then
+        docker_action="removed"
+    fi
+
+    echo -e "${BOLD}Removal plan:${NC}"
+    echo -e "  - Arcane binaries and services: ${GREEN}removed${NC}"
+    echo -e "  - Arcane data (${ARCANE_DATA_DIR}): ${YELLOW}${data_action}${NC}"
+    echo -e "  - Arcane user/group (${ARCANE_USER}/${ARCANE_GROUP}): ${YELLOW}${user_action}${NC}"
+    if [[ "$REMOVE_DOCKER" == "true" ]]; then
+        echo -e "  - Docker packages: ${RED}${docker_action}${NC}"
+        echo -e "${RED}${BOLD}WARNING:${NC} ${RED}Docker removal is enabled and may impact other applications on this host.${NC}"
+    else
+        echo -e "  - Docker packages: ${YELLOW}${docker_action}${NC}"
+    fi
+    echo ""
 }
 
 # Prompt for confirmation
@@ -357,7 +388,7 @@ show_help() {
     echo "  --remove-data       Remove Arcane data directory"
     echo "  --remove-user       Remove Arcane user and group"
     echo "  --remove-docker     Remove Docker"
-    echo "  --remove-all        Remove everything (data, user, docker)"
+    echo "  --remove-all        Remove everything (data, user, docker/dependencies)"
     echo ""
     echo "Environment Variables:"
     echo "  ARCANE_INSTALL_DIR  Installation directory (default: /opt/arcane)"
@@ -371,13 +402,16 @@ show_help() {
     echo "  REMOVE_DOCKER=true  Same as --remove-docker"
     echo ""
     echo "Examples:"
-    echo "  # Interactive uninstall (minimal output, asks for confirmation)"
+    echo "  # Interactive uninstall (asks before removing data/user/docker)"
     echo "  sudo bash uninstall.sh"
+    echo ""
+    echo "  # Remote uninstall with safe defaults (keeps data/user/docker)"
+    echo "  curl -fsSL https://getarcane.app/uninstall.sh | sudo bash"
     echo ""
     echo "  # Verbose uninstall"
     echo "  sudo bash uninstall.sh --verbose"
     echo ""
-    echo "  # Remove everything without prompts"
+    echo "  # Remove everything without prompts (includes Docker)"
     echo "  sudo bash uninstall.sh --force --remove-all"
     echo ""
     echo "  # Remove Arcane and data, keep dependencies"
@@ -437,7 +471,10 @@ main() {
     auto_force_if_piped
     
     echo -e "${YELLOW}${BOLD}WARNING: This will uninstall Arcane from your system.${NC}"
+    echo -e "${YELLOW}By default, Docker and Arcane data are preserved unless you pass removal flags.${NC}"
     echo ""
+
+    print_removal_plan
     
     if [[ "$FORCE" != "true" ]]; then
         if ! confirm "Are you sure you want to continue?"; then
