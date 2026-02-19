@@ -1,6 +1,6 @@
 ---
-title: 'Installation'
-description: 'Get Arcane running fast with Docker Compose.'
+title: "Installation"
+description: "Get Arcane running fast with Docker Compose."
 order: 1
 ---
 
@@ -17,7 +17,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 
 For Linux users, you can use our installation script to set up Arcane and its required dependencies (including Docker) automatically.
 
-<Snippet text="curl -fsSL https://getarcane.app/install.sh | bash" />
+<Snippet text="curl -fsSL https://getarcane.app/install.sh | sudo bash" />
 
 To uninstall:
 
@@ -47,7 +47,7 @@ services:
     image: ghcr.io/getarcaneapp/arcane:latest
     container_name: arcane
     ports:
-      - '3552:3552'
+      - "3552:3552"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
@@ -77,6 +77,7 @@ where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
 > All Paths MUST be absolute paths, ie: `/opt/docker` NOT `opt/docker`
 >
 > For example, if your projects are at `/opt/docker` on the host:
+>
 > - Mount: `/opt/docker:/opt/docker` (not `/opt/docker:/app/data/projects`)
 > - Set the projects directory in Arcane to `/opt/docker` or set `PROJECTS_DIRECTORY=/opt/docker` in the environment for this to take effect immediately on startup of Arcane.
 >
