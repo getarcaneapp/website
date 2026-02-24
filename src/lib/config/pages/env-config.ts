@@ -18,6 +18,21 @@ export const envConfig: EnvConfig[] = [
 		exampleValue: '127.0.0.1'
 	},
 	{
+		name: 'TLS_ENABLED',
+		description: 'Enable built-in TLS (HTTPS) serving directly from Arcane',
+		defaultValue: 'false'
+	},
+	{
+		name: 'TLS_CERT_FILE',
+		description: 'Path to the TLS certificate file when TLS_ENABLED=true',
+		defaultValue: ''
+	},
+	{
+		name: 'TLS_KEY_FILE',
+		description: 'Path to the TLS private key file when TLS_ENABLED=true',
+		defaultValue: ''
+	},
+	{
 		name: 'DATABASE_URL',
 		description: 'The database connection string (SQLite by default)',
 		defaultValue:
@@ -200,6 +215,11 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: 'false'
 	},
 	{
+		name: 'EDGE_TRANSPORT',
+		description: 'Preferred edge transport mode (auto, websocket, grpc)',
+		defaultValue: 'auto'
+	},
+	{
 		name: 'EDGE_RECONNECT_INTERVAL',
 		description: 'Edge agent reconnect interval in seconds',
 		defaultValue: '5'
@@ -217,6 +237,11 @@ export const envConfig: EnvConfig[] = [
 	{
 		name: 'DOCKER_IMAGE_PULL_TIMEOUT',
 		description: 'Docker image pull timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
+	},
+	{
+		name: 'TRIVY_SCAN_TIMEOUT',
+		description: 'Trivy vulnerability scan timeout in seconds (0 uses internal defaults)',
 		defaultValue: '0'
 	},
 	{
@@ -238,5 +263,10 @@ export const envConfig: EnvConfig[] = [
 		name: 'PROXY_REQUEST_TIMEOUT',
 		description: 'Proxy request timeout in seconds (0 uses internal defaults)',
 		defaultValue: '0'
+	},
+	{
+		name: 'TZ',
+		description: 'Timezone for cron scheduling (IANA name, Local, or UTC)',
+		defaultValue: 'Local'
 	}
 ];
