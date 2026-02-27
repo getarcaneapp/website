@@ -1,223 +1,158 @@
 ---
 title: "Image Builds"
-description: "Build container images manually or from projects using Arcane and BuildKit."
+description: "Build container images in Arcane"
 ---
 
 <script lang="ts">
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-This page explains how image building works in Arcane from a user perspective.
+Arcane gives you two practical ways to build images:
 
-It covers:
+- **Manual builds** in the **Build Workspace**
+- **Project builds** from Compose services that use `build:`
 
-- what Arcane's image build system does
-- the main pieces involved
-- how to build images manually
-- how to build project images
-- the API endpoints behind the UI
+This guide focuses on what each feature does, and how to pick the right provider and options.
 
-## What Arcane Image Builds Are
+## Choose the right build workflow
 
-Arcane supports two build workflows:
+### Manual builds (Build Workspace)
 
-1. **Manual image builds** from the **Build Workspace** (`/images/builds`)
-2. **Project image builds** for Compose projects that define `build:` directives
+Use this when you want full control over a one-off or repeatable image build.
 
-Builds run through BuildKit and stream live progress back to the UI.
+Where to go:
 
-Arcane can build with:
+- **Builds and Deployments → Builds** (`/images/builds`)
 
-- **Local BuildKit** (local Docker engine)
-- **Depot BuildKit** (remote hosted BuildKit)
+What you get:
 
-> [!NOTE]
-> If you are new to Arcane image management, review <Link href="/docs/features/images">Images</Link> first. For Compose-focused workflows, see <Link href="/docs/features/projects">Projects</Link>.
+- File browser for selecting your build context
+- Build form with required and advanced options
+- Live build output panel
+- Build history with **Rebuild** support
 
-## High-Level Flow
+### Project builds (Compose projects)
 
-### Manual Build Flow
+Use this when your project has one or more services with `build:` in `compose.yaml`.
 
-1. Open **Build Workspace** in the UI.
-2. Choose a build context from the workspace browser.
-3. Set required build fields (at minimum, image tags).
-4. Arcane sends a build request to `POST /environments/{id}/images/build`.
-5. Backend streams progress events (NDJSON) to the UI.
-6. Arcane stores build history (status, metadata, logs, duration, provider, and more).
-7. Review history with:
-   - `GET /environments/{id}/images/builds`
-   - `GET /environments/{id}/images/builds/{buildId}`
+Where to go:
 
-### Project Build Flow
+- Open a project page in **Projects**
 
-1. On a project page, Arcane detects whether any service has a Compose `build:` directive.
-2. If present, project actions expose **Build** and **Build & Deploy** behavior.
-3. Project build requests go to `POST /environments/{id}/projects/{projectId}/build`.
-4. Backend resolves each service build config into a BuildKit request and executes builds.
-5. Progress is streamed back to the UI.
+What you’ll see:
 
-## Core Concepts
+- **Build** action (when build directives are detected)
+- **Build & Deploy** on deploy actions when applicable
 
-### Build Workspace
-
-The build workspace is a file browser rooted at a configurable **Builds Directory**.
-
-- Default root: `/builds`
-- This root is managed in settings and must be an absolute path.
-- Arcane enforces path safety so operations stay inside the configured root.
-
-Workspace APIs:
-
-- `GET /environments/{id}/builds/browse`
-- `GET /environments/{id}/builds/browse/content`
-- `GET /environments/{id}/builds/browse/download`
-- `POST /environments/{id}/builds/browse/upload`
-- `POST /environments/{id}/builds/browse/mkdir`
-- `DELETE /environments/{id}/builds/browse`
-
-### Build Providers
+## Build providers (Local Docker vs Depot)
 
 Arcane supports two providers:
 
-- `local`: builds via local Docker/Moby client APIs
-- `depot`: builds via Depot BuildKit sessions
+- **Local Docker**: build on your local environment
+- **Depot**: build remotely with Depot BuildKit
 
-Provider selection comes from:
+### How provider selection works
 
-1. explicit request override (`provider`), else
-2. configured default in settings (`buildProvider`), else
-3. fallback to `local`
+- Arcane uses your default provider from **Settings → Build**.
+- You can override provider in the manual build UI.
+- If Depot credentials are not configured, Arcane falls back to Local Docker.
 
-### Output Behavior
+### Important provider behavior
 
-Build progress is streamed as JSON lines containing status, IDs, optional progress bytes, and errors.
+When **Depot** is selected:
 
-Arcane stores output for history and marks records as:
+- **Push** is forced **on**
+- **Load** is forced **off**
 
-- `running`
-- `success`
-- `failed`
+When **Local Docker** is selected:
 
-## Configure Image Builds
+- You control both **Push** and **Load** toggles
 
-Open **Settings → Build** (`/settings/builds`) and configure:
+## Configure build settings first
+
+Go to **Settings → Build** (`/settings/builds`) and configure:
 
 1. **Builds Directory**
-   - root path for manual build workspace files
-2. **Build Provider**
-   - choose default provider (`local` or `depot`)
+   - Root folder used by the Build Workspace browser
+   - Should be an absolute path
+2. **Default Build Provider**
+   - Local Docker or Depot
 3. **Build Timeout**
-   - timeout in seconds
+   - Allowed range in UI: 60 to 14,400 seconds
 4. **Depot Project ID** (optional)
 5. **Depot Token** (optional)
 
-Notes:
+> [!TIP]
+> Leaving the Depot token blank during an update keeps the existing saved token.
 
-- Depot provider is available when Depot credentials are configured.
-- Leaving the Depot token blank in settings preserves an existing token.
+## Run a manual build
 
-## Run a Manual Image Build
+1. Open **Build Workspace** at `/images/builds`.
+2. In the left panel, choose your context folder.
+3. In **Build Configuration**, set **Image Tags** (required).
+4. Optionally expand **Advanced** for Dockerfile/target/platforms/args/labels/cache and runtime tuning fields.
+5. Choose provider (**Local Docker** or **Depot**).
+6. Set **Push** / **Load** (or let Depot rules apply automatically).
+7. Click **Build** and watch live output in the output tab.
+8. Review finished builds in **Build History**.
 
-1. Open **Builds and Deployments → Builds** (`/images/builds`).
-2. In **Build Workspace**, select the folder to use as context.
-3. In **Build Configuration**:
-   - set **Image Tags** (required)
-   - optionally set Dockerfile, target, platforms, args, labels, cache, network, and extra hosts
-   - choose provider (`local` or `depot`)
-   - set **Push** / **Load** options
-4. Click **Build**.
-5. Watch live output in the output panel.
-6. Review completed entries in the **Build History** tab.
+## Advanced options compatibility
 
-Provider behavior in the UI:
+Arcane validates advanced options against the selected provider so you don’t accidentally send unsupported combinations.
 
-- For **Depot**, Arcane enforces `push=true` and `load=false`.
-- For **local**, you can control push/load switches.
+### Local Docker (supported highlights)
 
-## Run a Project Image Build
+- Network
+- Isolation
+- SHM size
+- Ulimits
+- Extra hosts
+- Single-platform builds
 
-1. Open a project page.
-2. If the project contains Compose `build:` services, Arcane exposes build actions.
-3. Use **Build** to build project services.
-4. Use **Build & Deploy** (project deploy action label) when available to build during deployment flow.
+Not supported for Local Docker in Arcane build UI validation:
 
-Project build API:
-
-- `POST /environments/{id}/projects/{projectId}/build`
-
-Optional request body:
-
-- `services`: list of service names to build
-- `provider`: provider override (`local`/`depot`)
-- `push`: override push behavior
-- `load`: override load behavior
-
-Project-specific rule:
-
-- If using Depot (or pushing), services need explicit image names (Arcane prevents generated local-only tags for that case).
-
-## Build Request Shape (Manual/API)
-
-The manual build endpoint accepts fields such as:
-
-- `contextDir` (required)
-- `dockerfile`
-- `tags`
-- `target`
-- `buildArgs`
-- `labels`
-- `cacheFrom` / `cacheTo`
-- `noCache`
-- `pull`
-- `network`
-- `isolation`
-- `shmSize`
-- `ulimits`
+- `cacheTo`
 - `entitlements`
 - `privileged`
-- `extraHosts`
-- `platforms`
-- `push`
-- `load`
-- `provider`
+- Multi-platform lists
 
-## Build History
+### Depot (supported highlights)
 
-Arcane stores build metadata and output for auditing and reuse.
+- Multi-platform builds
+- `cacheTo`
+- `entitlements`
+- `privileged`
 
-History includes:
+Not supported for Depot in Arcane build UI validation:
 
-- provider
-- context and Dockerfile/target
-- tags/platforms
-- args/labels/cache settings
-- push/load flags
-- status, error message, duration, completion time
-- captured output (with truncation marker when capped)
+- Network
+- Isolation
+- SHM size
+- Ulimits
+- Extra hosts
 
-UI capabilities:
+## Use Build History effectively
 
-- list and filter builds
-- inspect build details and output
-- reuse a previous build configuration via **Rebuild**
+The **Build History** tab helps you track and reuse builds.
 
-## API Summary
+You can:
 
-### Manual Builds
+- See status, provider, created time, and duration
+- Open full details for context, tags, Dockerfile/target, options, and output
+- Use **Rebuild** to load a previous configuration back into the form
 
-- `POST /environments/{id}/images/build`
-- `GET /environments/{id}/images/builds`
-- `GET /environments/{id}/images/builds/{buildId}`
+## Build from projects
 
-### Project Builds
+On a project page, Arcane automatically detects build-capable services (`build:` in Compose).
 
-- `POST /environments/{id}/projects/{projectId}/build`
+Typical flow:
 
-### Build Workspace File Operations
+1. Open a project with build directives.
+2. Use **Build** to build images only.
+3. Use **Build & Deploy** to build as part of deployment.
 
-- `GET /environments/{id}/builds/browse`
-- `GET /environments/{id}/builds/browse/content`
-- `GET /environments/{id}/builds/browse/download`
-- `POST /environments/{id}/builds/browse/upload`
-- `POST /environments/{id}/builds/browse/mkdir`
-- `DELETE /environments/{id}/builds/browse`
+### Project build note for Depot or Push
+
+If you build project services with **Depot** or with **Push enabled**, each built service should define an explicit `image:` name in Compose.
+
+This avoids local-only generated tags that are not valid for pushed/remote workflows.
