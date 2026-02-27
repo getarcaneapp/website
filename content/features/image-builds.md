@@ -24,6 +24,10 @@ Where to go:
 
 - **Builds and Deployments → Builds** (`/images/builds`)
 
+The default workspace will look in `/builds` inside the container, for files and folders available to build. This can be changed in the settings.
+
+You can mount a directory into the container similar to how projects work, and point to that folder so you can use your Dockerfiles easier.
+
 What you get:
 
 - File browser for selecting your build context
