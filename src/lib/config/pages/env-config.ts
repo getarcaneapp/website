@@ -44,6 +44,11 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: '/app/data/projects'
 	},
 	{
+		name: 'DISK_USAGE_PATH',
+		description: 'Path used to calculate disk usage stats',
+		defaultValue: '/app/data/projects'
+	},
+	{
 		name: 'GIT_WORK_DIR',
 		description: 'The directory where git repositories are stored',
 		defaultValue: 'data/git'
@@ -91,6 +96,26 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: ''
 	},
 	{
+		name: 'OIDC_AUTHORIZATION_ENDPOINT',
+		description: 'Override the OIDC authorization endpoint URL',
+		defaultValue: ''
+	},
+	{
+		name: 'OIDC_TOKEN_ENDPOINT',
+		description: 'Override the OIDC token endpoint URL',
+		defaultValue: ''
+	},
+	{
+		name: 'OIDC_USERINFO_ENDPOINT',
+		description: 'Override the OIDC userinfo endpoint URL',
+		defaultValue: ''
+	},
+	{
+		name: 'OIDC_JWKS_ENDPOINT',
+		description: 'Override the OIDC JWKS endpoint URL',
+		defaultValue: ''
+	},
+	{
 		name: 'OIDC_SCOPES',
 		description: 'OIDC Scopes',
 		defaultValue: 'openid email profile'
@@ -116,6 +141,11 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: 'false'
 	},
 	{
+		name: 'OIDC_MERGE_ACCOUNTS',
+		description: 'Merge OIDC accounts with local accounts by email',
+		defaultValue: 'false'
+	},
+	{
 		name: 'OIDC_PROVIDER_NAME',
 		description: 'Provider display name shown on the login screen',
 		defaultValue: ''
@@ -130,6 +160,21 @@ export const envConfig: EnvConfig[] = [
 		description: 'Docker daemon socket or host',
 		defaultValue: 'unix:///var/run/docker.sock',
 		exampleValue: 'tcp://docker-socket-proxy:2375'
+	},
+	{
+		name: 'HTTP_PROXY',
+		description: 'Outbound HTTP proxy URL used for external HTTP requests',
+		defaultValue: ''
+	},
+	{
+		name: 'HTTPS_PROXY',
+		description: 'Outbound HTTPS proxy URL used for external HTTPS requests',
+		defaultValue: ''
+	},
+	{
+		name: 'NO_PROXY',
+		description: 'Comma-separated hosts/IPs/CIDRs that should bypass the proxy',
+		defaultValue: ''
 	},
 	{
 		name: 'PUID',
