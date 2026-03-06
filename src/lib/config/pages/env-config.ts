@@ -39,6 +39,13 @@ export const envConfig: EnvConfig[] = [
 			'file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate'
 	},
 	{
+		name: 'ALLOW_DOWNGRADE',
+		description:
+			'Allow starting an older Arcane version against a newer database and roll it back if compatible migrations exist',
+		defaultValue: 'false',
+		exampleValue: 'true'
+	},
+	{
 		name: 'PROJECTS_DIRECTORY',
 		description: 'Root directory Arcane scans for project definitions',
 		defaultValue: '/app/data/projects'
