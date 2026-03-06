@@ -10,7 +10,7 @@ import EnvTable from '$lib/components/env-table.svelte';
 import EnvOverridesTable from '$lib/components/env-overrides-table.svelte';
 </script>
 
-Most of the settings in Arcane can be changed via the Settings UI. Below are a the settings that can be set via the Environment.
+Most settings in Arcane can be changed via the Settings UI. Below are the settings that can be set via environment variables.
 
 ## Use External Postgres Database
 
@@ -34,9 +34,13 @@ Make sure to replace the placeholder values with the real values for your enviro
 
 <EnvTable />
 
+> [!NOTE]
+> For proxy configuration, Arcane also supports lowercase aliases for the standard proxy variables (`http_proxy`, `https_proxy`, `no_proxy`).
+
 ## Settings Overrides via Environment
 
 If you prefer to configure Arcane via environment variables, below is a list of all configurable variables that can be set if one of the following variables is set:
+
 - `UI_CONFIGURATION_DISABLED=true` or
 - `AGENT_MODE=true`
 

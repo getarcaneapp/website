@@ -1,6 +1,6 @@
 ---
-title: 'Configuration'
-description: 'Managing CLI settings and authentication.'
+title: "Configuration"
+description: "Managing CLI settings and authentication."
 order: 2
 ---
 
@@ -35,10 +35,12 @@ log_level: info
 ## Configuration Commands
 
 ### Show Current Config
+
 To see your current settings (with sensitive values masked):
 <Snippet text="arcane-cli config show" class="mt-2" />
 
 ### Set Values
+
 You can update individual settings using the `set` command:
 
 ```bash
@@ -56,12 +58,14 @@ arcane-cli config set --log-level debug
 
 The CLI supports two methods of authentication:
 
-### 1. Interactive Login (JWT)
-The recommended way for users is to use the `login` command, which uses your standard username and password to obtain a JWT token.
+### 1. API Key
 
-<Snippet text="arcane-cli auth login" class="mt-2" />
-
-### 2. API Key
 For CI/CD or automated scripts, you can use an API key generated from the Arcane UI.
 
 <Snippet text="arcane-cli config set --api-key your_api_key_here" class="mt-2" />
+
+### 2. OIDC Device code
+
+OIDC must be enabled for this method, as it uses your external provider.
+
+<Snippet text="arcane-cli auth login" class="mt-2" />

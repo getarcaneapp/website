@@ -308,7 +308,7 @@
 }
 
 @utility section-soft {
-	@apply from-background to-surface/40 dark:bg-background 3xl:fixed:bg-none bg-linear-to-b;
+	@apply bg-linear-to-b from-background to-surface/40 dark:bg-background 3xl:fixed:bg-none;
 }
 
 /* ===== Stunning Visual Effects ===== */
@@ -388,11 +388,11 @@
 }
 
 @utility container-wrapper {
-	@apply 3xl:fixed:max-w-[1800px] mx-auto w-full px-2;
+	@apply mx-auto w-full px-2 3xl:fixed:max-w-[1800px];
 }
 
 @utility container {
-	@apply 3xl:max-w-[1800px] mx-auto max-w-[1600px] px-4 lg:px-8;
+	@apply mx-auto max-w-[1600px] px-4 3xl:max-w-[1800px] lg:px-8;
 }
 
 /* ===== Docs Theme ===== */
@@ -555,7 +555,7 @@
 }
 
 @utility border-ghost {
-	@apply after:border-border relative after:pointer-events-none after:absolute after:inset-0 after:border after:mix-blend-darken dark:after:mix-blend-lighten;
+	@apply relative after:pointer-events-none after:absolute after:inset-0 after:border after:border-border after:mix-blend-darken dark:after:mix-blend-lighten;
 }
 
 @utility extend-touch-target {
@@ -684,7 +684,7 @@
 	}
 
 	.mdsx code:not(pre code) {
-		@apply bg-muted relative rounded-md px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] outline-none;
+		@apply relative rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] outline-none;
 	}
 
 	.super-debug {

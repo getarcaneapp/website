@@ -1,6 +1,6 @@
 ---
-title: 'Projects'
-description: 'Learn how to manage Docker compose projects with Arcane'
+title: "Projects"
+description: "Learn how to manage Docker compose projects with Arcane"
 ---
 
 <script lang="ts">
@@ -30,7 +30,7 @@ A `Project` is a collection of services defined in a `compose.yaml` file.
 2. You'll see a list of all projects, including their names, status (running, partially running, stopped), and how many services are running.
 
 > [!NOTE]
-> Arcane treats <Link href="/docs/configuration/environment">Projects Directory</Link>  as the single source of truth. Any files you place in this directory—whether created through Arcane or added externally—are automatically detected and imported as projects.
+> Arcane treats <Link href="/docs/configuration/environment">Projects Directory</Link> as the single source of truth. Any files you place in this directory—whether created through Arcane or added externally—are automatically detected and imported as projects.
 
 ### Creating a Project
 
@@ -42,11 +42,40 @@ A `Project` is a collection of services defined in a `compose.yaml` file.
 
 ### Controlling a Project
 
-- `Up:` Click the `Up` button to pull and start all services in the project. 
+- `Up:` Click the `Up` button to pull and start all services in the project.
 - `Down:` Click `Down` to down and remove all containers in the project.
 - `Restart:` Click `Restart` to stop and then start the project again, this does `NOT` recreate the containers.
 - `Redeploy:` Click `Redeploy` to pull the latest images and restart the project (equivalent to docker pull && docker up -d).
 - `Destroy:` Click `Destroy` to down and destroy all resources made by the project. This has two options: one to remove volumes and one to remove the actual project files on the disk.
+
+### Project Image Builds
+
+Arcane can build project images directly from Compose services that define a `build:` directive.
+
+When buildable services are detected, Arcane exposes build actions on the project:
+
+- `Build`: builds project services without deployment
+- `Build & Deploy`: builds as part of the deploy flow
+
+How it works:
+
+1. Open your project page.
+2. Trigger `Build` (or `Build & Deploy`).
+3. Arcane sends a request to `POST /environments/{id}/projects/{projectId}/build`.
+4. Arcane resolves each selected service build config and runs BuildKit.
+5. Live build progress is streamed back to the UI.
+
+Optional project build request options include:
+
+- `services`: a list of specific service names to build
+- `provider`: provider override (`local` or `depot`)
+- `push`: override push behavior
+- `load`: override load behavior
+
+> [!NOTE]
+> If you use Depot (or enable image push), services should define explicit image names. Arcane prevents generated local-only tags in that case.
+
+For manual build workflows, build workspace behavior, build history, and API details, see <Link href="/docs/features/image-builds">Image Builds</Link>.
 
 ## Where Are My Projects Stored?
 
@@ -64,12 +93,12 @@ Before you can sync a project, you need to add a Git repository to Arcane.
 2. Click `Add Repository`.
 3. Enter the `Repository URL` and a `Name`.
 4. Configure authentication if needed:
-    - **Personal Access Token**: For HTTPS repositories.
-    - **SSH Key**: Paste your private key for SSH repositories.
+   - **Personal Access Token**: For HTTPS repositories.
+   - **SSH Key**: Paste your private key for SSH repositories.
 5. If using **SSH**, configure the **Host Key Verification** mode:
-    - **Accept and Remember (Default)**: Automatically accepts the remote server's host key on first connection and saves it to the `known_hosts` file.
-    - **Strict**: Requires the remote host key to be pre-existing in the `known_hosts` file.
-    - **Skip Verification**: Disables host key checking entirely. This is **insecure** and should only be used if you understand the risks.
+   - **Accept and Remember (Default)**: Automatically accepts the remote server's host key on first connection and saves it to the `known_hosts` file.
+   - **Strict**: Requires the remote host key to be pre-existing in the `known_hosts` file.
+   - **Skip Verification**: Disables host key checking entirely. This is **insecure** and should only be used if you understand the risks.
 6. Click `Save`.
 
 > [!NOTE]
@@ -107,7 +136,7 @@ The file is a simple JSON Array as shown below:
     "syncInterval": 5,
     "enabled": true
   },
-    {
+  {
     "syncName": "project-name2",
     "gitRepo": "my-git-repo",
     "branch": "main",
@@ -124,4 +153,4 @@ The file is a simple JSON Array as shown below:
 
 ## Editing a Git Synced Project
 
-The Compose file is `Read-Only` for all projects synced from Git; however, the .env is still able to be edited and used. If you want to use the environment file provided by Arcane's editor make sure to add: `- env_file: .env` to your compose file. 
+The Compose file is `Read-Only` for all projects synced from Git; however, the .env is still able to be edited and used. If you want to use the environment file provided by Arcane's editor make sure to add: `- env_file: .env` to your compose file.

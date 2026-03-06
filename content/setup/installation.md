@@ -1,6 +1,6 @@
 ---
-title: "Installation"
-description: "Get Arcane running fast with Docker Compose."
+title: 'Installation'
+description: 'Get Arcane running fast with Docker Compose.'
 order: 1
 ---
 
@@ -47,7 +47,7 @@ services:
     image: ghcr.io/getarcaneapp/arcane:latest
     container_name: arcane
     ports:
-      - "3552:3552"
+      - '3552:3552'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
@@ -66,11 +66,27 @@ volumes:
 
 where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
 
+> [!TIP]
+> You can optionally add extra mounts in your `compose.yaml` for Arcane's build workspace and volume backups:
+>
+> - `/builds`: used by the **Build Workspace** for Dockerfiles and build contexts.
+>   - Host path example: `/srv/arcane/builds:/builds`
+>   - Docker volume example: `arcane-builds:/builds`
+> - `/backups`: used to store exported volume backups somewhere predictable.
+>   - Host path example: `/srv/arcane/backups:/backups`
+>   - Docker volume example: `arcane-backups:/backups`
+>
+> If you use named Docker volumes, remember to declare them under the top-level `volumes:` section too.
+
 ## 2. Review Volumes & Imports:
 
 **_/var/run/docker.sock_**: Lets Arcane manage Docker.
 
 **_arcane-data_**: Arcanes data directory. (for the database and projects)
+
+**_/builds_**: Optional mount used by the Build Workspace. Mount a host path or Docker volume here if you want build contexts available inside Arcane.
+
+**_/backups_**: Optional mount used for exported volume backup archives. Mount a host path or Docker volume here if you want backups stored outside the default internal Docker storage.
 
 > [!IMPORTANT]
 > To manage existing compose projects, you must mount your projects folder with **matching paths** inside and outside the container.

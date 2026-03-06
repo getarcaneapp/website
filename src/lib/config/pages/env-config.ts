@@ -18,6 +18,21 @@ export const envConfig: EnvConfig[] = [
 		exampleValue: '127.0.0.1'
 	},
 	{
+		name: 'TLS_ENABLED',
+		description: 'Enable built-in TLS (HTTPS) serving directly from Arcane',
+		defaultValue: 'false'
+	},
+	{
+		name: 'TLS_CERT_FILE',
+		description: 'Path to the TLS certificate file when TLS_ENABLED=true',
+		defaultValue: ''
+	},
+	{
+		name: 'TLS_KEY_FILE',
+		description: 'Path to the TLS private key file when TLS_ENABLED=true',
+		defaultValue: ''
+	},
+	{
 		name: 'DATABASE_URL',
 		description: 'The database connection string (SQLite by default)',
 		defaultValue:
@@ -26,6 +41,11 @@ export const envConfig: EnvConfig[] = [
 	{
 		name: 'PROJECTS_DIRECTORY',
 		description: 'Root directory Arcane scans for project definitions',
+		defaultValue: '/app/data/projects'
+	},
+	{
+		name: 'DISK_USAGE_PATH',
+		description: 'Path used to calculate disk usage stats',
 		defaultValue: '/app/data/projects'
 	},
 	{
@@ -76,6 +96,26 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: ''
 	},
 	{
+		name: 'OIDC_AUTHORIZATION_ENDPOINT',
+		description: 'Override the OIDC authorization endpoint URL',
+		defaultValue: ''
+	},
+	{
+		name: 'OIDC_TOKEN_ENDPOINT',
+		description: 'Override the OIDC token endpoint URL',
+		defaultValue: ''
+	},
+	{
+		name: 'OIDC_USERINFO_ENDPOINT',
+		description: 'Override the OIDC userinfo endpoint URL',
+		defaultValue: ''
+	},
+	{
+		name: 'OIDC_JWKS_ENDPOINT',
+		description: 'Override the OIDC JWKS endpoint URL',
+		defaultValue: ''
+	},
+	{
 		name: 'OIDC_SCOPES',
 		description: 'OIDC Scopes',
 		defaultValue: 'openid email profile'
@@ -101,6 +141,11 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: 'false'
 	},
 	{
+		name: 'OIDC_MERGE_ACCOUNTS',
+		description: 'Merge OIDC accounts with local accounts by email',
+		defaultValue: 'false'
+	},
+	{
 		name: 'OIDC_PROVIDER_NAME',
 		description: 'Provider display name shown on the login screen',
 		defaultValue: ''
@@ -115,6 +160,21 @@ export const envConfig: EnvConfig[] = [
 		description: 'Docker daemon socket or host',
 		defaultValue: 'unix:///var/run/docker.sock',
 		exampleValue: 'tcp://docker-socket-proxy:2375'
+	},
+	{
+		name: 'HTTP_PROXY',
+		description: 'Outbound HTTP proxy URL used for external HTTP requests',
+		defaultValue: ''
+	},
+	{
+		name: 'HTTPS_PROXY',
+		description: 'Outbound HTTPS proxy URL used for external HTTPS requests',
+		defaultValue: ''
+	},
+	{
+		name: 'NO_PROXY',
+		description: 'Comma-separated hosts/IPs/CIDRs that should bypass the proxy',
+		defaultValue: ''
 	},
 	{
 		name: 'PUID',
@@ -200,6 +260,11 @@ export const envConfig: EnvConfig[] = [
 		defaultValue: 'false'
 	},
 	{
+		name: 'EDGE_TRANSPORT',
+		description: 'Preferred edge transport mode (auto, websocket, grpc)',
+		defaultValue: 'auto'
+	},
+	{
 		name: 'EDGE_RECONNECT_INTERVAL',
 		description: 'Edge agent reconnect interval in seconds',
 		defaultValue: '5'
@@ -217,6 +282,11 @@ export const envConfig: EnvConfig[] = [
 	{
 		name: 'DOCKER_IMAGE_PULL_TIMEOUT',
 		description: 'Docker image pull timeout in seconds (0 uses internal defaults)',
+		defaultValue: '0'
+	},
+	{
+		name: 'TRIVY_SCAN_TIMEOUT',
+		description: 'Trivy vulnerability scan timeout in seconds (0 uses internal defaults)',
 		defaultValue: '0'
 	},
 	{
@@ -238,5 +308,10 @@ export const envConfig: EnvConfig[] = [
 		name: 'PROXY_REQUEST_TIMEOUT',
 		description: 'Proxy request timeout in seconds (0 uses internal defaults)',
 		defaultValue: '0'
+	},
+	{
+		name: 'TZ',
+		description: 'Timezone for cron scheduling (IANA name, Local, or UTC)',
+		defaultValue: 'Local'
 	}
 ];
