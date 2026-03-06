@@ -1,6 +1,6 @@
 ---
-title: "Image Builds"
-description: "Build container images in Arcane"
+title: 'Image Builds'
+description: 'Build container images in Arcane'
 ---
 
 <script lang="ts">
@@ -26,7 +26,12 @@ Where to go:
 
 The default workspace will look in `/builds` inside the container, for files and folders available to build. This can be changed in the settings.
 
-You can mount a directory into the container similar to how projects work, and point to that folder so you can use your Dockerfiles easier.
+You can provide that workspace by mounting either a host directory or a named Docker volume to `/builds` in your Arcane `compose.yaml`, similar to how projects work.
+
+- Host path example: `/srv/arcane/builds:/builds`
+- Docker volume example: `arcane-builds:/builds`
+
+If you use a named Docker volume, also declare it under the top-level `volumes:` section in Compose.
 
 What you get:
 

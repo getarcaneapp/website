@@ -51,7 +51,14 @@ Arcane now performs safer backups and restores with clearer safeguards.
 
 ### Backup storage and /backups mount warning
 
-Backups are stored in a dedicated Docker volume that is mounted into the helper container at `/backups`. If the Arcane container itself does **not** have a host-backed mount at `/backups`, a warning appears in the backups UI so you know backups live only inside Docker storage. To keep backups on the host, mount a host path into the Arcane container at `/backups`.
+Backups are stored in a dedicated Docker volume that is mounted into the helper container at `/backups`. If the Arcane container itself does **not** have a host-backed mount at `/backups`, a warning appears in the backups UI so you know backups live only inside Docker storage.
+
+To keep backups somewhere predictable, mount either a host path or a named Docker volume into the Arcane container at `/backups` in your `compose.yaml`.
+
+- Host path example: `/srv/arcane/backups:/backups`
+- Docker volume example: `arcane-backups:/backups`
+
+If you use a named Docker volume, also declare it under the top-level `volumes:` section in Compose.
 
 ### Backup creation now checks exit codes
 
