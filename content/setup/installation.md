@@ -64,7 +64,13 @@ volumes:
   arcane-data:
 ```
 
-where ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
+> [!NOTE]
+> The ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
+> 
+> ```bash
+> # You can use OpenSSL in your terminal to generate the secrets
+> openssl rand -hex 32
+> ```
 
 > [!TIP]
 > You can optionally add extra mounts in your `compose.yaml` for Arcane's build workspace and volume backups:
