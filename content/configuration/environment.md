@@ -37,6 +37,29 @@ Make sure to replace the placeholder values with the real values for your enviro
 > [!NOTE]
 > For proxy configuration, Arcane also supports lowercase aliases for the standard proxy variables (`http_proxy`, `https_proxy`, `no_proxy`).
 
+## Downgrading Arcane
+
+If you start an older version of Arcane with a database created by a newer version, Arcane will detect this automatically at startup.
+
+Arcane needs internet access during the downgrade process, this is because it will pull the down migrations from github.
+
+By default, Arcane blocks downgrades to help protect your data.
+
+To allow a downgrade:
+
+1. Back up your database first.
+2. Set:
+
+<Snippet text="ALLOW_DOWNGRADE=true" class="mt-2 mb-2 w-full" />
+
+3. Start the older version of Arcane.
+4. Arcane will automatically roll the database back to the version required by that release.
+5. After the downgrade succeeds, set:
+
+<Snippet text="ALLOW_DOWNGRADE=false" class="mt-2 mb-2 w-full" />
+
+again.
+
 ## Settings Overrides via Environment
 
 If you prefer to configure Arcane via environment variables, below is a list of all configurable variables that can be set if one of the following variables is set:

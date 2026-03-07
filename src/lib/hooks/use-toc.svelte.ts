@@ -1,5 +1,3 @@
-import { SvelteMap } from 'svelte/reactivity';
-
 export type HeadingKind = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 export type Heading = {
@@ -14,6 +12,9 @@ export type Heading = {
 };
 
 export const INDEX_ATTRIBUTE = 'data-toc-index';
+
+const ACTIVE_HEADING_OFFSET = 140;
+const BOTTOM_SCROLL_EPSILON = 4;
 
 /** A hook for generating a table of contents using the page content.
  *
@@ -71,8 +72,6 @@ export class UseToc {
 
 		// reactive to the table of contents
 		$effect(() => {
-			const sectionVisibility = new SvelteMap<Element, number>();
-
 			// Flatten all headings for easier access
 			const flattenHeadings = (headings: Heading[]): Heading[] => {
 				const result: Heading[] = [];
@@ -86,43 +85,58 @@ export class UseToc {
 			const toc = this.#toc;
 			const allHeadings = flattenHeadings(toc);
 
-			const observer = new IntersectionObserver((entries) => {
-				entries.forEach((entry) => sectionVisibility.set(entry.target, entry.intersectionRatio));
+			if (allHeadings.length === 0) return;
 
-				// headings that are (partly) visible
-				const visible = [...sectionVisibility.entries()]
-					.filter(([, ratio]) => ratio > 0)
-					// sort by distance from viewport top
-					.sort(([a], [b]) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+			let frame = 0;
 
-				let activeIdx: number;
+			const updateActiveHeading = () => {
+				const scrolledToBottom =
+					window.innerHeight + window.scrollY >=
+					document.documentElement.scrollHeight - BOTTOM_SCROLL_EPSILON;
 
-				if (visible.length === 0) {
-					// No headings visible - find the last heading that's above the viewport
-					const aboveViewport = allHeadings
-						.filter((h) => h.ref.getBoundingClientRect().top < 100)
-						.sort((a, b) => b.ref.getBoundingClientRect().top - a.ref.getBoundingClientRect().top);
+				let activeHeading: Heading | undefined;
 
-					if (aboveViewport.length === 0) return;
-					activeIdx = aboveViewport[0].index;
+				if (scrolledToBottom) {
+					activeHeading = allHeadings.at(-1);
 				} else {
-					// the heading nearest to the top wins
-					const activeEl = visible[0][0];
-					activeIdx = +activeEl.getAttribute(INDEX_ATTRIBUTE)!;
+					activeHeading =
+						allHeadings.findLast(
+							(heading) => heading.ref.getBoundingClientRect().top <= ACTIVE_HEADING_OFFSET
+						) ??
+						allHeadings.find(
+							(heading) => heading.ref.getBoundingClientRect().top >= ACTIVE_HEADING_OFFSET
+						) ??
+						allHeadings[0];
 				}
 
-				resetActiveHeading(toc);
-				setHeadingActive(toc, activeIdx);
-			});
+				if (!activeHeading) return;
 
-			const observe = (heading: Heading) => {
-				observer.observe(heading.ref);
-				heading.children.forEach(observe);
+				resetActiveHeading(toc);
+				setHeadingActive(toc, activeHeading.index);
 			};
 
-			toc.forEach(observe);
+			const scheduleUpdate = () => {
+				if (frame) return;
 
-			return () => observer.disconnect();
+				frame = window.requestAnimationFrame(() => {
+					frame = 0;
+					updateActiveHeading();
+				});
+			};
+
+			window.addEventListener('scroll', scheduleUpdate, { passive: true });
+			window.addEventListener('resize', scheduleUpdate);
+
+			scheduleUpdate();
+
+			return () => {
+				window.removeEventListener('scroll', scheduleUpdate);
+				window.removeEventListener('resize', scheduleUpdate);
+
+				if (frame) {
+					window.cancelAnimationFrame(frame);
+				}
+			};
 		});
 	}
 
