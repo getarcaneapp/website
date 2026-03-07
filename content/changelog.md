@@ -3,6 +3,32 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.16.1 - 2026-03-07
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.16.1)
+
+### Bug fixes
+
+* explicitly set docker api version based on daemon api version ([#1964](https://github.com/getarcaneapp/arcane/pull/1964) by @kmendell)
+* dockerfile_inline builds not working from projects ([#1965](https://github.com/getarcaneapp/arcane/pull/1965) by @kmendell)
+* allow rolling back migrations via ALLOW_DOWNGRADE env ([#1966](https://github.com/getarcaneapp/arcane/pull/1966) by @kmendell)
+* allow remote git build contexts ([#1968](https://github.com/getarcaneapp/arcane/pull/1968) by @kmendell)
+* env variables not resolving in volumes and labels  ([#1970](https://github.com/getarcaneapp/arcane/pull/1970) by @nargotik)
+* last used date not being updated for environment api keys([b1f3287](https://github.com/getarcaneapp/arcane/commit/b1f3287efb985f08f4e8dc3e131591486db713b3) by @kmendell)
+
+### Dependencies
+
+* bump github.com/go-git/go-git/v5 from 5.16.5 to 5.17.0 in /backend ([#1917](https://github.com/getarcaneapp/arcane/pull/1917) by @dependabot[bot])
+* update frontend dependencies([a261df8](https://github.com/getarcaneapp/arcane/commit/a261df810ba33306b4c3fd6827047466a0a9462b) by @kmendell)
+* bump docker/login-action from 3 to 4 ([#1972](https://github.com/getarcaneapp/arcane/pull/1972) by @dependabot[bot])
+* bump docker/metadata-action from 5 to 6 ([#1973](https://github.com/getarcaneapp/arcane/pull/1973) by @dependabot[bot])
+* bump github.com/shirou/gopsutil/v4 from 4.26.1 to 4.26.2 in /backend ([#1976](https://github.com/getarcaneapp/arcane/pull/1976) by @dependabot[bot])
+* bump github.com/gin-gonic/gin from 1.11.0 to 1.12.0 in /backend ([#1977](https://github.com/getarcaneapp/arcane/pull/1977) by @dependabot[bot])
+* bump google.golang.org/grpc from 1.79.1 to 1.79.2 in /backend ([#1974](https://github.com/getarcaneapp/arcane/pull/1974) by @dependabot[bot])
+* bump charm.land/bubbletea/v2 from 2.0.0 to 2.0.1 in /cli ([#1998](https://github.com/getarcaneapp/arcane/pull/1998) by @dependabot[bot])
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.16.0...v1.16.1
+
 ## v1.16.0 - 2026-03-06
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.16.0)
