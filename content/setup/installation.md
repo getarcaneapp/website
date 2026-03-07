@@ -69,8 +69,8 @@ volumes:
 > 
 > ```bash
 > # You can use OpenSSL in your terminal to generate the secrets
-> echo "- ENCRYPTION_KEY=$(openssl rand -hex 32)"
-> echo "- JWT_SECRET=$(openssl rand -hex 32)"
+> echo "      - ENCRYPTION_KEY=$(openssl rand -hex 32)"
+> echo "      - JWT_SECRET=$(openssl rand -hex 32)"
 > ```
 
 > [!TIP]
