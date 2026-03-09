@@ -1,0 +1,84 @@
+name: Build and Deploy Preview
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'src/**'
+      - 'static/**'
+      - 'content/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'svelte.config.js'
+      - 'wrangler.jsonc'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+  deployments: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  build-and-deploy-preview:
+    runs-on: depot-ubuntu-latest
+    environment:
+      name: ${{ github.event.pull_request.user.login }}-pr-${{ github.event.pull_request.number }}
+      url: ${{ env.PREVIEW_BASE }}
+    env:
+      PREVIEW_ALIAS: pr-${{ github.event.pull_request.number }}
+      PREVIEW_BASE: https://pr-${{ github.event.pull_request.number }}-arcane.ofkm.workers.dev
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: latest
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build site
+        run: pnpm build
+
+      - name: Upload and Deploy Preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pnpm exec wrangler versions upload --preview-alias "$PREVIEW_ALIAS"
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v4
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'getarcaneappbot'
+          body-includes: Preview deployed successfully!
+
+      - name: Comment preview URL
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          token: ${{ secrets.ARCANE_BOT_TOKEN }}
+          body: |
+            Preview deployed successfully!
+
+            - Preview: ${{ env.PREVIEW_BASE }}
+
+            Built from commit ${{ github.sha }}
+          edit-mode: replace

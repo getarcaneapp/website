@@ -1,0 +1,66 @@
+name: Check for Spelling Errors
+
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+
+permissions:
+  actions: read
+  contents: read
+  deployments: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  check-typos:
+    runs-on: depot-ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if this is a changelog PR
+        id: check_label
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request_target" ]] \
+            && [[ "${{ contains(github.event.pull_request.labels.*.name, 'docs(changelog)') }}" == "true" ]] \
+            && [[ "${{ github.event.pull_request.head.repo.full_name }}" == "${{ github.repository }}" ]]; then
+            echo "is_changelog_pr=true" >> $GITHUB_OUTPUT
+            echo "should_fix=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_changelog_pr=false" >> $GITHUB_OUTPUT
+            echo "should_fix=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run typos check
+        uses: crate-ci/typos@v1
+        with:
+          config: ./.github/workflows/typos.toml
+          write_changes: ${{ steps.check_label.outputs.should_fix }}
+
+      - name: Check for changes
+        if: steps.check_label.outputs.should_fix == 'true'
+        id: verify_diff
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push typo fixes
+        if: steps.check_label.outputs.should_fix == 'true' && steps.verify_diff.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "info@getarcane.app"
+          git config --local user.name "getarcaneappbot"
+          git add -u
+          git commit -m "fix: auto-correct typos in changelog documentation"
+          git push
