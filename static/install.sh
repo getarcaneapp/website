@@ -124,7 +124,8 @@ get_arcane_pids() {
     ps -eo pid=,args= 2>/dev/null | awk \
         -v primary="${ARCANE_INSTALL_DIR}/arcane" \
         -v symlink="/usr/local/bin/arcane" \
-        'index($0, primary) || index($0, symlink) { print $1 }'
+        -v self="$$" \
+        '$1 != self && ($2 == primary || $2 == symlink) { print $1 }'
 }
 
 wait_for_arcane_exit() {
