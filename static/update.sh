@@ -89,6 +89,29 @@ run_cmd() {
     fi
 }
 
+get_arcane_pids() {
+    ps -eo pid=,args= 2>/dev/null | awk \
+        -v primary="${ARCANE_INSTALL_DIR}/arcane" \
+        -v symlink="/usr/local/bin/arcane" \
+        'index($0, primary) || index($0, symlink) { print $1 }'
+}
+
+wait_for_arcane_exit() {
+    local timeout="${1:-15}"
+    local elapsed=0
+
+    while [[ $elapsed -lt $timeout ]]; do
+        if [[ -z "$(get_arcane_pids)" ]]; then
+            return 0
+        fi
+
+        sleep 1
+        elapsed=$((elapsed + 1))
+    done
+
+    return 1
+}
+
 print_banner() {
     echo -e "${PURPLE}"
     cat << 'EOF'
@@ -237,20 +260,51 @@ download_arcane() {
 stop_service() {
     log_step "Stopping Arcane service..."
     progress "Stopping service"
+    local stop_attempted="false"
+    local forced_stop="false"
+    local pids=""
 
     if command -v systemctl &> /dev/null; then
+        stop_attempted="true"
         run_cmd systemctl stop arcane 2>/dev/null || true
     elif command -v rc-service &> /dev/null; then
+        stop_attempted="true"
         run_cmd rc-service arcane stop 2>/dev/null || true
     elif command -v launchctl &> /dev/null; then
+        stop_attempted="true"
         run_cmd launchctl stop app.getarcane.arcane 2>/dev/null || true
-    else
+    elif [[ -z "$(get_arcane_pids)" ]]; then
         progress_skip
         log_warn "No service manager found; skipping stop"
         return
     fi
 
+    if ! wait_for_arcane_exit 15; then
+        pids="$(get_arcane_pids)"
+
+        if [[ -n "$pids" ]]; then
+            log_warn "Arcane is still running after the service stop; sending SIGTERM"
+            echo "$pids" | xargs kill -TERM 2>/dev/null || true
+            forced_stop="true"
+        fi
+
+        if ! wait_for_arcane_exit 10; then
+            pids="$(get_arcane_pids)"
+            if [[ -n "$pids" ]]; then
+                progress_fail
+                log_error "Arcane is still running (PIDs: $(echo "$pids" | tr '\n' ' ' | xargs)). Stop it manually and rerun the updater."
+                exit 1
+            fi
+        fi
+    fi
+
     progress_done
+
+    if [[ "$stop_attempted" == "true" ]]; then
+        log_success "Arcane service stopped"
+    elif [[ "$forced_stop" == "true" ]]; then
+        log_success "Arcane process stopped"
+    fi
 }
 
 start_service() {

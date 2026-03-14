@@ -120,6 +120,83 @@ run_cmd() {
     fi
 }
 
+get_arcane_pids() {
+    ps -eo pid=,args= 2>/dev/null | awk \
+        -v primary="${ARCANE_INSTALL_DIR}/arcane" \
+        -v symlink="/usr/local/bin/arcane" \
+        'index($0, primary) || index($0, symlink) { print $1 }'
+}
+
+wait_for_arcane_exit() {
+    local timeout="${1:-15}"
+    local elapsed=0
+
+    while [[ $elapsed -lt $timeout ]]; do
+        if [[ -z "$(get_arcane_pids)" ]]; then
+            return 0
+        fi
+
+        sleep 1
+        elapsed=$((elapsed + 1))
+    done
+
+    return 1
+}
+
+stop_existing_arcane() {
+    local existing_install="false"
+    local stop_attempted="false"
+    local forced_stop="false"
+    local pids=""
+
+    if [[ -x "${ARCANE_INSTALL_DIR}/arcane" || -L "/usr/local/bin/arcane" ]]; then
+        existing_install="true"
+    fi
+
+    if [[ "$existing_install" != "true" && -z "$(get_arcane_pids)" ]]; then
+        return 0
+    fi
+
+    log_info "Stopping existing Arcane service before replacing the binary..."
+
+    if command -v systemctl &> /dev/null; then
+        stop_attempted="true"
+        run_cmd systemctl stop arcane 2>/dev/null || true
+    elif command -v rc-service &> /dev/null; then
+        stop_attempted="true"
+        run_cmd rc-service arcane stop 2>/dev/null || true
+    elif command -v launchctl &> /dev/null; then
+        stop_attempted="true"
+        run_cmd launchctl stop app.getarcane.arcane 2>/dev/null || true
+    fi
+
+    if ! wait_for_arcane_exit 15; then
+        pids="$(get_arcane_pids)"
+
+        if [[ -n "$pids" ]]; then
+            log_warn "Arcane is still running after the service stop; sending SIGTERM"
+            echo "$pids" | xargs kill -TERM 2>/dev/null || true
+            forced_stop="true"
+        fi
+
+        if ! wait_for_arcane_exit 10; then
+            pids="$(get_arcane_pids)"
+            if [[ -n "$pids" ]]; then
+                log_error "Arcane is still running (PIDs: $(echo "$pids" | tr '\n' ' ' | xargs)). Stop it manually and rerun the installer."
+                exit 1
+            fi
+        fi
+    fi
+
+    if [[ "$stop_attempted" == "true" ]]; then
+        log_success "Existing Arcane service stopped"
+    elif [[ "$forced_stop" == "true" ]]; then
+        log_success "Existing Arcane process stopped"
+    else
+        log_info "No service manager detected; no running Arcane process found"
+    fi
+}
+
 # Print banner
 print_banner() {
     echo -e "${PURPLE}"
@@ -533,6 +610,7 @@ EOF
 install_arcane() {
     log_step "Installing Arcane..."
     progress "Installing Arcane"
+    local tmp_binary=""
     
     # Determine the download URL
     if [[ "$ARCANE_VERSION" == "latest" ]]; then
@@ -552,15 +630,27 @@ install_arcane() {
     
     log_info "Downloading Arcane from $DOWNLOAD_URL..."
     
+    tmp_binary=$(mktemp -t arcane-install.XXXXXX 2>/dev/null || mktemp /tmp/arcane-install.XXXXXX)
+
     # Download binary
-    if ! curl -fsSL "$DOWNLOAD_URL" -o "$ARCANE_INSTALL_DIR/arcane" 2>/dev/null; then
+    if ! curl -fsSL "$DOWNLOAD_URL" -o "$tmp_binary" 2>/dev/null; then
         progress_fail
         log_error "Failed to download Arcane binary"
         exit 1
     fi
     
     # Make executable
-    chmod +x "$ARCANE_INSTALL_DIR/arcane"
+    chmod +x "$tmp_binary"
+
+    if ! "$tmp_binary" --version &> /dev/null 2>&1; then
+        progress_fail
+        log_error "Downloaded binary failed to run"
+        exit 1
+    fi
+
+    stop_existing_arcane
+
+    mv -f "$tmp_binary" "$ARCANE_INSTALL_DIR/arcane"
     
     # Create symlink
     ln -sf "$ARCANE_INSTALL_DIR/arcane" /usr/local/bin/arcane
