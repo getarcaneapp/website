@@ -113,6 +113,7 @@ The socket proxy uses environment variables as simple switches. Use `1` to allow
 - `NETWORKS=1` - lets Arcane manage networks
 - `VOLUMES=1` - lets Arcane manage volumes
 - `POST=1` - lets Arcane create or update things
+- `DISTRIBUTION=1` - lets Arcane inspect images and check for image updates.
 
 **System Information:**
 
@@ -130,7 +131,6 @@ The socket proxy uses environment variables as simple switches. Use `1` to allow
 - `BUILD=0` - blocks image builds
 - `COMMIT=0` - blocks container commits
 - `CONFIGS=0` - blocks Docker configs
-- `DISTRIBUTION=0` - blocks distribution APIs
 - `NODES=0` - blocks node management
 - `PLUGINS=0` - blocks plugin management
 - `SERVICES=0` - blocks Swarm services
