@@ -14,21 +14,21 @@ Most settings in Arcane can be changed via the Settings UI. Below are the settin
 
 ## Use External Postgres Database
 
-By default Arcane will use a SQLite database with the following connection string:
+By default, Arcane stores its data in a local SQLite file. This works well for most setups:
 
 <Snippet text="file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate" class="mt-2 mb-2 w-full" />
 
-If you would like to change to a external postgres database, change the `DATABASE_URL` Env variable to something similar to below:
+If you want to use an external Postgres database instead, set the `DATABASE_URL` environment variable to something like this:
 
 <Snippet text="postgres://<db_username>:<db_password>@<postgres_url>:<postgres_port>/<postgres_db_name>" class="mt-2 mb-2 w-full" />
 
-Make sure to replace the placeholder values with the real values for your environment.
+Replace each placeholder with the real value from your database.
 
-- `<db_username>`: The username to use to connect to the postgres Database
-- `<db_password>`: The password to use to connect to the postgres Database
-- `<postgres_url>`: The server where the postgres instance is (can be a dns name or ip address)
-- `<postgres_port>`: The port to use to connect to the postgres server
-- `<postgres_db_name>`: The name of the database to use on the postgres server
+- `<db_username>`: your Postgres username
+- `<db_password>`: your Postgres password
+- `<postgres_url>`: the server address for Postgres
+- `<postgres_port>`: the port Postgres uses
+- `<postgres_db_name>`: the database name to connect to
 
 ## Environment Variables
 
@@ -39,9 +39,9 @@ Make sure to replace the placeholder values with the real values for your enviro
 
 ## Downgrading Arcane
 
-If you start an older version of Arcane with a database created by a newer version, Arcane will detect this automatically at startup.
+If you start an older version of Arcane with a database from a newer version, Arcane will notice at startup.
 
-Arcane needs internet access during the downgrade process, this is because it will pull the down migrations from github.
+Arcane needs internet access during the downgrade because it downloads the older database changes it needs.
 
 By default, Arcane blocks downgrades to help protect your data.
 

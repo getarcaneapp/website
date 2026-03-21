@@ -12,7 +12,7 @@ Arcane gives you two practical ways to build images:
 - **Manual builds** in the **Build Workspace**
 - **Project builds** from Compose services that use `build:`
 
-This guide focuses on what each feature does, and how to pick the right provider and options.
+This guide focuses on what each feature does and how to pick the right provider and options.
 
 ## Choose the right build workflow
 
@@ -24,9 +24,9 @@ Where to go:
 
 - **Builds and Deployments → Builds** (`/images/builds`)
 
-The default workspace will look in `/builds` inside the container, for files and folders available to build. This can be changed in the settings.
+The default workspace looks in `/builds` inside the container for the files you want to build. You can change this in settings.
 
-You can provide that workspace by mounting either a host directory or a named Docker volume to `/builds` in your Arcane `compose.yaml`, similar to how projects work.
+You can provide that workspace by mounting either a host folder or a named Docker volume to `/builds` in your Arcane `compose.yaml`, just like you would for projects.
 
 - Host path example: `/srv/arcane/builds:/builds`
 - Docker volume example: `arcane-builds:/builds`
@@ -57,8 +57,8 @@ What you’ll see:
 
 Arcane supports two providers:
 
-- **Local Docker**: build on your local environment
-- **Depot**: build remotely with Depot BuildKit
+- **Local Docker**: builds on the same machine running Arcane
+- **Depot**: builds remotely using Depot's build service
 
 ### How provider selection works
 
@@ -82,8 +82,8 @@ When **Local Docker** is selected:
 Go to **Settings → Build** (`/settings/builds`) and configure:
 
 1. **Builds Directory**
-   - Root folder used by the Build Workspace browser
-   - Should be an absolute path
+   - The main folder the Build Workspace will open
+   - Use a full path starting with `/`
 2. **Default Build Provider**
    - Local Docker or Depot
 3. **Build Timeout**
@@ -100,9 +100,9 @@ Go to **Settings → Build** (`/settings/builds`) and configure:
 2. In the left panel, choose your context folder.
 3. In **Build Configuration**, set **Image Tags** (required).
 4. Optionally expand **Advanced** for Dockerfile/target/platforms/args/labels/cache and runtime tuning fields.
-5. Choose provider (**Local Docker** or **Depot**).
-6. Set **Push** / **Load** (or let Depot rules apply automatically).
-7. Click **Build** and watch live output in the output tab.
+5. Choose a provider (**Local Docker** or **Depot**).
+6. Choose whether to **Push** the image or **Load** it locally (Depot applies its own limits).
+7. Click **Build** and watch the live output.
 8. Review finished builds in **Build History**.
 
 ## Advanced options compatibility

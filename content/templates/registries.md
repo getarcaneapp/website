@@ -3,48 +3,72 @@ title: 'Template Registries'
 description: 'Want to share templates with your team or the community? Create your own template registry!'
 ---
 
-<script lang="ts">
-import TemplateStructure from '$lib/components/template-structure.svelte';
-import RegistryJson from '$lib/components/registry-json.svelte';
-</script>
-
-A template registry is simply a JSON file hosted online that describes available templates and where to find them.
+A template registry is a JSON file on the internet that tells Arcane which templates are available and where to download them.
 
 ## Quick Setup
 
-### 1. Create Registry Structure
+### 1. Create the registry file
 
-Create a JSON manifest file that lists your templates (include the `$schema` field pointing to the Arcane schema for editor validation):
+Create a JSON file that lists your templates. If you use a code editor, include the `$schema` field so it can help you spot mistakes:
 
-<RegistryJson />
+```json
+{
+  "$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
+  "name": "My Company Templates",
+  "description": "Docker templates for internal applications",
+  "version": "1.0.0",
+  "author": "Your Team",
+  "url": "https://github.com/yourcompany/docker-templates",
+  "templates": [
+    {
+      "id": "internal-app",
+      "name": "Internal Application",
+      "description": "Company application stack with database",
+      "version": "1.0.0",
+      "author": "DevOps Team",
+      "compose_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/docker-compose.yml",
+      "env_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/.env.example",
+      "documentation_url": "https://github.com/yourcompany/docker-templates/tree/main/internal-app",
+      "tags": ["internal", "webapp", "postgres"]
+    }
+  ]
+}
+```
 
-### 2. Host Your Files
+### 2. Host your files
 
-- **Option A: GitHub (Recommended)**
+- **Option A: GitHub (recommended)**
   1. Create a GitHub repository
   2. Add your `registry.json` file
   3. Add template directories with `docker-compose.yml` files
   4. Use raw GitHub URLs for file access
 
-- **Option B: Web Server**
+- **Option B: Web server**
   - Host `registry.json` on any web server
-  - Ensure HTTPS access
-  - Enable CORS if needed
+  - Make sure it uses HTTPS
+  - Turn on CORS if your setup needs it
 
-### 3. Template File Structure
+### 3. Template file structure
 
 For each template, create a directory with:
 
-<TemplateStructure />
+```text
+docker-templates/
+└── your-template/
+  ├── docker-compose.yml
+  ├── .env.example
+  └── README.md
+```
 
 ## Registry JSON Reference
 
-The registry must conform to the Arcane Templates Registry Schema:
+The registry must match the Arcane Templates Registry Schema:
+
 - Schema ID: `https://github.com/getarcaneapp/arcane-templates/schema.json`
 - JSON Schema Draft: 07
-- No additional properties are allowed beyond those listed below
+- No extra fields are allowed beyond the ones listed below
 
-### Top-level Fields
+### Top-level fields
 
 - Optional:
   - `$schema`: URL to the registry schema (recommended for tooling)
@@ -56,7 +80,7 @@ The registry must conform to the Arcane Templates Registry Schema:
   - `url`: Repository or homepage URL (URI)
   - `templates`: Array of template objects (min 1)
 
-### Template Object Fields
+### Template object fields
 
 - Required:
   - `id`: Unique slug (lowercase, hyphens only)
@@ -98,7 +122,7 @@ docker-templates/
 
 ## Best Practices
 
-### Template Quality
+### Template quality
 
 - Use specific image tags (not `latest`)
 - Include health checks
@@ -106,7 +130,7 @@ docker-templates/
 - Document required environment variables
 - Test templates before publishing
 
-### Registry Management
+### Registry management
 
 - Version your templates and registry (semantic versioning)
 - Keep documentation current
@@ -122,7 +146,7 @@ docker-templates/
 
 ## GitHub Example
 
-Here's a minimal GitHub setup:
+Here is a minimal GitHub setup:
 
 1. **Create repository:** `my-docker-templates`
 2. **Add registry.json:**
@@ -151,7 +175,7 @@ Here's a minimal GitHub setup:
    ```
 3. **Registry URL:** `https://raw.githubusercontent.com/username/my-docker-templates/main/registry.json`
 
-## Community Registry
+## Community registry
 
 Don't want to maintain your own? Contribute to our community registry:
 
@@ -163,14 +187,14 @@ Submit pull requests to add your templates to the community collection!
 
 **Registry not loading?**
 
-- Check JSON syntax and validate against the schema
-- Verify URL accessibility and HTTPS
-- Ensure CORS headers if using a custom domain
-- Confirm no additional/unknown fields are present
+- Check the JSON for mistakes and validate it against the schema
+- Make sure the URL works and uses HTTPS
+- Turn on CORS if you are using a custom domain
+- Confirm there are no extra fields in the file
 
 **Templates not downloading?**
 
-- Verify direct download links for all files
-- Check that files exist at specified URLs
-- Ensure proper file permissions are set
-- Look for errors in the browser
+- Check that all download links point to real files
+- Make sure the files exist at the URLs you listed
+- Check file permissions
+- Look for errors in your browser

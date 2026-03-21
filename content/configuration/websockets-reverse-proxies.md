@@ -8,11 +8,11 @@ order: 4
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-Arcane uses WebSockets for real-time communication. If you are using a reverse proxy to set Arcane behind a custom domain, you will need to ensure that it supports WebSockets and is configured correctly.
+Arcane uses WebSockets to keep the app updated in real time. If you place Arcane behind a reverse proxy or custom domain, make sure the proxy allows WebSocket connections.
 
 ## Nginx Configuration
 
-Here is a sample Nginx configuration with WebSocket support enabled:
+Here is a sample Nginx configuration with WebSocket support enabled. If you are not familiar with every line, you can usually copy it as-is and just change the domain name and paths:
 
 ```nginxconf
 server {
@@ -52,7 +52,8 @@ server {
 }
 ```
 
-The key lines for WebSocket support are:
+The important WebSocket lines are:
+
 - `proxy_http_version 1.1;`
 - `proxy_set_header Upgrade $http_upgrade;`
 - `proxy_set_header Connection "upgrade";`
@@ -60,8 +61,7 @@ The key lines for WebSocket support are:
 
 ## Apache Configuration
 
-With [`mod_proxy_http`](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html#examples)
-in Apache 2.4.47 or later, you need to use a `ProxyPassMatch` rule with `upgrade=websocket`:
+If you use Apache 2.4.47 or later, you need `mod_proxy_http` and a `ProxyPassMatch` rule with `upgrade=websocket`:
 
 ```apache
 Define HOST arcane.example.com
@@ -86,6 +86,7 @@ Define PORT 3552
 ## Additional Resources
 
 Full documentation for common reverse proxies is available from [websocket.org](https://websocket.org/):
+
 - [Nginx](https://websocket.org/guides/infrastructure/nginx/)
 - [Amazon ALB](https://websocket.org/guides/infrastructure/aws/alb/)
 - [Cloudflare](https://websocket.org/guides/infrastructure/cloudflare/)

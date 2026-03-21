@@ -12,7 +12,7 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 
 Remote Environments let Arcane manage Docker hosts outside the main Arcane server.
 
-You create the Environment in Arcane, generate an agent configuration, and run the Arcane Agent on the target host. The Agent needs access to the target Docker daemon (usually via `/var/run/docker.sock`).
+You create the environment in Arcane, generate the agent settings, and run the Arcane Agent on the remote host. The Agent needs access to Docker on that host, usually through `/var/run/docker.sock`.
 
 Arcane supports two connection modes:
 
@@ -23,16 +23,16 @@ Arcane supports two connection modes:
 
 Connection mode and transport mode are related, but not the same thing:
 
-- **`EDGE_TRANSPORT=auto`** prefers a continuously managed tunnel. Arcane will use gRPC when possible and can fall back to WebSocket.
-- **`EDGE_TRANSPORT=poll`** uses a polling control plane. The Agent checks in periodically and opens a live tunnel only when the Manager needs one.
+- **`EDGE_TRANSPORT=auto`** picks the best connection method automatically. Arcane uses gRPC when it can and falls back to WebSocket if needed.
+- **`EDGE_TRANSPORT=poll`** checks in from time to time instead of keeping a constant live tunnel open.
 
 ### What `poll` changes
 
 In poll mode, this is expected behavior:
 
-- **Standby** = healthy and reachable, but no live tunnel is currently open
-- **Online** = a live tunnel is active right now
-- First access to an idle environment can take a moment while the on-demand tunnel is established
+- **Standby** = the environment is healthy, but no live tunnel is open right now
+- **Online** = the environment is connected right now
+- The first action on an idle environment can take a moment while the connection starts
 
 Generated agent snippets use `EDGE_TRANSPORT=poll` explicitly.
 
@@ -51,9 +51,9 @@ Generated agent snippets use `EDGE_TRANSPORT=poll` explicitly.
 - Arcane Manager running and reachable from the Agent host
 - Docker installed on the Agent host
 - Permission to mount `/var/run/docker.sock`
-- The Environment must be created in Arcane before starting the Agent
-- **Direct mode only:** Manager-to-Agent network access on TCP `3553`
-- **Edge mode only:** outbound Agent-to-Manager connectivity
+- The environment must be created in Arcane before starting the Agent
+- **Direct mode only:** the Manager must be able to reach the Agent on port `3553`
+- **Edge mode only:** the Agent must be able to reach the Manager from inside your network
 
 ## Setup on the Arcane Manager (Direct)
 

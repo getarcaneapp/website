@@ -1,6 +1,6 @@
 ---
-title: "Configuration"
-description: "Managing CLI settings and authentication."
+title: 'Configuration'
+description: 'Managing CLI settings and authentication.'
 order: 2
 ---
 
@@ -28,7 +28,7 @@ Here is what a typical configuration file looks like:
 ```yaml
 server_url: https://arcane.example.com
 api_key: arc_xxxxxxxxxxxxx
-default_environment: "0"
+default_environment: '0'
 log_level: info
 ```
 
@@ -66,6 +66,6 @@ For CI/CD or automated scripts, you can use an API key generated from the Arcane
 
 ### 2. OIDC Device code
 
-OIDC must be enabled for this method, as it uses your external provider.
+This lets you sign in with your existing company or identity-provider login. Your Arcane setup must already support OIDC for this to work.
 
 <Snippet text="arcane-cli auth login" class="mt-2" />

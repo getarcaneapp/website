@@ -10,16 +10,16 @@ import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE] Enhanced Security Setup
-> Using a Docker socket proxy adds an extra layer of security by limiting Docker API access to only the endpoints Arcane needs.
+> A Docker socket proxy adds an extra layer of safety by letting Arcane use only the Docker features it actually needs.
 
 ## Why Use a Socket Proxy?
 
-By default, Arcane connects directly to the Docker socket (`/var/run/docker.sock`). While convenient, this grants full Docker daemon access. A socket proxy acts as a security layer, allowing you to:
+By default, Arcane connects directly to the Docker socket (`/var/run/docker.sock`). That is simple, but it gives Arcane full access to Docker. A socket proxy adds a middle layer so you can:
 
-- **Limit API Access**: Only expose specific Docker API endpoints
-- **Read-Only Socket**: Mount the Docker socket as read-only in the proxy
-- **Fine-Grained Control**: Enable/disable individual Docker operations
-- **Defense in Depth**: Add an isolation layer between Arcane and the Docker daemon
+- **Limit access** to only the Docker actions Arcane needs
+- **Keep the Docker socket read-only** inside the proxy
+- **Turn specific Docker features on or off**
+- **Add another layer between Arcane and Docker**
 
 ## 1. Create **_compose.yaml_** with Socket Proxy:
 
@@ -102,50 +102,54 @@ volumes:
 
 ### Socket Proxy Environment Variables
 
-The socket proxy uses environment variables to control API endpoint access. Set to `1` to enable, `0` to disable:
+The socket proxy uses environment variables as simple switches. Use `1` to allow something and `0` to block it:
 
 **Required for Arcane:**
-- `EVENTS=1` - Container event monitoring
-- `CONTAINERS=1` - Container management
-- `EXEC=1` - Execute commands in containers
-- `IMAGES=1` - Image management
-- `NETWORKS=1` - Network management
-- `VOLUMES=1` - Volume management
-- `POST=1` - Required for create/update operations
+
+- `EVENTS=1` - lets Arcane watch for Docker activity
+- `CONTAINERS=1` - lets Arcane manage containers
+- `EXEC=1` - lets Arcane run commands inside containers
+- `IMAGES=1` - lets Arcane manage images
+- `NETWORKS=1` - lets Arcane manage networks
+- `VOLUMES=1` - lets Arcane manage volumes
+- `POST=1` - lets Arcane create or update things
 
 **System Information:**
-- `PING=1` - Health checks
+
+- `PING=1` - health checks
 - `VERSION=1` - Docker version info
 - `INFO=1` - Docker system info
 
 **Security Critical (Disabled):**
-- `AUTH=0` - Authentication APIs
-- `SECRETS=0` - Docker secrets access
+
+- `AUTH=0` - blocks authentication-related APIs
+- `SECRETS=0` - blocks Docker secrets access
 
 **Optional (Disabled):**
-- `BUILD=0` - Image building
-- `COMMIT=0` - Container commits
-- `CONFIGS=0` - Docker configs
-- `DISTRIBUTION=0` - Distribution APIs
-- `NODES=0` - Node management
-- `PLUGINS=0` - Plugin management
-- `SERVICES=0` - Service management (Swarm)
-- `SESSION=0` - Session management
-- `SWARM=0` - Docker Swarm features
-- `SYSTEM=0` - System-wide operations
-- `TASKS=0` - Task management (Swarm)
+
+- `BUILD=0` - blocks image builds
+- `COMMIT=0` - blocks container commits
+- `CONFIGS=0` - blocks Docker configs
+- `DISTRIBUTION=0` - blocks distribution APIs
+- `NODES=0` - blocks node management
+- `PLUGINS=0` - blocks plugin management
+- `SERVICES=0` - blocks Swarm services
+- `SESSION=0` - blocks session management
+- `SWARM=0` - blocks Docker Swarm features
+- `SYSTEM=0` - blocks system-wide operations
+- `TASKS=0` - blocks Swarm tasks
 
 ### Arcane Configuration
 
-Key environment variables for proxy integration:
+The only Arcane setting you usually need here is:
 
 <Snippet text="DOCKER_HOST=tcp://docker-socket-proxy:2375" class="mt-2" />
 
-This tells Arcane to connect to the Docker API through the proxy instead of the direct socket.
+This tells Arcane to use the proxy instead of connecting directly to Docker.
 
 ## 3. Generating secrets
 
-You can use the Arcane CLI inside a temporary container to generate secrets in the format arcane supports, or you can use the host OSes `openssl` command as previously documented.
+You can generate the required secrets with the Arcane CLI in a temporary container or with your computer's `openssl` command.
 
 Via Docker Container:
 
@@ -155,17 +159,17 @@ Standalone Arcane Binary:
 
 <Snippet text="arcane-cli generate secret" class="mt-2" />
 
-## 4. Start the Project:
+## 4. Start the Project
 
 ```bash
 docker compose up -d
 ```
 
-The proxy will start first, followed by Arcane which depends on it.
+The proxy starts first, then Arcane connects to it.
 
-## 5. Access Arcane:
+## 5. Access Arcane
 
-Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. After your first initial login, you will be asked to change the default admin password.
+Open <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. The first time you sign in, you'll be asked to change the default admin password.
 
 Username:
 <Snippet text="arcane" class="mt-2 max-w-[300px]" />

@@ -10,36 +10,14 @@ import { Snippet } from '$lib/components/ui/snippet/index.js';
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-> [!NOTE] This guide is for the full installation of Arcane.
-> If you are looking to setup a remote environment see <Link href="/docs/features/environments">here</Link>. For enhanced security with a Docker socket proxy, see the <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link> guide.
-
-## Convenience Script
-
-For Linux users, you can use our installation script to set up Arcane and its required dependencies (including Docker) automatically.
-
-<Snippet text="curl -fsSL https://getarcane.app/install.sh | sudo bash" />
-
-To uninstall:
-
-### Safe uninstall (interactive, recommended)
-
-This version does **not** force removal and will ask before deleting Arcane data, user/group, or Docker.
-
-<Snippet text="curl -fsSL https://getarcane.app/uninstall.sh -o /tmp/arcane-uninstall.sh && sudo bash /tmp/arcane-uninstall.sh" />
-
-### Full cleanup (forced, destructive)
-
-> [!WARNING]
-> This removes **Arcane + Arcane data + Arcane user/group + Docker packages**.
-> Only use this on hosts where removing Docker is intended.
-
-<Snippet text="curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove-all" />
+> [!NOTE] This guide walks you through a full Arcane installation.
+> If you want to use Arcane with a remote server, see <Link href="/docs/features/environments">the remote environments guide</Link>. If you want extra protection for Docker access, see the <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link> guide.
 
 ## Docker Compose (Recommended)
 
-If you prefer to use Docker Compose manually or are on a different platform:
+If you'd rather set things up yourself, or if you're on a different platform, use Docker Compose:
 
-## 1. Create **_compose.yaml_**:
+## 1. Create `compose.yaml`:
 
 ```yaml
 services:
@@ -65,8 +43,8 @@ volumes:
 ```
 
 > [!NOTE]
-> The ENCRYPTION_KEY must be 32 bytes (raw/base64/hex).
-> 
+> The `ENCRYPTION_KEY` must be 32 bytes long (raw, base64, or hex).
+>
 > ```bash
 > # You can use OpenSSL in your terminal to generate the secrets
 > echo "      - ENCRYPTION_KEY=$(openssl rand -hex 32)"
@@ -74,7 +52,7 @@ volumes:
 > ```
 
 > [!TIP]
-> You can optionally add extra mounts in your `compose.yaml` for Arcane's build workspace and volume backups:
+> You can also add extra folders in your `compose.yaml` if you want Arcane to keep build files or backups in a specific place:
 >
 > - `/builds`: used by the **Build Workspace** for Dockerfiles and build contexts.
 >   - Host path example: `/srv/arcane/builds:/builds`
@@ -85,48 +63,48 @@ volumes:
 >
 > If you use named Docker volumes, remember to declare them under the top-level `volumes:` section too.
 
-## 2. Review Volumes & Imports:
+## 2. Understand the folders Arcane uses:
 
-**_/var/run/docker.sock_**: Lets Arcane manage Docker.
+**_/var/run/docker.sock_**: Gives Arcane access to Docker.
 
-**_arcane-data_**: Arcanes data directory. (for the database and projects)
+**_arcane-data_**: Arcane's data folder, which stores things like the database and project data.
 
-**_/builds_**: Optional mount used by the Build Workspace. Mount a host path or Docker volume here if you want build contexts available inside Arcane.
+**_/builds_**: Optional folder for build files used by the Build Workspace. You can map a host folder or a Docker volume here.
 
-**_/backups_**: Optional mount used for exported volume backup archives. Mount a host path or Docker volume here if you want backups stored outside the default internal Docker storage.
+**_/backups_**: Optional folder for exported backups. Use this if you want backups stored somewhere you can easily find them.
 
 > [!IMPORTANT]
-> To manage existing compose projects, you must mount your projects folder with **matching paths** inside and outside the container.
-> All Paths MUST be absolute paths, ie: `/opt/docker` NOT `opt/docker`
+> To manage an existing Compose project, the project folder path must match inside and outside the container.
+> All paths must be absolute, for example `/opt/docker` instead of `opt/docker`.
 >
 > For example, if your projects are at `/opt/docker` on the host:
 >
 > - Mount: `/opt/docker:/opt/docker` (not `/opt/docker:/app/data/projects`)
 > - Set the projects directory in Arcane to `/opt/docker` or set `PROJECTS_DIRECTORY=/opt/docker` in the environment for this to take effect immediately on startup of Arcane.
 >
-> This ensures that file paths in your compose files (like `./config` or relative volume mounts) resolve correctly both inside Arcane and when Docker executes on the host.
+> This helps Arcane and Docker agree on where your files live, so paths like `./config` work the way you expect.
 
-## 3. Generating secrets
+## 3. Generate your secrets
 
-You can use the Arcane CLI inside a temporary container to generate secrets in the format arcane supports, or you can use the host OSes `openssl` command as previously documented.
+You can generate the required secrets either with the Arcane CLI in a temporary container or with your computer's `openssl` command.
 
 Via Docker Container:
 
 <Snippet text="docker run --rm ghcr.io/getarcaneapp/arcane:latest /app/arcane generate secret" class="mt-2" />
 
-Standalone Arcane Binary:
+If you already have the Arcane CLI installed:
 
 <Snippet text="arcane-cli generate secret" class="mt-2" />
 
-## 4. Start Arcane:
+## 4. Start Arcane
 
 ```bash
 docker compose up -d
 ```
 
-## 5. Access Arcane:
+## 5. Open Arcane
 
-Go to <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. After your first initial login, you will be asked to change the default admin password. The default credentials are shown below.
+Open <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup steps. The first time you sign in, you'll be asked to change the default admin password. Use these default credentials:
 
 Username:
 <Snippet text="arcane" class="mt-2 max-w-75" />
@@ -134,17 +112,39 @@ Username:
 Password:
 <Snippet text="arcane-admin" class="mt-2 max-w-75" />
 
-## 6. Using a Custom Domain or Reverse Proxy?
+## 6. Using a custom domain or reverse proxy?
 
 > [!NOTE]
-> Arcane uses WebSockets for real-time communication. If you're setting up Arcane behind a reverse proxy or custom domain, you'll need to ensure WebSocket support is properly configured.
+> Arcane uses WebSockets to stay connected in real time. If you're putting Arcane behind a reverse proxy or custom domain, make sure WebSocket support is enabled.
 >
-> See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for detailed instructions on configuring Nginx, Apache, and other reverse proxies.
+> See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for setup steps for Nginx, Apache, and other reverse proxies.
 
-## 7. Behind an Outbound HTTP Proxy?
+## 7. Behind an outbound HTTP proxy?
 
-If Arcane needs to reach the internet through an outbound HTTP/HTTPS proxy (e.g., for pulling templates or checking for updates), see the <Link href="/docs/configuration/proxy">HTTP Proxy Configuration Guide</Link>.
+If Arcane needs to reach the internet through a proxy, for example to download templates or check for updates, see the <Link href="/docs/configuration/proxy">HTTP Proxy Configuration Guide</Link>.
+
+## Convenience Script
+
+If you're using Linux, you can run our installer to set up Arcane and Docker for you.
+
+<Snippet text="curl -fsSL https://getarcane.app/install.sh | sudo bash" />
+
+To uninstall:
+
+### Safe uninstall, recommended
+
+This version asks before removing Arcane data, the Arcane user/group, or Docker.
+
+<Snippet text="curl -fsSL https://getarcane.app/uninstall.sh -o /tmp/arcane-uninstall.sh && sudo bash /tmp/arcane-uninstall.sh" />
+
+### Full cleanup, use with caution
+
+> [!WARNING]
+> This removes Arcane, its data, the Arcane user/group, and Docker packages.
+> Only use this if you really want Docker removed from the machine too.
+
+<Snippet class="mt-4" text="curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove-all" />
 
 ## Next (Preview) Builds
 
-Interested in trying out the latest features before they are officially released? Check out our <Link href="/docs/setup/next-images">Next Builds</Link> guide for information on how to use the `:next` or `:next-distroless` images.
+Want to try the latest features before they are officially released? See the <Link href="/docs/setup/next-images">Next Builds</Link> guide for the `:next` and `:next-distroless` images.

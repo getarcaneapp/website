@@ -283,13 +283,8 @@
 
     <section class="py-12">
       <div
-        class="border-border/60 bg-background/70 rounded-4xl border px-6 py-8 text-center shadow-[0_20px_45px_-45px_oklch(0_0_0/0.5)] backdrop-blur">
-        <p class="text-muted-foreground mx-auto max-w-3xl text-sm leading-relaxed italic">
-          Shoutout to the shadcn and shadcn-svelte teams — their design language inspired this documentation experience. Much of
-          the UX polish pays homage to their incredible work, so be sure to explore their ecosystems!
-        </p>
-
-        <div class="mx-auto mt-6 flex max-w-3xl flex-col items-center justify-center gap-4 text-center">
+        class="border-border/60 bg-background/70 rounded-4xl border px-6 py-6 text-center shadow-[0_20px_45px_-45px_oklch(0_0_0/0.5)] backdrop-blur">
+        <div class="mx-auto flex max-w-3xl flex-col items-center justify-center gap-2 text-center">
           <span class="text-muted-foreground text-sm font-medium tracking-wider uppercase">Supported by</span>
           <div class="flex flex-wrap items-center justify-center gap-8">
             <a

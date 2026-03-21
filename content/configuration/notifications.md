@@ -1,104 +1,55 @@
 ---
 title: 'Notifications'
-description: 'Configure Discord and email notifications for container image updates.'
+description: 'Configure notifications for container image updates and container events.'
 order: 1
 ---
 
-Arcane supports automated notifications to keep you informed when container image updates are available or when containers are successfully updated. Currently, Discord and email notifications are supported.
+Arcane uses [Shoutrrr](https://github.com/nicholas-fedor/shoutrrr) for notifications. If Shoutrrr supports a provider, Arcane can usually support it too.
 
-## Notification Types
+## Notification event types
 
-Arcane can send notifications for two types of events:
+Arcane can send notifications for these events:
 
-- **Image Update Available** - When a newer version of a container image is detected
-- **Container Updated** - When a container has been successfully updated to a new image version
+- **Image Update Detected** — when Arcane finds a newer version of an image
+- **Container Updated** — when a container has been updated or restarted successfully
+- **System Prune Report** — when a scheduled prune finishes and Arcane sends a summary
+- **Vulnerability Found (Fix Available)** — when a scan finds a vulnerability with a fixed version available
+- **Auto-Heal Restart** — when Arcane automatically restarts an unhealthy container
 
-## Discord Notifications
+## Supported providers
 
-Discord notifications are delivered via webhooks, making setup quick and straightforward.
+Arcane includes the most common Shoutrrr providers and can grow with them over time. Common options include Discord, email (SMTP), Slack, Telegram, Matrix, Gotify, Pushover, Ntfy, Microsoft Teams, and more.
 
-### Setup
+You do **not** need a separate setup guide for every provider. In Arcane, you simply pick the provider you want, fill in the fields it asks for, and choose which events should trigger it.
 
-1. Navigate to **Settings → Notifications** in the Arcane UI
-2. Select **Discord** as the notification provider
-3. Configure your Discord webhook settings
+## How setup works
 
-### Discord Configuration
+1. Go to **Settings → Notifications** in the Arcane UI
+2. Choose a provider
+3. Fill in the settings for that provider
+4. Pick the events you want to receive
+5. Use the **Test** button to make sure everything works
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| **Webhook URL** | Yes | The Discord webhook URL for your channel |
-| **Username** | No | Custom username for the bot (defaults to "Arcane") |
-| **Avatar URL** | No | Custom avatar URL for the bot |
-| **Enabled Events** | No | Choose which events trigger notifications |
+The exact fields change depending on the provider you choose. For example, some providers use a webhook URL, while others use SMTP or a token.
 
-### Creating a Discord Webhook
+## Event selection
 
-To create a Discord webhook, follow Discord's official guide: [Intro to Webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
+You can turn events on or off for each provider separately. That makes it easy to:
 
-Once you have your webhook URL, paste it into Arcane's Discord notification settings.
+- Send quick alerts to chat apps
+- Send record-keeping updates by email
+- Use different providers for different kinds of alerts
 
-## Email Notifications
+## Testing notifications
 
-Email notifications provide detailed information about container updates and support both HTML and plain text formats.
-
-### Setup
-
-1. Navigate to **Settings → Notifications** in the Arcane UI
-2. Select **Email** as the notification provider
-3. Configure your SMTP server settings
-
-### Email Configuration
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| **SMTP Host** | Yes | Your SMTP server hostname (e.g., `smtp.gmail.com`) |
-| **SMTP Port** | Yes | SMTP server port (typically 587 for STARTTLS, 465 for SSL) |
-| **SMTP Username** | No | Username for SMTP authentication (leave blank if not required) |
-| **SMTP Password** | No | Password for SMTP authentication (stored encrypted, leave blank if not required) |
-| **From Address** | Yes | Email address notifications are sent from |
-| **To Addresses** | Yes | Comma-separated list of recipient email addresses |
-| **TLS Mode** | Yes | Encryption mode: `none`, `starttls`, or `ssl` |
-| **Enabled Events** | No | Choose which events trigger notifications |
-
-> [!NOTE] Email addresses must be in the format `example@example.com`
-
-### TLS Modes
-
-- **None** - No encryption (not recommended for production)
-- **STARTTLS** - Upgrades connection to TLS after initial connection (port 587)
-- **SSL/TLS** - Direct TLS connection from the start (port 465)
-
-## Event Configuration
-
-Both Discord and email notifications allow you to choose which events trigger notifications:
-
-### Available Events
-
-- **Image Update Available** - Triggered when Arcane detects a newer image version is available
-- **Container Updated** - Triggered after a container has been successfully updated
-
-You can enable or disable each event type independently for each notification provider. This allows you to:
-
-- Send update availability notifications to Discord for quick awareness
-- Send successful update confirmations via email for record-keeping
-- Configure different notification preferences for different channels
-
-
-## Testing Notifications
-
-After configuring a notification provider, use the **Test** button in the Arcane UI to verify your settings:
-
-1. Configure your notification settings
-2. Click the **Test** button
-3. Check your Discord channel or email inbox for the test notification
+After setting up a provider, click the **Test** button in the Arcane UI.
 
 If the test fails, check:
-- Discord: Verify the webhook URL is correct and the webhook hasn't been deleted
-- Email: Verify SMTP credentials, port, and TLS settings are correct
-- Both: Check Arcane logs for detailed error messages
 
+- that the provider details are correct
+- that the destination service still exists and is reachable
+- that Arcane logs do not show a more specific error
 
-## Future Notification Providers
+## Missing a provider?
 
-Arcane's notification system is designed to be extensible. Additional providers may be added in future releases based on community feedback.
+If a provider is not listed in Arcane but **is supported by** [Shoutrrr](https://github.com/nicholas-fedor/shoutrrr), we can add it.

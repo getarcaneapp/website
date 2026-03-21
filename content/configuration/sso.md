@@ -20,9 +20,9 @@ The easiest way to set up OIDC is through Arcane's web interface:
 3. Save and test the connection
 4. The UI will guide you through any missing or invalid fields
 
-OIDC users are auto-provisioned on first login. You can disable local login for stricter security.
+OIDC users are created automatically the first time they sign in. You can disable local login if you want stricter security.
 
-All the OIDC Urls are discovered from the issuer url/the providers `.well-known/openid-configuration` endpoint. Make sure there is no trailing slash on the Issuer URL.
+Arcane finds the OIDC endpoints automatically from the issuer URL and its `.well-known/openid-configuration` page. Make sure the issuer URL does not end with a trailing slash.
 
 ## Alternative: Environment Variables
 
@@ -32,15 +32,15 @@ You can also configure OIDC using environment variables:
 
 ## Admin Role Assignment
 
-The `OIDC_ADMIN_CLAIM` and `OIDC_ADMIN_VALUE` settings allow you to automatically grant admin privileges to users based on their OIDC token claims.
+The `OIDC_ADMIN_CLAIM` and `OIDC_ADMIN_VALUE` settings let Arcane make certain users admins based on information in their login token.
 
-- **OIDC_ADMIN_CLAIM**: The claim in the OIDC token to check (e.g., `groups`, `roles`, or a custom claim)
-- **OIDC_ADMIN_VALUE**: The value(s) that grant admin access. Use commas to specify multiple values (e.g., `arcane-admins,super-users`)
+- **OIDC_ADMIN_CLAIM**: the part of the login token to check, such as `groups` or `roles`
+- **OIDC_ADMIN_VALUE**: the value or values that should grant admin access. Use commas for more than one value, such as `arcane-admins,super-users`
 
-When a user logs in, Arcane checks if their token contains the specified claim with a matching value. If it does, they're granted admin access.
+When someone signs in, Arcane checks whether their token contains the matching value. If it does, they become an admin.
 
 > [!IMPORTANT]
-> The claim you want to use (e.g., `groups`) must be included in your `OIDC_SCOPES`. For example, if you want to use group membership for admin assignment, make sure `groups` is in your scopes: `openid email profile groups`
+> The claim you want to use, such as `groups`, must be included in `OIDC_SCOPES`. For example, if you want group membership to control admin access, make sure your scopes include `groups`: `openid email profile groups`
 
 ## Example Compose Configuration
 
@@ -59,5 +59,3 @@ services:
       - OIDC_ADMIN_VALUE=_arcane_admins
       - OIDC_MERGE_ACCOUNTS=true
 ```
-
-

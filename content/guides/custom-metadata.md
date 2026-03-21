@@ -3,7 +3,7 @@ title: 'Custom Metadata'
 description: 'Customize project and service appearance with icons and external links'
 ---
 
-Arcane allows you to customize the appearance of your projects and services using custom metadata. This metadata can be defined globally for a project or specifically for individual containers/services.
+Arcane lets you customize the look of your projects and services with extra metadata. You can apply it to the whole project or to a single service.
 
 ### Project-level Metadata
 
@@ -20,8 +20,8 @@ services:
   # ...
 ```
 
-- `icon` (or `icons`): A URL to an image representing the project.
-- `urls`: A list of strings for additional project-related links (e.g., documentation, homepage).
+- `icon` (or `icons`): a link to an image for the project
+- `urls`: extra links for the project, like documentation or a homepage
 
 ### Service and Container Metadata
 
@@ -44,4 +44,4 @@ services:
       - com.getarcaneapp.arcane.icon=https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx.png
 ```
 
-The individual label is used for the container icon only, and the top level x-arcane block is also only used for the project only. Each icon is independent of each other. 
+The label only changes the container icon. The top-level `x-arcane` block only changes the project icon. Each one works separately.

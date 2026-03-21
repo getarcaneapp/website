@@ -8,20 +8,20 @@ import { Snippet } from '$lib/components/ui/snippet/index.js';
 import BuildablesTable from '$lib/components/buildables-table.svelte';
 </script>
 
-Buildables are optional features that you compile into Arcane on purpose. They are only included when you build with the `buildables` tag, and then activated via a comma-separated feature list embedded at build time.
+Buildables are optional features that you add to Arcane when you build it. Most users do not need them.
 
-These are typically niche features or ones that could introduce risk in standard builds, which is why they’re opt-in.
+These are usually niche features or ones that could add extra risk in standard builds, which is why they are opt-in.
 
 ## Overview
 
-- Buildables are **compiled** with the `buildables` tag.
-- Individual features are **enabled** via `buildables.EnabledFeatures` (set with `-ldflags`).
-- Runtime checks use `buildables.HasBuildFeature("<feature>")`.
-- When buildables are disabled, their config fields are pruned and the feature logic is excluded.
+- Buildables are included with the `buildables` tag.
+- Specific features are turned on with `buildables.EnabledFeatures`.
+- Arcane checks for them with `buildables.HasBuildFeature("<feature>")`.
+- When buildables are off, their settings and logic are removed from the build.
 
 ## Quick start
 
-If you’re building from source, enable the build tag and set a feature list at link time. If you’re using Docker, build a custom image with those same flags.
+If you are building from source, enable the build tag and set the feature list when you build. If you are using Docker, build a custom image with the same settings.
 
 ## Build from source
 
@@ -37,7 +37,7 @@ Example flags:
 
 ## Build with Docker
 
-If you want buildables in a container image, build your own image and pass the build tag + enabled feature list. Here’s a minimal example that uses the official image as the runtime base:
+If you want buildables in a container image, build your own image and pass the build tag plus the feature list. Here is a minimal example that uses the official image as the runtime base:
 
 ```dockerfile
 # docker/Dockerfile.buildables
@@ -84,7 +84,7 @@ docker build -f docker/Dockerfile.buildables \
 ```
 
 > [!NOTE]
-> Official images are standard builds. If you need buildables, you’ll want a custom image like the one above.
+> Official images do not include buildables. If you need them, use a custom image like the one above.
 
 ## Selecting features
 
@@ -97,11 +97,11 @@ Example:
 
 ## Runtime checks
 
-Use `buildables.HasBuildFeature("feature")` to gate execution paths and route registration.
+Use `buildables.HasBuildFeature("feature")` to check whether a feature is available before running code for it.
 
 ## Configuration
 
-Buildable-specific config fields live in `BuildablesConfig` and are only present when buildables are enabled. For example, the `autologin` feature uses:
+Buildable-specific settings live in `BuildablesConfig` and only exist when buildables are enabled. For example, the `autologin` feature uses:
 
 - `AUTO_LOGIN_USERNAME`
 - `AUTO_LOGIN_PASSWORD`
@@ -116,6 +116,6 @@ Buildable-specific config fields live in `BuildablesConfig` and are only present
 ## Adding a new buildable feature
 
 1. Guard feature entry points using `//go:build buildables` where appropriate.
-2. Gate behavior with `buildables.HasBuildFeature("your-feature")`.
+2. Check `buildables.HasBuildFeature("your-feature")` before using the feature.
 3. Add any buildable-only config to `BuildablesConfig`.
-4. Ensure tests that use the feature build with the `buildables` tag.
+4. Make sure any tests for the feature are built with the `buildables` tag.
