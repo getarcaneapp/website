@@ -4,6 +4,8 @@
   import { sortDocs } from '$lib/config/docs.js';
 
   type Doc = { title: string; path: string; order?: number };
+  type Section = { title: string; collections: Doc[][] };
+  type Props = { sections?: Section[] };
 
   let {
     sections = [
@@ -14,7 +16,7 @@
       { title: 'Guides', collections: [guides] },
       { title: 'Development', collections: [development] },
     ],
-  } = $props();
+  }: Props = $props();
 
   const toHref = (path: string) => resolve('/docs/[...slug]', { slug: path });
   const getInitials = (title: string) =>

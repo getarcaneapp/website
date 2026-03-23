@@ -132,9 +132,9 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Trigger>
-		{#snippet child({ props })}
+		{#snippet child(snippetProps: { props: Record<string, unknown> })}
 			<Button
-				{...props}
+				{...snippetProps.props}
 				variant="secondary"
 				class={cn(
 					'bg-background/80 text-muted-foreground border-border/60 relative h-9 w-full justify-start border pl-3 font-normal shadow-[0_8px_20px_-20px_oklch(0_0_0/0.45)] backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:text-foreground sm:pr-12 md:w-40 lg:w-56 xl:w-64 dark:bg-surface/80 dark:text-surface-foreground/70 dark:border-white/10 dark:hover:border-primary/40'

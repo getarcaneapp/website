@@ -24,11 +24,27 @@
 			description?: string;
 		};
 		paths?: Record<string, Record<string, any>>;
-		definitions?: Record<string, any>;
-		tags?: Array<{ name: string; description?: string }>;
+		definitions?: Record<string, OpenAPISchema>;
+		tags?: OpenAPITag[];
 	}
 
-	let spec: OpenAPISpec | null = $state(null);
+	interface OpenAPITag {
+		name: string;
+		description?: string;
+	}
+
+	interface OpenAPISchema {
+		type?: string;
+		items?: OpenAPISchema;
+		'$ref'?: string;
+		properties?: Record<string, OpenAPISchema>;
+		additionalProperties?: OpenAPISchema;
+		description?: string;
+		required?: string[];
+		[key: string]: unknown;
+	}
+
+	let spec = $state<OpenAPISpec | null>(null);
 	let loading = $state(true);
 	let error: string | null = $state(null);
 	let index = $state<ReturnType<typeof indexOpenApi> | null>(null);
@@ -36,6 +52,9 @@
 	let selectedTags = $state<Set<string>>(new Set());
 	let filtered = $derived(index ? filterIndexed(index, search, selectedTags) : null);
 	let copiedPath: string | null = $state(null);
+	const specTags = $derived(spec?.tags ?? []);
+	const specDefinitions = $derived(spec?.definitions ?? {});
+	const definitionEntries = $derived(Object.entries(specDefinitions) as Array<[string, OpenAPISchema]>);
 
 	onMount(async () => {
 		try {
@@ -81,32 +100,32 @@
 		return styles[method.toLowerCase()] || { bg: 'bg-muted', text: 'text-muted-foreground', border: 'border-border' };
 	}
 
-	function formatPropertyType(property: any): string {
+	function formatPropertyType(property: OpenAPISchema): string {
 		if (property.type) {
 			if (property.type === 'array' && property.items) {
 				return `${property.type}<${formatPropertyType(property.items)}>`;
 			}
 			return property.type;
 		}
-		if (property.$ref) {
-			return property.$ref.split('/').pop() || 'object';
+		if (property['$ref']) {
+			return property['$ref'].split('/').pop() || 'object';
 		}
 		return 'unknown';
 	}
 
 	// Resolve $ref references in schemas
-	function resolveRef(ref: string): any {
-		if (!spec?.definitions || !ref.startsWith('#/definitions/')) return null;
-		const defName = ref.replace('#/definitions/', '');
-		return spec.definitions[defName] || null;
+	function resolveRef(reference: string): OpenAPISchema | undefined {
+		if (!reference.startsWith('#/definitions/')) return undefined;
+		const defName = reference.replace('#/definitions/', '');
+		return specDefinitions[defName];
 	}
 
 	// Recursively resolve all $ref in a schema object
-	function resolveSchema(schema: any, depth = 0): any {
+	function resolveSchema(schema: OpenAPISchema | undefined, depth = 0): OpenAPISchema | undefined {
 		if (!schema || depth > 5) return schema; // Limit depth to prevent infinite loops
 
-		if (schema.$ref) {
-			const resolved = resolveRef(schema.$ref);
+		if (schema['$ref']) {
+			const resolved = resolveRef(schema['$ref']);
 			if (resolved) {
 				return resolveSchema(resolved, depth + 1);
 			}
@@ -142,8 +161,8 @@
 	}
 
 	// Get a friendly display name from a $ref
-	function getRefName(ref: string): string {
-		const name = ref.split('/').pop() || 'object';
+	function getRefName(reference: string): string {
+		const name = reference.split('/').pop() || 'object';
 		// Clean up long names like "github_com_getarcaneapp_arcane_backend_internal_dto.Paginated-dto_ProjectDetailsDto"
 		if (name.includes('.')) {
 			return name.split('.').pop() || name;
@@ -152,7 +171,7 @@
 	}
 
 	// Format schema for display - shows properties in a readable way
-	function formatSchemaForDisplay(schema: any): string {
+	function formatSchemaForDisplay(schema: OpenAPISchema): string {
 		const resolved = resolveSchema(schema);
 		if (!resolved) return JSON.stringify(schema, null, 2);
 
@@ -169,18 +188,18 @@
 	}
 
 	// Get a simple type string for a property
-	function getPropertyTypeString(prop: any): string {
+	function getPropertyTypeString(prop: OpenAPISchema): string {
 		if (prop.type === 'array' && prop.items) {
 			return `array<${getPropertyTypeString(prop.items)}>`;
 		}
 		if (prop.type) return prop.type;
-		if (prop.$ref) return getRefName(prop.$ref);
+		if (prop['$ref']) return getRefName(prop['$ref']);
 		return 'unknown';
 	}
 
 	// Get the full definition name from a $ref for creating element IDs
-	function getFullRefName(ref: string): string {
-		return ref.replace('#/definitions/', '');
+	function getFullRefName(reference: string): string {
+		return reference.replace('#/definitions/', '');
 	}
 
 	// Create a URL-safe ID from a model name
@@ -192,8 +211,8 @@
 	let openModelId = $state<string | undefined>(undefined);
 
 	// Scroll to a specific data model and open its accordion
-	function scrollToModel(ref: string) {
-		const modelName = getFullRefName(ref);
+	function scrollToModel(reference: string) {
+		const modelName = getFullRefName(reference);
 		const modelId = getModelId(modelName);
 		const element = document.getElementById(modelId);
 		
@@ -313,8 +332,8 @@
 							</Badge>
 						</div>
 
-						{#if spec.tags}
-							{@const tagInfo = spec.tags.find((t) => t.name === tagName)}
+						{#if specTags.length > 0}
+							{@const tagInfo = specTags.find((tag: OpenAPITag) => tag.name === tagName)}
 							{#if tagInfo?.description}
 								<p class="text-muted-foreground">{tagInfo.description}</p>
 							{/if}
@@ -435,13 +454,13 @@
 																	<p class="text-sm text-muted-foreground">{bodyParam.description}</p>
 																{/if}
 																<div class="space-y-2">
-																	{#if bodySchema?.$ref}
+																	{#if bodySchema?.['$ref']}
 																		<button
 																			type="button"
-																			onclick={() => scrollToModel(bodySchema.$ref)}
+																			onclick={() => scrollToModel(bodySchema['$ref'])}
 																			class="inline-flex"
 																		>
-																			<Badge variant="secondary" class="font-mono text-xs cursor-pointer hover:bg-secondary/80 transition-colors">{getRefName(bodySchema.$ref)}</Badge>
+																			<Badge variant="secondary" class="font-mono text-xs cursor-pointer hover:bg-secondary/80 transition-colors">{getRefName(bodySchema['$ref'])}</Badge>
 																		</button>
 																	{/if}
 																	{#if resolvedBody?.properties}
@@ -506,13 +525,13 @@
 																<div class="space-y-2">
 																	<div class="flex items-center gap-2">
 																		<Badge variant="outline" class="font-mono text-xs">{contentType}</Badge>
-																		{#if contentSchema?.$ref}
+																		{#if contentSchema?.['$ref']}
 																			<button
 																				type="button"
-																				onclick={() => scrollToModel(contentSchema.$ref)}
+																				onclick={() => scrollToModel(contentSchema['$ref'])}
 																				class="inline-flex"
 																			>
-																				<Badge variant="secondary" class="font-mono text-xs cursor-pointer hover:bg-secondary/80 transition-colors">{getRefName(contentSchema.$ref)}</Badge>
+																				<Badge variant="secondary" class="font-mono text-xs cursor-pointer hover:bg-secondary/80 transition-colors">{getRefName(contentSchema['$ref'])}</Badge>
 																			</button>
 																		{/if}
 																	</div>
@@ -583,15 +602,15 @@
 																	</div>
 																	{#if resolvedSchema}
 																		<div class="space-y-2">
-																			{#if response.schema.$ref}
+																			{#if response.schema['$ref']}
 																				<div class="flex items-center gap-2">
 																					<span class="text-xs font-medium text-muted-foreground">Schema:</span>
 																					<button
 																						type="button"
-																						onclick={() => scrollToModel(response.schema.$ref)}
+																						onclick={() => scrollToModel(response.schema['$ref'])}
 																						class="inline-flex"
 																					>
-																						<Badge variant="outline" class="font-mono text-xs cursor-pointer hover:bg-muted transition-colors">{getRefName(response.schema.$ref)}</Badge>
+																						<Badge variant="outline" class="font-mono text-xs cursor-pointer hover:bg-muted transition-colors">{getRefName(response.schema['$ref'])}</Badge>
 																					</button>
 																				</div>
 																			{/if}
@@ -658,17 +677,17 @@
 		{/if}
 
 		<!-- Data Models -->
-		{#if spec.definitions && Object.keys(spec.definitions).length > 0}
+		{#if Object.keys(specDefinitions).length > 0}
 			<section class="space-y-4 pt-8 border-t">
 				<div class="flex items-center gap-3">
 					<h2 class="text-2xl font-bold tracking-tight">Data Models</h2>
 					<Badge variant="secondary" class="font-mono text-xs">
-						{Object.keys(spec.definitions).length} model{Object.keys(spec.definitions).length !== 1 ? 's' : ''}
+						{Object.keys(specDefinitions).length} model{Object.keys(specDefinitions).length !== 1 ? 's' : ''}
 					</Badge>
 				</div>
 
 				<div class="space-y-3">
-					{#each Object.entries(spec.definitions) as [modelName, model], idx}
+					{#each definitionEntries as [modelName, model], idx}
 					{@const modelId = getModelId(modelName)}
 					<Accordion.Root type="single" class="w-full" bind:value={openModelId}>
 							<Accordion.Item

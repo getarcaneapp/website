@@ -8,7 +8,6 @@
   import Button from '$lib/components/ui/button/button.svelte';
   import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
   import { features } from '$lib/config/features.js';
-  import { imageFadeIn } from '$lib/utils/image-fade.js';
 
   interface StatsHistoryEntry {
     date: string;
@@ -108,8 +107,7 @@
                 decoding="async"
                 loading="eager"
                 fetchpriority="high"
-                use:imageFadeIn
-                class="mx-auto h-auto w-full object-contain opacity-0 drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] transition-all duration-500 select-none hover:drop-shadow-[0_4px_22px_rgba(147,51,234,0.28)] data-[loaded=true]:opacity-100"
+				class="mx-auto h-auto w-full object-contain opacity-100 drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] transition-all duration-500 select-none hover:drop-shadow-[0_4px_22px_rgba(147,51,234,0.28)]"
                 sizes="(min-width: 1280px) 900px, (min-width: 1024px) 840px, (min-width: 640px) 520px, 90vw" />
             </span>
             <span
@@ -298,8 +296,7 @@
                 alt="Greptile"
                 width="102"
                 height="28"
-                use:imageFadeIn
-                class="h-7 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70"
+				class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100"
                 decoding="async"
                 loading="lazy" />
             </a>
@@ -315,8 +312,7 @@
                 alt="Graphite"
                 width="28"
                 height="28"
-                use:imageFadeIn
-                class="h-7 w-auto rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70"
+				class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
                 decoding="async"
                 loading="lazy" />
               <span class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300">
@@ -335,8 +331,7 @@
                 alt="Depot"
                 width="112"
                 height="28"
-                use:imageFadeIn
-                class="h-7 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70 dark:hidden"
+				class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:hidden"
                 decoding="async"
                 loading="lazy" />
               <enhanced:img
@@ -344,8 +339,7 @@
                 alt="Depot"
                 width="112"
                 height="28"
-                use:imageFadeIn
-                class="hidden h-7 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70 dark:block"
+				class="hidden h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:block"
                 decoding="async"
                 loading="lazy" />
             </a>
@@ -361,8 +355,7 @@
                 alt="OrbStack"
                 width="28"
                 height="28"
-                use:imageFadeIn
-                class="h-7 w-auto rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100 data-[loaded=true]:opacity-70"
+				class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
                 decoding="async"
                 loading="lazy" />
               <span class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300">

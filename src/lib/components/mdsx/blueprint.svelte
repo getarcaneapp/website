@@ -25,7 +25,9 @@ export {
 </script>
 
 <script lang="ts">
-	let { children } = $props();
+	import type { Snippet } from 'svelte';
+
+	let { children }: { children?: Snippet } = $props();
 </script>
 
 <div class="mdsx">

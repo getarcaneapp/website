@@ -24,11 +24,11 @@ let {
 	bind:indeterminate
 	{...restProps}
 >
-	{#snippet children({ checked, indeterminate })}
+	{#snippet children(state: { checked: boolean; indeterminate: boolean })}
 		<div data-slot="checkbox-indicator" class="text-current transition-none">
-			{#if checked}
+			{#if state.checked}
 				<CheckIcon class="size-3.5" />
-			{:else if indeterminate}
+			{:else if state.indeterminate}
 				<MinusIcon class="size-3.5" />
 			{/if}
 		</div>

@@ -1,4 +1,4 @@
-import type { Icon as IconType } from '@lucide/svelte';
+import type { Component } from 'svelte';
 import BookOpen from '@lucide/svelte/icons/book-open';
 import ChartBar from '@lucide/svelte/icons/chart-bar';
 import Clock from '@lucide/svelte/icons/clock';
@@ -8,8 +8,10 @@ import Package from '@lucide/svelte/icons/package';
 import Sparkles from '@lucide/svelte/icons/sparkles';
 import Wrench from '@lucide/svelte/icons/wrench';
 
+type IconComponent = Component<{ class?: string }>;
+
 export interface Feature {
-	icon: typeof IconType;
+	icon: IconComponent;
 	title: string;
 	description: string;
 	fullWidth?: boolean;

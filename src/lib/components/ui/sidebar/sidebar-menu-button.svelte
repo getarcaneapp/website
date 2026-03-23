@@ -85,8 +85,8 @@ export type SidebarMenuButtonSize = VariantProps<
 {:else}
 	<Tooltip.Root>
 		<Tooltip.Trigger>
-			{#snippet child({ props })}
-				{@render Button({ props })}
+			{#snippet child(snippetProps: { props: Record<string, unknown> })}
+				{@render Button({ props: snippetProps.props })}
 			{/snippet}
 		</Tooltip.Trigger>
 		<Tooltip.Content

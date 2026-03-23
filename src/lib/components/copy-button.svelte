@@ -28,8 +28,8 @@ const rp = $derived(restProps as any);
 		class={cn('bg-code absolute top-3 right-2 z-10 size-7 hover:opacity-100 focus-visible:opacity-100', className)}
 		onclick={() => clipboard.copy(text)}
 	>
-		{#snippet child({ props })}
-			<Button {...props} data-slot="copy-button" size="icon" {variant}>
+		{#snippet child(snippetProps: { props: Record<string, unknown> })}
+			<Button {...snippetProps.props} data-slot="copy-button" size="icon" {variant}>
 				<span class="sr-only">Copy</span>
 				{#if clipboard.copied}
 					<CheckIcon />

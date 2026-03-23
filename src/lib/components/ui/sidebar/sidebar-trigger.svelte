@@ -23,7 +23,7 @@
 	size="icon"
 	class={cn('size-7', className)}
 	type="button"
-	onclick={(e) => {
+	onclick={(e: MouseEvent) => {
 		onclick?.(e);
 		sidebar.toggle();
 	}}

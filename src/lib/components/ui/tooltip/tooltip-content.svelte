@@ -29,7 +29,7 @@ let {
 	>
 		{@render children?.()}
 		<TooltipPrimitive.Arrow>
-			{#snippet child({ props })}
+			{#snippet child(snippetProps: { props: Record<string, unknown> })}
 				<div
 					class={cn(
 						'bg-primary z-50 size-2.5 rotate-45 rounded-[2px]',
@@ -39,7 +39,7 @@ let {
 						'data-[side=left]:-translate-y-[calc(50%_-_3px)]',
 						arrowClasses
 					)}
-					{...props}
+					{...snippetProps.props}
 				></div>
 			{/snippet}
 		</TooltipPrimitive.Arrow>

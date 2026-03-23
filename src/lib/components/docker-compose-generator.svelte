@@ -176,7 +176,7 @@
                                 <Checkbox
                                   id={field.key}
                                   checked={config[field.key] === true}
-                                  onCheckedChange={(checked) => handleCheckboxChange(field.key, checked === true)} />
+                                  onCheckedChange={(checked: boolean | 'indeterminate') => handleCheckboxChange(field.key, checked === true)} />
                               </div>
                             {:else if field.type === "select"}
                               <div class="wizard-field">
@@ -190,7 +190,7 @@
                                   <Select.Root
                                     type="single"
                                     value={config[field.key] as string}
-                                    onValueChange={(value) => handleSelectChange(field.key, value)}>
+                                    onValueChange={(value: string) => handleSelectChange(field.key, value)}>
                                     <Select.Trigger
                                       class="border-border/50 w-full focus:border-purple-500/50 focus:ring-purple-500/20">
                                       {config[field.key] || field.placeholder || "Select..."}

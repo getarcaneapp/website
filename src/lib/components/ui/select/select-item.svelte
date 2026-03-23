@@ -23,14 +23,14 @@ let {
 	)}
 	{...restProps}
 >
-	{#snippet children({ selected, highlighted })}
+	{#snippet children(state: { selected: boolean; highlighted: boolean })}
 		<span class="absolute right-2 flex size-3.5 items-center justify-center">
-			{#if selected}
+			{#if state.selected}
 				<CheckIcon class="size-4" />
 			{/if}
 		</span>
 		{#if childrenProp}
-			{@render childrenProp({ selected, highlighted })}
+			{@render childrenProp({ selected: state.selected, highlighted: state.highlighted })}
 		{:else}
 			{label || value}
 		{/if}

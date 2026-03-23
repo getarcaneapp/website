@@ -1,10 +1,12 @@
 <script lang="ts">
-	import type { Icon as IconType } from '@lucide/svelte';
+	import type { Component } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { cn } from '$lib/utils.js';
 
+	type IconComponent = Component<{ class?: string }>;
+
 	interface Props extends HTMLAttributes<HTMLDivElement> {
-		icon: typeof IconType;
+		icon: IconComponent;
 		title: string;
 		description: string;
 		fullWidth?: boolean;
@@ -12,7 +14,7 @@
 
 	let { icon, title, description, fullWidth = false, class: className, ...restProps }: Props = $props();
 
-	const Icon = $derived(icon as typeof IconType);
+	const Icon = $derived(icon);
 </script>
 
 <div

@@ -33,13 +33,13 @@
 										isActive={subItem.href === pathname}
 										class="group relative h-8 w-full justify-start rounded-xl border border-transparent pl-6 pr-2.5 text-[0.8rem] font-medium text-muted-foreground transition-all duration-200 hover:border-border/80 hover:bg-accent/50 hover:text-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground after:absolute after:left-3 after:top-1/2 after:h-2.5 after:w-0.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:opacity-0 data-[active=true]:after:opacity-100"
 									>
-										{#snippet child({ props })}
+										{#snippet child(snippetProps: { props: Record<string, unknown> })}
 											{@const href = subItem.href}
 											{#if href}
 												{#if subItem.external}
 													<a
 														href={`https://${href.replace(/^https?:\/\//, '')}`}
-														{...props}
+														{...snippetProps.props}
 														target="_blank"
 														rel="noopener noreferrer"
 													>
@@ -47,10 +47,10 @@
 														<ExternalLink class="text-muted-foreground mb-1 inline size-3 align-text-bottom" />
 													</a>
 												{:else}
-													<a href={resolve(href as Pathname)} {...props}>{subItem.title}</a>
+													<a href={resolve(href as Pathname)} {...snippetProps.props}>{subItem.title}</a>
 												{/if}
 											{:else}
-												<span {...props}>{subItem.title}</span>
+												<span {...snippetProps.props}>{subItem.title}</span>
 											{/if}
 										{/snippet}
 									</Sidebar.MenuButton>

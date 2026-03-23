@@ -1,6 +1,7 @@
 <script lang="ts">
+  import type { ComponentProps } from 'svelte';
   import type { HTMLAnchorAttributes } from 'svelte/elements';
-  import { Button, type ButtonProps } from '$lib/components/ui/button/index.js';
+  import { Button } from '$lib/components/ui/button/index.js';
   import * as Popover from '$lib/components/ui/popover/index.js';
   import { mainNavItems, SidebarNavItems } from '$lib/config/docs.js';
   import { cn } from '$lib/utils.js';
@@ -9,7 +10,7 @@
     content?: string;
   };
 
-  let { class: className, ...restProps }: ButtonProps = $props();
+  let { class: className, ...restProps }: ComponentProps<typeof Button> = $props();
 
   let open = $state(false);
 </script>
@@ -28,9 +29,9 @@
 
 <Popover.Root bind:open>
   <Popover.Trigger>
-    {#snippet child({ props })}
+    {#snippet child(snippetProps: { props: Record<string, unknown> })}
       <Button
-        {...props}
+        {...snippetProps.props}
         {...restProps}
         variant="ghost"
         class={cn(
