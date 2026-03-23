@@ -17,10 +17,6 @@
 			"pattern": "getarcane.app",
 			"custom_domain": true
 		}
-	]
-
-	// Environment variables
-	// "vars": {
-	//   "API_URL": "https://api.example.com"
-	// },
+	],
+	"r2_buckets": [{ "binding": "BUCKET", "bucket_name": "arcane" }]
 }

@@ -7,6 +7,7 @@ order: 100
 <script lang="ts">
 import { Snippet } from '$lib/components/ui/snippet/index.js';
 import { Link } from '$lib/components/ui/link/index.js';
+import BinaryDownloads from '$lib/components/binary-downloads.svelte';
 </script>
 
 > [!CAUTION]
@@ -22,9 +23,10 @@ Each Image has 3 variants, `next`, `next-static`, and `next-distroless`.
 
 Both the `next` (based on alpine) and the `next-distroless` (based on distroless-static) are built with static binaries. These builds may not contain the required functionality for some external monitoring tools like GPU's etc.
 
-The normal `next` tag is the fully complete build of Arcane and the Agent, all features should be available. 
+The normal `next` tag is the fully complete build of Arcane and the Agent, all features should be available.
 
 ### Arcane Manager (Next)
+
 The main Arcane container image.
 
 <Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane:next" />
@@ -32,6 +34,7 @@ The main Arcane container image.
 <Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane:next-distroless" />
 
 ### Arcane Agent (Next)
+
 The agent used for remote environment management.
 
 <Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane-headless:next" />
@@ -70,9 +73,16 @@ volumes:
 ## What's Included?
 
 The `:next`, `:next-static`, and `:next-distroless` builds typically include:
+
 - **Experimental Features**: New functionality that is still being refined.
 - **Bug Fixes**: Early access to fixes before they are officially released.
 - **Performance Improvements**: Optimizations that are being tested for stability.
+
+## Binary Downloads
+
+Direct binary downloads from the latest next builds.
+
+<BinaryDownloads />
 
 ## Feedback
 
