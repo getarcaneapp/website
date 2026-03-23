@@ -79,7 +79,7 @@
           </div>
         {:else if cache[p.id] !== undefined && !cache[p.id].length}
           <div class="px-4 py-10 text-center text-sm text-muted-foreground">No files available.</div>
-        {:else}
+        {:else if cache[p.id] !== undefined}
           <Table.Root>
             <Table.Header>
               <Table.Row class="hover:bg-transparent">

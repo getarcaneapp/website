@@ -24,6 +24,14 @@
 
 const ALLOWED_PREFIXES = ['bin/arcane-next/', 'bin/cli-next/'];
 
+/**
+ * @param {string} key
+ * @returns {string}
+ */
+function getDownloadFilename(key) {
+	return (key.split('/').pop() ?? 'download').replace(/["\r\n]/g, '');
+}
+
 export default {
 	/**
 	 * @param {Request} request
@@ -81,7 +89,7 @@ export default {
 			if (!obj) {
 				return new Response('Not found', { status: 404 });
 			}
-			const filename = key.split('/').pop() ?? 'download';
+			const filename = getDownloadFilename(key);
 			return new Response(obj.body, {
 				headers: {
 					'Content-Type': obj.httpMetadata?.contentType ?? 'application/octet-stream',
