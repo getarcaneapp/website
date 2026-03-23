@@ -14,12 +14,15 @@ export default defineConfig({
 		}
 	},
 	build: {
-		rollupOptions: {
+		rolldownOptions: {
 			output: {
-				manualChunks(id) {
-					if (id.includes('@lucide/svelte')) {
-						return 'icons';
-					}
+				codeSplitting: {
+					groups: [
+						{
+							name: 'icons',
+							test: /@lucide\/svelte/
+						}
+					]
 				}
 			}
 		},

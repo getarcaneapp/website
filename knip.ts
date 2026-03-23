@@ -1,12 +1,37 @@
 import type { KnipConfig } from 'knip';
 import { compile } from 'svelte/compiler';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
  * Scan content markdown files for Svelte component imports
  * MDSX allows importing components in markdown via <script> tags
  */
+function resolveMdsxImport(importPath: string): string | null {
+	const resolvedImport = importPath.replace('$lib/', 'src/lib/');
+	const candidates = [
+		resolvedImport.replace(/\.js$/, '.ts'),
+		resolvedImport.replace(/\.js$/, '.svelte'),
+		resolvedImport,
+		`${resolvedImport}.ts`,
+		`${resolvedImport}.js`,
+		`${resolvedImport}.svelte`,
+		`${resolvedImport}.svelte.ts`,
+		`${resolvedImport}.svelte.js`,
+		join(resolvedImport, 'index.ts'),
+		join(resolvedImport, 'index.js'),
+		join(resolvedImport, 'index.svelte')
+	];
+
+	for (const candidate of candidates) {
+		if (existsSync(candidate) && statSync(candidate).isFile()) {
+			return candidate;
+		}
+	}
+
+	return null;
+}
+
 function getMdsxComponentImports(contentDir: string): string[] {
 	const imports = new Set<string>();
 
@@ -19,16 +44,12 @@ function getMdsxComponentImports(contentDir: string): string[] {
 				scanDir(fullPath);
 			} else if (entry.endsWith('.md')) {
 				const content = readFileSync(fullPath, 'utf-8');
-				// Match imports from $lib/components in script tags
-				const importRegex = /from\s+['"](\$lib\/components\/[^'"]+)['"]/g;
+				// Match imports from $lib in script tags so directory imports resolve too
+				const importRegex = /from\s+['"](\$lib\/[^'"]+)['"]/g;
 				let match;
 				while ((match = importRegex.exec(content)) !== null) {
-					// Convert $lib/components/foo.svelte to src/lib/components/foo.svelte
-					// Also handle .js extensions -> .ts
-					let importPath = match[1].replace('$lib/', 'src/lib/');
-					// Handle index.js -> index.ts for TypeScript files
-					importPath = importPath.replace(/\.js$/, '.ts');
-					imports.add(importPath);
+					const importPath = resolveMdsxImport(match[1]);
+					if (importPath) imports.add(importPath);
 				}
 			}
 		}
@@ -48,7 +69,7 @@ const mdsxImports = getMdsxComponentImports('./content');
 
 const config: KnipConfig = {
 	compilers: {
-		svelte: (source: string) => compile(source, {}).js.code
+		svelte: (source: string, filename: string) => compile(source, { filename }).js.code
 	},
 	entry: [
 		// SvelteKit route files
@@ -58,31 +79,17 @@ const config: KnipConfig = {
 		// MDSX blueprint and components (used by markdown processor)
 		'src/lib/components/mdsx/**/*.{svelte,ts}',
 		// Config files
-		'svelte.config.js',
-		'vite.config.ts',
 		'mdsx.config.js',
 		'velite.config.js',
 		// Components imported in markdown files (discovered dynamically)
 		...mdsxImports
 	],
 	project: ['src/**/*.{js,ts,svelte}', 'src/**/*.d.ts'],
-	ignore: [
-		// Generated directories
-		'.svelte-kit/**',
-		'.velite/**'
-	],
 	ignoreFiles: [
-		// Cloudflare worker
-		'src/_worker.js',
 		// Icon components (dynamically selected based on language)
 		'src/lib/components/icons/**',
-		// Config files used by content pages
-		'src/lib/config/cli-commands.ts',
-		'src/lib/config/pages/**',
 		// Types (used across the project, may appear unused)
 		'src/lib/types/**',
-		// Hooks (may be used dynamically)
-		'src/lib/hooks/**',
 		// shadcn-svelte UI components - these export many unused variants by design
 		'src/lib/components/ui/**',
 		// Components that may not be used yet but are part of the design system
@@ -96,12 +103,30 @@ const config: KnipConfig = {
 		interface: true,
 		type: true
 	},
+	ignoreIssues: {
+		// shadcn-style barrels intentionally re-export more than the app currently consumes
+		'src/lib/components/ui/**': ['exports', 'types'],
+		// Public-ish helper exports used by conventions/content patterns can look unused to Knip
+		'src/lib/components/command-search/index.ts': ['exports'],
+		'src/lib/config/docs.ts': ['exports'],
+		'src/lib/hooks/use-toc.svelte.ts': ['exports'],
+		'src/lib/types/sbom.type.ts': ['exports', 'types'],
+		'src/lib/utils.ts': ['types'],
+		'src/lib/utils/utils.ts': ['types']
+	},
+	ignoreBinaries: [
+		// Invoked through npx in preinstall
+		'only-allow'
+	],
 	ignoreDependencies: [
 		// Used in mdsx.config.js but referenced as strings
 		'rehype-pretty-code',
 		'remark-code-import',
 		'unist-builder',
 		'unist-util-visit',
+		// Editor/formatting integration
+		'prettier-plugin-svelte',
+		'prettier-plugin-tailwindcss',
 		// Tailwind animation classes (referenced in CSS)
 		'tw-animate-css'
 	]
