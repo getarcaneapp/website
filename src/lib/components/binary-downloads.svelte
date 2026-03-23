@@ -101,6 +101,7 @@
                   </Table.Cell>
                   <Table.Cell class="pr-4 text-right">
                     <a
+                      data-sveltekit-reload
                       href={downloadUrl(file.key)}
                       title="Download {fileName(file.key)}"
                       class="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
