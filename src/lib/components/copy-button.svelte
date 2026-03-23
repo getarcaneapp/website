@@ -1,15 +1,15 @@
 <script lang="ts">
-  import CheckIcon from "@lucide/svelte/icons/check";
-  import ClipboardIcon from "@lucide/svelte/icons/clipboard";
-  import type { ComponentProps } from "svelte";
-  import { Button } from "$lib/components/ui/button/index.js";
-  import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-  import { UseClipboard } from "$lib/hooks/use-clipboard.svelte.js";
-  import { cn } from "$lib/utils.js";
+  import CheckIcon from '@lucide/svelte/icons/check';
+  import ClipboardIcon from '@lucide/svelte/icons/clipboard';
+  import type { ComponentProps } from 'svelte';
+  import { Button } from '$lib/components/ui/button/index.js';
+  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+  import { UseClipboard } from '$lib/hooks/use-clipboard.svelte.js';
+  import { cn } from '$lib/utils.js';
 
   let {
     text,
-    variant = "ghost",
+    variant = 'ghost',
     class: className,
     ...restProps
   }: ComponentProps<typeof Button> & {
@@ -21,9 +21,10 @@
 </script>
 
 <Tooltip.Root disableCloseOnTriggerClick>
+  <!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
   <Tooltip.Trigger
     {...rp}
-    class={cn("bg-code absolute top-3 right-2 z-10 size-7 hover:opacity-100 focus-visible:opacity-100", className)}
+    class={cn('bg-code absolute top-3 right-2 z-10 size-7 hover:opacity-100 focus-visible:opacity-100', className)}
     onclick={() => clipboard.copy(text)}>
     {#snippet child(snippetProps: { props: Record<string, unknown> })}
       <Button {...snippetProps.props} data-slot="copy-button" size="icon" {variant}>
@@ -37,6 +38,6 @@
     {/snippet}
   </Tooltip.Trigger>
   <Tooltip.Content>
-    {clipboard.copied ? "Copied" : "Copy to Clipboard"}
+    {clipboard.copied ? 'Copied' : 'Copy to Clipboard'}
   </Tooltip.Content>
 </Tooltip.Root>

@@ -7,6 +7,7 @@ order: 100
 <script lang="ts">
 import { Snippet } from '$lib/components/ui/snippet/index.js';
 import { Link } from '$lib/components/ui/link/index.js';
+import BinaryDownloads from '$lib/components/binary-downloads.svelte';
 </script>
 
 > [!CAUTION]
@@ -73,6 +74,12 @@ The `:next`, `:next-static`, and `:next-distroless` builds typically include:
 - **Experimental Features**: New functionality that is still being refined.
 - **Bug Fixes**: Early access to fixes before they are officially released.
 - **Performance Improvements**: Optimizations that are being tested for stability.
+
+## Binary Downloads
+
+Direct binary downloads from the latest next builds.
+
+<BinaryDownloads />
 
 ## Feedback
 
