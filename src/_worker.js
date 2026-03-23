@@ -22,7 +22,7 @@
  * @property {R2Bucket | undefined} BUCKET
  */
 
-const ALLOWED_PREFIXES = ['arcane-next/', 'cli-next/'];
+const ALLOWED_PREFIXES = ['bin/arcane-next/', 'bin/cli-next/'];
 
 export default {
 	/**
