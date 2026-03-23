@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   deploy:
+    if: ${{ github.repository_owner != 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
     runs-on: depot-ubuntu-latest
     environment:
       name: production

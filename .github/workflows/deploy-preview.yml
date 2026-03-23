@@ -25,6 +25,7 @@ permissions:
 
 jobs:
   build-and-deploy-preview:
+    if: ${{ github.repository_owner != 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
     runs-on: depot-ubuntu-latest
     environment:
       name: ${{ github.event.pull_request.user.login }}-pr-${{ github.event.pull_request.number }}
