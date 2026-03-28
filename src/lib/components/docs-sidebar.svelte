@@ -1,66 +1,122 @@
 <script lang="ts">
-	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import type { ComponentProps } from 'svelte';
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
-	import { page } from '$app/state';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import type { SidebarNavItem } from '$lib/config/docs.js';
+  import ExternalLink from '@lucide/svelte/icons/external-link';
+  import ChevronRight from '@lucide/svelte/icons/chevron-right';
+  import type { ComponentProps } from 'svelte';
+  import { resolve } from '$app/paths';
+  import type { Pathname } from '$app/types';
+  import { page } from '$app/state';
+  import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+  import type { SidebarNavItem } from '$lib/config/docs.js';
 
-	let { navItems, ...restProps }: { navItems: SidebarNavItem[] } & ComponentProps<typeof Sidebar.Root> = $props();
+  let { navItems, ...restProps }: { navItems: SidebarNavItem[] } & ComponentProps<typeof Sidebar.Root> = $props();
 
-	const pathname = $derived(page.url.pathname);
+  const pathname = $derived(page.url.pathname);
+  let openGroups = $state<Record<string, boolean>>({});
+
+  const itemKey = (item: SidebarNavItem) => item.href ?? item.title;
+
+  const isBranchActive = (item: SidebarNavItem): boolean =>
+    item.href === pathname || item.items.some((child) => isBranchActive(child));
+
+  const isItemActive = (item: SidebarNavItem): boolean => item.href === pathname;
+
+  const isExpanded = (item: SidebarNavItem): boolean => openGroups[itemKey(item)] ?? isBranchActive(item);
+
+  const toggleGroup = (item: SidebarNavItem) => {
+    const key = itemKey(item);
+    openGroups[key] = !isExpanded(item);
+  };
 </script>
 
 <Sidebar.Root
-	class="sticky top-24 z-30 hidden h-auto bg-transparent px-2 lg:flex lg:h-[calc(100vh-6rem)] lg:flex-col lg:self-start lg:overflow-hidden lg:px-3 lg:pb-6"
-	collapsible="none"
-	{...restProps}
->
-	<Sidebar.Content class="no-scrollbar min-h-0 flex-1 overflow-y-auto rounded-3xl border border-sidebar-border/60 bg-sidebar/70 px-3 py-4 shadow-[0_20px_45px_-35px_oklch(0_0_0/0.45)] backdrop-blur">
-		{#each navItems as item (item.title)}
-			<Sidebar.Group>
-				<Sidebar.GroupLabel class="text-muted-foreground/80 text-[0.6rem] font-extrabold tracking-[0.26em] uppercase">
-					{item.title}
-				</Sidebar.GroupLabel>
-				<Sidebar.GroupContent>
-					{#if item.items.length}
-						<Sidebar.Menu class="gap-1">
-							{#each item.items as subItem (subItem.href)}
-								{#if subItem.items.length === 0}
-									<Sidebar.MenuItem>
-									<Sidebar.MenuButton
-										isActive={subItem.href === pathname}
-										class="group relative h-8 w-full justify-start rounded-xl border border-transparent pl-6 pr-2.5 text-[0.8rem] font-medium text-muted-foreground transition-all duration-200 hover:border-border/80 hover:bg-accent/50 hover:text-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground after:absolute after:left-3 after:top-1/2 after:h-2.5 after:w-0.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:opacity-0 data-[active=true]:after:opacity-100"
-									>
-										{#snippet child(snippetProps: { props: Record<string, unknown> })}
-											{@const href = subItem.href}
-											{#if href}
-												{#if subItem.external}
-													<a
-														href={`https://${href.replace(/^https?:\/\//, '')}`}
-														{...snippetProps.props}
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														{subItem.title}
-														<ExternalLink class="text-muted-foreground mb-1 inline size-3 align-text-bottom" />
-													</a>
-												{:else}
-													<a href={resolve(href as Pathname)} {...snippetProps.props}>{subItem.title}</a>
-												{/if}
-											{:else}
-												<span {...snippetProps.props}>{subItem.title}</span>
-											{/if}
-										{/snippet}
-									</Sidebar.MenuButton>
-									</Sidebar.MenuItem>
-								{/if}
-							{/each}
-						</Sidebar.Menu>
-					{/if}
-				</Sidebar.GroupContent>
-			</Sidebar.Group>
-		{/each}
-	</Sidebar.Content>
+  class="sticky top-24 z-30 hidden h-auto bg-transparent px-2 lg:flex lg:h-[calc(100vh-6rem)] lg:flex-col lg:self-start lg:overflow-hidden lg:px-3 lg:pb-6"
+  collapsible="none"
+  {...restProps}>
+  <Sidebar.Content
+    class="no-scrollbar min-h-0 flex-1 overflow-y-auto rounded-3xl border border-sidebar-border/60 bg-sidebar/70 px-3 py-4 shadow-[0_20px_45px_-35px_oklch(0_0_0/0.45)] backdrop-blur">
+    {#each navItems as item (item.title)}
+      <Sidebar.Group>
+        <Sidebar.GroupLabel class="text-muted-foreground/80 text-[0.6rem] font-extrabold tracking-[0.26em] uppercase">
+          {item.title}
+        </Sidebar.GroupLabel>
+        <Sidebar.GroupContent>
+          {#if item.items.length}
+            <Sidebar.Menu class="gap-1">
+              {#each item.items as subItem (subItem.href)}
+                {#if subItem.items.length === 0}
+                  <Sidebar.MenuItem>
+                    <Sidebar.MenuButton
+                      isActive={isItemActive(subItem)}
+                      class="group relative h-8 w-full justify-start rounded-xl border border-transparent pl-6 pr-2.5 text-[0.8rem] font-medium text-muted-foreground transition-all duration-200 hover:border-border/80 hover:bg-accent/50 hover:text-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground after:absolute after:left-3 after:top-1/2 after:h-2.5 after:w-0.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:opacity-0 data-[active=true]:after:opacity-100">
+                      {#snippet child(snippetProps: { props: Record<string, unknown> })}
+                        {@const href = subItem.href}
+                        {#if href}
+                          {#if subItem.external}
+                            <a
+                              href={`https://${href.replace(/^https?:\/\//, '')}`}
+                              {...snippetProps.props}
+                              target="_blank"
+                              rel="noopener noreferrer">
+                              {subItem.title}
+                              <ExternalLink class="text-muted-foreground mb-1 inline size-3 align-text-bottom" />
+                            </a>
+                          {:else}
+                            <a href={resolve(href as Pathname)} {...snippetProps.props}>{subItem.title}</a>
+                          {/if}
+                        {:else}
+                          <span {...snippetProps.props}>{subItem.title}</span>
+                        {/if}
+                      {/snippet}
+                    </Sidebar.MenuButton>
+                  </Sidebar.MenuItem>
+                {:else}
+                  <Sidebar.MenuItem>
+                    <Sidebar.MenuButton
+                      isActive={isItemActive(subItem)}
+                      class="group relative h-8 w-full justify-start rounded-xl border border-transparent pl-6 pr-9 text-[0.8rem] font-medium text-muted-foreground transition-all duration-200 hover:border-border/80 hover:bg-accent/50 hover:text-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground after:absolute after:left-3 after:top-1/2 after:h-2.5 after:w-0.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:opacity-0 data-[active=true]:after:opacity-100">
+                      {#snippet child(snippetProps: { props: Record<string, unknown> })}
+                        {@const href = subItem.href}
+                        {#if href}
+                          <a href={resolve(href as Pathname)} {...snippetProps.props}>{subItem.title}</a>
+                        {:else}
+                          <span {...snippetProps.props}>{subItem.title}</span>
+                        {/if}
+                      {/snippet}
+                    </Sidebar.MenuButton>
+                    <Sidebar.MenuAction
+                      type="button"
+                      onclick={() => toggleGroup(subItem)}
+                      aria-label={isExpanded(subItem) ? `Collapse ${subItem.title}` : `Expand ${subItem.title}`}
+                      aria-expanded={isExpanded(subItem)}
+                      class="top-1.5">
+                      <ChevronRight class={`transition-transform duration-150 ${isExpanded(subItem) ? 'rotate-90' : ''}`} />
+                    </Sidebar.MenuAction>
+
+                    {#if isExpanded(subItem)}
+                      <Sidebar.MenuSub class="mt-1">
+                        {#each subItem.items as childItem (childItem.href)}
+                          <Sidebar.MenuSubItem>
+                            <Sidebar.MenuSubButton isActive={childItem.href === pathname}>
+                              {#snippet child(snippetProps: { props: Record<string, unknown> })}
+                                {@const href = childItem.href}
+                                {#if href}
+                                  <a href={resolve(href as Pathname)} {...snippetProps.props}>{childItem.title}</a>
+                                {:else}
+                                  <span {...snippetProps.props}>{childItem.title}</span>
+                                {/if}
+                              {/snippet}
+                            </Sidebar.MenuSubButton>
+                          </Sidebar.MenuSubItem>
+                        {/each}
+                      </Sidebar.MenuSub>
+                    {/if}
+                  </Sidebar.MenuItem>
+                {/if}
+              {/each}
+            </Sidebar.Menu>
+          {/if}
+        </Sidebar.GroupContent>
+      </Sidebar.Group>
+    {/each}
+  </Sidebar.Content>
 </Sidebar.Root>
