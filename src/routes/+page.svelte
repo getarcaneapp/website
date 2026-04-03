@@ -107,7 +107,7 @@
                 decoding="async"
                 loading="eager"
                 fetchpriority="high"
-				class="mx-auto h-auto w-full object-contain opacity-100 drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] transition-all duration-500 select-none hover:drop-shadow-[0_4px_22px_rgba(147,51,234,0.28)]"
+                class="mx-auto h-auto w-full object-contain opacity-100 drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] transition-all duration-500 select-none hover:drop-shadow-[0_4px_22px_rgba(147,51,234,0.28)]"
                 sizes="(min-width: 1280px) 900px, (min-width: 1024px) 840px, (min-width: 640px) 520px, 90vw" />
             </span>
             <span
@@ -125,15 +125,23 @@
 
           <div class="mt-10 flex flex-col items-center gap-4 sm:flex-row">
             <Button
-              variant="default"
+              variant="outline"
               size="lg"
               href="/docs/setup/installation"
-              class="group relative overflow-hidden bg-linear-to-r from-purple-600 via-violet-600 to-purple-600 bg-size-[200%_auto] text-white shadow-lg shadow-purple-500/25 transition-all duration-500 hover:bg-right hover:shadow-xl hover:shadow-purple-500/40">
-              <Sparkles class="size-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
+              class="group border-purple-500/30 bg-purple-50/50 text-purple-700 shadow-[0_2px_10px_-3px_rgba(147,51,234,0.15)] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20">
+              <Sparkles
+                class="size-4 opacity-70 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-100 dark:opacity-80" />
               Get Started
-              <span
-                class="absolute inset-0 -z-10 translate-x-[-200%] bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-[200%]"
-              ></span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="lg"
+              href="https://demo.getarcane.app"
+              target="_blank"
+              class="group border-purple-500/30 bg-purple-50/50 text-purple-700 shadow-[0_2px_10px_-3px_rgba(147,51,234,0.15)] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20">
+              <BookOpen class="size-4 opacity-70 transition-opacity group-hover:opacity-100 dark:opacity-80" />
+              Try the Demo
             </Button>
 
             <div class="relative">
@@ -141,8 +149,9 @@
                 variant="outline"
                 size="lg"
                 href="/generator"
-                class="group bg-background/80 relative border-purple-500/30 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/60 hover:bg-purple-500/5 dark:border-purple-400/30 dark:hover:border-purple-400/60">
-                <Settings class="size-4 transition-transform duration-500 group-hover:rotate-90" />
+                class="group border-purple-500/30 bg-purple-50/50 text-purple-700 shadow-[0_2px_10px_-3px_rgba(147,51,234,0.15)] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20">
+                <Settings
+                  class="size-4 opacity-70 transition-transform duration-500 group-hover:rotate-90 group-hover:opacity-100 dark:opacity-80" />
                 Compose Generator
               </Button>
               <span
@@ -296,7 +305,7 @@
                 alt="Greptile"
                 width="102"
                 height="28"
-				class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100"
                 decoding="async"
                 loading="lazy" />
             </a>
@@ -312,7 +321,7 @@
                 alt="Graphite"
                 width="28"
                 height="28"
-				class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
                 decoding="async"
                 loading="lazy" />
               <span class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300">
@@ -331,7 +340,7 @@
                 alt="Depot"
                 width="112"
                 height="28"
-				class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:hidden"
+                class="h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:hidden"
                 decoding="async"
                 loading="lazy" />
               <enhanced:img
@@ -339,7 +348,7 @@
                 alt="Depot"
                 width="112"
                 height="28"
-				class="hidden h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:block"
+                class="hidden h-7 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100 dark:block"
                 decoding="async"
                 loading="lazy" />
             </a>
@@ -355,7 +364,7 @@
                 alt="OrbStack"
                 width="28"
                 height="28"
-				class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                class="h-7 w-auto rounded-md opacity-70 transition-opacity duration-300 group-hover:opacity-100"
                 decoding="async"
                 loading="lazy" />
               <span class="text-foreground/80 group-hover:text-foreground text-sm font-bold transition-colors duration-300">
