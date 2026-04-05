@@ -22,6 +22,7 @@ export type NavItem = {
 	disabled?: boolean;
 	external?: boolean;
 	label?: string;
+	order?: number;
 };
 
 export type SidebarNavItem = NavItem & {
@@ -57,8 +58,68 @@ function mapLeafDocs(
 	return sortDocs(visibleDocs).map((d) => ({
 		title: d.title,
 		href: toHref(d.path),
+		order: d.order,
 		items: []
 	}));
+}
+
+function mapFeatureDocs(
+	docs: Array<{ title: string; path: string; order?: number; published?: boolean }>
+): SidebarNavItem[] {
+	const visibleDocs = docs.filter((doc) => doc.published !== false);
+	const swarmOverview = visibleDocs.find((doc) => doc.path === 'features/swarm');
+	const swarmChildren = visibleDocs.filter((doc) => doc.path.startsWith('features/swarm-'));
+	const otherDocs = visibleDocs.filter(
+		(doc) => doc.path !== 'features/swarm' && !doc.path.startsWith('features/swarm-')
+	);
+
+	const items = mapLeafDocs(otherDocs);
+
+	if (!swarmOverview) {
+		return sortDocs(items);
+	}
+
+	items.push({
+		title: swarmOverview.title,
+		href: toHref(swarmOverview.path),
+		order: swarmOverview.order,
+		items: sortDocs(
+			swarmChildren.map((doc) => ({
+				...doc,
+				title:
+					doc.path === 'features/swarm-nodes-agents'
+						? 'Nodes & Agents'
+						: doc.path === 'features/swarm-configs-secrets'
+							? 'Configs & Secrets'
+							: doc.title.replace(/^Swarm\s+/, '')
+			}))
+		).map((doc) => ({
+			title: doc.title,
+			href: toHref(doc.path),
+			order: doc.order,
+			items: []
+		}))
+	});
+
+	return sortDocs(items);
+}
+
+function mapSectionDocs(
+	key: string,
+	source: Array<{ title: string; path: string; order?: number; published?: boolean }>
+): SidebarNavItem[] {
+	if (key === 'features') {
+		return mapFeatureDocs(source);
+	}
+
+	return mapLeafDocs(source);
+}
+
+function flattenNavItems(items: SidebarNavItem[]): SidebarNavItem[] {
+	return items.flatMap((item) => [
+		...(item.href ? [{ ...item, items: [] }] : []),
+		...flattenNavItems(item.items)
+	]);
 }
 
 const SECTION_BUILDERS: Array<{
@@ -87,14 +148,16 @@ const COMMUNITY_GROUP: SidebarNavItem = {
 	]
 };
 
-export const SidebarNavItems: SidebarNavItem[] = SECTION_BUILDERS.map(({ title, source }) => ({
+const sectionNavItems: SidebarNavItem[] = SECTION_BUILDERS.map(({ key, title, source }) => ({
 	title,
-	items: mapLeafDocs(source)
+	items: mapSectionDocs(key, source)
 }));
+
+export const SidebarNavItems: SidebarNavItem[] = [...sectionNavItems];
 
 SidebarNavItems.push(COMMUNITY_GROUP);
 
-const flat: SidebarNavItem[] = SECTION_BUILDERS.flatMap((s) => mapLeafDocs(s.source));
+const flat: SidebarNavItem[] = sectionNavItems.flatMap((section) => flattenNavItems(section.items));
 
 export function findNeighbors(pathName: string): {
 	previous: SidebarNavItem | null;
