@@ -42,7 +42,7 @@ Replace each placeholder with the real value from your database.
 
 If you want a predictable API key for automation, set `ADMIN_STATIC_API_KEY`.
 
-Arcane will reconcile a protected admin API key at startup so your deployment can depend on a known key value without a manual UI step. See the <Link href="/docs/api">API Reference</Link> page for usage details and webhook examples.
+Arcane will reconcile a protected admin API key at startup so your deployment can depend on a known key value without a manual UI step. See the <Link href="/api-reference">API Reference</Link> page for usage details and webhook examples.
 
 ## Downgrading Arcane
 
