@@ -37,6 +37,12 @@ Replace each placeholder with the real value from your database.
 > [!NOTE]
 > For proxy configuration, Arcane also supports lowercase aliases for the standard proxy variables (`http_proxy`, `https_proxy`, `no_proxy`).
 
+## Bootstrapping an Admin API Key
+
+If you want a predictable API key for automation, set `ADMIN_STATIC_API_KEY`.
+
+Arcane will reconcile a protected admin API key at startup so your deployment can depend on a known key value without a manual UI step. See the <Link href="/docs/api">API Reference</Link> page for usage details and webhook examples.
+
 ## Downgrading Arcane
 
 If you start an older version of Arcane with a database from a newer version, Arcane will notice at startup.

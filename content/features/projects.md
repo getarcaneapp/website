@@ -27,10 +27,14 @@ A `Project` is a collection of services defined in a `compose.yaml` file.
 ### Viewing Projects
 
 1. Go to the `Projects` section in the sidebar.
-2. You'll see a list of all projects, including their names, status (running, partially running, stopped), and how many services are running.
+2. You'll see a list of all projects, including their names, status (running, partially running, stopped), how many services are running, and the project directory.
 
 > [!NOTE]
 > Arcane uses your <Link href="/docs/configuration/environment">Projects Directory</Link> as the source of truth. In simple terms: whatever files are in that folder are the projects Arcane shows.
+
+Arcane now scans projects recursively under that root, so projects can live in nested folders instead of only direct children. If you use repeated folder names in different parts of the tree, Arcane tracks them by full path rather than just the last directory name.
+
+When you open a project detail page, Arcane also updates the browser tab title to the current project name, which helps when you keep several project tabs open at once.
 
 ### Creating a Project
 
@@ -81,6 +85,15 @@ For manual build workflows, build workspace behavior, build history, and API det
 
 Arcane saves your project files and `.env` files in its data directory. By default, that is `/app/data/projects`, or whatever you set as the Projects Directory in Arcane settings.
 
+## Nested Directories and Symlinks
+
+Arcane can manage projects stored in nested subdirectories under the configured projects root.
+
+If you use a symlinked layout, such as GNU Stow-managed folders, Arcane can follow child-directory symlinks too. Enable **Follow project symlinks** in the environment general settings when you want those linked folders to be treated as projects.
+
+> [!NOTE]
+> On Linux, very deep project trees can consume extra inotify watches because Arcane monitors nested folders recursively. If you manage a very large tree, you may need to raise `fs.inotify.max_user_watches`.
+
 ## Git Integration
 
 Arcane allows you to sync your projects directly from a Git repository.
@@ -122,6 +135,18 @@ Once your repository is connected, you can create a project that syncs from it.
 8. Click `Create Sync`.
 
 Arcane will clone the repository, read the compose file, and create a project. If `Auto Sync` is enabled, it will check for changes from time to time and update the project automatically.
+
+### Directory-Aware Git Sync
+
+Git-synced projects now sync the compose file's directory, not just the single compose file.
+
+That means Arcane can keep related files together when your project uses:
+
+- Compose `include`
+- Compose `extends`
+- relative file references such as `.env`, build files, or sidecar config files
+
+Arcane also shows synced companion files in the project detail view as read-only reference files, so you can inspect what was synced without leaving the project page.
 
 ### Import Multiple Syncs via JSON
 

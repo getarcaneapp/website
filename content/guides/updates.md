@@ -27,6 +27,20 @@ Arcane checks for updates by comparing image digests (when possible). For tags l
 
 This logic is very similar to how watchtower worked/works with changes to support Arcane's logic, so it should be familiar to those who have used that tool. 
 
+## Compose-aware updates
+
+When a container belongs to a compose project, Arcane can use Docker Compose-aware update logic instead of treating every service like a standalone container.
+
+With compose-aware updates enabled, Arcane can:
+
+- group pending updates by compose project
+- pull only the affected service images
+- recreate only the services that actually need to move to a new image
+
+That keeps unrelated services in the same project running when possible and reduces unnecessary downtime during automatic update runs.
+
+Manual project redeploys still use the project-level compose workflow, which is useful when you want a deliberate `pull` plus `up -d` pass across the project.
+
 ## Container labels (per-service / per-container)
 
 All labels are under the `com.getarcaneapp.arcane.*` namespace.
@@ -42,6 +56,8 @@ com.getarcaneapp.arcane.updater=false
 Accepted “false” values are: `false`, `0`, `no`, `off` (case-insensitive).
 
 Accepted “true” values are: `true`, `1`, `yes`, `on` (case-insensitive).
+
+You can also toggle this directly from the container detail page in Arcane. If the container already has an explicit updater label, the label remains the source of truth and the UI toggle reflects that.
 
 
 ### Dependency ordering

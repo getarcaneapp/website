@@ -85,3 +85,15 @@ Arcane will automatically use credentials you configure for private registries w
 - Arcane stores these securely and applies them whenever it needs to authenticate against that registry.
 - When an image reference includes a private hostname, Arcane matches it against your saved credentials.
 - You can manage multiple credential entries; Arcane selects the correct one based on the registry host in the image reference.
+
+### Amazon ECR
+
+Arcane also supports Amazon ECR as a first-class registry type.
+
+When adding an ECR registry, provide:
+
+- AWS access key ID
+- AWS secret access key
+- AWS region
+
+Arcane exchanges those credentials for a temporary ECR authorization token, caches it, and refreshes it automatically as needed. You do not need to paste a long-lived Docker token manually.

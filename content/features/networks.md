@@ -10,6 +10,8 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 ## What Can You Do With Networks in Arcane?
 
 - **View Networks:** See a list of all Docker networks on your system, including their names, drivers, and subnets.
+- **View Network Ports:** See an environment-wide list of published and exposed container ports, with search, sorting, and pagination.
+- **Explore Network Topology:** Open a topology view that shows networks and attached containers as an interactive graph.
 - **Create Networks:** Add a new network by choosing a name, driver, and optional settings like subnet or gateway.
 - **Inspect Networks:** Click on a network to see details, including connected containers and configuration.
 - **Remove Networks:** Delete networks you no longer need. Arcane will warn you if a network is in use or is a default Docker network.
@@ -40,6 +42,26 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 
 1. Click on a network's name in the list.
 2. You'll see details like its ID, driver, subnet, gateway, and which containers are connected.
+
+### Ports View
+
+Arcane also includes a dedicated **Ports** view for the selected environment.
+
+Use it when you want to answer questions like:
+
+- which ports are published to the host
+- which containers expose ports without publishing them
+- which host IP and host port combinations are already in use
+
+### Topology View
+
+From the Networks area, you can also open the **Topology** view to see a graph of:
+
+- Docker networks
+- containers attached to those networks
+- the relationships between them
+
+This is especially useful when you need a quick visual overview of bridge, overlay, or shared application networks.
 
 ### Removing a Network
 
