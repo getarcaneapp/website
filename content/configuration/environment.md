@@ -8,6 +8,7 @@ order: 2
 import { Snippet } from '$lib/components/ui/snippet/index.js';
 import EnvTable from '$lib/components/env-table.svelte';
 import EnvOverridesTable from '$lib/components/env-overrides-table.svelte';
+import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
 Most settings in Arcane can be changed via the Settings UI. Below are the settings that can be set via environment variables.
