@@ -102,6 +102,24 @@ jobs:
           path: arcane
           fetch-depth: 1
 
+      - name: Set up Go
+        if: steps.check.outputs.do_sbom == 'true'
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: arcane/go.mod
+
+      - name: Set up just
+        if: steps.check.outputs.do_sbom == 'true'
+        uses: extractions/setup-just@v3
+
+      - name: Generate config.json
+        if: steps.check.outputs.do_sbom == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd arcane
+          just docs config output=../static/config.json
+
       - name: Set up Depot CLI
         if: steps.check.outputs.do_sbom == 'true'
         uses: depot/setup-action@v1
@@ -222,14 +240,16 @@ jobs:
 
             ## Changes
             - Changelog entry (if new)
+            - Generated `static/config.json` (if changed)
             - SBOM files for manager and agent images (if new)
 
             ---
             *This PR was automatically generated.*
           branch: 'chore/release-assets-${{ steps.check.outputs.version }}'
           base: main
-          labels: 'docs(changelog),chore(sbom)'
+          labels: 'docs(changelog),chore(config),chore(sbom)'
           add-paths: |
             content/changelog.md
+            static/config.json
             static/sbom/
           delete-branch: true
