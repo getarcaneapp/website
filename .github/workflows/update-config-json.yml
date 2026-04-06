@@ -1,0 +1,96 @@
+name: Update Arcane Config JSON
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-config-json:
+    if: ${{ github.repository_owner != 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
+    runs-on: depot-ubuntu-latest
+    steps:
+      - name: Checkout website repo
+        uses: actions/checkout@v6
+
+      - name: Resolve latest Arcane tag
+        id: latest-tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=$(git ls-remote --refs --tags --sort='-version:refname' https://github.com/getarcaneapp/arcane.git | head -n1 | sed 's#.*refs/tags/##')
+
+          if [[ -z "$TAG" ]]; then
+            echo 'Failed to resolve the latest Arcane tag.' >&2
+            exit 1
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout Arcane source
+        uses: actions/checkout@v6
+        with:
+          repository: getarcaneapp/arcane
+          ref: ${{ steps.latest-tag.outputs.tag }}
+          path: sources
+          fetch-depth: 1
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: sources/go.mod
+
+      - name: Set up just
+        uses: extractions/setup-just@v3
+
+      - name: Generate config.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd sources
+          just docs config output=../static/config.json --
+
+      - name: Check for changes
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "$(git status --porcelain -- static/config.json)" ]]; then
+            echo 'has_changes=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'has_changes=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.ARCANE_BOT_TOKEN }}
+          commit-message: 'chore(config): update generated config.json for ${{ steps.latest-tag.outputs.tag }}'
+          committer: 'getarcaneappbot <info@getarcane.app>'
+          author: 'getarcaneappbot <info@getarcane.app>'
+          signoff: true
+          title: 'chore(config): update generated config.json for ${{ steps.latest-tag.outputs.tag }}'
+          body: |
+            Updates `static/config.json` from the latest Arcane tag.
+
+            ## Source
+            - Repository: `getarcaneapp/arcane`
+            - Tag: `${{ steps.latest-tag.outputs.tag }}`
+
+            ## Generator
+            - `cd sources`
+            - `just docs config output=../static/config.json --`
+
+            ---
+            *This PR was automatically generated.*
+          branch: 'chore/update-config-json-${{ steps.latest-tag.outputs.tag }}'
+          base: main
+          labels: 'chore,docs'
+          add-paths: |
+            static/config.json
+          delete-branch: true
