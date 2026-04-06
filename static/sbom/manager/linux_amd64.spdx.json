@@ -3,11 +3,11 @@
 	"dataLicense": "CC0-1.0",
 	"SPDXID": "SPDXRef-DOCUMENT",
 	"name": "sbom",
-	"documentNamespace": "https://anchore.com/syft/dir/sbom-9a3c36ae-631b-4a17-8f39-15c3dd4f3a27",
+	"documentNamespace": "https://anchore.com/syft/dir/sbom-ceaa3bae-0a63-41bc-947f-71f98b6c40a4",
 	"creationInfo": {
 		"licenseListVersion": "3.27",
 		"creators": ["Organization: Anchore, Inc", "Tool: syft-v1.40.0"],
-		"created": "2026-04-05T00:45:25Z"
+		"created": "2026-04-06T17:32:13Z"
 	},
 	"packages": [
 		{
@@ -3127,15 +3127,15 @@
 		},
 		{
 			"name": "github.com/go-jose/go-jose/v4",
-			"SPDXID": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-541ef5e4a8bc0a2e",
-			"versionInfo": "v4.1.3",
+			"SPDXID": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-ab099f80d728ac02",
+			"versionInfo": "v4.1.4",
 			"supplier": "NOASSERTION",
 			"downloadLocation": "NOASSERTION",
 			"filesAnalyzed": false,
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "0952e65838435516ba322fc880281aa29368b02687cfbceb31e17d32565192bb"
+					"checksumValue": "9a80cc7131e6bc4e86ae88f7e1e98d3cbb3faad61745571de92ecd1db1f3de40"
 				}
 			],
 			"sourceInfo": "acquired package info from go module information: /app/arcane",
@@ -3146,37 +3146,37 @@
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go-jose:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go-jose:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go-jose:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go-jose:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go_jose:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go_jose:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go_jose:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go_jose:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "PACKAGE-MANAGER",
 					"referenceType": "purl",
-					"referenceLocator": "pkg:golang/github.com/go-jose/go-jose/v4@v4.1.3"
+					"referenceLocator": "pkg:golang/github.com/go-jose/go-jose/v4@v4.1.4"
 				}
 			]
 		},
@@ -13493,7 +13493,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "727daa73e6b1a1808837a3b13ee55431a557d1011e830a9f3f8d2aafc2e14074"
+					"checksumValue": "7fb5ea7ab1d9ce14d8bc10349a6d8c3727c5bb8e2be3229d96b6dcf9c6392712"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -91748,12 +91748,6 @@
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
 		{
-			"spdxElementId": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-541ef5e4a8bc0a2e",
-			"relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
 			"spdxElementId": "SPDXRef-Package-deb-libbsd0-5421a64a3af7445b",
 			"relatedSpdxElement": "SPDXRef-File-var-lib-dpkg-status-3e140e9b56072de1",
 			"relationshipType": "OTHER",
@@ -93466,6 +93460,12 @@
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libxau6-aad04b1e645cb798",
 			"relatedSpdxElement": "SPDXRef-File-var-lib-dpkg-status-3e140e9b56072de1",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-ab099f80d728ac02",
+			"relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
 			"relationshipType": "OTHER",
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
@@ -95608,7 +95608,7 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-			"relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-541ef5e4a8bc0a2e",
+			"relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-ab099f80d728ac02",
 			"relationshipType": "CONTAINS"
 		},
 		{

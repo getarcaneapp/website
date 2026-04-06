@@ -3,11 +3,11 @@
 	"dataLicense": "CC0-1.0",
 	"SPDXID": "SPDXRef-DOCUMENT",
 	"name": "sbom",
-	"documentNamespace": "https://anchore.com/syft/dir/sbom-6c2d3c6c-84c7-491e-99a0-0a37ae8a4b57",
+	"documentNamespace": "https://anchore.com/syft/dir/sbom-6b9d962e-adda-4db6-a8c6-bd6d11f6c5d9",
 	"creationInfo": {
 		"licenseListVersion": "3.27",
 		"creators": ["Organization: Anchore, Inc", "Tool: syft-v1.40.0"],
-		"created": "2026-04-05T00:45:49Z"
+		"created": "2026-04-06T17:32:32Z"
 	},
 	"packages": [
 		{
@@ -3127,15 +3127,15 @@
 		},
 		{
 			"name": "github.com/go-jose/go-jose/v4",
-			"SPDXID": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-9108c0c74f1a1e6a",
-			"versionInfo": "v4.1.3",
+			"SPDXID": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-ee54542b13b79fc9",
+			"versionInfo": "v4.1.4",
 			"supplier": "NOASSERTION",
 			"downloadLocation": "NOASSERTION",
 			"filesAnalyzed": false,
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "0952e65838435516ba322fc880281aa29368b02687cfbceb31e17d32565192bb"
+					"checksumValue": "9a80cc7131e6bc4e86ae88f7e1e98d3cbb3faad61745571de92ecd1db1f3de40"
 				}
 			],
 			"sourceInfo": "acquired package info from go module information: /app/arcane-agent",
@@ -3146,37 +3146,37 @@
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go-jose:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go-jose:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go-jose:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go-jose:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go_jose:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go_jose:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go_jose:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go_jose:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "PACKAGE-MANAGER",
 					"referenceType": "purl",
-					"referenceLocator": "pkg:golang/github.com/go-jose/go-jose/v4@v4.1.3"
+					"referenceLocator": "pkg:golang/github.com/go-jose/go-jose/v4@v4.1.4"
 				}
 			]
 		},
@@ -9115,8 +9115,8 @@
 		},
 		{
 			"name": "libfreetype6",
-			"SPDXID": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"versionInfo": "2.13.3+dfsg-1",
+			"SPDXID": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"versionInfo": "2.13.3+dfsg-1+deb13u1",
 			"supplier": "Person: Hugh McMaster (hmc@debian.org)",
 			"originator": "Person: Hugh McMaster (hmc@debian.org)",
 			"downloadLocation": "NOASSERTION",
@@ -9132,12 +9132,12 @@
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:libfreetype6:libfreetype6:2.13.3\\+dfsg-1:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:libfreetype6:libfreetype6:2.13.3\\+dfsg-1\\+deb13u1:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "PACKAGE-MANAGER",
 					"referenceType": "purl",
-					"referenceLocator": "pkg:deb/debian/libfreetype6@2.13.3%2Bdfsg-1?arch=amd64&distro=debian-13&upstream=freetype"
+					"referenceLocator": "pkg:deb/debian/libfreetype6@2.13.3%2Bdfsg-1%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=freetype"
 				}
 			]
 		},
@@ -10428,8 +10428,8 @@
 		},
 		{
 			"name": "libpng16-16t64",
-			"SPDXID": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"versionInfo": "1.6.48-1+deb13u3",
+			"SPDXID": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"versionInfo": "1.6.48-1+deb13u4",
 			"supplier": "NOASSERTION",
 			"downloadLocation": "NOASSERTION",
 			"filesAnalyzed": true,
@@ -10444,37 +10444,37 @@
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:libpng16-16t64:libpng16-16t64:1.6.48-1\\+deb13u3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:libpng16-16t64:libpng16-16t64:1.6.48-1\\+deb13u4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:libpng16-16t64:libpng16_16t64:1.6.48-1\\+deb13u3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:libpng16-16t64:libpng16_16t64:1.6.48-1\\+deb13u4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:libpng16_16t64:libpng16-16t64:1.6.48-1\\+deb13u3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:libpng16_16t64:libpng16-16t64:1.6.48-1\\+deb13u4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:libpng16_16t64:libpng16_16t64:1.6.48-1\\+deb13u3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:libpng16_16t64:libpng16_16t64:1.6.48-1\\+deb13u4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:libpng16:libpng16-16t64:1.6.48-1\\+deb13u3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:libpng16:libpng16-16t64:1.6.48-1\\+deb13u4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:libpng16:libpng16_16t64:1.6.48-1\\+deb13u3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:libpng16:libpng16_16t64:1.6.48-1\\+deb13u4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "PACKAGE-MANAGER",
 					"referenceType": "purl",
-					"referenceLocator": "pkg:deb/debian/libpng16-16t64@1.6.48-1%2Bdeb13u3?arch=amd64&distro=debian-13&upstream=libpng1.6"
+					"referenceLocator": "pkg:deb/debian/libpng16-16t64@1.6.48-1%2Bdeb13u4?arch=amd64&distro=debian-13&upstream=libpng1.6"
 				}
 			]
 		},
@@ -13493,7 +13493,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "1007ec575b6b2923adfa70ebd179a4ebe643bcf31062e728bf01041eefa88813"
+					"checksumValue": "922d2849b687211dd5729cd71295d53c590299afd085143c3fc3e456780c1c6b"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -33149,7 +33149,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "c8f7edab3c587fe6723350e1305cd809c7f4cb72d3ecdeac20f27ef407e978de"
+					"checksumValue": "9e376992a91e92d86809893a3b9eea22a4e27849db1686f6ca58032f79cdafb5"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -33835,7 +33835,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "d20e776f6b4fe9d0791215d5f824f10064e7c56570a4340dc13ed844c02e4b20"
+					"checksumValue": "f35a3c7abba84a47d65d781f1f35496ffbf5b23d865489fb1c39eacf287780f2"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -66273,7 +66273,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "6b7f54c0d96469360886bc12da3850bb9611132a804a5764628b9f2593b3af2a"
+					"checksumValue": "19a89d05d9ba12ebd70676a5b905c24aa228122220e6b6a2988c7d531b7704a3"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -66861,7 +66861,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "9836d70f204b827d0671562c0d661996e3a67bf1ad64ca6178a15b351a911245"
+					"checksumValue": "8baee2b4b9e3bb7aa255bdfe30085708a985434cae8cd0f2b617a5926d3b8054"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -68905,7 +68905,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "74995f63bcfb5cfc2a8cf17153dd0d48ae1e89fbfccb006529049c907e48d1ce"
+					"checksumValue": "06c84ad46dc6159e8982f6235ffaecb1269c22a6052270c04c1ee22e13372c98"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -69556,6 +69556,21 @@
 		}
 	],
 	"relationships": [
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libpng16-16t64-copyright-151dab121d66110a",
+			"relationshipType": "CONTAINS"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-File-...share-doc-base-libpng16-16t64.libpng16-2e2f3c69a910dd99",
+			"relationshipType": "CONTAINS"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-File-...x86-64-linux-gnu-libpng16.so.16.48.0-c0db113e5a60858e",
+			"relationshipType": "CONTAINS"
+		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libxfixes3-01fd48934ca4b08e",
 			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libxfixes3-copyright-4297c2298ce997a5",
@@ -75142,16 +75157,6 @@
 			"relationshipType": "CONTAINS"
 		},
 		{
-			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libfreetype6-copyright-052708c81da49236",
-			"relationshipType": "CONTAINS"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relatedSpdxElement": "SPDXRef-File-...x86-64-linux-gnu-libfreetype.so.6.20.2-7b77bb32ced741d8",
-			"relationshipType": "CONTAINS"
-		},
-		{
 			"spdxElementId": "SPDXRef-Package-deb-libxv1-4e3e3dd29693ea8f",
 			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libxv1-copyright-482623d7ba289847",
 			"relationshipType": "CONTAINS"
@@ -77199,21 +77204,6 @@
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libpython3.13-minimal-7a4ceee0941d6805",
 			"relatedSpdxElement": "SPDXRef-File-usr-lib-python3.13-encodings-cp1258.py-fe8d35b36c4bf81d",
-			"relationshipType": "CONTAINS"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libpng16-16t64-copyright-151dab121d66110a",
-			"relationshipType": "CONTAINS"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-File-...share-doc-base-libpng16-16t64.libpng16-2e2f3c69a910dd99",
-			"relationshipType": "CONTAINS"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-File-...x86-64-linux-gnu-libpng16.so.16.48.0-c0db113e5a60858e",
 			"relationshipType": "CONTAINS"
 		},
 		{
@@ -87647,6 +87637,16 @@
 			"relationshipType": "CONTAINS"
 		},
 		{
+			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libfreetype6-copyright-052708c81da49236",
+			"relationshipType": "CONTAINS"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relatedSpdxElement": "SPDXRef-File-...x86-64-linux-gnu-libfreetype.so.6.20.2-7b77bb32ced741d8",
+			"relationshipType": "CONTAINS"
+		},
+		{
 			"spdxElementId": "SPDXRef-Package-deb-libmd0-ffd304ab77f359f2",
 			"relatedSpdxElement": "SPDXRef-File-...lib-x86-64-linux-gnu-libmd.so.0.1.0-c2796d273eff1a38",
 			"relationshipType": "CONTAINS"
@@ -87655,6 +87655,16 @@
 			"spdxElementId": "SPDXRef-Package-deb-libmd0-ffd304ab77f359f2",
 			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libmd0-copyright-cc18c3293fb00536",
 			"relationshipType": "CONTAINS"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libcairo2-90e3ce12cf0e59cd",
+			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libxfixes3-01fd48934ca4b08e",
@@ -88147,16 +88157,6 @@
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
-			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libcairo2-90e3ce12cf0e59cd",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libfontconfig1-fa71edb7311736de",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
 			"spdxElementId": "SPDXRef-Package-deb-libxv1-4e3e3dd29693ea8f",
 			"relatedSpdxElement": "SPDXRef-Package-deb-intel-gpu-tools-b0484721f719d583",
 			"relationshipType": "DEPENDENCY_OF"
@@ -88278,7 +88278,7 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libbrotli1-58e0161987100787",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
@@ -88323,7 +88323,7 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libbz2-1.0-6004b03bf692a003",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
@@ -88567,16 +88567,6 @@
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libcairo2-90e3ce12cf0e59cd",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
 			"spdxElementId": "SPDXRef-Package-deb-libva2-7d1b37aba73cde5b",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libva-drm2-32d514a4d45e6abb",
 			"relationshipType": "DEPENDENCY_OF"
@@ -88648,6 +88638,11 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libpciaccess0-02e2522bba7c6837",
 			"relationshipType": "DEPENDENCY_OF"
 		},
@@ -88683,11 +88678,6 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libelf1t64-522d2d5ec0a2b26e",
 			"relationshipType": "DEPENDENCY_OF"
 		},
@@ -88699,11 +88689,6 @@
 		{
 			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libssl3t64-6af8fbc25ef315a2",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
@@ -88724,6 +88709,11 @@
 		{
 			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libglib2.0-0t64-deb31d71c0e28c50",
+			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-zlib1g-8a1ec6d9372df578",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
@@ -89148,6 +89138,11 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libxfixes3-01fd48934ca4b08e",
 			"relationshipType": "DEPENDENCY_OF"
 		},
@@ -89403,11 +89398,6 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libxv1-4e3e3dd29693ea8f",
 			"relationshipType": "DEPENDENCY_OF"
 		},
@@ -89524,11 +89514,6 @@
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libpython3.13-minimal-7a4ceee0941d6805",
-			"relationshipType": "DEPENDENCY_OF"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
@@ -89803,6 +89788,11 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libc6-f72e79a6273e08df",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libmd0-ffd304ab77f359f2",
 			"relationshipType": "DEPENDENCY_OF"
 		},
@@ -89842,6 +89832,16 @@
 			"relationshipType": "DEPENDENCY_OF"
 		},
 		{
+			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libcairo2-90e3ce12cf0e59cd",
+			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libfontconfig1-fa71edb7311736de",
+			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
 			"spdxElementId": "SPDXRef-Package-deb-libmd0-ffd304ab77f359f2",
 			"relatedSpdxElement": "SPDXRef-Package-deb-dpkg-3fcb1891109bbf9a",
 			"relationshipType": "DEPENDENCY_OF"
@@ -89850,6 +89850,24 @@
 			"spdxElementId": "SPDXRef-Package-deb-libmd0-ffd304ab77f359f2",
 			"relatedSpdxElement": "SPDXRef-Package-deb-libbsd0-5421a64a3af7445b",
 			"relationshipType": "DEPENDENCY_OF"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libpng16-16t64-copyright-151dab121d66110a",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-File-var-lib-dpkg-status-3e140e9b56072de1",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
+			"relatedSpdxElement": "SPDXRef-File-...dpkg-info-libpng16-16t64-amd64.md5sums-d7ec676d44207e81",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libxfixes3-01fd48934ca4b08e",
@@ -91532,24 +91550,6 @@
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
 		{
-			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libfreetype6-copyright-052708c81da49236",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relatedSpdxElement": "SPDXRef-File-var-lib-dpkg-status-3e140e9b56072de1",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
-			"relatedSpdxElement": "SPDXRef-File-...dpkg-info-libfreetype6-amd64.md5sums-85e4f9a51c198725",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
 			"spdxElementId": "SPDXRef-Package-go-module-github.com-tonistiigi-go-csvvalue-4c07edb1ba97147b",
 			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
 			"relationshipType": "OTHER",
@@ -92468,24 +92468,6 @@
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
 		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libpng16-16t64-copyright-151dab121d66110a",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-File-var-lib-dpkg-status-3e140e9b56072de1",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
-			"relatedSpdxElement": "SPDXRef-File-...dpkg-info-libpng16-16t64-amd64.md5sums-d7ec676d44207e81",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
 			"spdxElementId": "SPDXRef-Package-go-module-github.com-opencontainers-go-digest-7cd5461e985ca410",
 			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
 			"relationshipType": "OTHER",
@@ -92938,12 +92920,6 @@
 		{
 			"spdxElementId": "SPDXRef-Package-deb-libcairo2-90e3ce12cf0e59cd",
 			"relatedSpdxElement": "SPDXRef-File-...lib-dpkg-info-libcairo2-amd64.md5sums-7d5455a53c646d1e",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
-			"spdxElementId": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-9108c0c74f1a1e6a",
-			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
 			"relationshipType": "OTHER",
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
@@ -94826,6 +94802,12 @@
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
 		{
+			"spdxElementId": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-ee54542b13b79fc9",
+			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
 			"spdxElementId": "SPDXRef-Package-go-module-github.com-moby-sys-userns-ef3d42a797e68151",
 			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
 			"relationshipType": "OTHER",
@@ -95134,6 +95116,24 @@
 		{
 			"spdxElementId": "SPDXRef-Package-go-module-github.com-golang-groupcache-fc73d927856af95a",
 			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relatedSpdxElement": "SPDXRef-File-usr-share-doc-libfreetype6-copyright-052708c81da49236",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relatedSpdxElement": "SPDXRef-File-var-lib-dpkg-status-3e140e9b56072de1",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
+			"relatedSpdxElement": "SPDXRef-File-...dpkg-info-libfreetype6-amd64.md5sums-85e4f9a51c198725",
 			"relationshipType": "OTHER",
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
@@ -95608,7 +95608,7 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-			"relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-9108c0c74f1a1e6a",
+			"relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-ee54542b13b79fc9",
 			"relationshipType": "CONTAINS"
 		},
 		{
@@ -96493,7 +96493,7 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-4b672cad332e0812",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libfreetype6-fcb706650c034eda",
 			"relationshipType": "CONTAINS"
 		},
 		{
@@ -96648,7 +96648,7 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-			"relatedSpdxElement": "SPDXRef-Package-deb-libpng16-16t64-7b012a1be6529993",
+			"relatedSpdxElement": "SPDXRef-Package-deb-libpng16-16t64-006a07776056980f",
 			"relationshipType": "CONTAINS"
 		},
 		{

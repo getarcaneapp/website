@@ -3,11 +3,11 @@
 	"dataLicense": "CC0-1.0",
 	"SPDXID": "SPDXRef-DOCUMENT",
 	"name": "sbom",
-	"documentNamespace": "https://anchore.com/syft/dir/sbom-ef40243a-ab21-4483-a337-e9e1c596c0bf",
+	"documentNamespace": "https://anchore.com/syft/dir/sbom-5b236f37-fe04-4f47-a95f-1e26986933a7",
 	"creationInfo": {
 		"licenseListVersion": "3.27",
 		"creators": ["Organization: Anchore, Inc", "Tool: syft-v1.40.0"],
-		"created": "2026-04-05T00:45:44Z"
+		"created": "2026-04-06T17:32:31Z"
 	},
 	"packages": [
 		{
@@ -2931,15 +2931,15 @@
 		},
 		{
 			"name": "github.com/go-jose/go-jose/v4",
-			"SPDXID": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-2da2735069bbcbc4",
-			"versionInfo": "v4.1.3",
+			"SPDXID": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-95b3fa87a8f102e7",
+			"versionInfo": "v4.1.4",
 			"supplier": "NOASSERTION",
 			"downloadLocation": "NOASSERTION",
 			"filesAnalyzed": false,
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "0952e65838435516ba322fc880281aa29368b02687cfbceb31e17d32565192bb"
+					"checksumValue": "9a80cc7131e6bc4e86ae88f7e1e98d3cbb3faad61745571de92ecd1db1f3de40"
 				}
 			],
 			"sourceInfo": "acquired package info from go module information: /app/arcane-agent",
@@ -2950,37 +2950,37 @@
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go-jose:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go-jose:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go-jose:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go-jose:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go_jose:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go_jose:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go_jose:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go_jose:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go:go-jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go:go-jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "SECURITY",
 					"referenceType": "cpe23Type",
-					"referenceLocator": "cpe:2.3:a:go:go_jose\\/v4:v4.1.3:*:*:*:*:*:*:*"
+					"referenceLocator": "cpe:2.3:a:go:go_jose\\/v4:v4.1.4:*:*:*:*:*:*:*"
 				},
 				{
 					"referenceCategory": "PACKAGE-MANAGER",
 					"referenceType": "purl",
-					"referenceLocator": "pkg:golang/github.com/go-jose/go-jose/v4@v4.1.3"
+					"referenceLocator": "pkg:golang/github.com/go-jose/go-jose/v4@v4.1.4"
 				}
 			]
 		},
@@ -11952,7 +11952,7 @@
 			"checksums": [
 				{
 					"algorithm": "SHA256",
-					"checksumValue": "e2e7c7eca301c110e1d15857716c8e866987468ffc4914e74278c4d9704261f1"
+					"checksumValue": "7f4256a77368c7f4f6089b6c8dd7b6f61801b951466d52ba57ec7a3cc19c70f0"
 				}
 			],
 			"licenseConcluded": "NOASSERTION",
@@ -69035,12 +69035,6 @@
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
 		},
 		{
-			"spdxElementId": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-2da2735069bbcbc4",
-			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
-			"relationshipType": "OTHER",
-			"comment": "evident-by: indicates the package's existence is evident by the given file"
-		},
-		{
 			"spdxElementId": "SPDXRef-Package-deb-libva2-2e3b83ffa6499549",
 			"relatedSpdxElement": "SPDXRef-File-var-lib-dpkg-status-3e140e9b56072de1",
 			"relationshipType": "OTHER",
@@ -70836,6 +70830,12 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-Package-go-module-github.com-sigstore-sigstore-go-947c7804663bd7f2",
+			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
+			"relationshipType": "OTHER",
+			"comment": "evident-by: indicates the package's existence is evident by the given file"
+		},
+		{
+			"spdxElementId": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-95b3fa87a8f102e7",
 			"relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
 			"relationshipType": "OTHER",
 			"comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -73168,7 +73168,7 @@
 		},
 		{
 			"spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-			"relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-2da2735069bbcbc4",
+			"relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-jose-go-jose-v4-95b3fa87a8f102e7",
 			"relationshipType": "CONTAINS"
 		},
 		{
