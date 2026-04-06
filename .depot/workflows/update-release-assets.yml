@@ -97,7 +97,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: arcane/go.mod
+          go-version-file: arcane/backend/go.mod
 
       - name: Set up just
         uses: extractions/setup-just@v3
