@@ -107,7 +107,7 @@ jobs:
         run: |
           set -euo pipefail
           cd arcane
-          just docs config output=../static/config.json --
+          just docs config ../static/config.json
 
       - name: Set up Depot CLI
         if: steps.check.outputs.do_sbom == 'true'
