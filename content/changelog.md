@@ -3,6 +3,30 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.17.1 - 2026-04-06
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.17.1)
+
+### Bug fixes
+
+* umable to initialize new swarm cluster([073b9d3](https://github.com/getarcaneapp/arcane/commit/073b9d385363c7f8d3b4ed17a2c5fe9b10c95dde) by @kmendell)
+* swarm source directory override([6ce55cf](https://github.com/getarcaneapp/arcane/commit/6ce55cf013d1b3fca02b5edb6a6d04ce1a210d36) by @kmendell)
+* swarm stack unable to be edited([b2c4e27](https://github.com/getarcaneapp/arcane/commit/b2c4e27b62d17a336b4d99f64a3d66970b129340) by @kmendell)
+* frontend timeout config for api actions ([#2235](https://github.com/getarcaneapp/arcane/pull/2235) by @kmendell)
+* git sync is not pulling full folders, no longer deploy on creation of sync ([#2239](https://github.com/getarcaneapp/arcane/pull/2239) by @kmendell)
+* git builds not ending in .git fail ([#2248](https://github.com/getarcaneapp/arcane/pull/2248) by @kmendell)
+
+### Dependencies
+
+* bump github.com/go-jose/go-jose/v4 from 4.1.3 to 4.1.4 in /backend in the go_modules group across 1 directory ([#2232](https://github.com/getarcaneapp/arcane/pull/2232) by @dependabot[bot])
+
+### Other
+
+* simplify remove stack logic([6996abf](https://github.com/getarcaneapp/arcane/commit/6996abfd796e8fae048f362fabfb9dbd90bcdf7b) by @kmendell)
+* add dynamic env config schema generation ([#2237](https://github.com/getarcaneapp/arcane/pull/2237) by @kmendell)
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.17.0...v1.17.1
+
 ## v1.17.0 - 2026-04-05
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.17.0)
