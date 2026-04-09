@@ -3,6 +3,43 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.17.2 - 2026-04-09
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.17.2)
+
+### Bug fixes
+
+* gitsync SyncDirectory toggle not being passed correctly ([#2265](https://github.com/getarcaneapp/arcane/pull/2265) by @kmendell)
+* stop project discovery descent once a compose file is found ([#2255](https://github.com/getarcaneapp/arcane/pull/2255) by @mkaltner)
+* preserve webhook URL query params for generic notifications ([#2276](https://github.com/getarcaneapp/arcane/pull/2276) by @GiulioSavini)
+* prevent unnecessary container recreation when image is already up to date ([#2275](https://github.com/getarcaneapp/arcane/pull/2275) by @GiulioSavini)
+* only sync on project file changes, not bare directory events ([#2271](https://github.com/getarcaneapp/arcane/pull/2271) by @mkaltner)
+* include files incorrectly identified as its own compose file and labeled as such ([#2270](https://github.com/getarcaneapp/arcane/pull/2270) by @kmendell)
+* lazy load project file contents on demand ([#2259](https://github.com/getarcaneapp/arcane/pull/2259) by @jt196)
+* use global .ssh/known_hosts path ([#2279](https://github.com/getarcaneapp/arcane/pull/2279) by @kmendell)
+* container mount inspection logic([0bbf8dc](https://github.com/getarcaneapp/arcane/commit/0bbf8dc992102c8ad3ec8469a20890d24ead47f2) by @kmendell)
+* support custom canonical compose filenames ([#2285](https://github.com/getarcaneapp/arcane/pull/2285) by @kmendell)
+
+### Performance improvements
+
+* add depth limit and skip list to project directory scanning ([#2254](https://github.com/getarcaneapp/arcane/pull/2254) by @mkaltner)
+* remove expensive compose parsing from project list view ([#2253](https://github.com/getarcaneapp/arcane/pull/2253) by @mkaltner)
+
+### Dependencies
+
+* vendor docker buildkit clientopts function([8387d57](https://github.com/getarcaneapp/arcane/commit/8387d57defe69bdc5f223ff08bd35309e43ae7bf) by @kmendell)
+* bump go.opentelemetry.io/otel/sdk from 1.40.0 to 1.43.0 in /types in the go_modules group across 1 directory ([#2282](https://github.com/getarcaneapp/arcane/pull/2282) by @dependabot[bot])
+* bump go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp from 1.38.0 to 1.43.0 in /backend in the go_modules group across 1 directory ([#2281](https://github.com/getarcaneapp/arcane/pull/2281) by @dependabot[bot])
+* bump go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp from 1.38.0 to 1.43.0 in /backend in the go_modules group across 1 directory ([#2283](https://github.com/getarcaneapp/arcane/pull/2283) by @dependabot[bot])
+* upgrade pnpm to 10.33.0([af06c6a](https://github.com/getarcaneapp/arcane/commit/af06c6ad0c1a2cde3ed2836e229cec2af88b0f9c) by @kmendell)
+
+### Other
+
+* update pointer usages with new() ([#2251](https://github.com/getarcaneapp/arcane/pull/2251) by @kmendell)
+* update errors to use errors.AsType([4d24767](https://github.com/getarcaneapp/arcane/commit/4d24767f30da5cc9bb0360da1478e906a7a066d8) by @kmendell)
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.17.1...v1.17.2
+
 ## v1.17.1 - 2026-04-06
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.17.1)
