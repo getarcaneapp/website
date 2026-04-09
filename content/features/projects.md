@@ -10,7 +10,18 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 
 ## What is a Project?
 
-A `Project` is a collection of services defined in a `compose.yaml` file.
+A `Project` is a collection of services defined in a Compose YAML file.
+
+Arcane supports these standard filenames out of the box:
+
+- `compose.yaml`
+- `compose.yml`
+- `docker-compose.yaml`
+- `docker-compose.yml`
+- `podman-compose.yaml`
+- `podman-compose.yml`
+
+Arcane can also load a single custom `.yaml`/`.yml` file in a project directory when it is unambiguous.
 
 ## Screenshot
 
@@ -40,9 +51,27 @@ When you open a project detail page, Arcane also updates the browser tab title t
 
 1. Click the `Create Project` button.
 2. Enter a name for your project.
-3. Paste or write your `compose.yaml` content.
+3. Paste or write your Compose YAML content.
 4. (Optional) Use the `Environment Configuration (.env)` editor to add environment variables for your project. Arcane saves them in a `.env` file next to your compose file.
 5. Click `Create Project`. Arcane will save your project and try to start it.
+
+### How Arcane Chooses the Compose File
+
+When a project directory contains multiple YAML files, Arcane uses a predictable priority order:
+
+1. Exact canonical names first:
+  - `compose.yaml`
+  - `compose.yml`
+  - `docker-compose.yaml`
+  - `docker-compose.yml`
+  - `podman-compose.yaml`
+  - `podman-compose.yml`
+2. A custom YAML file whose filename stem matches the directory name (normalized).
+  - Example: in `Radarr-3/`, Arcane prefers `radarr.yaml`.
+3. A single custom YAML file with `compose` in the filename stem.
+4. Otherwise, any single visible `.yaml`/`.yml` file.
+
+If Arcane finds more than one plausible custom YAML file, it now stops and reports the directory as ambiguous instead of guessing.
 
 ### Controlling a Project
 
@@ -147,6 +176,9 @@ That means Arcane can keep related files together when your project uses:
 - relative file references such as `.env`, build files, or sidecar config files
 
 Arcane also shows synced companion files in the project detail view as read-only reference files, so you can inspect what was synced without leaving the project page.
+
+> [!NOTE]
+> Small caveat: compose loading now supports Podman and custom YAML names, but the **Directory Files** filtering in the project detail view still hides only classic Docker Compose filenames plus `.env`. In some cases, newer/custom compose filenames may still appear in that list until this filter is updated.
 
 ### Import Multiple Syncs via JSON
 
