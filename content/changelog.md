@@ -3,6 +3,33 @@ title: 'Changelog'
 description: 'Release notes for Arcane'
 ---
 
+## v1.17.3 - 2026-04-10
+
+[Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.17.3)
+
+### Bug fixes
+
+* show custom device path for type=none volumes ([#2290](https://github.com/getarcaneapp/arcane/pull/2290) by @GiulioSavini)
+* pass enriched project to query cache after save to prevent editor revert ([#2295](https://github.com/getarcaneapp/arcane/pull/2295) by @mkaltner)
+* lazy-fetch include file content for container compose tab ([#2291](https://github.com/getarcaneapp/arcane/pull/2291) by @mkaltner)
+* validate and secure remote template registry fetching ([#2299](https://github.com/getarcaneapp/arcane/pull/2299) by @kmendell)
+* route per-container Redeploy through compose-aware path ([#2269](https://github.com/getarcaneapp/arcane/pull/2269) by @mkaltner)
+
+### CLI - Bug fixes
+
+* pagination not working correctly via arcane-cli ([#2286](https://github.com/getarcaneapp/arcane/pull/2286) by @kmendell)
+
+### Dependencies
+
+* bump compose to 5.1.2 and docker/cli to 29.4.0([4687f81](https://github.com/getarcaneapp/arcane/commit/4687f81db4bec93b729a20ec8809a48fa273f5a2) by @kmendell)
+* bump golang.org/x/net from 0.52.0 to 0.53.0 in /backend ([#2311](https://github.com/getarcaneapp/arcane/pull/2311) by @dependabot[bot])
+* bump github.com/gin-contrib/cors from 1.7.6 to 1.7.7 in /backend ([#2312](https://github.com/getarcaneapp/arcane/pull/2312) by @dependabot[bot])
+* bump go.podman.io/image/v5 from 5.39.1 to 5.39.2 in /backend ([#2305](https://github.com/getarcaneapp/arcane/pull/2305) by @dependabot[bot])
+* bump github.com/shirou/gopsutil/v4 from 4.26.2 to 4.26.3 in /backend ([#2304](https://github.com/getarcaneapp/arcane/pull/2304) by @dependabot[bot])
+* bump github.com/aws/aws-sdk-go-v2/service/ecr from 1.56.2 to 1.57.0 in /backend ([#2310](https://github.com/getarcaneapp/arcane/pull/2310) by @dependabot[bot])
+
+**Full Changelog**: https://github.com/getarcaneapp/arcane/compare/v1.17.2...v1.17.3
+
 ## v1.17.2 - 2026-04-09
 
 [Release](https://github.com/getarcaneapp/arcane/releases/tag/v1.17.2)
