@@ -4,6 +4,7 @@ import {
 	development,
 	features,
 	guides,
+	security,
 	setup,
 	templates
 } from '$velite/index.js';
@@ -128,6 +129,7 @@ const SECTION_BUILDERS: Array<{
 	source: any[];
 }> = [
 	{ key: 'setup', title: 'Setup', source: setup },
+	{ key: 'security', title: 'Security', source: security },
 	{ key: 'configuration', title: 'Configuration', source: configuration },
 	{ key: 'features', title: 'Features', source: features },
 	{ key: 'cli', title: 'CLI', source: cli },

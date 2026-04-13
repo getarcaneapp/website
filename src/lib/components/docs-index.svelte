@@ -2,7 +2,7 @@
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import FileText from '@lucide/svelte/icons/file-text';
   import { resolve } from '$app/paths';
-  import { configuration, development, features, guides, setup, templates } from '$velite/index.js';
+  import { configuration, development, features, guides, security, setup, templates } from '$velite/index.js';
   import { sortDocs } from '$lib/config/docs.js';
 
   type Doc = { title: string; path: string; order?: number };
@@ -12,6 +12,7 @@
   let {
     sections = [
       { title: 'Getting Started', collections: [setup] },
+      { title: 'Security', collections: [security] },
       { title: 'Configuration', collections: [configuration] },
       { title: 'Features', collections: [features] },
       { title: 'Templates', collections: [templates] },
@@ -20,7 +21,6 @@
     ],
   }: Props = $props();
 
-  const toHref = (path: string) => resolve('/docs/[...slug]', { slug: path });
 </script>
 
 <div class="not-prose grid gap-10">
@@ -35,7 +35,7 @@
           {#each docs as d (d.path)}
             <a
               class="group relative flex items-center justify-between gap-4 overflow-hidden rounded-xl border border-black/5 bg-zinc-50/30 p-4 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-purple-500/30 hover:bg-white hover:shadow-md hover:shadow-purple-500/5 dark:border-white/5 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]"
-              href={toHref(d.path)}>
+              href={resolve('/docs/[...slug]', { slug: d.path })}>
               <div
                 class="pointer-events-none absolute inset-0 transition-colors duration-500 group-hover:bg-gradient-to-r group-hover:from-purple-500/5 group-hover:to-transparent">
               </div>

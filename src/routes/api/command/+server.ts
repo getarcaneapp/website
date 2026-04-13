@@ -8,6 +8,7 @@ import {
 	features,
 	guides,
 	indexPage,
+	security,
 	setup,
 	templates
 } from '$velite/index.js';
@@ -61,6 +62,7 @@ function pathToHref(pathOrSlug: string): string {
 const allDocs: CollectionDoc[] = [
 	...indexPage,
 	...setup,
+	...security,
 	...configuration,
 	...features,
 	...guides,

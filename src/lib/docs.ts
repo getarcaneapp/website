@@ -7,6 +7,7 @@ import {
 	features,
 	guides,
 	indexPage,
+	security,
 	setup,
 	templates
 } from '$velite/index.js';
@@ -16,6 +17,7 @@ type CollectionDoc = (typeof indexPage)[number];
 const allDocs: CollectionDoc[] = [
 	...indexPage,
 	...setup,
+	...security,
 	...configuration,
 	...features,
 	...guides,

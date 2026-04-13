@@ -6,6 +6,7 @@ import {
 	features,
 	guides,
 	indexPage,
+	security,
 	setup,
 	templates
 } from '$velite/index.js';
@@ -16,6 +17,7 @@ export const prerender = true;
 const ALL_DOCS = [
 	...indexPage,
 	...setup,
+	...security,
 	...configuration,
 	...features,
 	...guides,

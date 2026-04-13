@@ -39,6 +39,12 @@ const configuration = defineCollection({
 	schema: docSchema
 });
 
+const security = defineCollection({
+	name: 'security',
+	pattern: './security/**/*.md',
+	schema: docSchema
+});
+
 const features = defineCollection({
 	name: 'features',
 	pattern: './features/**/*.md',
@@ -87,6 +93,7 @@ export default defineConfig({
 		indexPage,
 		setup,
 		configuration,
+		security,
 		features,
 		guides,
 		development,

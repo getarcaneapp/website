@@ -92,11 +92,11 @@ function handleMount(element: HTMLElement) {
 {#if type && config}
 	{@const Icon = config.icon}
 	<div class={cn('mt-6 rounded-sm border-l-2 p-4 not-italic', config.class, className)} {...restProps} use:handleMount>
-		<div class="flex items-start gap-3">
+		<div class="flex min-w-0 items-start gap-3">
 			<Icon class="mt-0.5 size-5 shrink-0" />
-			<div class="flex-1">
+			<div class="min-w-0 flex-1">
 				<div class="mb-1 font-semibold">{config.label}</div>
-				<div class="[&>p]:mb-2 last:[&>p]:mb-0">
+				<div class="min-w-0 [&_.snippet]:max-w-full [&_.snippet]:w-full [&>p]:mb-2 last:[&>p]:mb-0">
 					{@render children?.()}
 				</div>
 			</div>
