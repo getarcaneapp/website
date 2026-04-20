@@ -45,19 +45,16 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
           CHANGELOG_UP_TO_DATE=false
-          if [[ -f content/changelog.md ]]; then
+          shopt -s nullglob
+          CHANGELOG_FILES=(content/changelog/*.md)
+          if (( ${#CHANGELOG_FILES[@]} > 0 )); then
             CHANGELOG_UP_TO_DATE=true
             while IFS= read -r tag; do
-              if ! grep -qE "^##[[:space:]]+$tag\\b" content/changelog.md; then
+              if ! grep -qE "^##[[:space:]]+$tag\\b" "${CHANGELOG_FILES[@]}"; then
                 CHANGELOG_UP_TO_DATE=false
                 break
               fi
             done < <(jq -r '.[] | select(.draft == false and .prerelease == false) | .tag_name' "$RELEASES_JSON")
-
-            FM_COUNT=$(grep -c "^title: 'Changelog'$" content/changelog.md || true)
-            if [[ "$FM_COUNT" -ne 1 ]]; then
-              CHANGELOG_UP_TO_DATE=false
-            fi
           fi
 
           SBOM_UP_TO_DATE=false
@@ -91,7 +88,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          RELEASES_JSON="${{ steps.releases.outputs.releases_json }}" REPO="getarcaneapp/arcane" CHANGELOG="content/changelog.md" bash scripts/update-changelog.sh
+          RELEASES_JSON="${{ steps.releases.outputs.releases_json }}" REPO="getarcaneapp/arcane" CHANGELOG_DIR="content/changelog" bash scripts/update-changelog.sh
 
       - name: Checkout arcane repo
         if: steps.check.outputs.do_sbom == 'true'
@@ -219,7 +216,7 @@ jobs:
         id: changes
         if: steps.check.outputs.skip_all != 'true'
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
+          if [[ -n "$(git status --porcelain -- content/changelog.md content/changelog/ static/config.json static/sbom/)" ]]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
@@ -250,6 +247,7 @@ jobs:
           labels: 'docs(changelog),chore(config),chore(sbom)'
           add-paths: |
             content/changelog.md
+            content/changelog/
             static/config.json
             static/sbom/
           delete-branch: true

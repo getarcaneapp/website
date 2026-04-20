@@ -5,16 +5,7 @@ import type { PageLoad } from './$types.js';
 
 type DocModule = { default: Component; metadata?: Record<string, any> };
 
-const modules = import.meta.glob<DocModule>('/content/**/*.md');
-
-function transformPath(p: string): string {
-	return p
-		.replace(/\\/g, '/')
-		.replace(/^.*\/content\//, '')
-		.replace(/\.md$/, '')
-		.replace(/\/index$/, '')
-		.trim();
-}
+const modules = import.meta.glob<DocModule>('/content/changelog/*.md');
 
 export const prerender = true;
 
@@ -22,21 +13,20 @@ export const load: PageLoad = async () => {
 	const meta = changelogMeta?.[0];
 	if (!meta) throw error(404, 'Changelog not found');
 
-	const key = Object.keys(modules).find((k) => transformPath(k) === 'changelog');
-	if (!key) throw error(404, 'Changelog module not found');
+	const keys = Object.keys(modules).sort().reverse();
+	if (keys.length === 0) throw error(404, 'Changelog modules not found');
 
-	const mod = await modules[key]();
-	const fm = mod.metadata ?? {};
+	const docs = await Promise.all(keys.map((key) => modules[key]()));
+	const toc = docs.flatMap((doc) => doc.metadata?.toc ?? []);
 
 	return {
-		component: mod.default,
+		components: docs.map((doc) => doc.default),
 		metadata: {
 			...meta,
-			...fm,
 			path: 'changelog',
-			title: fm.title ?? meta.title,
-			description: fm.description ?? meta.description,
-			toc: fm.toc ?? meta.toc ?? []
+			title: meta.title,
+			description: meta.description,
+			toc
 		}
 	};
 };

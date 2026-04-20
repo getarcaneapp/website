@@ -726,8 +726,8 @@
 	}
 
 	/* Improve spacing around custom components */
-	.mdsx :global(.git-command),
-	.mdsx :global(.snippet) {
+	.mdsx .git-command,
+	.mdsx .snippet {
 		@apply my-4;
 	}
 }
