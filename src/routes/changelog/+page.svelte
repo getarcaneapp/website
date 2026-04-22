@@ -24,8 +24,10 @@
   type ReleaseSection = {
     id: string;
     title: string;
+    tocTitle: string;
     dateLabel?: string;
     releaseUrl?: string;
+    tocItems: TocEntry[];
     contentNodes: Node[];
     searchText: string;
     defaultExpanded: boolean;
@@ -33,7 +35,7 @@
 
   let { data }: { data: PageData } = $props();
 
-  const Markdown = $derived(data.component);
+  const Markdowns = $derived(data.components);
   const doc = $derived(data.metadata);
 
   const flattenToc = (items: TocEntry[] = [], depth = 0) => {
@@ -59,29 +61,35 @@
     return parsed.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
   };
 
-  const versionEntries = $derived(
-    flattenToc((doc.toc ?? []) as TocEntry[])
-      .filter((item) => item.depth === 0 && /^v?\d/i.test(item.title))
-      .map((item) => {
-        const parsed = parseVersionTitle(item.title);
-        return {
-          title: item.title,
-          url: item.url,
-          version: parsed.version,
-          date: parsed.date,
-        } satisfies VersionEntry;
-      }),
-  );
-
-  const latestEntry = $derived(versionEntries[0]);
-  const latestDateLabel = $derived(latestEntry?.date ? formatDateLabel(latestEntry.date) : null);
-
   let sourceRef = $state<HTMLDivElement>();
   let query = $state('');
   let ready = $state(false);
   let sections = $state<ReleaseSection[]>([]);
   let bulkActionKey = $state(0);
   let bulkActionValue = $state<boolean | null>(null);
+
+  const sidebarToc = $derived(
+    sections.map((section) => ({
+      title: section.tocTitle,
+      url: `#${section.id}`,
+      items: section.tocItems,
+    })),
+  );
+
+  const versionEntries = $derived(
+    sidebarToc.map((item) => {
+      const parsed = parseVersionTitle(item.title);
+      return {
+        title: item.title,
+        url: item.url,
+        version: parsed.version,
+        date: parsed.date,
+      } satisfies VersionEntry;
+    }),
+  );
+
+  const latestEntry = $derived(versionEntries[0]);
+  const latestDateLabel = $derived(sections[0]?.dateLabel ?? null);
 
   const searchTerm = $derived(query.trim().toLowerCase());
   const filteredSections = $derived(
@@ -138,14 +146,29 @@
       const releaseUrl = releaseParagraph?.querySelector('a')?.getAttribute('href') ?? undefined;
 
       const contentNodes = nodes.filter((node) => node !== releaseParagraph);
+      const tocItems: TocEntry[] = [];
       for (const node of contentNodes) {
         if (node instanceof HTMLHeadingElement && node.tagName.toLowerCase() === 'h3') {
           node.dataset.kind = classifySectionHeading(node);
+          if (node.id) {
+            tocItems.push({
+              title: node.textContent?.trim() ?? '',
+              url: `#${node.id}`,
+              items: [],
+            });
+          }
         }
         if (node instanceof HTMLElement) {
           node.querySelectorAll('h3').forEach((subheading) => {
             if (subheading instanceof HTMLHeadingElement) {
               subheading.dataset.kind = classifySectionHeading(subheading);
+              if (subheading.id) {
+                tocItems.push({
+                  title: subheading.textContent?.trim() ?? '',
+                  url: `#${subheading.id}`,
+                  items: [],
+                });
+              }
             }
           });
         }
@@ -159,8 +182,10 @@
       results.push({
         id: headingId,
         title: parsed.version,
+        tocTitle: titleText,
         dateLabel: parsed.date ? formatDateLabel(parsed.date) : undefined,
         releaseUrl,
+        tocItems,
         contentNodes,
         searchText: `${titleText} ${searchContent}`.toLowerCase(),
         defaultExpanded: index === 0,
@@ -209,7 +234,7 @@
       </section>
 
       <div class="changelog-layout">
-        <ChangelogToc toc={doc.toc} class="changelog-rail" maxVisibleVersions={12} />
+        <ChangelogToc toc={sidebarToc} class="changelog-rail" maxVisibleVersions={12} />
 
         <div class="changelog-main">
           <div class="changelog-controls">
@@ -231,7 +256,9 @@
 
           <div class="changelog-body" data-ready={ready}>
             <div class="changelog-source" bind:this={sourceRef}>
-              <Markdown />
+              {#each Markdowns as Markdown, index (index)}
+                <Markdown />
+              {/each}
             </div>
             {#if ready}
               {#each filteredSections as section (section.id)}
