@@ -12,8 +12,7 @@ permissions:
 
 jobs:
   update-release-assets:
-    # Run only in the canonical repo and avoid self-triggering from the bot.
-    if: ${{ github.repository_owner == 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
+    if: ${{ github.repository_owner != 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
     runs-on: depot-ubuntu-latest
     steps:
       - name: Checkout

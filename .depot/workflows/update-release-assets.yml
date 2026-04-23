@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   update-release-assets:
-    if: ${{ github.repository_owner == 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
     runs-on: depot-ubuntu-latest
     steps:
       - name: Checkout
