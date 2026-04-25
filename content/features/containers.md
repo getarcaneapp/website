@@ -1,25 +1,13 @@
 ---
 title: 'Containers'
-description: 'Learn how to manage Docker containers with Arcane'
+description: 'Manage Docker containers from Arcane.'
 ---
 
 <script lang="ts">
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
-## What Can You Do With Containers in Arcane?
-
-- **View Containers:** See all containers on your Docker host, including their names, IDs, images, and current status (like running or stopped).
-- **Create Containers:** Launch new containers from existing images. You can set the name, image, ports, volumes, environment variables, and more using a guided form.
-- **Start/Stop/Restart Containers:** Easily control the state of your containers with one click.
-- **Redeploy Containers:** Pull the latest image for a single container and recreate it while keeping its existing configuration.
-- **Inspect Containers:** Click on a container to see detailed information, including configuration, network settings, mounts, and logs.
-- **Edit Compose-Managed Services in Place:** For containers that belong to an Arcane-managed project, open the Compose tab to inspect or edit the service's source compose file.
-- **Control Auto Updates Per Container:** Toggle auto updates directly from the container detail view when the container is not already controlled by an explicit updater label.
-- **Remove Containers:** Delete containers you no longer need. You can only remove stopped containers (unless you use the force option).
-- **View Logs:** Use the updated log viewer with structured log detection, multiline grouping, and small CPU and memory monitors in the logs panel.
-
-## Screenshot
+The **Containers** page lists every container on your Docker host and lets you start, stop, inspect, and remove them. Use it for one-off containers; for grouped services, see [Projects](/docs/features/projects).
 
 <ScreenshotFrame
 	src="/img/screenshots/containers-page.jpeg"
@@ -29,67 +17,54 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 	decoding="async"
 />
 
-## How to Use
+## Browse containers
 
-### Viewing Containers
+Open **Containers** in the sidebar. The table shows name, ID, image, and status for every container on the host.
 
-1. Go to the **Containers** section in the sidebar.
-2. You'll see a table listing all your Docker containers with their names, IDs, images, and status.
+If you have a lot of published ports, the table collapses long port lists behind a `+N` expander. The view options menu can also hide exposed-only ports so you only see published host mappings.
 
-### Creating a Container
+## Create a container
 
-1. Click the **Create Container** button.
-2. Fill out the form with the required details (name, image, etc.).
-3. (Optional) Set advanced options like ports, volumes, environment variables, and more.
-4. Click **Create** to launch your new container.
+1. Click **Create Container**.
+2. Fill in name and image. The other fields (ports, volumes, environment variables, restart policy, and so on) are optional.
+3. Click **Create**.
 
-### Controlling a Container
+## Start, stop, restart, redeploy
 
-- **Start:** Click the **Start** button to run a stopped container.
-- **Stop:** Click the **Stop** button to stop a running container.
-- **Restart:** Click the **Restart** button to quickly restart a container.
-- **Redeploy:** Use **Redeploy** when you want Arcane to pull the latest image for one container and recreate it with the same name, mounts, labels, networks, and restart behavior.
+Each container row has action buttons:
 
-### Inspecting a Container
+- **Start** / **Stop** / **Restart** — change the running state.
+- **Redeploy** — pull the latest image and recreate the container with the same name, mounts, labels, networks, and restart policy. Use this to update a single container in place.
 
-1. Click on a container's name or the **Inspect** button.
-2. View detailed information about the container's configuration, state, network, mounts, and logs.
+## Inspect a container
 
-### Compose Tab
+Click a container's name or its **Inspect** button to open the detail view. Tabs cover configuration, network settings, mounts, and logs.
 
-If a container belongs to an Arcane-managed compose project, the detail view can show a **Compose** tab.
+### Compose tab
 
-Arcane loads the compose file that actually defines that service:
+If the container belongs to an Arcane-managed Compose project, the detail view also shows a **Compose** tab with the source compose file:
 
-- the root compose file when the service lives there
+- the root compose file when the service is defined there
 - an included compose file when the service comes from a Compose `include`
 
-For Git-synced projects, the Compose tab stays visible but is read-only.
+For Git-synced projects, this tab is read-only.
 
-### Removing a Container
+### Auto-update toggle
 
-1. In the containers list, find the container you want to remove.
-2. Click the **Remove** button (trash icon).
-3. Confirm the deletion in the dialog.
+The **Overview** tab has an **Auto Update** toggle for opting a single container in or out of Arcane's updater. If the container already has an explicit `com.getarcaneapp.arcane.updater` label, that label wins.
 
-> **Note:** You can only remove stopped containers unless you use the force option.
+## View logs
 
-### Viewing Logs
+Open a container's detail view and switch to the **Logs** tab. The viewer:
 
-1. Click on a container to open its details.
-2. Go to the **Logs** tab to see the container's output and error logs.
-3. Use structured view when Arcane detects JSON or logfmt logs.
-4. Expand grouped multiline entries when a single log message spans several lines.
+- detects JSON and logfmt logs and renders them as structured rows
+- groups multiline messages so a stack trace stays together
+- shows small CPU and memory monitors alongside the log stream
 
-### Port Display Options
+## Remove a container
 
-The containers table is optimized for noisy port lists:
+1. Click the trash icon on the container row.
+2. Confirm.
 
-- long port lists collapse behind a `+N` expander in the table
-- the view options menu can hide exposed-only ports so the table shows only published host mappings
-
-### Auto-Update Toggle
-
-On the **Overview** tab, Arcane can show an **Auto Update** toggle for the current container.
-
-Use this when you want to opt a single container in or out of Arcane's updater without editing labels or recreating the container. If the container already has an explicit `com.getarcaneapp.arcane.updater` label, that label takes precedence.
+> [!NOTE]
+> A container has to be stopped before you can remove it, unless you check the **Force** option.

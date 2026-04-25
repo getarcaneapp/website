@@ -1,13 +1,13 @@
 ---
 title: 'Custom Metadata'
-description: 'Customize project and service appearance with icons and external links'
+description: 'Add icons and external links to projects and services.'
 ---
 
-Arcane lets you customize the look of your projects and services with extra metadata. You can apply it to the whole project or to a single service.
+You can give projects and services a custom icon and a list of external links — for example a docs URL, a homepage, or a repo. Project-level metadata goes in the compose file's `x-arcane` block; service-level icons go on the service via a label.
 
-### Project-level Metadata
+## Project-level metadata
 
-To set an icon or external URLs for the entire project, add an `x-arcane` block at the top level of your `compose.yaml` file:
+Add an `x-arcane` block at the top level of your `compose.yaml`:
 
 ```yaml
 x-arcane:
@@ -20,28 +20,26 @@ services:
   # ...
 ```
 
-- `icon` (or `icons`): a link to an image for the project
-- `urls`: extra links for the project, like documentation or a homepage
+- `icon` (or `icons`) — image URL for the project.
+- `urls` — extra links shown next to the project (docs, homepage, etc.).
 
-### Service and Container Metadata
+## Service-level icons
 
-You can also specify icons for individual services.
-
-An example of how this can be used is below:
+Set an icon for an individual service via a label:
 
 ```yaml
 x-arcane:
   icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx.png
   urls:
-  - https://google.com
+    - https://google.com
 
 services:
   nginx:
     image: nginx:alpine
     container_name: nginx_service
-    ...
+    # ...
     labels:
       - com.getarcaneapp.arcane.icon=https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx.png
 ```
 
-The label only changes the container icon. The top-level `x-arcane` block only changes the project icon. Each one works separately.
+The label only changes the container's icon. The top-level `x-arcane` block only changes the project's icon. They're independent.

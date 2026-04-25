@@ -1,19 +1,13 @@
 ---
 title: 'Volumes'
-description: 'Learn how to manage Docker volumes with Arcane'
+description: 'Manage Docker volumes in Arcane, including backups and restores.'
 ---
 
 <script lang="ts">
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
-## What Can You Do With Volumes in Arcane?
-
-- **View Volumes:** See a list of all Docker volumes on your system, along with details like name, driver, and usage.
-- **Create Volumes:** Add a new volume by providing a name and (optionally) driver or labels.
-- **Remove Volumes:** Delete volumes you no longer need. Arcane will warn you if a volume is currently in use by a container.
-
-## Screenshot
+The **Volumes** page lists every Docker volume on the selected host and lets you create, remove, and back up volumes.
 
 <ScreenshotFrame
 	src="/img/screenshots/volumes-page.jpeg"
@@ -23,61 +17,55 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 	decoding="async"
 />
 
-## How to Use
+## Browse volumes
 
-### Viewing Volumes
+Open **Volumes** in the sidebar. The table shows name, driver, and current usage for each volume.
 
-1. Go to the **Volumes** section in the sidebar.
-2. You'll see a table listing all your Docker volumes.
+## Create a volume
 
-### Creating a Volume
+1. Click **Create Volume**.
+2. Enter a name.
+3. Optional: pick a driver or add labels.
+4. Click **Create**.
 
-1. Click the **Create Volume** button.
-2. Enter a name for your new volume.
-3. (Optional) Choose a driver or add labels if needed.
-4. Click **Create**. Your new volume will appear in the list.
+## Remove a volume
 
-### Removing a Volume
+1. Open the row's dropdown and click the trash icon.
+2. Confirm.
 
-1. In the volumes list, find the volume you want to remove.
-2. Click the dropdown then the **Delete** button (trash icon) in the list.
-3. Confirm the deletion in the dialog.
+> [!NOTE]
+> A volume in use by a container can't be removed.
 
-> **Note:** You cannot remove a volume that is currently used by a container.
+## Back up and restore
 
-## Backups and Restores
+Arcane runs a short-lived helper container to `tar` the volume contents into a backup, and reverses the process on restore.
 
-Arcane now performs safer backups and restores with clearer safeguards.
+### Backup storage
 
-### Backup storage and /backups mount warning
+Backups are stored in a dedicated Docker volume mounted into the helper container at `/backups`. If the Arcane container itself doesn't have a host-backed mount at `/backups`, the backups UI shows a warning so you know backups only live inside Docker storage.
 
-Backups are stored in a dedicated Docker volume that is mounted into the helper container at `/backups`. If the Arcane container itself does **not** have a host-backed mount at `/backups`, a warning appears in the backups UI so you know backups live only inside Docker storage.
+To keep backups somewhere predictable, mount a host path or named volume to `/backups` in your `compose.yaml`:
 
-To keep backups somewhere predictable, mount either a host path or a named Docker volume into the Arcane container at `/backups` in your `compose.yaml`.
+- Host path: `/srv/arcane/backups:/backups`
+- Named volume: `arcane-backups:/backups`
 
-- Host path example: `/srv/arcane/backups:/backups`
-- Docker volume example: `arcane-backups:/backups`
+If you use a named volume, declare it under the top-level `volumes:` section too.
 
-If you use a named Docker volume, also declare it under the top-level `volumes:` section in Compose.
+### Backup safety
 
-### Backup creation now checks exit codes
+- Arcane waits for the backup container to finish and checks its exit code. If `tar` fails, the backup isn't recorded — you get an error instead of a silent failure.
+- Restore extracts the backup into a temporary directory first. Only after extraction succeeds does Arcane wipe the volume and move the data into place. If the restore container exits non-zero, you get an error noting that the volume may be partially changed.
 
-When a backup is created, Arcane waits for the backup container to finish and checks its exit code. If the `tar` operation fails, the backup is not recorded in the database and you’ll see an error instead of a silent failure.
+### Rename the backup volume
 
-### Restore is now safer
-
-Restore now extracts the backup into a temporary directory first. Only if extraction succeeds does Arcane wipe the volume and move the extracted data into place. The restore container’s exit code is checked, and failures return an error with a warning that the volume may be partially changed.
-
-## Internal Helper Containers
-
-Arcane creates short‑lived helper containers for volume operations. These containers are labeled `com.getarcaneapp.internal.container=true` and are hidden from the main Containers list by default. If you need to see them, use the **Show Internal Containers** toggle in the Containers view.
-
-## Configuring the Backup Volume Name (New)
-
-To avoid name collisions with user volumes, the backup volume name is now configurable. Set the environment variable:
+Set this environment variable to avoid name collisions with your own volumes:
 
 ```
 ARCANE_BACKUP_VOLUME_NAME=<your-name>
 ```
 
-If not set, Arcane defaults to `arcane-backups`.
+Default: `arcane-backups`.
+
+## Helper containers
+
+Arcane creates short-lived helper containers for backup and restore work. They carry the label `com.getarcaneapp.internal.container=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.

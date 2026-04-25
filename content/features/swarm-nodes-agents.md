@@ -1,6 +1,6 @@
 ---
 title: 'Swarm Nodes and Agents'
-description: 'Manage Docker Swarm nodes and Arcane node-agent coverage in Arcane'
+description: 'Manage Swarm nodes and Arcane node-agent coverage.'
 order: 3
 ---
 
@@ -8,84 +8,70 @@ order: 3
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-The **Nodes** page shows the members of your Swarm cluster and the current Arcane node-agent status for each node.
+The **Nodes** page shows every member of the Swarm cluster and the current Arcane node-agent status for each one.
 
-## What Arcane Shows for Each Node
+For each node you see: hostname, role, status, availability, engine version, and Arcane node-agent status.
 
-For each node, Arcane shows:
+## Node operations
 
-- hostname
-- role
-- status
-- availability
-- engine version
-- Arcane node-agent status
-
-## Node Operations
-
-Arcane supports the standard Swarm availability modes:
+Arcane supports the standard Swarm availability modes for managing scheduling during maintenance, evacuation, or normal operation:
 
 - **active**
 - **pause**
 - **drain**
 
-Use these to control scheduling on a node during maintenance, evacuation, or normal operation.
-
-Arcane can also:
+You can also:
 
 - promote a worker to a manager
 - demote a manager to a worker
 - remove a node from the Swarm
 
-Only perform manager changes if you understand your quorum and cluster topology.
+> [!WARNING]
+> Only make manager changes if you understand your quorum and cluster topology.
 
-## Why Node Agents Exist
+## Why node agents exist
 
-A Swarm manager can already expose cluster-level Swarm resources, but it does not automatically act as the local Docker engine for every node.
+A Swarm manager exposes cluster-level resources, but it doesn't act as the local Docker engine for every node. Arcane's node agents handle:
 
-Arcane node agents are used to:
+- Arcane coverage verification per node
+- generating a node-specific deploy command
+- confirming the connected agent is running on the expected Swarm node
 
-- verify Arcane coverage for each node
-- generate a node-specific deployment command
-- confirm that the connected agent is running on the expected Swarm node
+The agent model is similar to <Link href="/docs/features/environments">Remote Environments</Link>, but in the Swarm workspace Arcane tracks it per node — for coverage and identity verification, not as a merged cluster-wide inventory.
 
-The underlying agent model is similar to the one described in <Link href="/docs/features/environments">Remote Environments</Link>, but in the Swarm workspace Arcane tracks it per node for coverage and identity verification.
+## Agent statuses
 
-## Agent Statuses
+Each node shows one of:
 
-Each node shows one of these Arcane agent states:
+- **none** — no agent has been prepared for this node.
+- **pending** — the agent record exists but the agent hasn't connected yet.
+- **offline** — the agent exists but isn't currently connected.
+- **connected** — the agent is connected and verified against the node.
+- **mismatched** — an agent connected, but its node identity doesn't match the row you deployed it for.
 
-- **none**: no Arcane node agent has been prepared for this node
-- **pending**: Arcane created the node-agent record, but the agent has not connected yet
-- **offline**: the node agent exists but is not currently connected
-- **connected**: the agent is connected and Arcane verified that it matches the node
-- **mismatched**: an agent connected, but it does not match the expected Swarm node identity
+## Deploy a node agent
 
-## Deploy a Node Agent
-
-1. Open **Swarm > Nodes**.
+1. Open **Swarm → Nodes**.
 2. Find the target node.
 3. Click **Deploy Agent**.
-4. Arcane opens a dialog with the current node-agent status, the hidden Arcane environment ID used for that node, a `docker run` command, and a `docker compose` snippet.
-5. Run one of those commands on the target node.
+4. Arcane shows a dialog with the current status, the (hidden) Arcane environment ID for this node, a `docker run` command, and a Compose snippet.
+5. Run one of those on the target node.
 6. Click **Refresh Status** in Arcane.
 
-When the node agent connects successfully and reports the expected node identity, the node status changes to **connected**.
+When the agent connects and reports the expected node identity, the status flips to **connected**.
 
-The node-agent dialog also supports **Regenerate API Key**. Use this if the previous token was lost, the node was rebuilt, or you need to invalidate an older install command.
+The dialog also has **Regenerate API Key**. Use this if the previous token was lost, the node was rebuilt, or you need to invalidate an older install command.
 
-## Troubleshooting Node Agents
+## Troubleshooting
 
-If a node agent stays in **pending**, verify that:
+**Stuck in `pending`.** Verify that:
 
-- the command was run on the intended node
+- the install command was run on the intended node
 - the manager URL is reachable from that node
-- the token is current
+- the token is still current
 
-If a node agent shows **mismatched**, Arcane received an agent connection, but the reported node identity does not match the node row you deployed it for. Regenerate the API key if needed and redeploy using the correct node's install command.
+**Showing `mismatched`.** An agent connected but its identity doesn't match the row. Regenerate the API key and redeploy on the correct node.
 
-## Current Limitations
+## Current limitations
 
-Node-agent coverage does **not** currently make every node's local containers, images, volumes, and local-only networks appear as one merged cluster-wide inventory inside Arcane.
-
-Cluster-level Swarm resources come from the Swarm manager, while node-agent coverage is tracked separately per node.
+Node-agent coverage doesn't merge every node's local containers, images, volumes, and networks into one cluster-wide view inside Arcane. Cluster-level Swarm resources come from the manager; per-node coverage is tracked separately.

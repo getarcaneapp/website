@@ -1,6 +1,6 @@
 ---
 title: 'Projects'
-description: 'Learn how to manage Docker compose projects with Arcane'
+description: 'Manage Docker Compose projects in Arcane.'
 ---
 
 <script lang="ts">
@@ -8,22 +8,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
-## What is a Project?
-
-A `Project` is a collection of services defined in a Compose YAML file.
-
-Arcane supports these standard filenames out of the box:
-
-- `compose.yaml`
-- `compose.yml`
-- `docker-compose.yaml`
-- `docker-compose.yml`
-- `podman-compose.yaml`
-- `podman-compose.yml`
-
-Arcane can also load a single custom `.yaml`/`.yml` file in a project directory when it is unambiguous.
-
-## Screenshot
+A **Project** is a folder containing a Compose file (and any related `.env` or include files). The Projects page lists every project Arcane finds in your projects directory, and lets you deploy, edit, redeploy, or destroy them.
 
 <ScreenshotFrame
   src="/img/screenshots/projects-page.jpeg"
@@ -33,158 +18,144 @@ Arcane can also load a single custom `.yaml`/`.yml` file in a project directory 
   decoding="async"
 />
 
-## How to Use Projects
+## Where projects come from
 
-### Viewing Projects
+Arcane treats your <Link href="/docs/configuration/environment">Projects Directory</Link> as the source of truth — whatever Compose folders are in there are the projects shown.
 
-1. Go to the `Projects` section in the sidebar.
-2. You'll see a list of all projects, including their names, status (running, partially running, stopped), how many services are running, and the project directory.
+The scan is recursive, so projects can live in nested folders, not just direct children. If two folders share a name in different parts of the tree, Arcane disambiguates them by full path.
 
-> [!NOTE]
-> Arcane uses your <Link href="/docs/configuration/environment">Projects Directory</Link> as the source of truth. In simple terms: whatever files are in that folder are the projects Arcane shows.
+### Supported filenames
 
-Arcane now scans projects recursively under that root, so projects can live in nested folders instead of only direct children. If you use repeated folder names in different parts of the tree, Arcane tracks them by full path rather than just the last directory name.
+Arcane recognizes any of these as the project's compose file:
 
-When you open a project detail page, Arcane also updates the browser tab title to the current project name, which helps when you keep several project tabs open at once.
+- `compose.yaml` / `compose.yml`
+- `docker-compose.yaml` / `docker-compose.yml`
+- `podman-compose.yaml` / `podman-compose.yml`
+- a single custom `.yaml` / `.yml` file in the project folder, when it's unambiguous
 
-### Creating a Project
+### How Arcane picks a compose file
 
-1. Click the `Create Project` button.
-2. Enter a name for your project.
-3. Paste or write your Compose YAML content.
-4. (Optional) Use the `Environment Configuration (.env)` editor to add environment variables for your project. Arcane saves them in a `.env` file next to your compose file.
-5. Click `Create Project`. Arcane will save your project and try to start it.
+When a folder has more than one YAML file, Arcane chooses in this order:
 
-### How Arcane Chooses the Compose File
+1. A canonical name from the list above.
+2. A custom file whose stem matches the folder name (e.g. `radarr.yaml` in `Radarr-3/`).
+3. A single custom file with `compose` in the stem.
+4. Otherwise, any single visible `.yaml` / `.yml` file.
 
-When a project directory contains multiple YAML files, Arcane uses a predictable priority order:
+If two or more custom files are equally plausible, Arcane stops and reports the directory as ambiguous instead of guessing.
 
-1. Exact canonical names first:
-  - `compose.yaml`
-  - `compose.yml`
-  - `docker-compose.yaml`
-  - `docker-compose.yml`
-  - `podman-compose.yaml`
-  - `podman-compose.yml`
-2. A custom YAML file whose filename stem matches the directory name (normalized).
-  - Example: in `Radarr-3/`, Arcane prefers `radarr.yaml`.
-3. A single custom YAML file with `compose` in the filename stem.
-4. Otherwise, any single visible `.yaml`/`.yml` file.
+## Browse projects
 
-If Arcane finds more than one plausible custom YAML file, it now stops and reports the directory as ambiguous instead of guessing.
+Open **Projects** in the sidebar. The list shows project name, status (running, partially running, stopped), service count, and the project directory.
 
-### Controlling a Project
+When you open a project, Arcane updates the browser tab title to the project name — useful when you keep several open at once.
 
-- `Up:` starts all services in the project
-- `Down:` stops and removes all containers in the project
-- `Restart:` stops and starts the project again without recreating the containers
-- `Redeploy:` pulls the latest images and starts the project again
-- `Destroy:` removes the project and its resources. You can choose whether to keep or delete volumes and project files.
+## Create a project
 
-### Project Image Builds
+1. Click **Create Project**.
+2. Enter a name.
+3. Paste or write the Compose YAML.
+4. Optional: open the **Environment Configuration (.env)** editor and add variables. Arcane saves them to a `.env` file next to the compose file.
+5. Click **Create Project**. Arcane saves the project and tries to start it.
 
-Arcane can build project images directly from Compose services that define a `build:` directive.
+## Control a project
 
-When buildable services are detected, Arcane exposes build actions on the project:
+Each project has these actions:
 
-- `Build`: builds project services without deployment
-- `Build & Deploy`: builds as part of the deploy flow
+- **Up** — start all services.
+- **Down** — stop and remove all containers.
+- **Restart** — stop and start without recreating containers.
+- **Redeploy** — pull the latest images and restart.
+- **Destroy** — remove the project and its resources. You choose whether to keep or delete volumes and project files.
+
+## Build images from a project
+
+If your Compose file has services with a `build:` directive, Arcane shows build actions on the project page:
+
+- **Build** — build the project's images without deploying.
+- **Build & Deploy** — build as part of the deploy flow.
 
 How it works:
 
-1. Open your project page.
-2. Trigger `Build` (or `Build & Deploy`).
-3. Arcane sends a request to `POST /environments/{id}/projects/{projectId}/build`.
-4. Arcane resolves each selected service build config and runs BuildKit.
-5. Live build progress is streamed back to the UI.
+1. Open the project page.
+2. Click **Build** or **Build & Deploy**.
+3. Arcane sends `POST /environments/{id}/projects/{projectId}/build`.
+4. BuildKit runs against each selected service.
+5. Live build progress streams back to the UI.
 
-Optional project build request options include:
+Optional request fields:
 
-- `services`: a list of specific service names to build
-- `provider`: provider override (`local` or `depot`)
-- `push`: override push behavior
-- `load`: override load behavior
-
-> [!NOTE]
-> If you use Depot (or enable image push), services should define explicit image names. Arcane prevents generated local-only tags in that case.
-
-For manual build workflows, build workspace behavior, build history, and API details, see <Link href="/docs/features/image-builds">Image Builds</Link>.
-
-## Where Are My Projects Stored?
-
-Arcane saves your project files and `.env` files in its data directory. By default, that is `/app/data/projects`, or whatever you set as the Projects Directory in Arcane settings.
-
-## Nested Directories and Symlinks
-
-Arcane can manage projects stored in nested subdirectories under the configured projects root.
-
-If you use a symlinked layout, such as GNU Stow-managed folders, Arcane can follow child-directory symlinks too. Enable **Follow project symlinks** in the environment general settings when you want those linked folders to be treated as projects.
+- `services` — limit the build to specific service names
+- `provider` — `local` or `depot`
+- `push` — override push behavior
+- `load` — override load behavior
 
 > [!NOTE]
-> On Linux, very deep project trees can consume extra inotify watches because Arcane monitors nested folders recursively. If you manage a very large tree, you may need to raise `fs.inotify.max_user_watches`.
+> If you use Depot or push images, services should set explicit `image:` names. Arcane blocks generated local-only tags in that case.
 
-## Git Integration
+For the manual Build Workspace, build history, and API details, see <Link href="/docs/features/image-builds">Image Builds</Link>.
 
-Arcane allows you to sync your projects directly from a Git repository.
+## Where files are stored
 
-### Connecting a Repository
+Arcane saves project files and `.env` files in its data directory — by default `/app/data/projects`, or whatever you set as the Projects Directory in settings.
 
-Before you can sync a project, you need to add a Git repository to Arcane.
+## Nested directories and symlinks
 
-1. Go to `Customize > Git Repositories`.
-2. Click `Add Repository`.
-3. Enter the `Repository URL` and a `Name`.
-4. Configure authentication if needed:
+Arcane can manage projects in nested subdirectories under the projects root.
 
-- **Personal Access Token**: easiest for HTTPS repositories
-- **SSH Key**: use this if you already connect to Git over SSH
-
-5. If using **SSH**, configure the **Host Key Verification** mode:
-
-- **Accept and Remember (Default)**: accepts the server's first key and saves it for next time
-- **Strict**: only connects if the server key is already known
-- **Skip Verification**: turns off this safety check completely. This is **insecure** and should only be used if you understand the risks.
-
-6. Click `Save`.
+For symlinked layouts (e.g. GNU Stow), Arcane can follow child-directory symlinks. Enable **Follow project symlinks** in the environment's general settings to opt in.
 
 > [!NOTE]
-> Arcane manages its own `known_hosts` file. By default, this is stored at `~/.ssh/known_hosts`. You can change the location with the `SSH_KNOWN_HOSTS` environment variable.
+> On Linux, deeply nested project trees consume extra inotify watches because Arcane monitors them recursively. For very large trees, raise `fs.inotify.max_user_watches`.
 
-### Syncing a Project from Git
+## Sync from Git
 
-Once your repository is connected, you can create a project that syncs from it.
+Arcane can pull projects directly from a Git repository.
 
-1. Go to the `Projects` page.
-2. Click the arrow next to "Create Project" and select `From Git Repo`.
-3. Enter a `Sync Name`, this will also be the project name used within Arcane.
-4. Select the `Repository` you want to use.
-5. Select the `Branch` from the dropdown menu.
-6. Specify the `Compose File Path` relative to the repository root or click the `Folder Icon` to browse the Git Repo interactively (**Note** Only YAML/YML Files can be selected)
-7. (Optional) Enable `Auto Sync` so Arcane checks for changes automatically.
-8. Click `Create Sync`.
+### Connect a repository
 
-Arcane will clone the repository, read the compose file, and create a project. If `Auto Sync` is enabled, it will check for changes from time to time and update the project automatically.
+1. Go to **Customize → Git Repositories**.
+2. Click **Add Repository**.
+3. Enter the repository URL and a name.
+4. Configure authentication:
+   - **Personal Access Token** — easiest for HTTPS.
+   - **SSH Key** — use this if you already connect to Git over SSH.
+5. For SSH, choose a **Host Key Verification** mode:
+   - **Accept and Remember** (default) — accept the server's first key and save it.
+   - **Strict** — only connect if the server key is already known.
+   - **Skip Verification** — disables the safety check. Insecure; only use it if you understand the risks.
+6. Click **Save**.
 
-### Directory-Aware Git Sync
+> [!NOTE]
+> Arcane manages its own `known_hosts` file at `~/.ssh/known_hosts` by default. Override the location with the `SSH_KNOWN_HOSTS` environment variable.
 
-Git-synced projects now sync the compose file's directory, not just the single compose file.
+### Create a Git-synced project
 
-That means Arcane can keep related files together when your project uses:
+1. On the **Projects** page, click the dropdown next to **Create Project** and pick **From Git Repo**.
+2. Enter a **Sync Name** (this becomes the project name in Arcane).
+3. Pick the **Repository** and **Branch**.
+4. Set the **Compose File Path** relative to the repo root, or click the folder icon to browse interactively. Only `.yaml` / `.yml` files are selectable.
+5. Optional: enable **Auto Sync** for periodic checks.
+6. Click **Create Sync**.
+
+Arcane clones the repo, reads the compose file, and creates the project. With Auto Sync on, it polls for changes and updates the project automatically.
+
+### Directory-aware Git sync
+
+Git syncs pull the entire directory the compose file lives in, not just the file itself. That keeps related files together when your project uses:
 
 - Compose `include`
 - Compose `extends`
-- relative file references such as `.env`, build files, or sidecar config files
+- relative file references (`.env`, build files, sidecar configs)
 
-Arcane also shows synced companion files in the project detail view as read-only reference files, so you can inspect what was synced without leaving the project page.
+The project detail view shows synced companion files as read-only references, so you can inspect what was pulled without leaving the page.
 
 > [!NOTE]
-> Small caveat: compose loading now supports Podman and custom YAML names, but the **Directory Files** filtering in the project detail view still hides only classic Docker Compose filenames plus `.env`. In some cases, newer/custom compose filenames may still appear in that list until this filter is updated.
+> Compose loading supports Podman and custom YAML names, but the **Directory Files** filter in the detail view still hides only classic Docker Compose filenames plus `.env`. Newer/custom filenames may show up in the list until the filter is updated.
 
-### Import Multiple Syncs via JSON
+### Import multiple syncs from JSON
 
-If you want to create several syncs at once, you can import them from JSON content or a JSON file.
-
-The file is a simple JSON Array as shown below:
+To create several syncs at once, paste or upload a JSON array:
 
 ```json
 [
@@ -212,6 +183,6 @@ The file is a simple JSON Array as shown below:
 > [!IMPORTANT]
 > Redeployment only happens if the project is already running.
 
-## Editing a Git Synced Project
+### Edit a Git-synced project
 
-The Compose file is read-only for projects synced from Git. You can still edit and use the `.env` file. If you want Arcane's editor to supply environment values, add `- env_file: .env` to your compose file.
+The compose file is read-only for Git-synced projects. The `.env` file stays editable. To inject those env values into your services, add `env_file: .env` to your compose file.

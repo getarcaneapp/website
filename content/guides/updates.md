@@ -1,83 +1,74 @@
 ---
 title: 'Auto Updates'
-description: 'Configure automatic updates for containers and projects'
+description: 'Keep containers and Compose projects up to date automatically.'
 ---
 
-Keep selected containers and projects up to date automatically when new images are available.
+Arcane can poll your registries on a schedule and update containers (or whole Compose projects) when a new image is published.
 
-## Prerequisites
+## Before you turn it on
 
-- Your images are hosted in registries accessible from the Arcane host.
-- If using private registries, credentials are configured in **Registry Credentials**.
-- The container(s) you want to update are created in a way Arcane can recreate safely (ports, mounts, env, etc.).
+- The images you want updated must be hosted in registries Arcane can reach.
+- For private registries, store credentials under **Registry Credentials** first.
+- The container has to be one Arcane can recreate cleanly — meaning its ports, mounts, env, and labels are visible to Arcane.
 
 ## Enable auto updates
 
-1. Go to **Environments → Select the Environment → Settings → Docker**.
-2. Enable **Image Polling** and select a schedule (or enter a custom value).
-3. Enable **Auto Updates**.
-4. Set the interval (minutes).
+1. Go to **Environments → [your environment] → Settings → Docker**.
+2. Turn on **Image Polling** and pick a schedule (or enter a custom one).
+3. Turn on **Auto Updates**.
+4. Set the run interval (in minutes).
 5. Save.
 
-> Note: Arcane will clamp very low intervals to a safer value.
+> [!NOTE]
+> Very low intervals are clamped to a safer minimum.
 
 ## How Arcane decides what to update
 
-Arcane checks for updates by comparing image digests (when possible). For tags like `latest` or `next`, a tag can point to a different digest over time, so digest comparison is the most reliable way to detect changes.
+Arcane compares image **digests**, not tags. Tags like `latest` and `next` move over time, so digest comparison is the only reliable way to spot a change.
 
-This logic is very similar to how watchtower worked/works with changes to support Arcane's logic, so it should be familiar to those who have used that tool. 
+The model is similar to Watchtower's, with adjustments to fit Arcane's update flow — so it should feel familiar if you've used Watchtower.
 
 ## Compose-aware updates
 
-When a container belongs to a compose project, Arcane can use Docker Compose-aware update logic instead of treating every service like a standalone container.
+When a container belongs to a Compose project, Arcane uses Compose-aware logic instead of treating each service as a standalone container. That means Arcane can:
 
-With compose-aware updates enabled, Arcane can:
+- group pending updates by project
+- pull only the images of services that actually changed
+- recreate only those services, leaving the rest running
 
-- group pending updates by compose project
-- pull only the affected service images
-- recreate only the services that actually need to move to a new image
+Manual project redeploys still use the project-level Compose flow (a deliberate `pull` + `up -d` across the whole project).
 
-That keeps unrelated services in the same project running when possible and reduces unnecessary downtime during automatic update runs.
+## Per-container labels
 
-Manual project redeploys still use the project-level compose workflow, which is useful when you want a deliberate `pull` plus `up -d` pass across the project.
+All labels live under the `com.getarcaneapp.arcane.*` namespace.
 
-## Container labels (per-service / per-container)
+### Disable updates for one container
 
-All labels are under the `com.getarcaneapp.arcane.*` namespace.
-
-### Disable auto updates for a container
-
-To prevent updates for a container or service:
-
-```
-com.getarcaneapp.arcane.updater=false
+```yaml
+labels:
+  - com.getarcaneapp.arcane.updater=false
 ```
 
-Accepted “false” values are: `false`, `0`, `no`, `off` (case-insensitive).
+Accepted truthy values: `true`, `1`, `yes`, `on`. Falsy: `false`, `0`, `no`, `off`. Case-insensitive.
 
-Accepted “true” values are: `true`, `1`, `yes`, `on` (case-insensitive).
+You can also flip this from the container's detail page in Arcane. If the container already has an explicit updater label, the label wins and the UI toggle reflects it.
 
-You can also toggle this directly from the container detail page in Arcane. If the container already has an explicit updater label, the label remains the source of truth and the UI toggle reflects that.
+### Restart order
 
+If your container needs other containers restarted first (or needs to restart when a dependency does), set:
 
-### Dependency ordering
-
-If your container depends on other containers being restarted first (or needs to restart when a dependency restarts), set:
-
-```
-com.getarcaneapp.arcane.depends-on=container_a,container_b
+```yaml
+labels:
+  - com.getarcaneapp.arcane.depends-on=container_a,container_b
 ```
 
-This is a comma-separated list of **container names**.
+A comma-separated list of **container names**. Arcane also infers some dependencies from Docker wiring like legacy `links` and `network_mode: container:...`.
 
-Arcane also infers dependencies from some Docker wiring (like legacy `links` and `network_mode: container:...`).
+### Override the stop signal
 
-### Custom stop signal
-
-To override the signal Arcane uses when stopping a container during an update:
-
-```
-com.getarcaneapp.arcane.stop-signal=SIGINT
+```yaml
+labels:
+  - com.getarcaneapp.arcane.stop-signal=SIGINT
 ```
 
 ## Compose example
@@ -87,13 +78,8 @@ services:
   myapp:
     image: ghcr.io/acme/myapp:latest
     labels:
-      # Enable auto updates (default behavior). Use false to disable.
       - com.getarcaneapp.arcane.updater=true
-
-      # Optional: dependencies
       - com.getarcaneapp.arcane.depends-on=db,redis
-
-      # Optional: stop signal
       - com.getarcaneapp.arcane.stop-signal=SIGTERM
 
   db:
@@ -103,7 +89,7 @@ services:
     image: redis:7
 ```
 
-## Docker run example
+## docker run example
 
 ```bash
 docker run -d \

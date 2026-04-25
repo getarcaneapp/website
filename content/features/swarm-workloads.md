@@ -1,6 +1,6 @@
 ---
 title: 'Swarm Workloads'
-description: 'Deploy and manage Docker Swarm stacks, services, and tasks in Arcane'
+description: 'Deploy and manage Docker Swarm stacks, services, and tasks.'
 order: 2
 ---
 
@@ -9,124 +9,107 @@ import { Link } from '$lib/components/ui/link/index.js';
 import { Snippet } from '$lib/components/ui/snippet/index.js';
 </script>
 
-Arcane gives you two main workload views in Swarm: **Stacks** for application-level deployments and **Services** for direct service-level control. The **Tasks** view helps you inspect what Swarm is actually scheduling and running.
+The Swarm workspace has two views for deploying workloads — **Stacks** for whole applications and **Services** for direct service-level control — plus **Tasks** to see what Swarm is actually scheduling.
+
+## When to use which
+
+- **Stacks** — normal application deployment, grouped service management. Recommended.
+- **Services** — direct control over a single Swarm service. For advanced users comfortable with raw specs.
+- **Tasks** — runtime placement and state visibility, mostly for troubleshooting.
 
 ## Stacks
 
-Stacks are the recommended way to deploy applications to Swarm in Arcane. They give you an application-level entry point and group related services together.
+A stack groups related services together as one application-level deployment. Arcane supports:
 
-Arcane supports:
-
-- deploying a new stack from Compose content
+- deploying a stack from Compose content
 - supplying `.env` content for variable substitution
 - editing and redeploying an existing stack
 - removing a stack
 - viewing the services and tasks that belong to a stack
-- starting from a template
-- converting a `docker run` command into Compose as a starting point
+- starting from a saved template
+- converting a `docker run` command to Compose
 
-## How Arcane finds stacks
+### How Arcane finds stacks
 
-When you open the **Stacks** page, Arcane is answering a simple question: **what stacks does this Swarm manager see right now?**
+The **Stacks** page answers a single question: **what stacks does the Swarm manager see right now?**
 
-To do that, Arcane asks Docker for the current Swarm services and groups them by the `com.docker.stack.namespace` label.
+To do that, Arcane fetches the current Swarm services and groups them by the `com.docker.stack.namespace` label. The list is live — not from a database, not reconstructed from saved Compose files. A stack deployed outside Arcane shows up as soon as the manager can see its services.
 
-That means the stack list is live. It is not built from a database table, and it is not reconstructed from saved Compose files on disk.
+### Deploy a stack
 
-Because of that, a stack can appear in Arcane even if Arcane did not create it. If the selected manager can see the stack's services, Arcane can list the stack.
-
-To deploy a stack:
-
-1. Open **Swarm > Stacks**.
+1. Open **Swarm → Stacks**.
 2. Click **Create Stack**.
 3. Enter a stack name.
 4. Paste your Compose content.
-5. Optionally add `.env` content for variables referenced by the Compose file.
+5. Optional: add `.env` content for variables referenced by the Compose file.
 6. Click **Create Stack**.
 
 Useful shortcuts in the stack editor:
 
-- **Use Template**: load a saved Arcane template into the stack editor. See <Link href="/docs/templates">Using Templates</Link>.
-- **Convert from Docker Run**: paste a `docker run` command and let Arcane generate Compose content and env values as a starting point. For standalone Compose prep, you can also use the <Link href="/generator">Compose Generator</Link>.
-- **Save as Template**: save the current stack editor content as a reusable template.
+- **Use Template** — load a saved Arcane template. See <Link href="/docs/templates">Templates</Link>.
+- **Convert from Docker Run** — paste a `docker run` and let Arcane generate Compose and env content as a starting point. For standalone prep, use the <Link href="/generator">Compose Generator</Link>.
+- **Save as Template** — save the editor content as a reusable template.
 
-To update a stack, open it from **Swarm > Stacks**, click **Edit**, change the Compose or `.env` content, and redeploy. To remove a stack, use the stack detail page or row action and confirm the delete.
+### Update or remove a stack
 
-## Where the saved stack source lives
+Open the stack from **Swarm → Stacks**, click **Edit**, change the Compose or `.env`, and redeploy. To remove, use the stack detail page or row action and confirm.
 
-**View Source** is answering a different question: **what Compose files has Arcane saved for this stack?**
+### View Source vs. the live stack list
 
-Those saved files are separate from the live stack list above.
+These answer different questions:
 
-When Arcane saves a stack source during deploy, it writes those files to disk under the Swarm stack sources directory. By default that root is:
+- **Stacks** page → what Docker Swarm reports right now.
+- **View Source** → the Compose and `.env` files Arcane saved on disk during deploy.
+
+Arcane writes saved sources under the Swarm stack sources directory, by default:
 
 <Snippet text="/app/data/swarm/sources" class="mt-2 mb-2 w-full" />
 
-Inside that directory, Arcane stores files by environment and stack name.
-
-For example, if your environment ID were `env_123` and the stack name were `whoami`, the saved files would look like this:
+Files are organized by environment ID and stack name. For example, environment `env_123` and stack `whoami`:
 
 ```text
 /app/data/swarm/sources/env_123/whoami/compose.yaml
 /app/data/swarm/sources/env_123/whoami/.env
 ```
 
-The `.env` file is optional.
-
-So there are really two separate data sources:
-
-- the **Stacks** page shows what Docker Swarm is reporting right now
-- **View Source** shows the Compose and `.env` files Arcane previously saved on disk
-
-One practical consequence of this: a stack deployed outside Arcane can still appear in the **Stacks** list, but Arcane may not have a saved source for it yet.
+The `.env` is optional. A stack deployed outside Arcane appears in the live list but won't have a saved source until Arcane deploys it.
 
 ## Services
 
-Arcane supports direct service management when you need to work with individual Swarm services instead of full stacks.
+Use the Services view when you want to work with individual Swarm services instead of full stacks. Arcane supports:
 
-You can:
+- creating a service
+- inspecting service details
+- updating the raw service spec
+- scaling replicated services
+- rolling back to the previous version
+- streaming service logs
+- inspecting service tasks
+- removing a service
 
-- create a service
-- inspect service details
-- update the raw service spec
-- scale replicated services
-- roll back a service to the previous version
-- stream service logs
-- inspect service tasks
-- remove a service
+### Create a service
 
-To create a service:
-
-1. Open **Swarm > Services**.
+1. Open **Swarm → Services**.
 2. Click **Create Service**.
 3. Fill in the service definition.
-4. Submit the form.
+4. Submit.
 
-Arcane sends the resulting Swarm service spec directly to the selected environment.
+Arcane sends the resulting Swarm service spec straight to the selected environment.
 
-On a service detail page, Arcane can show overview data, live logs, tasks, environment and label configuration, ports and networks, virtual IPs, and storage details when present.
+### Inspect, scale, roll back
 
-For replicated services, you can scale by opening the service detail page, entering the desired replica count, and clicking **Scale**. Global services are not scaled with replica counts.
+The service detail page shows overview data, live logs, tasks, environment and label config, ports and networks, virtual IPs, and storage where present.
 
-Use **Rollback** when you want a server-side rollback to the previous service version after a failed rollout or bad image/configuration update.
+- **Scale** — for replicated services, enter a replica count and click **Scale**. Global services don't take replica counts.
+- **Rollback** — server-side rollback to the previous service version, useful after a failed rollout or bad image update.
 
 ## Tasks
 
-The **Tasks** view shows what Swarm is actually scheduling and running.
-
-Use it to:
+The **Tasks** view shows what Swarm is actually scheduling. Use it to:
 
 - confirm where a service is running
 - inspect task state and placement
 - troubleshoot failed or restarting tasks
-- filter work by node, service, or stack
+- filter by node, service, or stack
 
-The Tasks page can also open in a node-scoped mode when you navigate from the Nodes page.
-
-## When to Use Stacks vs Services
-
-- Use **Stacks** for normal application deployment and grouped service management.
-- Use **Services** when you need direct control over a single Swarm service.
-- Use **Tasks** when you need runtime placement and state visibility.
-
-Direct service editing is available, but it is better suited to advanced users who are comfortable with raw Swarm specs.
+Opening **Tasks** from the Nodes page scopes the view to a single node.

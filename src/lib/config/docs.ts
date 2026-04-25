@@ -30,115 +30,107 @@ export type SidebarNavItem = NavItem & {
 	items: SidebarNavItem[];
 };
 
+type Doc = {
+	title: string;
+	path: string;
+	order?: number;
+	published?: boolean;
+};
+
 function toHref(path: string) {
 	return `/docs/${path}`;
 }
 
-export function sortDocs<T extends { title: string; order?: number }>(arr: T[]) {
-	const hasOrder = arr.some((item) => typeof item.order === 'number');
+const ALL_DOCS: Doc[] = [
+	...setup,
+	...security,
+	...configuration,
+	...features,
+	...guides,
+	...templates,
+	...development,
+	...cli
+] as Doc[];
 
-	if (!hasOrder) {
-		return [...arr].sort((a, b) =>
-			a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
-		);
-	}
+const docByPath = new Map<string, Doc>(ALL_DOCS.map((d) => [d.path, d]));
 
-	return [...arr].sort((a, b) => {
-		const ao = a.order ?? Number.MAX_SAFE_INTEGER;
-		const bo = b.order ?? Number.MAX_SAFE_INTEGER;
-		if (ao !== bo) return ao - bo;
-		return a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' });
-	});
-}
-
-function mapLeafDocs(
-	docs: Array<{ title: string; path: string; order?: number; published?: boolean }>
-): SidebarNavItem[] {
-	const visibleDocs = docs.filter((doc) => doc.published !== false);
-
-	return sortDocs(visibleDocs).map((d) => ({
-		title: d.title,
-		href: toHref(d.path),
-		order: d.order,
+function leaf(path: string, overrideTitle?: string): SidebarNavItem | null {
+	const doc = docByPath.get(path);
+	if (!doc || doc.published === false) return null;
+	return {
+		title: overrideTitle ?? doc.title,
+		href: toHref(doc.path),
 		items: []
-	}));
+	};
 }
 
-function mapFeatureDocs(
-	docs: Array<{ title: string; path: string; order?: number; published?: boolean }>
-): SidebarNavItem[] {
-	const visibleDocs = docs.filter((doc) => doc.published !== false);
-	const swarmOverview = visibleDocs.find((doc) => doc.path === 'features/swarm');
-	const swarmChildren = visibleDocs.filter((doc) => doc.path.startsWith('features/swarm-'));
-	const otherDocs = visibleDocs.filter(
-		(doc) => doc.path !== 'features/swarm' && !doc.path.startsWith('features/swarm-')
-	);
-
-	const items = mapLeafDocs(otherDocs);
-
-	if (!swarmOverview) {
-		return sortDocs(items);
-	}
-
-	items.push({
-		title: swarmOverview.title,
-		href: toHref(swarmOverview.path),
-		order: swarmOverview.order,
-		items: sortDocs(
-			swarmChildren.map((doc) => ({
-				...doc,
-				title:
-					doc.path === 'features/swarm-nodes-agents'
-						? 'Nodes & Agents'
-						: doc.path === 'features/swarm-configs-secrets'
-							? 'Configs & Secrets'
-							: doc.title.replace(/^Swarm\s+/, '')
-			}))
-		).map((doc) => ({
-			title: doc.title,
-			href: toHref(doc.path),
-			order: doc.order,
-			items: []
-		}))
-	});
-
-	return sortDocs(items);
+function group(title: string, children: Array<SidebarNavItem | null>): SidebarNavItem {
+	return {
+		title,
+		items: children.filter((c): c is SidebarNavItem => c !== null)
+	};
 }
 
-function mapSectionDocs(
-	key: string,
-	source: Array<{ title: string; path: string; order?: number; published?: boolean }>
-): SidebarNavItem[] {
-	if (key === 'features') {
-		return mapFeatureDocs(source);
-	}
+// Sidebar layout — paths listed in display order.
+// Pages can appear under any group regardless of their on-disk folder.
+const GET_STARTED = group('Get Started', [
+	leaf('setup/installation'),
+	leaf('setup/podman'),
+	leaf('guides/lxc-container'),
+	leaf('setup/migrate-v1'),
+	leaf('setup/next-images')
+]);
 
-	return mapLeafDocs(source);
-}
+const SECURITY = group('Security', [leaf('security/verify-artifacts'), leaf('setup/socket-proxy')]);
 
-function flattenNavItems(items: SidebarNavItem[]): SidebarNavItem[] {
-	return items.flatMap((item) => [
-		...(item.href ? [{ ...item, items: [] }] : []),
-		...flattenNavItems(item.items)
-	]);
-}
+const CONFIGURATION = group('Configuration', [
+	leaf('configuration/environment'),
+	leaf('configuration/appearance'),
+	leaf('configuration/notifications'),
+	leaf('configuration/sso'),
+	leaf('configuration/analytics')
+]);
 
-const SECTION_BUILDERS: Array<{
-	key: string;
-	title: string;
-	source: any[];
-}> = [
-	{ key: 'setup', title: 'Setup', source: setup },
-	{ key: 'security', title: 'Security', source: security },
-	{ key: 'configuration', title: 'Configuration', source: configuration },
-	{ key: 'features', title: 'Features', source: features },
-	{ key: 'cli', title: 'CLI', source: cli },
-	{ key: 'guides', title: 'Guides', source: guides },
-	{ key: 'templates', title: 'Templates', source: templates },
-	{ key: 'development', title: 'Development', source: development }
-];
+const NETWORKING = group('Networking', [
+	leaf('configuration/proxy'),
+	leaf('configuration/websockets-reverse-proxies'),
+	leaf('configuration/tls')
+]);
 
-const COMMUNITY_GROUP: SidebarNavItem = {
+const SWARM_PARENT: SidebarNavItem = {
+	title: 'Docker Swarm',
+	href: toHref('features/swarm'),
+	items: [
+		leaf('features/swarm-cluster', 'Cluster'),
+		leaf('features/swarm-workloads', 'Workloads'),
+		leaf('features/swarm-nodes-agents', 'Nodes & Agents'),
+		leaf('features/swarm-configs-secrets', 'Configs & Secrets')
+	].filter((c): c is SidebarNavItem => c !== null)
+};
+
+const FEATURES = group('Features', [
+	leaf('features/projects'),
+	leaf('features/containers'),
+	leaf('features/images'),
+	leaf('features/image-builds'),
+	leaf('features/volumes'),
+	leaf('features/networks'),
+	leaf('features/vulnerability-scans'),
+	leaf('features/environments'),
+	leaf('guides/updates'),
+	leaf('guides/custom-metadata'),
+	docByPath.has('templates') ? leaf('templates') : null,
+	docByPath.has('templates/registries') ? leaf('templates/registries') : null,
+	SWARM_PARENT
+]);
+
+const GUIDES = group('Guides', [leaf('guides/buildables'), leaf('guides/gpu-setup')]);
+
+const CLI = group('CLI', [leaf('cli/install'), leaf('cli/config')]);
+
+const DEVELOPMENT = group('Development', [leaf('dev/contribute'), leaf('dev/translate')]);
+
+const COMMUNITY: SidebarNavItem = {
 	title: 'Community',
 	items: [
 		{
@@ -150,14 +142,25 @@ const COMMUNITY_GROUP: SidebarNavItem = {
 	]
 };
 
-const sectionNavItems: SidebarNavItem[] = SECTION_BUILDERS.map(({ key, title, source }) => ({
-	title,
-	items: mapSectionDocs(key, source)
-}));
+const sectionNavItems: SidebarNavItem[] = [
+	GET_STARTED,
+	SECURITY,
+	CONFIGURATION,
+	NETWORKING,
+	FEATURES,
+	GUIDES,
+	CLI,
+	DEVELOPMENT
+].filter((s) => s.items.length > 0);
 
-export const SidebarNavItems: SidebarNavItem[] = [...sectionNavItems];
+export const SidebarNavItems: SidebarNavItem[] = [...sectionNavItems, COMMUNITY];
 
-SidebarNavItems.push(COMMUNITY_GROUP);
+function flattenNavItems(items: SidebarNavItem[]): SidebarNavItem[] {
+	return items.flatMap((item) => [
+		...(item.href ? [{ ...item, items: [] }] : []),
+		...flattenNavItems(item.items)
+	]);
+}
 
 const flat: SidebarNavItem[] = sectionNavItems.flatMap((section) => flattenNavItems(section.items));
 
@@ -172,4 +175,20 @@ export function findNeighbors(pathName: string): {
 		previous: flat[idx - 1] ?? null,
 		next: flat[idx + 1] ?? null
 	};
+}
+
+// Kept for any callers that still rely on it.
+export function sortDocs<T extends { title: string; order?: number }>(arr: T[]) {
+	const hasOrder = arr.some((item) => typeof item.order === 'number');
+	if (!hasOrder) {
+		return [...arr].sort((a, b) =>
+			a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
+		);
+	}
+	return [...arr].sort((a, b) => {
+		const ao = a.order ?? Number.MAX_SAFE_INTEGER;
+		const bo = b.order ?? Number.MAX_SAFE_INTEGER;
+		if (ao !== bo) return ao - bo;
+		return a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' });
+	});
 }

@@ -1,21 +1,13 @@
 ---
 title: 'Images'
-description: 'Learn how to manage Docker images with Arcane'
+description: 'Manage Docker images in Arcane.'
 ---
 
 <script lang="ts">
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
-## What Can You Do With Images in Arcane?
-
-- **View Images:** See a list of all Docker images on your system, including their tags, size, and when they were created.
-- **Pull Images:** Download new images from Docker Hub or another registry by entering the image name and tag (like `nginx:latest`).
-- **Inspect Images:** Click on an image to see more details, such as its ID, tags, creation date, and configuration.
-- **Remove Images:** Delete images you no longer need. Arcane will warn you if an image is in use by a container.
-- **Prune Images:** Clean up unused images to free up disk space. You can remove dangling images (those without tags) or all images not used by any container.
-
-## Screenshot
+The **Images** page lists every Docker image on the selected host and lets you pull, inspect, prune, and remove them. Arcane also flags images that have a newer release available.
 
 <ScreenshotFrame
   src="/img/screenshots/images-page.png"
@@ -25,75 +17,66 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
   decoding="async"
 />
 
-## How to Use
+## Browse images
 
-### Viewing Images
+Open **Images** in the sidebar. The table shows tag, ID, size, and creation date for each image.
 
-1. Go to the **Images** section in the sidebar.
-2. You'll see a table listing all your Docker images with their tags, size, and creation date.
+## Pull an image
 
-### Pulling a New Image
+1. Click **Pull Image**.
+2. Enter the image reference, e.g. `redis:latest`.
+3. Click **Pull**. The image appears in the list once the download finishes.
 
-1. Click the **Pull Image** button.
-2. Enter the image name and tag (for example, `redis:latest`).
-3. Click **Pull**. The image will be downloaded and added to your list.
+## Inspect an image
 
-### Inspecting an Image
+Click the image's name, ID, or **Inspect** button to see its full details — tags, configuration, history, and labels.
 
-1. Find the image you want to inspect in the list.
-2. Click on its name, ID, or the **Inspect** button to see more details.
+## Remove an image
 
-### Removing an Image
+1. Click the trash icon on the image row.
+2. Confirm.
 
-1. In the images list, find the image you want to remove.
-2. Click the **Remove** button (trash icon) next to it.
-3. Confirm the deletion in the dialog.
+> [!NOTE]
+> An image in use by any container can't be removed.
 
-> **Note:** You cannot remove images that are currently used by running containers.
+## Prune unused images
 
-### Pruning Images
+1. Click **Prune Images**.
+2. Pick what to remove:
+   - **Dangling only** — images without tags.
+   - **All unused** — anything no container is using.
+3. Confirm.
 
-1. Click the **Prune Images** button.
-2. Choose whether to remove only dangling images or all unused images.
-3. Confirm the action to free up disk space.
+## Update detection
 
-### Checking for Image Updates
+Arcane flags two kinds of updates:
 
-Arcane will indicate when a newer image is available, distinguishing between digest‐only updates and version jumps:
+- **Update badge** — a newer release is available for the image's tag.
+- **Digest badge** — the tag is unchanged but the published digest has moved (common with `latest` or `next`). Hover the badge to see the new digest and date; click it to pull the updated digest.
 
-- **Update badge**  
-  In the list view, an “Update” badge appears next to any image that has a newer release.
+Arcane checks for updates on page load and when you click the **Refresh** icon in the toolbar.
 
-- **Digest update**  
-  If the tag hasn’t changed but the image digest has (published with the same tag), you’ll see a **Digest** badge.  
-  Hover the badge to view the new digest and date, then click it to pull the updated digest.
+### Updates not appearing?
 
-- **Automatic refresh**  
-  Arcane checks for updates on page load and when you click the **Refresh** icon in the Images toolbar.
+- Confirm Arcane can reach your registry — check network connectivity and stored credentials.
+- Click **Check Updates** to force a re-scan.
 
-## Troubleshooting Updates
+## Private registries
 
-- If you don’t see an update badge, ensure Arcane can reach your registry (check your network and credentials).
-- Use the **Check Updates** button to force a re‐scan of all images.
+Arcane uses your saved registry credentials when pulling and when checking for updates.
 
-### Private Registry Authentication
+1. In the sidebar under **Customization**, open **Container Registries**.
+2. Add the registry host, username, and password or token.
+3. Save.
 
-Arcane will automatically use credentials you configure for private registries when pulling or checking for image updates:
-
-- In the sidebar click **Container Registires** under the Customization section.
-- Add or update credentials for your private registry (registry host, username, password or token).
-- Arcane stores these securely and applies them whenever it needs to authenticate against that registry.
-- When an image reference includes a private hostname, Arcane matches it against your saved credentials.
-- You can manage multiple credential entries; Arcane selects the correct one based on the registry host in the image reference.
+When an image reference includes a private hostname, Arcane matches it to the saved entry. You can store multiple credentials; Arcane picks the right one based on the image's host.
 
 ### Amazon ECR
 
-Arcane also supports Amazon ECR as a first-class registry type.
-
-When adding an ECR registry, provide:
+ECR is a first-class registry type. When adding an ECR registry, provide:
 
 - AWS access key ID
 - AWS secret access key
 - AWS region
 
-Arcane exchanges those credentials for a temporary ECR authorization token, caches it, and refreshes it automatically as needed. You do not need to paste a long-lived Docker token manually.
+Arcane exchanges those for a temporary ECR authorization token, caches it, and refreshes it as needed — no manual long-lived Docker token required.

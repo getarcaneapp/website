@@ -1,87 +1,64 @@
 ---
 title: 'Docker Swarm'
-description: 'Manage Docker Swarm clusters, services, stacks, configs, secrets, and node agent coverage in Arcane'
+description: 'Manage a Docker Swarm cluster, services, stacks, configs, secrets, and node agents.'
 ---
 
 <script lang="ts">
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-Arcane includes a dedicated Swarm workspace for managing Docker Swarm from the currently selected environment. It is designed for day-to-day cluster operations: cluster lifecycle changes, application deployment, service operations, node management, and Swarm-native configs and secrets.
+The **Swarm** workspace manages Docker Swarm for the currently selected environment — cluster lifecycle, application deployments, node management, and Swarm-native configs and secrets.
 
-## Before You Start
+> [!NOTE]
+> If you're connecting Arcane to another Docker host for the first time, set that up via <Link href="/docs/features/environments">Remote Environments</Link> first. Swarm features in Arcane are environment-specific: every action applies to whichever environment is selected.
 
-Swarm features in Arcane are environment-specific.
+## Where the data comes from
 
-If you are first connecting Arcane to another Docker host, see <Link href="/docs/features/environments">Remote Environments</Link> for the base agent and connectivity workflow.
+Arcane reads cluster data directly from the Swarm manager:
 
-- Every Swarm action applies to the environment selected in Arcane.
-- If you switch environments, Arcane switches to that environment's Docker engine and Swarm state.
-- The selected environment should be running Docker in Swarm mode to access the Swarm workspace.
-- Full cluster management is intended for Swarm manager environments.
-- Read-only views may be available to non-admin users depending on your setup.
-- Creating, updating, scaling, deleting, rotating tokens, unlocking the cluster, and similar administrative actions require admin access in Arcane.
+- Nodes, services, tasks, configs, and secrets come from Docker's Swarm APIs.
+- Stacks are reconstructed from the current services, grouped by the `com.docker.stack.namespace` label.
 
-## How Arcane Sees Your Swarm
+That means the Stacks list is **live** — not built from a database, and not reconstructed from saved Compose files. A stack created outside Arcane shows up as long as the manager can see its services.
 
-Arcane reads cluster-wide Swarm data directly from a Swarm manager.
+For node-level coverage, Arcane also supports per-node agents. They handle node identity verification and per-node operations; they don't merge every node's local resources into one cluster-wide inventory.
 
-Nodes, services, tasks, configs, and secrets come straight from Docker's Swarm APIs. For stacks, Arcane looks at the current Swarm services and groups them by the `com.docker.stack.namespace` label.
+## Permissions and modes
 
-That lets Arcane show you what the manager sees right now, without bouncing between nodes or relying on a separate saved copy of the stack list.
+- The selected environment must be running Docker in Swarm mode.
+- Full cluster management is for **Swarm manager** environments. On a worker, you'll see read-only views.
+- Administrative actions (create, update, scale, delete, rotate tokens, unlock the cluster) require admin access in Arcane.
 
-Arcane also supports per-node Arcane agents for Swarm nodes. Those agents are used for node coverage and identity verification, not as a merged cluster-wide browser for every node's local-only Docker resources.
+## What's in the workspace
 
-## What You Can Manage
+| Page | What it covers |
+| --- | --- |
+| <Link href="/docs/features/swarm-cluster">Cluster</Link> | Initialize a Swarm, join, leave, unlock, rotate join tokens, update cluster spec. |
+| <Link href="/docs/features/swarm-workloads">Workloads</Link> | Stacks, services, tasks, scaling, rollbacks, logs. |
+| <Link href="/docs/features/swarm-nodes-agents">Nodes & Agents</Link> | Node operations, agent coverage, deployment flow, troubleshooting. |
+| <Link href="/docs/features/swarm-configs-secrets">Configs & Secrets</Link> | Create and delete configs vs. secrets, and when to use each. |
 
-The Swarm workspace in Arcane includes these main areas:
+## Suggested workflow
 
-- **Cluster**: initialize Swarm, join or leave a cluster, unlock a locked cluster, rotate join tokens, and update cluster settings.
-- **Stacks**: deploy applications from Compose content, inspect a stack, update it by redeploying, and remove it.
-- **Services**: create standalone services, inspect their configuration, scale them, roll them back, stream logs, and remove them.
-- **Tasks**: see the tasks Swarm is running across the cluster or for a specific node, service, or stack.
-- **Nodes**: inspect managers and workers, change availability, promote or demote nodes, remove nodes, and check Arcane node-agent coverage.
-- **Configs**: create and delete non-sensitive configuration objects used by services and stacks.
-- **Secrets**: create and delete sensitive values used by services and stacks.
-
-## Read the Right Swarm Page
-
-- <Link href="/docs/features/swarm-cluster">Swarm Cluster</Link>: initialize, join, leave, unlock, rotate join tokens, and update cluster settings.
-- <Link href="/docs/features/swarm-workloads">Swarm Workloads</Link>: stacks, services, tasks, rollout workflows, and when to use each view.
-- <Link href="/docs/features/swarm-nodes-agents">Swarm Nodes and Agents</Link>: node operations, agent coverage, deployment flow, statuses, and agent troubleshooting.
-- <Link href="/docs/features/swarm-configs-secrets">Swarm Configs and Secrets</Link>: when to use configs vs secrets, plus create/delete workflows.
-
-## Recommended Workflow
-
-For most teams, the smoothest Swarm workflow in Arcane looks like this:
-
-1. Select the correct environment.
-2. Open **Swarm > Cluster** and confirm the environment is part of the expected Swarm.
-3. Review **Nodes** to confirm managers, workers, and availability.
-4. If needed, deploy Arcane node agents to the nodes you want covered.
-5. Create required **Configs** and **Secrets**.
-6. Deploy your application from **Stacks**.
+1. Pick the environment.
+2. Open **Swarm → Cluster** and confirm the environment is in the expected Swarm.
+3. Check **Nodes** — managers, workers, and availability.
+4. Deploy Arcane node agents to the nodes you want covered.
+5. Create the **Configs** and **Secrets** your app needs.
+6. Deploy from **Stacks**.
 7. Use **Services** and **Tasks** to inspect rollout health and logs.
-8. Scale, roll back, redeploy, or remove workloads as needed.
+8. Scale, roll back, redeploy, or remove as needed.
 
-## Quick Troubleshooting
+## Troubleshooting
 
-**The Swarm section does not appear**
+**The Swarm section doesn't appear.** The selected environment isn't in Swarm mode. Arcane only shows the workspace when the environment reports an active Swarm state.
 
-Make sure the selected environment is actually in Swarm mode. Arcane only shows the Swarm workspace when the environment reports an active Swarm state.
-
-**A node agent stays in `pending`**
-
-This usually means Arcane generated the deployment command, but the agent has not connected yet. Verify that:
+**A node agent stays in `pending`.** Arcane generated the deploy command but the agent hasn't connected. Check that:
 
 - the command was run on the intended node
 - the manager URL is reachable from that node
-- the token is current
+- the token is still current
 
-**A node agent shows `mismatched`**
+**A node agent shows `mismatched`.** An agent connected, but the reported node identity doesn't match the row you deployed it for. Regenerate the API key and redeploy on the right node.
 
-This means Arcane received an agent connection, but the reported node identity does not match the node row you deployed it for. Regenerate the API key if needed and redeploy using the correct node's install command.
-
-**Services or stacks are visible, but node-local coverage is incomplete**
-
-That is expected if some nodes do not have Arcane node agents connected. Cluster-level Swarm resources come from the Swarm manager, while node-agent coverage is tracked separately per node.
+**Services or stacks visible, but per-node coverage is incomplete.** Expected if some nodes don't have Arcane agents connected. Cluster-level resources come from the Swarm manager; per-node coverage is tracked separately.

@@ -1,22 +1,13 @@
 ---
 title: 'Networks'
-description: 'Learn how to manage Docker networks with Arcane'
+description: 'Manage Docker networks in Arcane, including topology and ports views.'
 ---
 
 <script lang="ts">
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
-## What Can You Do With Networks in Arcane?
-
-- **View Networks:** See a list of all Docker networks on your system, including their names, drivers, and subnets.
-- **View Network Ports:** See an environment-wide list of published and exposed container ports, with search, sorting, and pagination.
-- **Explore Network Topology:** Open a topology view that shows networks and attached containers as an interactive graph.
-- **Create Networks:** Add a new network by choosing a name, driver, and optional settings like subnet or gateway.
-- **Inspect Networks:** Click on a network to see details, including connected containers and configuration.
-- **Remove Networks:** Delete networks you no longer need. Arcane will warn you if a network is in use or is a default Docker network.
-
-## Screenshot
+The **Networks** page lists every Docker network on the selected host and lets you create, inspect, and remove them. Two extra views — **Ports** and **Topology** — give you a host-wide picture of what's published and how containers are wired up.
 
 <ScreenshotFrame
 	src="/img/screenshots/networks-page.jpeg"
@@ -26,51 +17,49 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 	decoding="async"
 />
 
-### Viewing Networks
+## Browse networks
 
-1. Go to the **Networks** section in the sidebar.
-2. You'll see a table listing all your Docker networks.
+Open **Networks** in the sidebar. The table shows name, driver, and subnet for each network.
 
-### Creating a Network
+## Create a network
 
-1. Click the **Create Network** button.
-2. Enter a name for your network.
-3. (Optional) Choose a driver (like `bridge` or `overlay`) and set advanced options if needed.
-4. Click **Create**. Your new network will appear in the list.
+1. Click **Create Network**.
+2. Enter a name.
+3. Optional: pick a driver (`bridge`, `overlay`, etc.) and configure subnet, gateway, and other advanced options.
+4. Click **Create**.
 
-### Inspecting a Network
+## Inspect a network
 
-1. Click on a network's name in the list.
-2. You'll see details like its ID, driver, subnet, gateway, and which containers are connected.
+Click a network's name to see its ID, driver, subnet, gateway, and the containers attached to it.
 
-### Ports View
+## Remove a network
 
-Arcane also includes a dedicated **Ports** view for the selected environment.
+1. Open the row's dropdown and click the trash icon.
+2. Confirm.
 
-Use it when you want to answer questions like:
+> [!NOTE]
+> Networks in use by containers can't be removed, and Docker's defaults (`bridge`, `host`, `none`) can never be removed.
+
+## Ports view
+
+Open the **Ports** view from the Networks area to answer questions like:
 
 - which ports are published to the host
 - which containers expose ports without publishing them
-- which host IP and host port combinations are already in use
+- which `host:port` combinations are already taken
 
-### Topology View
+The table supports search, sorting, and pagination across the whole environment.
 
-From the Networks area, you can also open the **Topology** view to see a graph of:
+## Topology view
+
+The **Topology** view renders an interactive graph of:
 
 - Docker networks
-- containers attached to those networks
+- containers attached to them
 - the relationships between them
 
-This is especially useful when you need a quick visual overview of bridge, overlay, or shared application networks.
-
-### Removing a Network
-
-1. In the networks list, find the network you want to remove.
-2. Click the dropdown, then the **Delete** button (trash icon).
-3. Confirm the deletion in the dialog.
-
-> **Note:** You cannot remove a network that is currently used by containers or is a default Docker network (like `bridge`, `host`, or `none`).
+Useful when you want a quick visual overview of bridge, overlay, or shared application networks.
 
 ---
 
-For more advanced networking, see the [official Docker documentation](https://docs.docker.com/network/).
+For background on Docker networking concepts, see the [official Docker documentation](https://docs.docker.com/network/).
