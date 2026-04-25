@@ -1,6 +1,6 @@
 ---
 title: 'Swarm Cluster'
-description: 'Initialize, join, unlock, and update a Docker Swarm cluster in Arcane'
+description: 'Initialize, join, unlock, and update a Docker Swarm cluster.'
 order: 1
 ---
 
@@ -8,72 +8,60 @@ order: 1
 import { Snippet } from '$lib/components/ui/snippet/index.js';
 </script>
 
-The **Cluster** page is where you manage Swarm lifecycle and security settings for the selected environment.
-
-## What You Can Do
-
-- initialize a new Swarm
-- join an existing Swarm as a manager or worker
-- leave a cluster
-- unlock a locked Swarm
-- view or rotate join credentials
-- update the live Swarm spec
+The **Cluster** page covers the Swarm lifecycle and security settings for the selected environment — initialize, join, leave, unlock, rotate join tokens, and update the live Swarm spec.
 
 ## Initialize a Swarm
 
-Use this when the current environment is not yet part of a Swarm.
+Use this when the selected environment isn't part of a Swarm yet.
 
-1. Open **Swarm > Cluster**.
-2. Choose **Initialize**.
-3. Optionally set one or more advanced init fields:
+1. Open **Swarm → Cluster**.
+2. Click **Initialize**.
+3. Optional: set advanced init fields:
 
    <Snippet text="listenAddr · advertiseAddr · autoLockManagers · forceNewCluster" class="mt-2 mb-2 w-full" />
 
-4. Optionally provide advanced Swarm spec JSON.
-5. Confirm the action.
+4. Optional: provide an advanced Swarm spec (JSON).
+5. Confirm.
 
-After initialization, Arcane refreshes the cluster state and exposes the rest of the Swarm workspace for that environment.
+After initialization, Arcane refreshes cluster state and exposes the rest of the Swarm workspace for that environment.
 
-## Join or Leave a Cluster
+## Join an existing Swarm
 
-**Join an existing Swarm**
+Use this when the environment should join an existing cluster as a manager or worker.
 
-Use this when the current environment should join an existing cluster as a manager or worker.
+1. Open **Swarm → Cluster**.
+2. Click **Join**.
+3. Enter manager addresses, the join token, and any optional listen/advertise addresses.
+4. Confirm.
 
-1. Open **Swarm > Cluster**.
-2. Choose **Join**.
-3. Enter one or more manager addresses, the join token, and any optional listen or advertise addresses.
-4. Confirm the action.
+## Leave a cluster
 
-**Leave the cluster**
+Click **Leave** when a node should no longer be part of the Swarm. You can force the leave when needed. Arcane refreshes environment state after the operation completes.
 
-Use **Leave** when a node should no longer be part of the Swarm.
+## Unlock a locked cluster
 
-- You can force the leave action when needed.
-- After the operation completes, Arcane refreshes the environment state.
+If manager autolock is enabled and the cluster is locked after a restart:
 
-## Unlock and Rotate Credentials
-
-If manager autolock is enabled and the cluster is locked after restart:
-
-1. Open **Swarm > Cluster**.
+1. Open **Swarm → Cluster**.
 2. Enter the unlock key.
 3. Click **Unlock**.
 
-Arcane can also show and manage these sensitive values from the same page:
+## Manage join tokens and the unlock key
 
-- the current **worker join token**
-- the current **manager join token**
+The Cluster page shows and lets you rotate:
+
+- the **worker join token**
+- the **manager join token**
 - the **manager unlock key**
 
-Arcane can rotate the join tokens from the Cluster page. Treat these values like credentials.
+Treat these like credentials. Rotating a token invalidates the previous value.
 
-## Update Cluster Settings
+## Update the cluster spec
 
-The Cluster page supports updating the live Swarm spec through Arcane's UI. This is intended for advanced operators who understand the Docker Swarm settings they are changing.
+The Cluster page can update the live Swarm spec through the UI. This is for advanced operators who understand the Docker Swarm settings being changed.
 
 ## Notes
 
 - Swarm actions apply to the currently selected environment.
-- Full cluster management is intended for Swarm manager environments.
+- Full cluster management requires a **Swarm manager** environment.
 - Administrative actions require admin access in Arcane.
