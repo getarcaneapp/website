@@ -81,7 +81,11 @@ const GET_STARTED = group('Get Started', [
 	leaf('setup/next-images')
 ]);
 
-const SECURITY = group('Security', [leaf('security/verify-artifacts'), leaf('setup/socket-proxy')]);
+const SECURITY = group('Security', [
+	leaf('security/verify-artifacts'),
+	leaf('setup/socket-proxy'),
+	leaf('security/edge-mtls')
+]);
 
 const CONFIGURATION = group('Configuration', [
 	leaf('configuration/environment'),
