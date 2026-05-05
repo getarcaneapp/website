@@ -82,7 +82,7 @@ A quick first run looks like this:
 
 <Snippet text="arcane-cli config set server-url http://localhost:3552" class="mt-2" />
 
-<Snippet text="arcane-cli config set apt-key arc_xxxxxxx" class="mt-2" />
+<Snippet text="arcane-cli config set api-key arc_xxxxxxx" class="mt-2" />
 
 ## Authenticate
 
