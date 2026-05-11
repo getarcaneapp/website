@@ -137,6 +137,14 @@
       "sourceSymbol": "config.Config.DockerAPITimeout"
     },
     {
+      "env": "DOCKER_CONFIG",
+      "field": "DockerConfig",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.DockerConfig"
+    },
+    {
       "env": "DOCKER_HOST",
       "field": "DockerHost",
       "type": "string",
@@ -162,6 +170,58 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeAgent"
+    },
+    {
+      "env": "EDGE_MTLS_ASSETS_DIR",
+      "field": "EdgeMTLSAssetsDir",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.EdgeMTLSAssetsDir"
+    },
+    {
+      "env": "EDGE_MTLS_CA_FILE",
+      "field": "EdgeMTLSCAFile",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.EdgeMTLSCAFile"
+    },
+    {
+      "env": "EDGE_MTLS_CERT_FILE",
+      "field": "EdgeMTLSCertFile",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.EdgeMTLSCertFile"
+    },
+    {
+      "env": "EDGE_MTLS_KEY_FILE",
+      "field": "EdgeMTLSKeyFile",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.EdgeMTLSKeyFile"
+    },
+    {
+      "env": "EDGE_MTLS_MODE",
+      "field": "EdgeMTLSMode",
+      "type": "string",
+      "defaultValue": "disabled",
+      "options": [
+        "toLower"
+      ],
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.EdgeMTLSMode"
+    },
+    {
+      "env": "EDGE_MTLS_SERVER_NAME",
+      "field": "EdgeMTLSServerName",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.EdgeMTLSServerName"
     },
     {
       "env": "EDGE_RECONNECT_INTERVAL",
@@ -421,6 +481,14 @@
       "sourceSymbol": "config.Config.OidcSkipTlsVerify"
     },
     {
+      "env": "PGID",
+      "field": "PGID",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.PGID"
+    },
+    {
       "env": "PORT",
       "field": "Port",
       "type": "string",
@@ -464,6 +532,14 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ProxyRequestTimeout"
+    },
+    {
+      "env": "PUID",
+      "field": "PUID",
+      "type": "string",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.PUID"
     },
     {
       "env": "REGISTRY_TIMEOUT",
@@ -1287,6 +1363,21 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.DefaultDeployPullPolicy"
+    },
+    {
+      "env": "DOCKER_CLIENT_REFRESH_INTERVAL",
+      "settingKey": "dockerClientRefreshInterval",
+      "description": "How often to refresh the cached Docker client API version (cron expression)",
+      "defaultValue": "*/30 * * * * *",
+      "type": "cron",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "internal",
+      "public": false,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.DockerClientRefreshInterval"
     },
     {
       "env": "DOCKER_HOST",
