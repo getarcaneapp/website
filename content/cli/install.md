@@ -39,6 +39,46 @@ You can also install the CLI with our helper script. Pick the command that match
 > [!NOTE]
 > `--beta` always installs the latest `cli-next` binary from R2. It does not use a versioned beta release path.
 
+### APT (Debian / Ubuntu)
+
+Add the signing key:
+
+<Snippet text="curl -fsSL https://pkgs.getarcane.app/repository/raw/arcane-repo-signing.asc | sudo gpg --dearmor -o /usr/share/keyrings/arcane-archive-keyring.gpg" class="mt-2" />
+
+Add the repository:
+
+```bash
+sudo tee /etc/apt/sources.list.d/arcane.sources << 'EOF'
+Types: deb
+URIs: https://pkgs.getarcane.app/repository/debian/
+Suites: stable
+Components: main
+Signed-By: /usr/share/keyrings/arcane-archive-keyring.gpg
+EOF
+```
+
+Install:
+
+<Snippet text="sudo apt update && sudo apt install arcane-cli" class="mt-2" />
+
+### YUM / DNF (RHEL, Fedora, CentOS)
+
+Add the repository:
+
+```bash
+sudo tee /etc/yum.repos.d/arcane.repo << 'EOF'
+[arcane]
+name=Arcane Repository
+baseurl=https://pkgs.getarcane.app/repository/yum/$basearch/
+enabled=1
+gpgcheck=0
+EOF
+```
+
+Install:
+
+<Snippet text="sudo dnf install arcane-cli" class="mt-2" />
+
 ### Homebrew
 
 <Snippet text="brew install getarcaneapp/tap/arcane-cli" class="mt-2" />
