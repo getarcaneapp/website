@@ -9,7 +9,14 @@
 		...restProps
 	}: AccordionPrimitive.ItemProps & { variant?: 'list' | 'card' } = $props();
 
-	const base = $derived(variant === 'card' ? 'border rounded-lg bg-background' : 'border-b last:border-b-0');
+	const base = $derived(
+		variant === 'card' ? 'border rounded-lg bg-background' : 'border-b last:border-b-0'
+	);
 </script>
 
-<AccordionPrimitive.Item bind:ref data-slot="accordion-item" class={cn(base, className)} {...restProps} />
+<AccordionPrimitive.Item
+	bind:ref
+	data-slot="accordion-item"
+	class={cn(base, className)}
+	{...restProps}
+/>

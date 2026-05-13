@@ -145,7 +145,9 @@
 					</div>
 					<div>
 						<p class="sbom-eyebrow">Security transparency</p>
-						<h1 class="font-heading scroll-m-20 text-4xl font-semibold tracking-tight">Software Bill of Materials</h1>
+						<h1 class="scroll-m-20 font-heading text-4xl font-semibold tracking-tight">
+							Software Bill of Materials
+						</h1>
 					</div>
 				</div>
 				<p class="sbom-hero__subtitle">
@@ -155,16 +157,20 @@
 
 			{#if loading}
 				<div class="flex flex-col items-center justify-center gap-4 py-16">
-					<div class="border-primary size-8 animate-spin rounded-full border-2 border-t-transparent"></div>
+					<div
+						class="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+					></div>
 					<p class="text-muted-foreground">Loading SBOM data...</p>
 				</div>
 			{:else if error}
-				<div class="bg-destructive/10 border-destructive/20 flex flex-col items-center gap-4 rounded-lg border p-8">
-					<AlertTriangle class="text-destructive size-12" />
-					<p class="text-destructive text-center">{error}</p>
-					<p class="text-muted-foreground text-center text-sm">
-						SBOM data is generated from the latest release. If this is a new deployment, it may take a few minutes for
-						the data to be available.
+				<div
+					class="flex flex-col items-center gap-4 rounded-lg border border-destructive/20 bg-destructive/10 p-8"
+				>
+					<AlertTriangle class="size-12 text-destructive" />
+					<p class="text-center text-destructive">{error}</p>
+					<p class="text-center text-sm text-muted-foreground">
+						SBOM data is generated from the latest release. If this is a new deployment, it may take
+						a few minutes for the data to be available.
 					</p>
 				</div>
 			{:else}
@@ -176,7 +182,7 @@
 								<Badge variant="outline" class="font-mono">
 									{sbomData.metadata.version}
 								</Badge>
-								<span class="text-muted-foreground text-sm">
+								<span class="text-sm text-muted-foreground">
 									Updated {new Date(sbomData.metadata.updated).toLocaleDateString('en-US', {
 										year: 'numeric',
 										month: 'long',
@@ -184,9 +190,17 @@
 									})}
 								</span>
 							</div>
-							<p class="sbom-meta__note">Export the raw SPDX 2.3 JSON if you need to automate audits.</p>
+							<p class="sbom-meta__note">
+								Export the raw SPDX 2.3 JSON if you need to automate audits.
+							</p>
 						</div>
-						<Button variant="outline" size="sm" onclick={downloadSbom} disabled={!currentSbom} class="sbom-download">
+						<Button
+							variant="outline"
+							size="sm"
+							onclick={downloadSbom}
+							disabled={!currentSbom}
+							class="sbom-download"
+						>
 							<Download class="mr-2 size-4" />
 							Download SPDX JSON
 						</Button>
@@ -242,7 +256,12 @@
 				<div class="sbom-filters">
 					<label class="sbom-search">
 						<span class="sbom-search__label">Filter packages</span>
-						<input type="text" placeholder="Search packages..." bind:value={searchQuery} class="sbom-search__input" />
+						<input
+							type="text"
+							placeholder="Search packages..."
+							bind:value={searchQuery}
+							class="sbom-search__input"
+						/>
 					</label>
 					<div class="sbom-filter-tabs">
 						<p class="sbom-control__label">Package type</p>
@@ -293,7 +312,7 @@
 				</div>
 
 				<!-- Footer info -->
-				<div class="text-muted-foreground text-center text-sm">
+				<div class="text-center text-sm text-muted-foreground">
 					<p>
 						SBOM generated using <a
 							href="https://depot.dev"

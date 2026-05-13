@@ -19,7 +19,8 @@
 					'bg-background/80 backdrop-blur-sm hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 border border-border/60 shadow-sm hover:shadow-md hover:border-primary/40 active:scale-[0.98]',
 				secondary:
 					'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:shadow-md active:scale-[0.98]',
-				ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 active:scale-[0.98]',
+				ghost:
+					'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 active:scale-[0.98]',
 				link: 'text-primary underline-offset-4 hover:underline'
 			},
 			size: {

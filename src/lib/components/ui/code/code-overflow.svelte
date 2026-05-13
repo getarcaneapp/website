@@ -3,25 +3,25 @@
 -->
 
 <script lang="ts">
-import { box } from 'svelte-toolbelt';
-import Button from '$lib/components/ui/button/button.svelte';
-import { cn } from '$lib/utils.js';
-import { useCodeOverflow } from './code.svelte.js';
-import type { CodeOverflowProps } from './types.js';
+	import { box } from 'svelte-toolbelt';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { cn } from '$lib/utils.js';
+	import { useCodeOverflow } from './code.svelte.js';
+	import type { CodeOverflowProps } from './types.js';
 
-let {
-	collapsed = $bindable(true),
-	class: className,
-	children,
-	...props
-}: CodeOverflowProps = $props();
+	let {
+		collapsed = $bindable(true),
+		class: className,
+		children,
+		...props
+	}: CodeOverflowProps = $props();
 
-const state = useCodeOverflow({
-	collapsed: box.with(
-		() => collapsed,
-		(v) => (collapsed = v),
-	),
-});
+	const state = useCodeOverflow({
+		collapsed: box.with(
+			() => collapsed,
+			(v) => (collapsed = v)
+		)
+	});
 </script>
 
 <div
@@ -32,7 +32,9 @@ const state = useCodeOverflow({
 >
 	{@render children?.()}
 	{#if collapsed}
-		<div class="from-background absolute bottom-0 left-0 z-10 h-full w-full bg-gradient-to-t to-transparent"></div>
+		<div
+			class="absolute bottom-0 left-0 z-10 h-full w-full bg-gradient-to-t from-background to-transparent"
+		></div>
 	{/if}
 	{#if collapsed}
 		<Button

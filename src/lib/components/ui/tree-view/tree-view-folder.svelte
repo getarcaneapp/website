@@ -8,7 +8,13 @@
 	import { cn } from '$lib/utils.js';
 	import type { TreeViewFolderProps } from './types.js';
 
-	let { name, open = $bindable(true), class: className, icon, children }: TreeViewFolderProps = $props();
+	let {
+		name,
+		open = $bindable(true),
+		class: className,
+		icon,
+		children
+	}: TreeViewFolderProps = $props();
 </script>
 
 <Collapsible.Root bind:open>
@@ -24,7 +30,7 @@
 	</Collapsible.Trigger>
 	<Collapsible.Content class="mx-2 border-l">
 		<div class="relative flex place-items-start">
-			<div class="bg-border mx-2 h-full w-px"></div>
+			<div class="mx-2 h-full w-px bg-border"></div>
 			<div class="flex flex-col">
 				{@render children?.()}
 			</div>

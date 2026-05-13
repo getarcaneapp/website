@@ -12,7 +12,14 @@
 		fullWidth?: boolean;
 	}
 
-	let { icon, title, description, fullWidth = false, class: className, ...restProps }: Props = $props();
+	let {
+		icon,
+		title,
+		description,
+		fullWidth = false,
+		class: className,
+		...restProps
+	}: Props = $props();
 
 	const Icon = $derived(icon);
 </script>
@@ -58,11 +65,11 @@
 			/>
 		</div>
 		<h3
-			class="text-foreground mb-2 text-lg font-semibold tracking-tight transition-colors duration-300 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+			class="mb-2 text-lg font-semibold tracking-tight text-foreground transition-colors duration-300 group-hover:text-purple-600 dark:group-hover:text-purple-400"
 		>
 			{title}
 		</h3>
-		<p class="text-muted-foreground text-sm leading-relaxed">
+		<p class="text-sm leading-relaxed text-muted-foreground">
 			{description}
 		</p>
 	</div>

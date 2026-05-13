@@ -88,7 +88,8 @@
 		},
 		{
 			name: 'OIDC_JWKS_ENDPOINT',
-			description: 'Override/Manual JWKS URL for token verification (e.g., https://provider.com/jwks)',
+			description:
+				'Override/Manual JWKS URL for token verification (e.g., https://provider.com/jwks)',
 			defaultValue: '—'
 		}
 	];
@@ -114,22 +115,22 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-			{#each oidcEnvConfig as env (env.name)}
+				{#each oidcEnvConfig as env (env.name)}
 					<Table.Row>
 						<Table.Cell class="font-medium">
-							<code class="bg-muted rounded px-1 py-0.5">{env.name}</code>
+							<code class="rounded bg-muted px-1 py-0.5">{env.name}</code>
 						</Table.Cell>
 						<Table.Cell>{env.description}</Table.Cell>
 						<Table.Cell>
 							<div class="flex flex-col gap-1">
 								<div class="flex items-center gap-1">
-									<span class="text-muted-foreground w-14 text-xs">Default:</span>
-									<code class="bg-muted rounded px-1 py-0.5">{env.defaultValue || '—'}</code>
+									<span class="w-14 text-xs text-muted-foreground">Default:</span>
+									<code class="rounded bg-muted px-1 py-0.5">{env.defaultValue || '—'}</code>
 								</div>
 								{#if env.exampleValue}
 									<div class="flex items-center gap-1">
-										<span class="text-muted-foreground w-14 text-xs">Example:</span>
-										<code class="bg-muted rounded px-1 py-0.5">{env.exampleValue}</code>
+										<span class="w-14 text-xs text-muted-foreground">Example:</span>
+										<code class="rounded bg-muted px-1 py-0.5">{env.exampleValue}</code>
 									</div>
 								{/if}
 							</div>
@@ -142,7 +143,7 @@
 
 	<div class="manual-config-table">
 		<h3 class="mb-3 text-lg font-semibold">Manual Endpoint Overrides (Advanced)</h3>
-		<p class="text-muted-foreground mb-4 text-sm">
+		<p class="mb-4 text-sm text-muted-foreground">
 			Use these if your OIDC provider does not support standard discovery via the Issuer URL.
 		</p>
 		<Table.Root class="mb-6">
@@ -154,17 +155,17 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-			{#each oidcManualConfig as env (env.name)}
+				{#each oidcManualConfig as env (env.name)}
 					<Table.Row>
 						<Table.Cell class="font-medium">
-							<code class="bg-muted rounded px-1 py-0.5">{env.name}</code>
+							<code class="rounded bg-muted px-1 py-0.5">{env.name}</code>
 						</Table.Cell>
 						<Table.Cell>{env.description}</Table.Cell>
 						<Table.Cell>
 							<div class="flex flex-col gap-1">
 								<div class="flex items-center gap-1">
-									<span class="text-muted-foreground w-14 text-xs">Default:</span>
-									<code class="bg-muted rounded px-1 py-0.5">{env.defaultValue || '—'}</code>
+									<span class="w-14 text-xs text-muted-foreground">Default:</span>
+									<code class="rounded bg-muted px-1 py-0.5">{env.defaultValue || '—'}</code>
 								</div>
 							</div>
 						</Table.Cell>
@@ -185,11 +186,11 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-			{#each oidcArcaneEndpoints as endpoint (endpoint.type)}
+				{#each oidcArcaneEndpoints as endpoint (endpoint.type)}
 					<Table.Row>
 						<Table.Cell class="font-medium">{endpoint.type}</Table.Cell>
 						<Table.Cell>
-							<code class="bg-muted rounded px-1 py-0.5">{endpoint.value}</code>
+							<code class="rounded bg-muted px-1 py-0.5">{endpoint.value}</code>
 						</Table.Cell>
 						<Table.Cell>{endpoint.description}</Table.Cell>
 					</Table.Row>

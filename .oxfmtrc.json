@@ -4,6 +4,7 @@
 	"singleQuote": true,
 	"trailingComma": "none",
 	"printWidth": 100,
+	"svelte": true,
 	"experimentalTailwindcss": {
 		"stylesheet": "./src/app.css",
 		"attributes": ["class"],
@@ -17,6 +18,7 @@
 		"*.md",
 		"tsconfig.json",
 		"svelte.config.js",
-		"src/*.json"
+		"src/*.json",
+		"static/**"
 	]
 }

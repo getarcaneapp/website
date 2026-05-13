@@ -13,11 +13,11 @@
 		<section class="generator-hero px-4">
 			<div class="generator-hero__inner generator-offset mx-auto max-w-375">
 				<div class="generator-hero__intro">
-				<p class="generator-hero__eyebrow">Compose Generator</p>
+					<p class="generator-hero__eyebrow">Compose Generator</p>
 					<h1 class="generator-hero__title">Docker Compose Generator</h1>
 					<p class="generator-hero__subtitle">
-						Follow the guided steps to configure Arcane services, credentials, and storage. Your Compose file
-						is updated in real time.
+						Follow the guided steps to configure Arcane services, credentials, and storage. Your
+						Compose file is updated in real time.
 					</p>
 				</div>
 				<div class="generator-hero__links">

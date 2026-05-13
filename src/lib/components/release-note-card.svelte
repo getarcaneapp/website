@@ -119,10 +119,7 @@
 			<Button
 				variant="ghost"
 				size="icon"
-				class={cn(
-					'changelog-entry__toggle',
-					expanded && 'changelog-entry__toggle--expanded'
-				)}
+				class={cn('changelog-entry__toggle', expanded && 'changelog-entry__toggle--expanded')}
 				onclick={() => toggleExpanded()}
 				aria-label={expanded ? 'Collapse section' : 'Expand section'}
 			>

@@ -1,16 +1,15 @@
 <script lang="ts">
-import type { HTMLAttributes } from 'svelte/elements';
-import { cn } from '$lib/utils.js';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { cn } from '$lib/utils.js';
 
-let {
-	class: className,
-	children,
-	...restProps
-}: HTMLAttributes<HTMLTableElement> = $props();
+	let { class: className, children, ...restProps }: HTMLAttributes<HTMLTableElement> = $props();
 </script>
 
 <div class="my-6 w-full overflow-y-auto">
-	<table class={cn('relative w-full overflow-hidden border-none text-sm', className)} {...restProps}>
+	<table
+		class={cn('relative w-full overflow-hidden border-none text-sm', className)}
+		{...restProps}
+	>
 		{@render children?.()}
 	</table>
 </div>

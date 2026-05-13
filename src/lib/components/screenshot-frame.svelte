@@ -26,7 +26,7 @@
 	<figure class={cn('my-8', containerClass)}>
 		<Dialog.Trigger
 			type="button"
-			class="group focus-visible:ring-ring block w-full cursor-zoom-in text-left focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden"
+			class="group block w-full cursor-zoom-in text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden"
 			aria-label={`Open ${dialogAlt} in a larger view`}
 		>
 			<span
@@ -35,13 +35,13 @@
 					frameClass
 				)}
 			>
-				<span class="bg-background/80 ring-border/70 block rounded-[26px] p-2 ring-1 backdrop-blur">
+				<span class="block rounded-[26px] bg-background/80 p-2 ring-1 ring-border/70 backdrop-blur">
 					<img
 						{...restProps}
 						{src}
 						{alt}
 						class={cn(
-							'border-border/60 w-full rounded-[20px] border shadow-lg transition-transform duration-500 group-hover:scale-[1.01]',
+							'w-full rounded-[20px] border border-border/60 shadow-lg transition-transform duration-500 group-hover:scale-[1.01]',
 							className
 						)}
 					/>
@@ -50,7 +50,7 @@
 		</Dialog.Trigger>
 
 		{#if caption}
-			<figcaption class="text-muted-foreground mt-3 text-center text-sm">
+			<figcaption class="mt-3 text-center text-sm text-muted-foreground">
 				{caption}
 			</figcaption>
 		{/if}
@@ -72,7 +72,7 @@
 			</div>
 
 			{#if caption}
-				<p class="text-muted-foreground text-center text-sm">
+				<p class="text-center text-sm text-muted-foreground">
 					{caption}
 				</p>
 			{/if}

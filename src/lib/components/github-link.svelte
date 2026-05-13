@@ -29,10 +29,12 @@
 	rel="noreferrer"
 	size="sm"
 	variant="ghost"
-	class="group hover:bg-muted/50 h-8 shadow-none transition-all duration-200"
+	class="group h-8 shadow-none transition-all duration-200 hover:bg-muted/50"
 >
 	<GithubIcon class="transition-transform duration-200 group-hover:scale-110" />
-	<span class="text-muted-foreground group-hover:text-foreground text-xs tabular-nums transition-colors duration-200">
+	<span
+		class="text-xs text-muted-foreground tabular-nums transition-colors duration-200 group-hover:text-foreground"
+	>
 		{stars >= 1000 ? `${(stars / 1000).toFixed(1)}k` : stars.toLocaleString()}
 	</span>
 </Button>

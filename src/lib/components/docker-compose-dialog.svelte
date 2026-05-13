@@ -1,31 +1,31 @@
 <script lang="ts">
-import Download from '@lucide/svelte/icons/download';
-import { Button } from '$lib/components/ui/button/index.js';
-import * as Code from '$lib/components/ui/code/index.js';
-import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import Download from '@lucide/svelte/icons/download';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Code from '$lib/components/ui/code/index.js';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
 
-interface Props {
-	open: boolean;
-	generatedCompose: string;
-	onOpenChange?: (open: boolean) => void;
-}
+	interface Props {
+		open: boolean;
+		generatedCompose: string;
+		onOpenChange?: (open: boolean) => void;
+	}
 
-let { open = $bindable(), generatedCompose, onOpenChange }: Props = $props();
+	let { open = $bindable(), generatedCompose, onOpenChange }: Props = $props();
 
-function downloadCompose() {
-	const blob = new Blob([generatedCompose], { type: 'text/yaml' });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = 'docker-compose.yml';
-	a.click();
-	URL.revokeObjectURL(url);
-}
+	function downloadCompose() {
+		const blob = new Blob([generatedCompose], { type: 'text/yaml' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'docker-compose.yml';
+		a.click();
+		URL.revokeObjectURL(url);
+	}
 
-function handleOpenChange(newOpen: boolean) {
-	open = newOpen;
-	onOpenChange?.(newOpen);
-}
+	function handleOpenChange(newOpen: boolean) {
+		open = newOpen;
+		onOpenChange?.(newOpen);
+	}
 </script>
 
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
@@ -34,7 +34,9 @@ function handleOpenChange(newOpen: boolean) {
 	>
 		<Dialog.Header class="shrink-0">
 			<Dialog.Title>Generated Docker Compose</Dialog.Title>
-			<Dialog.Description>Your customized Docker Compose configuration is ready to use.</Dialog.Description>
+			<Dialog.Description
+				>Your customized Docker Compose configuration is ready to use.</Dialog.Description
+			>
 		</Dialog.Header>
 
 		<div class="flex min-h-0 flex-1 flex-col space-y-4">
@@ -49,7 +51,9 @@ function handleOpenChange(newOpen: boolean) {
 					<Download class="mr-2 size-4" />
 					Download File
 				</Button>
-				<Button variant="secondary" onclick={() => (open = false)} class="w-full sm:w-auto">Close</Button>
+				<Button variant="secondary" onclick={() => (open = false)} class="w-full sm:w-auto"
+					>Close</Button
+				>
 			</div>
 		</div>
 	</Dialog.Content>

@@ -43,18 +43,18 @@
 			{#each agentEnvConfig as env}
 				<Table.Row>
 					<Table.Cell class="font-medium">
-						<code class="bg-muted rounded px-1 py-0.5">{env.name}</code>
+						<code class="rounded bg-muted px-1 py-0.5">{env.name}</code>
 					</Table.Cell>
 					<Table.Cell>{env.description}</Table.Cell>
 					<Table.Cell>
 						<div class="flex flex-col gap-1">
 							<div class="flex items-center gap-1">
-								<span class="text-muted-foreground w-14 text-xs">Default:</span>
-								<code class="bg-muted rounded px-1 py-0.5">{env.defaultValue || '—'}</code>
+								<span class="w-14 text-xs text-muted-foreground">Default:</span>
+								<code class="rounded bg-muted px-1 py-0.5">{env.defaultValue || '—'}</code>
 							</div>
 							<div class="flex items-center gap-1">
-								<span class="text-muted-foreground w-14 text-xs">Example:</span>
-								<code class="bg-muted rounded px-1 py-0.5">{env.exampleValue || '—'}</code>
+								<span class="w-14 text-xs text-muted-foreground">Example:</span>
+								<code class="rounded bg-muted px-1 py-0.5">{env.exampleValue || '—'}</code>
 							</div>
 						</div>
 					</Table.Cell>
