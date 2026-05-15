@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Download from '@lucide/svelte/icons/download';
+	import Download from 'virtual:icons/lucide/download';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Code from '$lib/components/ui/code/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';

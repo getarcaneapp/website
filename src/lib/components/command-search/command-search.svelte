@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
+	import ArrowRightIcon from 'virtual:icons/lucide/arrow-right';
 	import type { Component } from 'svelte';
 	import { tick } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';

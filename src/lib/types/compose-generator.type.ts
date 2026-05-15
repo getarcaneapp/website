@@ -32,7 +32,7 @@ export interface GeneratorSection {
 	title: string;
 	/** Section description */
 	description: string;
-	/** Icon name (lucide) */
+	/** Icon name (Iconify) */
 	icon: string;
 	/** Whether this section has a toggle to enable/disable */
 	hasToggle?: boolean;

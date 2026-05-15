@@ -31,7 +31,8 @@
 <script lang="ts">
 	import { cn } from '$lib/utils.js';
 	import CopyButton from '$lib/components/ui/copy-button/copy-button.svelte';
-	import { ClipboardIcon, TerminalIcon } from '@lucide/svelte';
+	import ClipboardIcon from 'virtual:icons/lucide/clipboard';
+	import TerminalIcon from 'virtual:icons/lucide/terminal';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import ExternalLink from 'virtual:icons/lucide/external-link';
 	import * as Toc from '$lib/components/ui/toc/index.js';
 	import { UseToc } from '$lib/hooks/use-toc.svelte.js';
 

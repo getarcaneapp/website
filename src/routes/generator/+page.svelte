@@ -1,7 +1,7 @@
 <script lang="ts">
-	import BookOpen from '@lucide/svelte/icons/book-open';
-	import Settings from '@lucide/svelte/icons/settings';
-	import Zap from '@lucide/svelte/icons/zap';
+	import BookOpen from 'virtual:icons/lucide/book-open';
+	import Settings from 'virtual:icons/lucide/settings';
+	import Zap from 'virtual:icons/lucide/zap';
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import DockerComposeGenerator from '$lib/components/docker-compose-generator.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';

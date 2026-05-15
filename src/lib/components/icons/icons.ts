@@ -1,4 +1,4 @@
-import FileIcon from '@lucide/svelte/icons/file';
+import FileIcon from 'virtual:icons/lucide/file';
 import Css from './css.svelte';
 import Json from './json.svelte';
 import Svelte from './svelte.svelte';

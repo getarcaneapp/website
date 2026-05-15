@@ -8,7 +8,7 @@ order: 3
 import * as Code from '$lib/components/ui/code/index.js';
 import OidcTable from '$lib/components/oidc-table.svelte';
 import * as Alert from '$lib/components/ui/alert/index.js';
-import InfoIcon from '@lucide/svelte/icons/info';
+import InfoIcon from 'virtual:icons/lucide/info';
 </script>
 
 ## Configure OIDC in the UI

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import Search from '@lucide/svelte/icons/search';
+	import ExternalLink from 'virtual:icons/lucide/external-link';
+	import Search from 'virtual:icons/lucide/search';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import ChangelogToc from '$lib/components/changelog-toc.svelte';

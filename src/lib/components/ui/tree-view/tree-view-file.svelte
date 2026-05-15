@@ -3,7 +3,7 @@
 -->
 
 <script lang="ts">
-	import { FileIcon } from '@lucide/svelte';
+	import FileIcon from 'virtual:icons/lucide/file';
 	import { cn } from '$lib/utils.js';
 	import type { TreeViewFileProps } from './types.js';
 
