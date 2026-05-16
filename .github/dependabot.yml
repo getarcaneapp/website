@@ -6,44 +6,13 @@ updates:
       interval: 'daily'
     groups:
       prod-dependencies:
+        dependency-type: 'production'
         patterns:
           - '*'
-        exclude-patterns:
-          - '@types/*'
-          - 'typescript'
-          - 'eslint*'
-          - 'prettier*'
-          - 'vite'
-          - '*-plugin'
-          - '*-loader'
-          - 'jest*'
-          - 'vitest*'
-          - '@testing-library/*'
-          - '@playwright/*'
-        update-types:
-          - 'minor'
-          - 'patch'
       dev-dependencies:
-        patterns:
-          - '@types/*'
-          - 'typescript'
-          - 'eslint*'
-          - 'prettier*'
-          - 'vite'
-          - '*-plugin'
-          - '*-loader'
-          - 'jest*'
-          - 'vitest*'
-          - '@testing-library/*'
-          - '@playwright/*'
-        update-types:
-          - 'minor'
-          - 'patch'
-      frontend-major-updates:
+        dependency-type: 'development'
         patterns:
           - '*'
-        update-types:
-          - 'major'
 
   - package-ecosystem: 'github-actions'
     directory: '/'
