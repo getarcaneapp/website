@@ -49,6 +49,9 @@ jobs:
       - name: Install dependencies
         run: vp install
 
+      - name: Generate content data
+        run: vp run velite
+
       - name: Build site
         run: vp build
 
