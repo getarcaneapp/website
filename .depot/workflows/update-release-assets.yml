@@ -97,14 +97,14 @@ jobs:
           go-version-file: arcane/backend/go.mod
 
       - name: Set up just
-        uses: extractions/setup-just@v3
+        uses: extractions/setup-just@v4
 
       - name: Generate config.json
         shell: bash
         run: |
           set -euo pipefail
           cd arcane
-          just docs config ../static/config.json
+          just docs config output=../static/config.json
 
       - name: Set up Depot CLI
         if: steps.check.outputs.do_sbom == 'true'
