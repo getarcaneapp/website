@@ -1,6 +1,6 @@
 <script lang="ts">
-	import CheckIcon from '@lucide/svelte/icons/check';
-	import ClipboardIcon from '@lucide/svelte/icons/clipboard';
+	import CheckIcon from 'virtual:icons/lucide/check';
+	import ClipboardIcon from 'virtual:icons/lucide/clipboard';
 	import type { ComponentProps } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';

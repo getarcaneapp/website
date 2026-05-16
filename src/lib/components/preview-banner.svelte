@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Sparkles from '@lucide/svelte/icons/sparkles';
-	import X from '@lucide/svelte/icons/x';
+	import Sparkles from 'virtual:icons/lucide/sparkles';
+	import X from 'virtual:icons/lucide/x';
 	import { browser } from '$app/environment';
 	import { Button } from '$lib/components/ui/button/index.js';
 

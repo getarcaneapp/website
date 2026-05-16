@@ -22,20 +22,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@9446e853b27985e00fb1b21193be026fc09198db
         with:
           node-version: latest
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install
+        run: vp install
 
       - name: Build site
-        run: pnpm build
+        run: vp build
 
       - name: Deploy to Cloudflare Workers
         env:

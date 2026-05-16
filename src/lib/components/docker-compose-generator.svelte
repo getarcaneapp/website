@@ -1,7 +1,7 @@
 <script lang="ts">
-	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import FileText from '@lucide/svelte/icons/file-text';
+	import ChevronLeft from 'virtual:icons/lucide/chevron-left';
+	import ChevronRight from 'virtual:icons/lucide/chevron-right';
+	import FileText from 'virtual:icons/lucide/file-text';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';

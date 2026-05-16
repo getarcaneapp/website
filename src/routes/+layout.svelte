@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
+	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import { ModeWatcher } from 'mode-watcher';
 	import Header from '$lib/components/header.svelte';
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import FileText from '@lucide/svelte/icons/file-text';
+	import ChevronRight from 'virtual:icons/lucide/chevron-right';
+	import FileText from 'virtual:icons/lucide/file-text';
 	import { resolve } from '$app/paths';
 	import { SidebarNavItems } from '$lib/config/docs.js';
 

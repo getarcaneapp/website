@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Download from '@lucide/svelte/icons/download';
+	import Download from 'virtual:icons/lucide/download';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 

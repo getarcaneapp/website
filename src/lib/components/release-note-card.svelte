@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	import ChevronDown from 'virtual:icons/lucide/chevron-down';
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	let {

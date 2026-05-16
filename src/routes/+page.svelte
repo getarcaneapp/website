@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import BookOpen from '@lucide/svelte/icons/book-open';
-	import Settings from '@lucide/svelte/icons/settings';
-	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import BookOpen from 'virtual:icons/lucide/book-open';
+	import Settings from 'virtual:icons/lucide/settings';
+	import Sparkles from 'virtual:icons/lucide/sparkles';
 	import { resolve } from '$app/paths';
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';

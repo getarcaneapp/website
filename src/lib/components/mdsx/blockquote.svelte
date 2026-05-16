@@ -1,9 +1,9 @@
 <script lang="ts">
-	import AlertCircle from '@lucide/svelte/icons/alert-circle';
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import Info from '@lucide/svelte/icons/info';
-	import Lightbulb from '@lucide/svelte/icons/lightbulb';
-	import OctagonAlert from '@lucide/svelte/icons/octagon-alert';
+	import AlertCircle from 'virtual:icons/lucide/alert-circle';
+	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
+	import Info from 'virtual:icons/lucide/info';
+	import Lightbulb from 'virtual:icons/lucide/lightbulb';
+	import OctagonAlert from 'virtual:icons/lucide/octagon-alert';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { cn } from '$lib/utils.js';
 

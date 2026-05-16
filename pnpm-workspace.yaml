@@ -8,3 +8,16 @@ overrides:
   devalue: ^5.6.2
   undici: ^7.18.2
   rollup: '>=4.59.0'
+  vite: 'catalog:'
+  vitest: 'catalog:'
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@^0.1.21
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  vite-plus: ^0.1.21
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: '*'
+    vitest: '*'

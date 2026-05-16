@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Download from '@lucide/svelte/icons/download';
-	import Package from '@lucide/svelte/icons/package';
-	import Cpu from '@lucide/svelte/icons/cpu';
-	import Shield from '@lucide/svelte/icons/shield';
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+	import Download from 'virtual:icons/lucide/download';
+	import Package from 'virtual:icons/lucide/package';
+	import Cpu from 'virtual:icons/lucide/cpu';
+	import Shield from 'virtual:icons/lucide/shield';
+	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';

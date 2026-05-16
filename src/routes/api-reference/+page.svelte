@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import ExternalLink from 'virtual:icons/lucide/external-link';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();

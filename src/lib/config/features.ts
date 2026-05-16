@@ -1,12 +1,12 @@
 import type { Component } from 'svelte';
-import BookOpen from '@lucide/svelte/icons/book-open';
-import ChartBar from '@lucide/svelte/icons/chart-bar';
-import Clock from '@lucide/svelte/icons/clock';
-import Globe from '@lucide/svelte/icons/globe';
-import HardDrive from '@lucide/svelte/icons/hard-drive';
-import Package from '@lucide/svelte/icons/package';
-import Sparkles from '@lucide/svelte/icons/sparkles';
-import Wrench from '@lucide/svelte/icons/wrench';
+import BookOpen from 'virtual:icons/lucide/book-open';
+import ChartBar from 'virtual:icons/lucide/chart-bar';
+import Clock from 'virtual:icons/lucide/clock';
+import Globe from 'virtual:icons/lucide/globe';
+import HardDrive from 'virtual:icons/lucide/hard-drive';
+import Package from 'virtual:icons/lucide/package';
+import Sparkles from 'virtual:icons/lucide/sparkles';
+import Wrench from 'virtual:icons/lucide/wrench';
 
 type IconComponent = Component<{ class?: string }>;
 

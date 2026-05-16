@@ -1,31 +1,82 @@
 import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
+import Icons from 'unplugin-icons/vite';
 
 export default defineConfig({
-	optimizeDeps: {
-		exclude: ['@lucide/svelte']
+	staged: {
+		'*': 'vp check --fix'
 	},
-	plugins: [tailwindcss(), enhancedImages(), sveltekit()],
+	fmt: {
+		useTabs: true,
+		singleQuote: true,
+		trailingComma: 'none',
+		printWidth: 100,
+		svelte: true,
+		experimentalTailwindcss: {
+			stylesheet: './src/app.css',
+			attributes: ['class'],
+			functions: ['clsx', 'cn'],
+			preserveWhitespace: true
+		},
+		experimentalSortPackageJson: true,
+		ignorePatterns: [
+			'package-lock.json',
+			'pnpm-lock.yaml',
+			'*.md',
+			'tsconfig.json',
+			'svelte.config.js',
+			'src/*.json',
+			'static/**'
+		]
+	},
+	lint: {
+		plugins: ['oxc', 'typescript', 'unicorn'],
+		env: {
+			builtin: true,
+			browser: true
+		},
+		ignorePatterns: ['.svelte-kit/**', '.velite/**', 'build/**'],
+		options: {
+			reportUnusedDisableDirectives: 'error'
+		},
+		overrides: [
+			{
+				files: [
+					'vite.config.ts',
+					'svelte.config.js',
+					'velite.config.js',
+					'mdsx.config.js',
+					'knip.ts'
+				],
+				env: {
+					node: true
+				}
+			},
+			{
+				files: ['src/routes/api/**/*.ts'],
+				env: {
+					node: true
+				}
+			}
+		]
+	},
+	plugins: [
+		tailwindcss(),
+		enhancedImages(),
+		sveltekit(),
+		Icons({
+			compiler: 'svelte',
+			autoInstall: false
+		})
+	],
 	server: {
 		fs: {
 			allow: ['..', './content']
 		}
 	},
 	build: {
-		rolldownOptions: {
-			output: {
-				codeSplitting: {
-					groups: [
-						{
-							name: 'icons',
-							test: /@lucide\/svelte/
-						}
-					]
-				}
-			}
-		},
 		minify: 'oxc'
 	}
 });

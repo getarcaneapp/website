@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import ExternalLink from 'virtual:icons/lucide/external-link';
+	import ChevronRight from 'virtual:icons/lucide/chevron-right';
 	import type { ComponentProps } from 'svelte';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
