@@ -560,6 +560,15 @@
       "sourceSymbol": "config.Config.RegistryTimeout"
     },
     {
+      "env": "TEMPLATES_DIRECTORY",
+      "field": "TemplatesDirectory",
+      "type": "string",
+      "defaultValue": "/app/data/templates",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.TemplatesDirectory"
+    },
+    {
       "env": "TLS_CERT_FILE",
       "field": "TLSCertFile",
       "type": "string",
@@ -1766,6 +1775,20 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.SwarmStackSourcesDirectory"
+    },
+    {
+      "env": "TEMPLATES_DIRECTORY",
+      "settingKey": "templatesDirectory",
+      "description": "Configure where local compose template folders are discovered",
+      "defaultValue": "/app/data/templates",
+      "type": "text",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "internal",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.TemplatesDirectory"
     },
     {
       "env": "TRIVY_CONCURRENT_SCAN_CONTAINERS",
