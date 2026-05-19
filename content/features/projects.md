@@ -166,7 +166,7 @@ To create several syncs at once, paste or upload a JSON array:
     "dockerComposePath": "compose/myproject/compose.yaml",
     "autoSync": true,
     "syncInterval": 5,
-    "enabled": true
+    "syncDirectory": true
   },
   {
     "syncName": "project-name2",
@@ -174,8 +174,7 @@ To create several syncs at once, paste or upload a JSON array:
     "branch": "main",
     "dockerComposePath": "compose/myproject2/compose.yaml",
     "autoSync": true,
-    "syncInterval": 5,
-    "enabled": true
+    "syncInterval": 5
   }
 ]
 ```
