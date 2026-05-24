@@ -1,5 +1,5 @@
 ---
-title: 'Role-Based Access Control'
+title: 'RBAC'
 description: 'Govern what users and API keys can do with fine-grained roles and permissions.'
 order: 3
 ---
