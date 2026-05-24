@@ -31,12 +31,6 @@ Replace each placeholder with the real value from your database.
 - `<postgres_port>`: the port Postgres uses
 - `<postgres_db_name>`: the database name to connect to
 
-## Container runtime user
-
-Official Arcane images set `ARCANE_DEFAULT_NONROOT=true`, so the process drops to the built-in non-root user (`65532:65532`) when `PUID` and `PGID` are not set.
-
-Use `PUID` and `PGID` if mounted files should be owned by a specific host user and group. If you use a custom Unix Docker socket with `DOCKER_HOST`, Arcane uses that socket path when adding the runtime user to the socket group.
-
 ## Environment Variables
 
 <EnvTable />

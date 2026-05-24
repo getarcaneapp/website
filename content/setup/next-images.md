@@ -19,11 +19,11 @@ Arcane provides "next" builds that contain the latest features and improvements 
 
 ## Docker Images
 
-Each image has 3 variants: `next`, `next-static`, and `next-distroless`.
+Each Image has 3 variants, `next`, `next-static`, and `next-distroless`.
 
-The normal `next` tag uses Arcane's hardened Debian-based runtime image and is the fully featured preview build for the manager and agent.
+Both the `next` (based on alpine) and the `next-distroless` (based on distroless-static) are built with static binaries. These builds may not contain the required functionality for some external monitoring tools like GPU's etc.
 
-The `next-static` and `next-distroless` variants use static binaries and smaller runtime images. They are useful for minimal deployments, but they may not include host-provided tooling or shared-library behavior needed by some integrations.
+The normal `next` tag is the fully complete build of Arcane and the Agent, all features should be available.
 
 ### Arcane Manager (Next)
 

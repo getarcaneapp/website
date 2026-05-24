@@ -9,7 +9,9 @@
       "env": "ADMIN_STATIC_API_KEY",
       "field": "AdminStaticAPIKey",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -28,7 +30,9 @@
       "env": "AGENT_TOKEN",
       "field": "AgentToken",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -75,10 +79,14 @@
       "field": "AutoLoginPassword",
       "type": "string",
       "defaultValue": "arcane-admin",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "conditional": true,
-      "buildTags": ["buildables"],
+      "buildTags": [
+        "buildables"
+      ],
       "source": "config.BuildablesConfig",
       "sourceFile": "backend/internal/config/buildables_config.go",
       "sourceSymbol": "config.BuildablesConfig.AutoLoginPassword"
@@ -90,7 +98,9 @@
       "defaultValue": "arcane",
       "description": "Auto-login credentials (used only when built with the buildables tag + autologin feature flag).",
       "conditional": true,
-      "buildTags": ["buildables"],
+      "buildTags": [
+        "buildables"
+      ],
       "source": "config.BuildablesConfig",
       "sourceFile": "backend/internal/config/buildables_config.go",
       "sourceSymbol": "config.BuildablesConfig.AutoLoginUsername"
@@ -100,7 +110,9 @@
       "field": "DatabaseURL",
       "type": "string",
       "defaultValue": "file:data/arcane.db?_pragma=journal_mode(WAL)\u0026_pragma=busy_timeout(2500)\u0026_txlock=immediate",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -196,7 +208,9 @@
       "field": "EdgeMTLSMode",
       "type": "string",
       "defaultValue": "disabled",
-      "options": ["toLower"],
+      "options": [
+        "toLower"
+      ],
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSMode"
@@ -224,7 +238,9 @@
       "field": "EdgeTransport",
       "type": "string",
       "defaultValue": "auto",
-      "options": ["toLower"],
+      "options": [
+        "toLower"
+      ],
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeTransport"
@@ -234,7 +250,9 @@
       "field": "EncryptionKey",
       "type": "string",
       "defaultValue": "arcane-dev-key-32-characters!!!",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -317,7 +335,9 @@
       "field": "JWTSecret",
       "type": "string",
       "defaultValue": "default-jwt-secret-change-me",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -345,7 +365,9 @@
       "field": "LogLevel",
       "type": "string",
       "defaultValue": "info",
-      "options": ["toLower"],
+      "options": [
+        "toLower"
+      ],
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.LogLevel"
@@ -387,7 +409,9 @@
       "env": "OIDC_CLIENT_ID",
       "field": "OidcClientID",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -397,7 +421,9 @@
       "env": "OIDC_CLIENT_SECRET",
       "field": "OidcClientSecret",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
