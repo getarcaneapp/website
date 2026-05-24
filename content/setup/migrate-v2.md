@@ -25,6 +25,27 @@ If you use SQLite with the default `arcane-data` volume, stop Arcane before copy
 
 ## Review the breaking changes
 
+### Role-based access control replaces the legacy admin flag
+
+Arcane 2.0 introduces fine-grained role-based access control. The legacy `admin` boolean on the user record is replaced by role assignments. The v2 migration converts existing users automatically:
+
+- Users who held the legacy `admin` role get a **global Admin** assignment.
+- Every other user gets a single **global Viewer** assignment — read-only access across everything, including the Settings area. They will not see logs, exec into containers, or modify any resource until an admin promotes them.
+- The migration refuses to run if it would leave the instance with zero global admins. Restore from backup and investigate before retrying.
+
+After upgrading, plan to review **Settings → Users** and right-size non-admins to Editor, No-Shell Editor, Deployer, or Monitor on the environments they actually use. See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the full role catalog.
+
+### API keys now carry their own permission set
+
+Every API key now has an explicit permission set, independent of the owning user. Existing keys are backfilled at upgrade time with a snapshot of their owner's effective permissions. Two things to know:
+
+- Owner permission changes after the upgrade do **not** propagate to existing keys — re-issue the key (or edit its permissions in **Settings → API Keys**) when scope needs to change.
+- CI/CD keys that inherited a full Admin snapshot should be tightened to least privilege. Server-side validation prevents granting a key permissions the creator does not hold themselves.
+
+### OIDC admin claim is now a fallback only
+
+The legacy `OidcAdminClaim` / `OidcAdminValue` settings still grant Global Admin to matching users on login, but they are now a backward-compatibility shim. New deployments should configure explicit OIDC group mappings under **Settings → OIDC Mappings** for finer control (per-role, per-environment scope) and leave the legacy settings empty.
+
 ### Apprise has been removed
 
 Arcane 2.0 removes Apprise support from the UI, API, and CLI. The v2 database migration also drops the `apprise_settings` table.
