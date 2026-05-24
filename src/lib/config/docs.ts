@@ -85,7 +85,7 @@ const SECURITY = group('Security', [
 	leaf('security/verify-artifacts'),
 	leaf('setup/socket-proxy'),
 	leaf('security/edge-mtls'),
-	leaf('security/rbac')
+	leaf('security/rbac', 'Access Control')
 ]);
 
 const CONFIGURATION = group('Configuration', [
