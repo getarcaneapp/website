@@ -84,7 +84,8 @@ const GET_STARTED = group('Get Started', [
 const SECURITY = group('Security', [
 	leaf('security/verify-artifacts'),
 	leaf('setup/socket-proxy'),
-	leaf('security/edge-mtls')
+	leaf('security/edge-mtls'),
+	leaf('security/rbac')
 ]);
 
 const CONFIGURATION = group('Configuration', [

@@ -42,9 +42,11 @@ Every API key now has an explicit permission set, independent of the owning user
 - Owner permission changes after the upgrade do **not** propagate to existing keys — re-issue the key (or edit its permissions in **Settings → API Keys**) when scope needs to change.
 - CI/CD keys that inherited a full Admin snapshot should be tightened to least privilege. Server-side validation prevents granting a key permissions the creator does not hold themselves.
 
-### OIDC admin claim is now a fallback only
+### OIDC admin claim is replaced by group mappings
 
-The legacy `OidcAdminClaim` / `OidcAdminValue` settings still grant Global Admin to matching users on login, but they are now a backward-compatibility shim. New deployments should configure explicit OIDC group mappings under **Settings → OIDC Mappings** for finer control (per-role, per-environment scope) and leave the legacy settings empty.
+The `OidcAdminClaim` / `OidcAdminValue` settings are removed. Role assignment for OIDC users is now driven by explicit group mappings under **Settings → OIDC Mappings**, which give per-role, per-environment scope instead of admin-or-nothing.
+
+Before upgrading, note which groups currently grant admin via `OidcAdminClaim` / `OidcAdminValue` so you can recreate them as mappings after the upgrade. See <Link href="/docs/security/rbac#oidc-group-mappings">OIDC group mappings</Link>.
 
 ### Apprise has been removed
 
