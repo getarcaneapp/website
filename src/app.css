@@ -2,6 +2,47 @@
 @import 'tw-animate-css';
 
 @font-face {
+	font-family: 'Onest';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Onest/onest-cyrillic-ext.woff2') format('woff2');
+	unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+@font-face {
+	font-family: 'Onest';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Onest/onest-cyrillic.woff2') format('woff2');
+	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+	font-family: 'Onest';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Onest/onest-latin-ext.woff2') format('woff2');
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+		U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
+}
+
+@font-face {
+	font-family: 'Onest';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Onest/onest-latin.woff2') format('woff2');
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
 	font-family: 'Geist';
 	src: url('/fonts/Geist/geist.woff2') format('woff2');
 	font-style: normal;
@@ -139,9 +180,9 @@
 @theme inline {
 	--breakpoint-3xl: 1600px;
 	--breakpoint-4xl: 2000px;
-	--font-sans: 'Geist', sans-serif;
+	--font-sans: 'Onest', sans-serif;
 	--font-mono: 'Geist Mono', monospace;
-	--font-heading: 'Geist', sans-serif;
+	--font-heading: 'Onest', sans-serif;
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -188,6 +229,7 @@
 }
 
 :root {
+	--font-family: 'Onest', sans-serif;
 	--radius: 0.5rem;
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.141 0.005 285.823);
@@ -397,9 +439,9 @@
 
 /* ===== Docs Theme ===== */
 .docs-theme {
-	--font-sans: 'IBM Plex Sans', 'Geist', sans-serif;
+	--font-sans: 'Onest', sans-serif;
 	--font-mono: 'IBM Plex Mono', 'Geist Mono', monospace;
-	--font-heading: 'Fraunces', 'IBM Plex Sans', serif;
+	--font-heading: 'Onest', sans-serif;
 	--background: oklch(0.985 0.01 300);
 	--foreground: oklch(0.2 0.02 285);
 	--card: oklch(0.99 0.01 300);
