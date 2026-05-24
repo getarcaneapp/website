@@ -77,7 +77,7 @@ const GET_STARTED = group('Get Started', [
 	leaf('setup/installation'),
 	leaf('setup/podman'),
 	leaf('guides/lxc-container'),
-	leaf('setup/migrate-v1'),
+	leaf('setup/migrate-v2'),
 	leaf('setup/next-images')
 ]);
 
