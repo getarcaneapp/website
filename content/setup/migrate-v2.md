@@ -11,7 +11,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 > [!CAUTION]
 > Arcane 2.0 is a breaking release. Back up your data before changing the image tag, and review each migration item below before you start the new container.
 
-## Before you start
+# Before you start
 
 Back up the files and data Arcane needs to recover your installation:
 
@@ -23,9 +23,9 @@ Back up the files and data Arcane needs to recover your installation:
 
 If you use SQLite with the default `arcane-data` volume, stop Arcane before copying the volume contents so the database is not changing while you back it up.
 
-## Review the breaking changes
+# Review the breaking changes
 
-### Role-based access control replaces the legacy admin flag
+## Role-based access control replaces the legacy admin flag
 
 Arcane 2.0 introduces fine-grained role-based access control. The legacy `admin` boolean on the user record is replaced by role assignments. The v2 migration converts existing users automatically:
 
@@ -35,26 +35,26 @@ Arcane 2.0 introduces fine-grained role-based access control. The legacy `admin`
 
 After upgrading, plan to review **Settings → Users** and right-size non-admins to Editor, No-Shell Editor, Deployer, or Monitor on the environments they actually use. See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the full role catalog.
 
-### API keys now carry their own permission set
+## API keys now carry their own permission set
 
 Every API key now has an explicit permission set, independent of the owning user. Existing keys are backfilled at upgrade time with a snapshot of their owner's effective permissions. Two things to know:
 
 - Owner permission changes after the upgrade do **not** propagate to existing keys — re-issue the key (or edit its permissions in **Settings → API Keys**) when scope needs to change.
 - CI/CD keys that inherited a full Admin snapshot should be tightened to least privilege. Server-side validation prevents granting a key permissions the creator does not hold themselves.
 
-### OIDC admin claim is replaced by group mappings
+## OIDC admin claim is replaced by group mappings
 
 The `OidcAdminClaim` / `OidcAdminValue` settings are removed. Role assignment for OIDC users is now driven by explicit group mappings under **Settings → OIDC Mappings**, which give per-role, per-environment scope instead of admin-or-nothing.
 
 Before upgrading, note which groups currently grant admin via `OidcAdminClaim` / `OidcAdminValue` so you can recreate them as mappings after the upgrade. See <Link href="/docs/security/rbac#oidc-group-mappings">OIDC group mappings</Link>.
 
-### Apprise has been removed
+## Apprise has been removed
 
 Arcane 2.0 removes Apprise support from the UI, API, and CLI. The v2 database migration also drops the `apprise_settings` table.
 
 Before upgrading, move any Apprise notifications to the built-in notification providers in <Link href="/docs/configuration/notifications">Settings > Notifications</Link>. After upgrading, Apprise settings cannot be managed or recovered from Arcane.
 
-### Deprecated settings are removed
+## Deprecated settings are removed
 
 Arcane 2.0 removes old compatibility settings that were kept for earlier migrations:
 
@@ -72,19 +72,19 @@ For OIDC, do not rely on the old `authOidcConfig` JSON value. Configure OIDC wit
 
 For scheduled pruning, review the current scheduled prune settings in the Arcane UI. The old per-resource boolean compatibility rows are deleted during the v2 migration.
 
-### Legacy remote environment pairing is removed
+## Legacy remote environment pairing is removed
 
 Arcane 2.0 removes the legacy bootstrap-token pairing flow for remote environments. Update remote environments to use the current access token or API key flow before upgrading.
 
 If you still have old setup notes or automation that sends a bootstrap token while creating or updating an environment, replace that automation before moving the manager to v2.
 
-### Plaintext Edge mTLS CA keys are no longer migrated
+## Plaintext Edge mTLS CA keys are no longer migrated
 
 Arcane 2.0 expects generated Edge mTLS CA private keys to already use Arcane's encrypted envelope format. The old plaintext CA key migration path has been removed.
 
 If you use Edge mTLS for remote environments, verify the CA key was migrated by a current 1.x release before upgrading. A plaintext CA private key may prevent v2 from loading the Edge mTLS CA.
 
-### Official images use a hardened non-root runtime
+## Official images use a hardened non-root runtime
 
 Official Arcane images now use a hardened runtime and drop to a non-root user by default. If `PUID` and `PGID` are not set, Arcane runs as `65532:65532`.
 
