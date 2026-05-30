@@ -87,6 +87,12 @@ const api = defineCollection({
 	schema: docSchema
 });
 
+const privacy = defineCollection({
+	name: 'privacy',
+	pattern: './privacy.md',
+	schema: docSchema
+});
+
 export default defineConfig({
 	root: './content',
 	collections: {
@@ -100,7 +106,8 @@ export default defineConfig({
 		templates,
 		changelog,
 		cli,
-		api
+		api,
+		privacy
 	},
 	output: { assets: 'static' }
 });
