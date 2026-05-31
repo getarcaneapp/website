@@ -302,7 +302,7 @@
 								</Table.Row>
 							{:else}
 								<Table.Row>
-									<Table.Cell colspan={4} class="text-muted-foreground py-8 text-center">
+									<Table.Cell colspan={4} class="py-8 text-center text-muted-foreground">
 										No packages found matching your search.
 									</Table.Cell>
 								</Table.Row>
