@@ -1,7 +1,7 @@
 name: Build and Deploy Preview
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'src/**'
@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   build-and-deploy-preview:
-    if: ${{ github.repository_owner != 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
+    if: ${{ github.event.pull_request.head.repo.owner.login == 'getarcaneapp' && github.actor != 'getarcaneappbot' }}
     runs-on: depot-ubuntu-latest
     environment:
       name: ${{ github.event.pull_request.user.login }}-pr-${{ github.event.pull_request.number }}
