@@ -5,6 +5,7 @@
 	import Sparkles from 'virtual:icons/lucide/sparkles';
 	import { resolve } from '$app/paths';
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
+	import MobileBetaCallout from '$lib/components/mobile-beta-callout.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
 	import { features } from '$lib/config/features.js';
@@ -185,6 +186,8 @@
 				</div>
 			</div>
 		</section>
+
+		<MobileBetaCallout />
 
 		<section class="relative mb-20">
 			<div class="mb-6 flex flex-col gap-2">
