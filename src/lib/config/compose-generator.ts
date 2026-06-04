@@ -67,54 +67,92 @@ export const generatorConfig: GeneratorConfig = [
 						includeInCompose: true
 					}
 				]
-			},
+			}
+		]
+	},
+	{
+		id: 'dockerAccess',
+		label: 'Docker Access',
+		icon: 'settings',
+		sections: [
 			{
-				id: 'secrets',
-				title: 'Security',
-				description: 'Encryption and authentication secrets',
-				icon: 'shield',
-				fields: [
-					{
-						key: 'encryptionKey',
-						envName: 'ENCRYPTION_KEY',
-						label: 'Encryption Key',
-						description:
-							'Encryption key for secure stored sensitive data (auto-generated if empty)',
-						type: 'password',
-						defaultValue: '',
-						placeholder: 'Auto-generated if empty',
-						canGenerate: true,
-						includeInCompose: true
-					},
-					{
-						key: 'jwtSecret',
-						envName: 'JWT_SECRET',
-						label: 'JWT Secret',
-						description: 'Session secret (auto-generated if empty)',
-						type: 'password',
-						defaultValue: '',
-						placeholder: 'Auto-generated if empty',
-						canGenerate: true,
-						includeInCompose: true
-					}
-				]
-			},
-			{
-				id: 'advanced',
-				title: 'Advanced',
-				description: 'Docker and logging settings',
-				icon: 'cog',
+				id: 'daemon',
+				title: 'Docker Access',
+				description: 'Choose how Arcane talks to Docker.',
+				icon: 'settings',
 				fields: [
 					{
 						key: 'dockerSocket',
-						envName: 'DOCKER_HOST',
+						envName: '',
 						label: 'Docker Socket',
-						description: 'Docker daemon socket path',
+						description: 'Docker daemon socket path (used only when not using a socket proxy)',
 						type: 'text',
 						defaultValue: '/var/run/docker.sock',
 						placeholder: '/var/run/docker.sock',
-						includeInCompose: false // Used for volume mount
+						includeInCompose: false
 					},
+					{
+						key: 'useSocketProxy',
+						envName: '',
+						label: 'Use Socket Proxy',
+						description:
+							'Use a Docker socket proxy container instead of mounting the Docker socket directly',
+						type: 'checkbox',
+						defaultValue: false,
+						includeInCompose: false
+					},
+					{
+						key: 'enableSelinux',
+						envName: '',
+						label: 'Enable SELinux compatibility',
+						description:
+							'Add SELinux-related compose settings for mounted paths and direct socket mode',
+						type: 'checkbox',
+						defaultValue: false,
+						includeInCompose: false
+					}
+				]
+			}
+		]
+	},
+	{
+		id: 'projectStorage',
+		label: 'Project Storage',
+		icon: 'folder',
+		sections: [
+			{
+				id: 'projects',
+				title: 'Project Storage',
+				description:
+					"Optional host mount for your projects (compose) folder. It's recommended to have this match on both sides so relative paths work correctly.",
+				icon: 'folder',
+				fields: [
+					{
+						key: 'projectsHostPath',
+						envName: '',
+						label: 'Projects Host Path',
+						description:
+							'Optional absolute host path to mount as Arcane projects directory (for project storage)',
+						type: 'text',
+						defaultValue: '',
+						placeholder: '/opt/docker/projects',
+						includeInCompose: false
+					}
+				]
+			}
+		]
+	},
+	{
+		id: 'runtime',
+		label: 'Runtime',
+		icon: 'settings',
+		sections: [
+			{
+				id: 'runtime',
+				title: 'Runtime',
+				description: 'Logging and runtime behavior',
+				icon: 'settings',
+				fields: [
 					{
 						key: 'logLevel',
 						envName: 'LOG_LEVEL',
@@ -137,6 +175,44 @@ export const generatorConfig: GeneratorConfig = [
 						description: 'Enable JSON formatted logs',
 						type: 'checkbox',
 						defaultValue: false,
+						includeInCompose: true
+					}
+				]
+			}
+		]
+	},
+	{
+		id: 'secrets',
+		label: 'Security',
+		icon: 'key',
+		sections: [
+			{
+				id: 'secrets',
+				title: 'Security',
+				description: 'Encryption and authentication secrets',
+				icon: 'key',
+				fields: [
+					{
+						key: 'encryptionKey',
+						envName: 'ENCRYPTION_KEY',
+						label: 'Encryption Key',
+						description:
+							'Encryption key for secure stored sensitive data (auto-generated if empty)',
+						type: 'password',
+						defaultValue: '',
+						placeholder: 'Auto-generated if empty',
+						canGenerate: true,
+						includeInCompose: true
+					},
+					{
+						key: 'jwtSecret',
+						envName: 'JWT_SECRET',
+						label: 'JWT Secret',
+						description: 'Session secret (auto-generated if empty)',
+						type: 'password',
+						defaultValue: '',
+						placeholder: 'Auto-generated if empty',
+						canGenerate: true,
 						includeInCompose: true
 					}
 				]

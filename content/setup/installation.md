@@ -29,7 +29,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
-      - /host/path/to/projects:/app/data/projects
+      # Optional host project mount:
+      # - /path/to/projects:/app/data/projects
     environment:
       - APP_URL=http://localhost:3552
       - PUID=1000
@@ -80,11 +81,93 @@ volumes:
 > For example, if your projects are at `/opt/docker` on the host:
 >
 > - Mount: `/opt/docker:/opt/docker` (not `/opt/docker:/app/data/projects`)
-> - Set the projects directory in Arcane to `/opt/docker` or set `PROJECTS_DIRECTORY=/opt/docker` in the environment for this to take effect immediately on startup of Arcane.
+> - Set `PROJECTS_DIRECTORY=/opt/docker` in the environment (or the Arcane setting) so path resolution works immediately on startup.
 >
 > This helps Arcane and Docker agree on where your files live, so paths like `./config` work the way you expect.
 
-## 3. Generate your secrets
+## 3. SELinux hosts and socket access mode
+
+If you're running on SELinux-enabled systems, use one of these options:
+
+### A) Use socket proxy (recommended)
+
+Use the socket proxy page for full examples at <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link>. This is the recommended layout for SELinux and hardened hosts.
+
+```yaml
+services:
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy:latest
+    container_name: arcane-docker-proxy
+    privileged: true
+    environment:
+      - EVENTS=1
+      - PING=1
+      - VERSION=1
+      - AUTH=0
+      - SECRETS=0
+      - POST=1
+      - BUILD=0
+      - COMMIT=0
+      - CONFIGS=0
+      - CONTAINERS=1
+      - DISTRIBUTION=0
+      - EXEC=1
+      - IMAGES=1
+      - INFO=1
+      - NETWORKS=1
+      - NODES=0
+      - PLUGINS=0
+      - SERVICES=0
+      - SESSION=0
+      - SWARM=0
+      - SYSTEM=0
+      - TASKS=0
+      - VOLUMES=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  arcane:
+    image: ghcr.io/getarcaneapp/arcane:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - arcane-data:/app/data
+      - /path/to/stacks:/app/data/projects:z
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
+      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
+      - DOCKER_HOST=tcp://docker-socket-proxy:2375
+
+volumes:
+  arcane-data:
+```
+
+### B) Direct socket mount (legacy mode)
+
+For environments where socket proxy is not possible, keep the direct socket mount and add SELinux options:
+
+```yaml
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/arcane:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    security_opt:
+      - label:disable
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+      - /path/to/stacks:/app/data/projects:z
+```
+
+> [!TIP]
+> If you change the container mount path for projects, set `PROJECTS_DIRECTORY` to that container path (for example `/app/data/projects`) unless it stays at the default.
+
+## 4. Generate your secrets
 
 You can generate the required secrets either with the Arcane CLI in a temporary container or with your computer's `openssl` command.
 
@@ -96,13 +179,13 @@ If you already have the Arcane CLI installed:
 
 <Snippet text="arcane-cli generate secret" class="mt-2" />
 
-## 4. Start Arcane
+## 5. Start Arcane
 
 ```bash
 docker compose up -d
 ```
 
-## 5. Open Arcane
+## 6. Open Arcane
 
 Open <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup steps. The first time you sign in, you'll be asked to change the default admin password. Use these default credentials:
 
@@ -112,14 +195,14 @@ Username:
 Password:
 <Snippet text="arcane-admin" class="mt-2 max-w-75" />
 
-## 6. Using a custom domain or reverse proxy?
+## 7. Using a custom domain or reverse proxy?
 
 > [!NOTE]
 > Arcane uses WebSockets to stay connected in real time. If you're putting Arcane behind a reverse proxy or custom domain, make sure WebSocket support is enabled.
 >
 > See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for setup steps for Nginx, Apache, and other reverse proxies.
 
-## 7. Behind an outbound HTTP proxy?
+## 8. Behind an outbound HTTP proxy?
 
 If Arcane needs to reach the internet through a proxy, for example to download templates or check for updates, see the <Link href="/docs/configuration/proxy">HTTP Proxy Configuration Guide</Link>.
 

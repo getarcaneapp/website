@@ -40,17 +40,90 @@ export function generateDockerCompose(config: Record<string, string | boolean>):
 	const port = (config.port as string) || '3552';
 	const dataPath = (config.dataPath as string) || 'arcane-data';
 	const dockerSocket = (config.dockerSocket as string) || '/var/run/docker.sock';
+	const useSocketProxy = !!config.useSocketProxy;
+	const enableSelinux = !!config.enableSelinux;
+	const projectsHostPath = ((config.projectsHostPath as string) || '').trim();
+	const projectsContainerPath = '/app/data/projects';
+	const arcaneVolumes: string[] = [`${dataPath}:/app/data`];
+	const socketProxyNetwork = 'arcane-internal';
 
-	const services: Record<string, unknown> = {
-		arcane: {
-			image: 'ghcr.io/getarcaneapp/arcane:latest',
-			container_name: 'arcane',
-			restart: 'unless-stopped',
-			ports: [`${port}:3552`],
-			volumes: [`${dockerSocket}:/var/run/docker.sock`, `${dataPath}:/app/data`],
-			environment
+	if (!useSocketProxy) {
+		arcaneVolumes.push(`${dockerSocket}:/var/run/docker.sock`);
+	}
+
+	if (projectsHostPath) {
+		let projectsVolume = `${projectsHostPath}:${projectsContainerPath}`;
+		if (enableSelinux) {
+			projectsVolume += ':z';
 		}
+		arcaneVolumes.push(projectsVolume);
+		environment.push(`PROJECTS_DIRECTORY=${projectsContainerPath}`);
+	}
+
+	const arcaneService: Record<string, unknown> = {
+		image: 'ghcr.io/getarcaneapp/arcane:latest',
+		container_name: 'arcane',
+		restart: 'unless-stopped',
+		ports: [`${port}:3552`],
+		volumes: arcaneVolumes,
+		environment
 	};
+
+	if (enableSelinux && !useSocketProxy) {
+		arcaneService.security_opt = ['label:disable'];
+	}
+
+	if (useSocketProxy) {
+		environment.push('DOCKER_HOST=tcp://docker-socket-proxy:2375');
+		arcaneService.depends_on = ['docker-socket-proxy'];
+		arcaneService.networks = [socketProxyNetwork];
+	}
+
+	const services: Record<string, unknown> = { arcane: arcaneService };
+
+	const networks: Record<string, { [key: string]: string }> = {};
+
+	if (useSocketProxy) {
+		services['docker-socket-proxy'] = {
+			image: 'tecnativa/docker-socket-proxy:latest',
+			container_name: 'arcane-docker-proxy',
+			privileged: true,
+			environment: [
+				'EVENTS=1',
+				'PING=1',
+				'VERSION=1',
+				'AUTH=0',
+				'SECRETS=0',
+				'POST=1',
+				'BUILD=0',
+				'COMMIT=0',
+				'CONFIGS=0',
+				'CONTAINERS=1',
+				'DISTRIBUTION=0',
+				'EXEC=1',
+				'IMAGES=1',
+				'INFO=1',
+				'NETWORKS=1',
+				'NODES=0',
+				'PLUGINS=0',
+				'SERVICES=0',
+				'SESSION=0',
+				'SWARM=0',
+				'SYSTEM=0',
+				'TASKS=0',
+				'VOLUMES=1'
+			],
+			volumes: ['/var/run/docker.sock:/var/run/docker.sock:ro'],
+			networks: [socketProxyNetwork],
+			restart: 'unless-stopped',
+			security_opt: ['no-new-privileges:true']
+		};
+
+		networks[socketProxyNetwork] = {
+			driver: 'bridge',
+			name: socketProxyNetwork
+		};
+	}
 
 	const volumes: Record<string, { driver: string }> = {
 		[dataPath]: { driver: 'local' }
@@ -81,16 +154,21 @@ export function generateDockerCompose(config: Record<string, string | boolean>):
 			`DATABASE_URL=postgresql://${dbUser}:${dbPassword}@postgres:5432/${dbName}`
 		);
 
-		(services.arcane as { depends_on?: string[] }).depends_on = ['postgres'];
+		const arcaneDependsOn = new Set(
+			(services.arcane as { depends_on?: string[] }).depends_on ?? []
+		);
+		arcaneDependsOn.add('postgres');
+		(services.arcane as { depends_on?: string[] }).depends_on = [...arcaneDependsOn];
 		volumes['postgres-data'] = { driver: 'local' };
 	}
 
-	return formatYaml(services, volumes);
+	return formatYaml(services, volumes, networks);
 }
 
 function formatYaml(
 	services: Record<string, unknown>,
-	volumes: Record<string, { driver: string }>
+	volumes: Record<string, { driver: string }>,
+	networks: Record<string, { [key: string]: string }>
 ): string {
 	const lines: string[] = [
 		'# Arcane Docker Compose Configuration',
@@ -131,6 +209,17 @@ function formatYaml(
 		lines.push(`  ${volumeName}:`);
 		for (const [key, value] of Object.entries(volumeConfig)) {
 			lines.push(`    ${key}: ${value}`);
+		}
+	}
+
+	if (Object.keys(networks).length > 0) {
+		lines.push('');
+		lines.push('networks:');
+		for (const [networkName, networkConfig] of Object.entries(networks)) {
+			lines.push(`  ${networkName}:`);
+			for (const [key, value] of Object.entries(networkConfig)) {
+				lines.push(`    ${key}: ${value}`);
+			}
 		}
 	}
 

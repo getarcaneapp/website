@@ -22,6 +22,7 @@
 	// Tab animation state
 	let activeTab = $state(generatorConfig[0].id);
 	let slideDirection = $state<'left' | 'right'>('right');
+	let highestVisitedTabIndex = $state(0);
 
 	// Derived values for navigation
 	let currentTabIndex = $derived(generatorConfig.findIndex((t) => t.id === activeTab));
@@ -43,12 +44,21 @@
 			.filter(Boolean)
 			.join(' • ')
 	);
+	let stepProgressText = $derived(`Step ${currentTabIndex + 1} of ${stepCount}`);
+
+	function canAccessTab(index: number): boolean {
+		return index <= highestVisitedTabIndex + 1;
+	}
 
 	function handleTabChange(newTab: string) {
 		const currentIndex = generatorConfig.findIndex((t) => t.id === activeTab);
 		const newIndex = generatorConfig.findIndex((t) => t.id === newTab);
+		if (newIndex > highestVisitedTabIndex + 1) return;
 		slideDirection = newIndex > currentIndex ? 'right' : 'left';
 		activeTab = newTab;
+		if (newIndex > highestVisitedTabIndex) {
+			highestVisitedTabIndex = newIndex;
+		}
 	}
 
 	function goToPrevTab() {
@@ -75,6 +85,9 @@
 	}
 
 	function shouldShowField(field: GeneratorField): boolean {
+		if (field.key === 'dockerSocket' && config.useSocketProxy === true) {
+			return false;
+		}
 		if (!field.dependsOn) return true;
 		return config[field.dependsOn] === true;
 	}
@@ -132,6 +145,7 @@
 						{#each generatorConfig as tab, index (tab.id)}
 							<Tabs.Trigger
 								value={tab.id}
+								disabled={!canAccessTab(index)}
 								class="wizard-step h-auto! flex-none! justify-start! rounded-none! border-0! bg-transparent! shadow-none"
 							>
 								<span class="wizard-step__index">{index + 1}</span>
@@ -139,6 +153,7 @@
 							</Tabs.Trigger>
 						{/each}
 					</Tabs.List>
+					<p class="wizard-step-count">{stepProgressText}</p>
 
 					<div class="wizard-progress">
 						<div class="wizard-progress__track">
@@ -383,6 +398,12 @@
 		overflow-x: auto;
 	}
 
+	.wizard-step-count {
+		font-size: 0.78rem;
+		color: var(--muted-foreground);
+		letter-spacing: 0.05em;
+	}
+
 	.wizard-shell :global(.wizard-step) {
 		flex: 0 0 auto;
 		display: inline-flex;
@@ -405,15 +426,25 @@
 		box-shadow: none;
 	}
 
+	.wizard-step:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+
+	.wizard-step:disabled:hover {
+		border-bottom-color: transparent;
+	}
+
 	.wizard-step__index {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 1.35rem;
-		height: 1.35rem;
+		display: inline-grid;
+		place-items: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		padding: 0;
 		border-radius: 999px;
 		font-size: 0.65rem;
 		font-weight: 700;
+		line-height: 1;
 		background: transparent;
 		border: 1px solid color-mix(in oklab, var(--border) 65%, transparent);
 		color: var(--muted-foreground);

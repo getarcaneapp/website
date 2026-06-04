@@ -23,6 +23,12 @@ By default, Arcane connects directly to the Docker socket (`/var/run/docker.sock
 
 ## 1. Create **_compose.yaml_** with Socket Proxy:
 
+> [!NOTE]
+> On SELinux hosts, you generally only need SELinux-specific options on bind mounts and direct socket mode.
+>
+> - Add `:z` to bind mounts where Arcane should manage files on the host (projects folder, build folder, backups, etc.).
+> - `label:disable` is still used in direct-socket mode to relax Docker socket access labels.
+
 ```yaml
 services:
   # Docker Socket Proxy - see https://github.com/Tecnativa/docker-socket-proxy
@@ -70,6 +76,7 @@ services:
       - '3552:3552'
     volumes:
       - arcane-data:/app/data
+      - /path/to/stacks:/app/data/projects:z
     environment:
       - PUID=1000
       - PGID=1000
