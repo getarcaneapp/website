@@ -72,6 +72,17 @@ For OIDC, do not rely on the old `authOidcConfig` JSON value. Configure OIDC wit
 
 For scheduled pruning, review the current scheduled prune settings in the Arcane UI. The old per-resource boolean compatibility rows are deleted during the v2 migration.
 
+## Custom icons can use icon catalogs
+
+Arcane 2.0 resolves project and container icons through an icon catalog setting. Existing absolute `http://` and `https://` icon URLs keep working unchanged, but non-URL icon values are now treated as catalog slugs from the selected catalog.
+
+If you use custom Compose metadata or container labels, prefer the new theme-aware keys:
+
+- `x-arcane.icon-light` and `x-arcane.icon-dark` for project metadata
+- `com.getarcaneapp.arcane.icon-light` and `com.getarcaneapp.arcane.icon-dark` for service/container labels
+
+The old generic `icon` value remains a fallback for both themes, but Arcane only uses it when neither light nor dark variant is set. See <Link href="/docs/guides/custom-metadata">Custom Metadata</Link> for catalog options and examples.
+
 ## Legacy remote environment pairing is removed
 
 Arcane 2.0 removes the legacy bootstrap-token pairing flow for remote environments. Update remote environments to use the current access token or API key flow before upgrading.

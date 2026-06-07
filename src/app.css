@@ -556,35 +556,133 @@
 	opacity: 0.4;
 }
 
-.docs-theme .mdsx {
+.docs-theme .markdown {
 	font-size: 1.02rem;
 	line-height: 1.75;
 	color: color-mix(in oklab, var(--foreground) 85%, transparent);
 }
 
-.docs-theme .mdsx a {
+.docs-theme .markdown a {
 	color: var(--primary);
 	text-decoration-color: color-mix(in oklab, var(--primary) 55%, transparent);
 	text-decoration-thickness: 2px;
 	text-underline-offset: 0.18em;
 }
 
-.docs-theme .mdsx a:hover {
+.docs-theme .markdown a:hover {
 	color: var(--foreground);
 	text-decoration-color: var(--primary);
 }
 
-.docs-theme .mdsx :is(h2, h3, h4) {
+.docs-theme .markdown :is(h2, h3, h4) {
 	letter-spacing: -0.012em;
 }
 
-.docs-theme .mdsx code:not(pre code) {
+.docs-theme .markdown code:not(pre code) {
 	background-color: color-mix(in oklab, var(--primary) 12%, transparent);
 	color: var(--foreground);
 }
 
-.docs-theme .mdsx hr {
+.docs-theme .markdown hr {
 	border-color: color-mix(in oklab, var(--border) 80%, transparent);
+}
+
+/* mdsvex build-time fenced code blocks — mirrors src/lib/components/ui/code styling.
+   These blocks render outside code.svelte, so the Shiki styles live globally here. */
+.markdown .code-block {
+	position: relative;
+	margin-block: 0.75rem;
+	overflow: auto;
+	border-radius: 0.5rem;
+	border: 1px solid var(--border);
+	background-color: var(--card);
+}
+
+.markdown .code-block .copy-code-button {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	border-radius: 0.375rem;
+	color: var(--muted-foreground);
+	background-color: transparent;
+	opacity: 0;
+	cursor: pointer;
+	transition:
+		opacity 0.15s ease,
+		color 0.15s ease,
+		background-color 0.15s ease;
+}
+
+.markdown .code-block:hover .copy-code-button,
+.markdown .code-block .copy-code-button:focus-visible {
+	opacity: 1;
+}
+
+.markdown .code-block .copy-code-button:hover {
+	color: var(--foreground);
+	background-color: var(--muted);
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+	color: var(--shiki-dark) !important;
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+pre.shiki {
+	overflow-x: auto;
+	background-color: inherit;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+}
+
+pre.shiki code {
+	display: grid;
+	min-width: 100%;
+	padding: 0;
+	background-color: transparent;
+	overflow-wrap: break-word;
+	counter-reset: line;
+	box-decoration-break: clone;
+}
+
+pre.line-numbers {
+	counter-reset: step;
+	counter-increment: step 0;
+}
+
+pre.line-numbers .line::before {
+	content: counter(step);
+	counter-increment: step;
+	display: inline-block;
+	width: 1.8rem;
+	margin-right: 1.4rem;
+	text-align: right;
+	color: var(--muted-foreground);
+}
+
+pre .line {
+	display: inline-block;
+	width: 100%;
+	min-height: 1rem;
+	padding-top: 0.125rem;
+	padding-right: 1rem;
+	padding-bottom: 0.125rem;
+	padding-left: 1rem;
+}
+
+pre.line-numbers .line {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
 }
 
 @utility no-scrollbar {
@@ -725,7 +823,7 @@
 		font-size: 0.8rem;
 	}
 
-	.mdsx code:not(pre code) {
+	.markdown code:not(pre code) {
 		@apply relative rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] outline-none;
 	}
 
@@ -768,8 +866,8 @@
 	}
 
 	/* Improve spacing around custom components */
-	.mdsx .git-command,
-	.mdsx .snippet {
+	.markdown .git-command,
+	.markdown .snippet {
 		@apply my-4;
 	}
 }

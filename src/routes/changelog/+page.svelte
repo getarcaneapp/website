@@ -502,7 +502,7 @@
 		color: var(--muted-foreground);
 	}
 
-	:global(.changelog-body .mdsx) {
+	:global(.changelog-body .markdown) {
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
