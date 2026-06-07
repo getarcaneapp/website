@@ -83,6 +83,21 @@ Define PORT 3552
 </VirtualHost>
 ```
 
+## Trusted proxies
+
+Arcane reads the `X-Forwarded-For` and `X-Forwarded-Proto` headers your reverse proxy sets (see the configs above) to determine the real client IP and whether the original request used HTTPS. To prevent header spoofing, Arcane only trusts those headers from proxies you explicitly allow.
+
+Set `TRUSTED_PROXIES` to the comma-separated CIDR range(s) of your reverse proxy:
+
+```bash
+TRUSTED_PROXIES=10.0.0.0/8,172.16.0.0/12
+```
+
+> [!NOTE]
+> When you bind Arcane to a loopback address with `LISTEN` (for example `LISTEN=127.0.0.1`, the usual setup for a same-host reverse proxy), Arcane automatically trusts loopback proxies (`127.0.0.0/8`, `::1/128`), so you do not need to set `TRUSTED_PROXIES`. Auto-trust only applies to literal loopback IPs, not hostnames such as `localhost`.
+
+If trusted proxies are misconfigured, Arcane may log the proxy's address as the client IP or treat HTTPS requests as HTTP. Make sure `APP_URL` also matches the public URL your users use, since Arcane derives its cross-origin protection from it.
+
 ## Additional Resources
 
 Full documentation for common reverse proxies is available from [websocket.org](https://websocket.org/):

@@ -48,16 +48,74 @@ If you use SQLite with the default `arcane-data` volume, stop Arcane before copy
 
 - Legacy admins become **global Admins**.
 - Other users become **global Viewers**.
-- After upgrade, review **Settings > Users** and assign the right roles per environment.
-- The migration will not continue if it would leave the instance with zero global admins.
+- After upgrade, verify at least one global Admin exists and assign any environment-scoped roles you need.
+- The last-global-admin guard is enforced at runtime — you cannot remove the final global Admin through the UI or API. A missing-admin state at startup is logged but does not halt Arcane, so confirm a global Admin exists after upgrading.
 
 See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the role catalog.
 
 ## 2. Replace OIDC admin claims
 
 - Remove `OIDC_ADMIN_CLAIM`, `OIDC_ADMIN_VALUE`, `oidcAdminClaim`, and `oidcAdminValue`.
-- Configure `OIDC_GROUPS_CLAIM` and role mappings instead.
-- Recreate old admin-claim behavior under **Settings > OIDC Mappings**.
+- Configure `OIDC_GROUPS_CLAIM` and `OIDC_ROLE_MAPPINGS` instead.
+- Recreate old admin-claim behavior by mapping the old claim value to `role_admin`.
+
+If your 1.x Compose file granted admins from a group claim:
+
+```yaml
+services:
+  arcane:
+    environment:
+      OIDC_SCOPES: openid email profile groups
+      OIDC_ADMIN_CLAIM: groups
+      OIDC_ADMIN_VALUE: arcane-admins
+```
+
+Change it to request the same group claim and declare the replacement role mapping in env:
+
+```yaml
+services:
+  arcane:
+    environment:
+      OIDC_SCOPES: openid email profile groups
+      OIDC_GROUPS_CLAIM: groups
+      OIDC_ROLE_MAPPINGS: >-
+        [
+          {"claimValue":"arcane-admins","roleId":"role_admin"}
+        ]
+```
+
+For multiple groups or environment-scoped roles, add more entries:
+
+```yaml
+services:
+  arcane:
+    environment:
+      OIDC_SCOPES: openid email profile groups
+      OIDC_GROUPS_CLAIM: groups
+      OIDC_ROLE_MAPPINGS: >-
+        [
+          {"claimValue":"arcane-admins","roleId":"role_admin"},
+          {"claimValue":"arcane-devops","roleId":"role_editor","environmentId":"env-prod"}
+        ]
+```
+
+Omit `environmentId` for a global role assignment. Include it when the role should apply only to one environment. Env-managed mappings are reconciled at boot.
+
+For Docker secrets or large mapping lists, current v2 builds also support `OIDC_ROLE_MAPPINGS_FILE`:
+
+```yaml
+services:
+  arcane:
+    secrets:
+      - oidc-role-mappings
+    environment:
+      OIDC_GROUPS_CLAIM: groups
+      OIDC_ROLE_MAPPINGS_FILE: /run/secrets/oidc-role-mappings
+
+secrets:
+  oidc-role-mappings:
+    file: ./oidc-role-mappings.json
+```
 
 See <Link href="/docs/security/rbac#oidc-group-mappings">OIDC group mappings</Link> and <Link href="/docs/configuration/sso">SSO setup</Link>.
 
@@ -68,13 +126,29 @@ See <Link href="/docs/security/rbac#oidc-group-mappings">OIDC group mappings</Li
 - Recreate or edit CI/CD keys so they only have the permissions they need.
 - New API keys created through the API or CLI must include explicit permission grants.
 - Update scripts that use removed user role payloads, dashboard action-items, `arcane alerts`, public event creation, or Apprise commands.
+- The user API no longer returns a flat `roles` array — scripts that read user roles from `GET /users` must use `roleAssignments` and `isGlobalAdmin` instead.
 - Use same-origin/trusted-origin browser calls or Bearer/API-key auth for state-changing API requests.
+
+New API key create/update payloads need explicit permission grants:
+
+```json
+{
+  "name": "production deploy bot",
+  "permissions": [
+    { "permission": "projects:list", "environmentId": "env-prod" },
+    { "permission": "projects:read", "environmentId": "env-prod" },
+    { "permission": "projects:deploy", "environmentId": "env-prod" }
+  ]
+}
+```
+
+Use environment-scoped grants for automation that only touches one Docker environment. Omit `environmentId` only for permissions that should apply globally.
 
 For CI/CD, consider short-lived credentials from <Link href="/docs/security/federated-credentials">Federated Credentials</Link> instead of long-lived API keys.
 
 ## 4. Remove deleted settings and integrations
 
-- Move Apprise notifications to supported providers in <Link href="/docs/configuration/notifications">Settings > Notifications</Link>.
+- Move Apprise notifications to supported providers.
 - Stop relying on removed scheduled prune compatibility settings:
   - `dockerPruneMode`
   - `scheduledPruneContainers`
@@ -104,10 +178,39 @@ See <Link href="/docs/guides/custom-metadata">Custom Metadata</Link>.
 ## 7. Update the container image and runtime
 
 - Change the image to `ghcr.io/getarcaneapp/manager:v2`.
+- Set `APP_URL` to the exact URL your browser uses to reach Arcane (scheme, host, and port). v2 blocks cookie-authenticated cross-origin writes, so a missing or mismatched `APP_URL` causes `403 Cross-origin request blocked` errors in the UI. Behind a reverse proxy, also configure <Link href="/docs/configuration/websockets-reverse-proxies#trusted-proxies">Trusted proxies</Link>.
 - Stop relying on root-owned writes from the Arcane container.
 - Check write permissions for `/app/data`, your projects directory, `/builds`, and `/backups`.
 - Use `PUID` and `PGID` only if bind-mounted host files need a specific host owner.
 - If you use a Docker socket proxy, keep `DOCKER_HOST` configured and make sure the proxy allows the Docker API calls Arcane needs.
+
+For a Compose-based install, the image and runtime edit usually looks like this:
+
+```yaml
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:v2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+      - /host/path/to/projects:/app/data/projects
+    environment:
+      APP_URL: http://localhost:3552
+      ENCRYPTION_KEY: your-existing-encryption-key
+      JWT_SECRET: your-existing-jwt-secret
+      PUID: "1000"
+      PGID: "1000"
+```
+
+If you use a Docker socket proxy, keep the proxy host setting in the same Compose service:
+
+```yaml
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:v2
+    environment:
+      DOCKER_HOST: tcp://docker-socket-proxy:2375
+```
 
 ## 8. Upgrade
 
@@ -136,6 +239,7 @@ docker compose logs -f arcane
 6. Open <Link href="http://localhost:3552">http://localhost:3552</Link> and verify:
 
 - users can sign in
+- the UI can save changes without "Cross-origin request blocked" errors (`APP_URL` is correct)
 - at least one user is a global Admin
 - non-admin users have the right roles
 - OIDC group mappings work, if used

@@ -41,6 +41,23 @@ Role assignment is driven from your IdP. Arcane reads the user's group claim on 
 
 See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the full role catalog and mapping details.
 
+## Declarative role mappings (IaC)
+
+Instead of the UI, you can declare OIDC group → role mappings with the `OIDC_ROLE_MAPPINGS` environment variable. It takes a JSON array, where each entry binds a claim value to a role and (optionally) an environment:
+
+```json
+[
+  { "claimValue": "arcane-admins", "roleId": "role_admin" },
+  { "claimValue": "arcane-devops", "roleId": "role_editor", "environmentId": "env-prod" }
+]
+```
+
+- `claimValue` — the value to match in the user's groups claim.
+- `roleId` — the role to grant (see <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the role catalog).
+- `environmentId` — optional; scope the assignment to one environment. Omit for a global assignment.
+
+Arcane reconciles these mappings on every startup, so they are read-only in the UI (shown as environment-managed); update them by changing `OIDC_ROLE_MAPPINGS`. The variable also supports the `_FILE` suffix for Docker secrets.
+
 ## Example Compose Configuration
 
 ```yaml
@@ -54,5 +71,5 @@ services:
       - OIDC_CLIENT_SECRET="your_super_secret_client_secret_from_provider"
       - OIDC_ISSUER_URL="https://auth.example.com"
       - OIDC_SCOPES=openid email profile groups
-      - OIDC_MERGE_ACCOUNTS=true
+      - OIDC_GROUPS_CLAIM=groups
 ```
