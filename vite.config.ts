@@ -1,8 +1,12 @@
 import { enhancedImages } from '@sveltejs/enhanced-img';
+import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite-plus';
 import Icons from 'unplugin-icons/vite';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { mdsvex } from 'mdsvex';
+import { mdsvexConfig } from './mdsvex.config.js';
 
 export default defineConfig({
 	staged: {
@@ -65,7 +69,17 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		enhancedImages(),
-		sveltekit(),
+		sveltekit({
+			preprocess: [mdsvex(mdsvexConfig), vitePreprocess()],
+			extensions: ['.svelte', '.md'],
+			adapter: adapter({
+				fallback: 'index.html',
+				pages: './build'
+			}),
+			alias: {
+				$velite: '.velite'
+			}
+		}),
 		Icons({
 			compiler: 'svelte',
 			autoInstall: false
