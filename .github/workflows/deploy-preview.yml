@@ -1,16 +1,7 @@
 name: Build and Deploy Preview
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - 'src/**'
-      - 'static/**'
-      - 'content/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'svelte.config.js'
-      - 'wrangler.jsonc'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
