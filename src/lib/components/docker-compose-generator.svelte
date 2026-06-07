@@ -209,7 +209,7 @@
 																			handleSelectChange(field.key, value)}
 																	>
 																		<Select.Trigger
-																			class="w-full border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+																			class="w-full border-border/50 focus:border-primary/50 focus:ring-primary/20"
 																		>
 																			{config[field.key] || field.placeholder || 'Select...'}
 																		</Select.Trigger>
@@ -240,13 +240,13 @@
 																			type={field.type === 'password' ? 'password' : 'text'}
 																			bind:value={config[field.key]}
 																			placeholder={field.placeholder}
-																			class="flex-1 border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+																			class="flex-1 border-border/50 focus:border-primary/50 focus:ring-primary/20"
 																		/>
 																		<Button
 																			type="button"
 																			variant="outline"
 																			onclick={() => (config[field.key] = generateRandomKey())}
-																			class="border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5"
+																			class="border-primary/30 hover:border-primary/50 hover:bg-primary/5"
 																		>
 																			Generate
 																		</Button>
@@ -269,7 +269,7 @@
 																		type={field.type === 'password' ? 'password' : 'text'}
 																		bind:value={config[field.key]}
 																		placeholder={field.placeholder}
-																		class="border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+																		class="border-border/50 focus:border-primary/50 focus:ring-primary/20"
 																	/>
 																</div>
 															</div>
@@ -323,7 +323,7 @@
 						size="sm"
 						onclick={goToPrevTab}
 						disabled={!canGoPrev}
-						class="flex items-center gap-2 border-border/50 hover:border-purple-500/30 disabled:opacity-40"
+						class="flex items-center gap-2 border-border/50 hover:border-primary/30 disabled:opacity-40"
 					>
 						<ChevronLeft class="h-4 w-4" />
 						Back
@@ -334,7 +334,7 @@
 						size="sm"
 						onclick={isLastStep ? handleGenerateDockerCompose : goToNextTab}
 						disabled={!canGoNext && !isLastStep}
-						class="wizard-next flex items-center gap-2 border-border/50 hover:border-purple-500/30 disabled:opacity-40"
+						class="wizard-next flex items-center gap-2 border-border/50 hover:border-primary/30 disabled:opacity-40"
 					>
 						{#if isLastStep}
 							<FileText class="h-4 w-4" />
@@ -477,7 +477,7 @@
 	}
 
 	.wizard-shell :global(.wizard-panel) {
-		border-radius: 1.4rem;
+		border-radius: var(--radius);
 		background: color-mix(in oklab, var(--card) 70%, transparent);
 		box-shadow: 0 12px 32px -32px oklch(0 0 0 / 0.35);
 	}
@@ -495,7 +495,7 @@
 		display: grid;
 		gap: 0.6rem;
 		padding: 0.75rem;
-		border-radius: 0.9rem;
+		border-radius: var(--radius);
 		border: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
 		background: color-mix(in oklab, var(--background) 88%, transparent);
 	}
@@ -531,7 +531,7 @@
 	}
 
 	.wizard-summary__card {
-		border-radius: 1.25rem;
+		border-radius: var(--radius);
 		border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
 		background: color-mix(in oklab, var(--background) 85%, transparent);
 		padding: 1.25rem 1.5rem 1.35rem;
@@ -540,7 +540,6 @@
 		box-shadow:
 			0 24px 50px -45px oklch(0 0 0 / 0.6),
 			0 0 0 1px color-mix(in oklab, var(--border) 25%, transparent);
-		animation: summaryFloat 7s ease-in-out infinite;
 		transition:
 			transform 0.35s ease,
 			box-shadow 0.35s ease;

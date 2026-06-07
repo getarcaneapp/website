@@ -3,6 +3,8 @@ import type { GeneratorConfig } from '$lib/types/compose-generator.type.js';
 /**
  * Configuration for the Docker Compose Generator UI.
  * Add new fields/sections here to automatically update the generator UI.
+ *
+ * Env vars mirror the Arcane v2 backend config (backend/internal/config/config.go).
  */
 export const generatorConfig: GeneratorConfig = [
 	{
@@ -20,7 +22,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'appUrl',
 						envName: 'APP_URL',
 						label: 'App URL',
-						description: 'The URL arcane runs on',
+						description: 'Public URL Arcane is reached on (used for redirects and links)',
 						type: 'text',
 						defaultValue: 'http://localhost:3552',
 						placeholder: 'http://localhost:3552',
@@ -30,7 +32,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'port',
 						envName: 'PORT',
 						label: 'Port',
-						description: 'The port arcane should run on',
+						description: 'The port Arcane should run on',
 						type: 'text',
 						defaultValue: '3552',
 						placeholder: '3552',
@@ -40,17 +42,28 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'dataPath',
 						envName: '',
 						label: 'Data Volume',
-						description: 'Docker volume name for persistent data',
+						description: 'Docker volume name for persistent data (mounted at /app/data)',
 						type: 'text',
 						defaultValue: 'arcane-data',
 						placeholder: 'arcane-data',
 						includeInCompose: false
 					},
 					{
+						key: 'timezone',
+						envName: 'TZ',
+						label: 'Timezone (TZ)',
+						description:
+							'IANA timezone used for cron scheduling (e.g. America/New_York, Europe/London)',
+						type: 'text',
+						defaultValue: 'UTC',
+						placeholder: 'UTC',
+						includeInCompose: true
+					},
+					{
 						key: 'puid',
 						envName: 'PUID',
 						label: 'PUID (User ID)',
-						description: 'File owner user ID',
+						description: 'Optional host user ID that owns files under /app/data',
 						type: 'text',
 						defaultValue: '1000',
 						placeholder: '1000',
@@ -60,7 +73,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'pgid',
 						envName: 'PGID',
 						label: 'PGID (Group ID)',
-						description: 'File owner group ID',
+						description: 'Optional host group ID that owns files under /app/data',
 						type: 'text',
 						defaultValue: '1000',
 						placeholder: '1000',
@@ -78,8 +91,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'encryptionKey',
 						envName: 'ENCRYPTION_KEY',
 						label: 'Encryption Key',
-						description:
-							'Encryption key for secure stored sensitive data (auto-generated if empty)',
+						description: 'Key for encrypting sensitive data at rest (auto-generated if empty)',
 						type: 'password',
 						defaultValue: '',
 						placeholder: 'Auto-generated if empty',
@@ -90,12 +102,44 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'jwtSecret',
 						envName: 'JWT_SECRET',
 						label: 'JWT Secret',
-						description: 'Session secret (auto-generated if empty)',
+						description: 'Secret used to sign session tokens (auto-generated if empty)',
 						type: 'password',
 						defaultValue: '',
 						placeholder: 'Auto-generated if empty',
 						canGenerate: true,
 						includeInCompose: true
+					}
+				]
+			},
+			{
+				id: 'projects',
+				title: 'Projects',
+				description:
+					'By default Compose projects live in the data volume (/app/data/projects). Enable this to bind-mount a host directory instead.',
+				icon: 'folder',
+				hasToggle: true,
+				toggleKey: 'enableHostProjects',
+				fields: [
+					{
+						key: 'enableHostProjects',
+						envName: '',
+						label: 'Bind-mount a host directory for projects',
+						type: 'checkbox',
+						defaultValue: false,
+						includeInCompose: false
+					},
+					{
+						key: 'projectsPath',
+						envName: 'PROJECTS_DIRECTORY',
+						label: 'Projects Directory (host path)',
+						description: 'Absolute host path, bind-mounted into the container at the same path',
+						type: 'text',
+						defaultValue: '/opt/arcane/projects',
+						placeholder: '/opt/arcane/projects',
+						dependsOn: 'enableHostProjects',
+						// Emitted (env + 1:1 bind mount) together in the generator util
+						// so PROJECTS_DIRECTORY always equals the mount path.
+						includeInCompose: false
 					}
 				]
 			},
@@ -275,24 +319,13 @@ export const generatorConfig: GeneratorConfig = [
 						includeInCompose: true
 					},
 					{
-						key: 'oidcAdminClaim',
-						envName: 'OIDC_ADMIN_CLAIM',
-						label: 'Admin Claim',
-						description: 'Token claim to check for admin access',
+						key: 'oidcGroupsClaim',
+						envName: 'OIDC_GROUPS_CLAIM',
+						label: 'Groups Claim',
+						description: "Token claim that contains the user's groups (used for role mapping)",
 						type: 'text',
-						defaultValue: '',
+						defaultValue: 'groups',
 						placeholder: 'groups',
-						dependsOn: 'enableOIDC',
-						includeInCompose: true
-					},
-					{
-						key: 'oidcAdminValue',
-						envName: 'OIDC_ADMIN_VALUE',
-						label: 'Admin Value',
-						description: 'Value(s) that grant admin access (comma-separated)',
-						type: 'text',
-						defaultValue: '',
-						placeholder: 'arcane-admins',
 						dependsOn: 'enableOIDC',
 						includeInCompose: true
 					},
@@ -311,16 +344,6 @@ export const generatorConfig: GeneratorConfig = [
 						envName: 'OIDC_AUTO_REDIRECT_TO_PROVIDER',
 						label: 'Auto Redirect',
 						description: 'Automatically redirect users to the OIDC provider on login',
-						type: 'checkbox',
-						defaultValue: false,
-						dependsOn: 'enableOIDC',
-						includeInCompose: true
-					},
-					{
-						key: 'oidcMergeAccounts',
-						envName: 'OIDC_MERGE_ACCOUNTS',
-						label: 'Merge Accounts',
-						description: 'Link OIDC logins to existing local accounts by email',
 						type: 'checkbox',
 						defaultValue: false,
 						dependsOn: 'enableOIDC',

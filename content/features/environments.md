@@ -65,7 +65,7 @@ Example Compose:
 ```yaml
 services:
   arcane-agent:
-    image: ghcr.io/getarcaneapp/arcane-headless:latest
+    image: ghcr.io/getarcaneapp/agent:latest
     container_name: arcane-agent
     ports:
       - '3553:3553'
@@ -101,7 +101,7 @@ Example Compose:
 ```yaml
 services:
   arcane-edge-agent:
-    image: ghcr.io/getarcaneapp/arcane-headless:latest
+    image: ghcr.io/getarcaneapp/agent:latest
     container_name: arcane-edge-agent
     environment:
       - EDGE_AGENT=true

@@ -35,7 +35,7 @@ Configure your `compose.yaml` with the required volume mounts:
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'
@@ -67,7 +67,7 @@ Configure your agent's `compose.yaml` with host PID namespace and proc mount:
 ```yaml
 services:
   arcane-agent:
-    image: ghcr.io/getarcaneapp/arcane-agent:latest
+    image: ghcr.io/getarcaneapp/agent:latest
     container_name: arcane-agent
     # Use host PID namespace for process visibility
     pid: host

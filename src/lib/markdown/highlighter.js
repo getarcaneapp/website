@@ -93,5 +93,6 @@ export async function highlighter(code, lang) {
 		]
 	});
 
-	return `<div class="code-block">{@html \`${escapeSvelte(html)}\`}</div>`;
+	const langAttr = useLang === 'text' ? '' : ` data-lang="${useLang}"`;
+	return `<div class="code-block"${langAttr}>{@html \`${escapeSvelte(html)}\`}</div>`;
 }

@@ -16,7 +16,7 @@ Configure Arcane with NVIDIA GPU support in your `compose.yaml`:
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'
@@ -52,7 +52,7 @@ Configure Arcane with AMD GPU support in your `compose.yaml`:
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'

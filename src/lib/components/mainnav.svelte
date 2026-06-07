@@ -7,17 +7,23 @@
 		items: { href: string; label: string }[];
 		class?: string;
 	}>();
+
+	const isActive = (href: string) => {
+		const path = page.url.pathname;
+		if (href === '/') return path === '/';
+		return path === href || path.startsWith(`${href}/`);
+	};
 </script>
 
 <nav class="{className} flex items-center gap-1 text-sm">
-	{#each items as item}
+	{#each items as item (item.href)}
 		<Button
 			href={item.href}
 			variant="ghost"
 			size="sm"
 			class={cn(
-				'transition-all duration-200 hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400',
-				page.url.pathname === item.href && 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+				'text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground',
+				isActive(item.href) && 'bg-accent text-primary'
 			)}
 		>
 			{item.label}

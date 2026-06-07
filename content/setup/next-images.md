@@ -19,41 +19,39 @@ Arcane provides "next" builds that contain the latest features and improvements 
 
 ## Docker Images
 
-Each image has 3 variants: `next`, `next-static`, and `next-distroless`.
+Each image has 2 variants: `next` and `next-static`.
 
 The normal `next` tag uses Arcane's hardened Debian-based runtime image and is the fully featured preview build for the manager and agent.
 
-The `next-static` and `next-distroless` variants use static binaries and smaller runtime images. They are useful for minimal deployments, but they may not include host-provided tooling or shared-library behavior needed by some integrations.
+The `next-static` variant uses static binaries with Arcane's distroless runtime base. It is useful for minimal deployments, but it may not include host-provided tooling or shared-library behavior needed by some integrations.
 
 ### Arcane Manager (Next)
 
 The main Arcane container image.
 
-<Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane:next" />
-<Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane:next-static" />
-<Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane:next-distroless" />
+<Snippet class="m-2" text="ghcr.io/getarcaneapp/manager:next" />
+<Snippet class="m-2" text="ghcr.io/getarcaneapp/manager:next-static" />
 
 ### Arcane Agent (Next)
 
 The agent used for remote environment management.
 
-<Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane-headless:next" />
-<Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane-headless:next-static" />
-<Snippet class="m-2" text="ghcr.io/getarcaneapp/arcane-headless:next-distroless" />
+<Snippet class="m-2" text="ghcr.io/getarcaneapp/agent:next" />
+<Snippet class="m-2" text="ghcr.io/getarcaneapp/agent:next-static" />
 
 > [!TIP]
 > Each image also has a -shahash variant if you prefer to pin to a specific version of these prerelease builds.
 
 ## How to Use
 
-To use the next builds, update your `compose.yaml` file to use the `:next`, `:next-static`, or `:next-distroless` tag instead of `:latest` or your current tag.
+To use the next builds, update your `compose.yaml` file to use the `:next` or `:next-static` tag instead of `:latest` or your current tag.
 
 ### Example Compose File
 
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:next
+    image: ghcr.io/getarcaneapp/manager:next
     container_name: arcane
     ports:
       - '3552:3552'
@@ -72,7 +70,7 @@ volumes:
 
 ## What's Included?
 
-The `:next`, `:next-static`, and `:next-distroless` builds typically include:
+The `:next` and `:next-static` builds typically include:
 
 - **Experimental Features**: New functionality that is still being refined.
 - **Bug Fixes**: Early access to fixes before they are officially released.

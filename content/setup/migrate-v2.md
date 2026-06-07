@@ -9,11 +9,11 @@ import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
 > [!CAUTION]
-> Arcane 2.0 is a breaking release. Back up your data before changing the image tag, and review each migration item below before you start the new container.
+> Arcane 2.0 is a breaking release. Back up your data before changing the image tag.
 
 # Before you start
 
-Back up the files and data Arcane needs to recover your installation:
+Back up anything needed to restore Arcane 1.x:
 
 - the Arcane database
 - the full `/app/data` folder or named volume
@@ -21,140 +21,95 @@ Back up the files and data Arcane needs to recover your installation:
 - your projects directory
 - any Edge mTLS assets if you use remote environments
 
-If you use SQLite with the default `arcane-data` volume, stop Arcane before copying the volume contents so the database is not changing while you back it up.
+If you use SQLite with the default `arcane-data` volume, stop Arcane before copying the volume so the database is not changing while you back it up.
 
-# Review the breaking changes
+# Breaking changes at a glance
 
-## Role-based access control replaces the legacy admin flag
+- RBAC replaces the legacy user `admin` flag.
+- OIDC admin claims are removed. OIDC group mappings replace them.
+- API keys now have explicit permission grants.
+- Apprise support is removed from the UI, API, CLI, and database.
+- Deprecated scheduled prune settings are removed.
+- `gitopsSyncInterval` is removed. GitOps sync intervals are now per sync.
+- Non-URL custom icon values are resolved through the selected icon catalog.
+- Legacy remote bootstrap-token pairing is removed.
+- Plaintext Edge mTLS CA key migration is removed.
+- Official images now run as a hardened non-root user by default.
+- Some API and CLI automation surfaces changed or were removed:
+  - user role create/update payloads
+  - dashboard action-items endpoint
+  - `arcane alerts`
+  - public API-key-backed event creation
+  - cookie-authenticated cross-origin writes
 
-Arcane 2.0 introduces fine-grained role-based access control. The legacy `admin` boolean on the user record is replaced by role assignments. The v2 migration converts existing users automatically:
+# Migration steps
 
-- Users who held the legacy `admin` role get a **global Admin** assignment.
-- Every other user gets a single **global Viewer** assignment — read-only access across everything, including the Settings area. They will not see logs, exec into containers, or modify any resource until an admin promotes them.
-- The migration refuses to run if it would leave the instance with zero global admins. Restore from backup and investigate before retrying.
+## 1. Prepare auth and permissions
 
-After upgrading, plan to review **Settings → Users** and right-size non-admins to Editor, No-Shell Editor, Deployer, or Monitor on the environments they actually use. See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the full role catalog.
+- Legacy admins become **global Admins**.
+- Other users become **global Viewers**.
+- After upgrade, review **Settings > Users** and assign the right roles per environment.
+- The migration will not continue if it would leave the instance with zero global admins.
 
-## API keys now carry their own permission set
+See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the role catalog.
 
-Every API key now has an explicit permission set, independent of the owning user. Existing keys are backfilled at upgrade time with a snapshot of their owner's effective permissions. Two things to know:
+## 2. Replace OIDC admin claims
 
-- Owner permission changes after the upgrade do **not** propagate to existing keys — re-issue the key (or edit its permissions in **Settings → API Keys**) when scope needs to change.
-- CI/CD keys that inherited a full Admin snapshot should be tightened to least privilege. Server-side validation prevents granting a key permissions the creator does not hold themselves.
+- Remove `OIDC_ADMIN_CLAIM`, `OIDC_ADMIN_VALUE`, `oidcAdminClaim`, and `oidcAdminValue`.
+- Configure `OIDC_GROUPS_CLAIM` and role mappings instead.
+- Recreate old admin-claim behavior under **Settings > OIDC Mappings**.
 
-## OIDC admin claim is replaced by group mappings
+See <Link href="/docs/security/rbac#oidc-group-mappings">OIDC group mappings</Link> and <Link href="/docs/configuration/sso">SSO setup</Link>.
 
-The `OidcAdminClaim` / `OidcAdminValue` settings are removed. Role assignment for OIDC users is now driven by explicit group mappings under **Settings → OIDC Mappings**, which give per-role, per-environment scope instead of admin-or-nothing.
+## 3. Review API keys and automation
 
-Before upgrading, note which groups currently grant admin via `OidcAdminClaim` / `OidcAdminValue` so you can recreate them as mappings after the upgrade. See <Link href="/docs/security/rbac#oidc-group-mappings">OIDC group mappings</Link>.
+- Existing API keys are backfilled with a snapshot of their owner's current permissions.
+- Future owner role changes do not update existing keys.
+- Recreate or edit CI/CD keys so they only have the permissions they need.
+- New API keys created through the API or CLI must include explicit permission grants.
+- Update scripts that use removed user role payloads, dashboard action-items, `arcane alerts`, public event creation, or Apprise commands.
+- Use same-origin/trusted-origin browser calls or Bearer/API-key auth for state-changing API requests.
 
-## Apprise has been removed
+For CI/CD, consider short-lived credentials from <Link href="/docs/security/federated-credentials">Federated Credentials</Link> instead of long-lived API keys.
 
-Arcane 2.0 removes Apprise support from the UI, API, and CLI. The v2 database migration also drops the `apprise_settings` table.
+## 4. Remove deleted settings and integrations
 
-Before upgrading, move any Apprise notifications to the built-in notification providers in <Link href="/docs/configuration/notifications">Settings > Notifications</Link>. After upgrading, Apprise settings cannot be managed or recovered from Arcane.
+- Move Apprise notifications to supported providers in <Link href="/docs/configuration/notifications">Settings > Notifications</Link>.
+- Stop relying on removed scheduled prune compatibility settings:
+  - `dockerPruneMode`
+  - `scheduledPruneContainers`
+  - `scheduledPruneImages`
+  - `scheduledPruneVolumes`
+  - `scheduledPruneNetworks`
+  - `scheduledPruneBuildCache`
+- Stop relying on removed OIDC compatibility setting `authOidcConfig`.
+- Review each GitOps sync interval. The old global `gitopsSyncInterval` setting is gone.
 
-## Deprecated settings are removed
+## 5. Check custom icons
 
-Arcane 2.0 removes old compatibility settings that were kept for earlier migrations:
+Existing absolute `http://` and `https://` icon URLs still work. Non-URL icon values are treated as icon catalog slugs.
 
-- `dockerPruneMode`
-- `scheduledPruneContainers`
-- `scheduledPruneImages`
-- `scheduledPruneVolumes`
-- `scheduledPruneNetworks`
-- `scheduledPruneBuildCache`
-- `authOidcConfig`
+If you use Compose metadata or container labels, prefer:
 
-Before upgrading, review your current settings and replace these legacy values with the current settings in Arcane. These should already be migrated if you are on the latest 1.19.x release.
+- `x-arcane.icon-light` and `x-arcane.icon-dark`
+- `com.getarcaneapp.arcane.icon-light` and `com.getarcaneapp.arcane.icon-dark`
 
-For OIDC, do not rely on the old `authOidcConfig` JSON value. Configure OIDC with the current individual OIDC settings instead. See <Link href="/docs/configuration/sso">SSO setup</Link>.
+See <Link href="/docs/guides/custom-metadata">Custom Metadata</Link>.
 
-For scheduled pruning, review the current scheduled prune settings in the Arcane UI. The old per-resource boolean compatibility rows are deleted during the v2 migration.
+## 6. Update remote environments
 
-## Custom icons can use icon catalogs
+- Re-pair old remote agents that still use bootstrap-token pairing.
+- If you use Edge mTLS, upgrade to a current 1.x release first so generated CA private keys are already encrypted.
 
-Arcane 2.0 resolves project and container icons through an icon catalog setting. Existing absolute `http://` and `https://` icon URLs keep working unchanged, but non-URL icon values are now treated as catalog slugs from the selected catalog.
+## 7. Update the container image and runtime
 
-If you use custom Compose metadata or container labels, prefer the new theme-aware keys:
+- Change the image to `ghcr.io/getarcaneapp/manager:v2`.
+- Stop relying on root-owned writes from the Arcane container.
+- Check write permissions for `/app/data`, your projects directory, `/builds`, and `/backups`.
+- Use `PUID` and `PGID` only if bind-mounted host files need a specific host owner.
+- If you use a Docker socket proxy, keep `DOCKER_HOST` configured and make sure the proxy allows the Docker API calls Arcane needs.
 
-- `x-arcane.icon-light` and `x-arcane.icon-dark` for project metadata
-- `com.getarcaneapp.arcane.icon-light` and `com.getarcaneapp.arcane.icon-dark` for service/container labels
-
-The old generic `icon` value remains a fallback for both themes, but Arcane only uses it when neither light nor dark variant is set. See <Link href="/docs/guides/custom-metadata">Custom Metadata</Link> for catalog options and examples.
-
-## Legacy remote environment pairing is removed
-
-Arcane 2.0 removes the legacy bootstrap-token pairing flow for remote environments. Update remote environments to use the current access token or API key flow before upgrading.
-
-If you still have old setup notes or automation that sends a bootstrap token while creating or updating an environment, replace that automation before moving the manager to v2.
-
-## Plaintext Edge mTLS CA keys are no longer migrated
-
-Arcane 2.0 expects generated Edge mTLS CA private keys to already use Arcane's encrypted envelope format. The old plaintext CA key migration path has been removed.
-
-If you use Edge mTLS for remote environments, verify the CA key was migrated by a current 1.x release before upgrading. A plaintext CA private key may prevent v2 from loading the Edge mTLS CA.
-
-## Official images use a hardened non-root runtime
-
-Official Arcane images now use a hardened runtime and drop to a non-root user by default. If `PUID` and `PGID` are not set, Arcane runs as `65532:65532`.
-
-Set `PUID` and `PGID` only when bind-mounted host files should be owned by a specific host user and group. If you use the mounted Docker socket, Arcane maps the socket group automatically. If you use `DOCKER_HOST` with a socket proxy, no Unix socket group mapping is needed.
-
-Check permissions for any bind mounts Arcane writes to, especially:
-
-- `/app/data`
-- your projects directory
-- `/builds`
-- `/backups`, if mounted
-
-## Update your Compose file
-
-Update your Arcane service to use the v2 image tag and the current runtime settings.
-
-```yaml
-services:
-  arcane:
-    image: ghcr.io/getarcaneapp/arcane:v2
-    container_name: arcane
-    ports:
-      - '3552:3552'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - arcane-data:/app/data
-      - /host/path/to/projects:/host/path/to/projects
-      - /host/path/to/builds:/builds
-    environment:
-      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
-      - PROJECTS_DIRECTORY=/host/path/to/projects
-      # Optional: run Arcane as a specific host UID/GID instead of the default runtime user.
-      # When using the mounted Docker socket, Arcane will map the socket group automatically.
-      # - PUID=1000
-      # - PGID=1000
-      - TZ=UTC
-    cgroup: host
-    healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-fsS',
-          'http://localhost:3552/api/health'
-        ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 15s
-    restart: unless-stopped
-
-volumes:
-  arcane-data:
-```
-
-If you use a Docker socket proxy, keep `DOCKER_HOST=tcp://docker-socket-proxy:2375` and make sure the proxy still allows the Docker API operations Arcane needs.
-
-## Upgrade
+## 8. Upgrade
 
 1. Stop Arcane:
 
@@ -162,9 +117,9 @@ If you use a Docker socket proxy, keep `DOCKER_HOST=tcp://docker-socket-proxy:23
 docker compose down
 ```
 
-2. Take the backups listed above.
+2. Take the backups listed above if you have not already.
 
-3. Update your Compose file to use `ghcr.io/getarcaneapp/arcane:v2`.
+3. Update your Compose file to use `ghcr.io/getarcaneapp/manager:v2`.
 
 4. Start Arcane:
 
@@ -181,12 +136,16 @@ docker compose logs -f arcane
 6. Open <Link href="http://localhost:3552">http://localhost:3552</Link> and verify:
 
 - users can sign in
-- projects still load
-- notifications use built-in providers
-- scheduled prune settings are still correct
-- remote environments connect without legacy bootstrap-token pairing
-- Arcane can write to its mounted data, projects, builds, and backup paths
+- at least one user is a global Admin
+- non-admin users have the right roles
+- OIDC group mappings work, if used
+- API keys and scripts have the permissions they need
+- projects and GitOps sync intervals still load correctly
+- Activity Center records long-running actions
+- notifications use supported providers
+- remote environments connect
+- Arcane can write to mounted data, projects, builds, and backup paths
 
-## If you need to roll back
+# Roll back
 
 Stop Arcane, restore the database and `/app/data` backup from before the upgrade, then start the previous v1 image tag again. Do not start a v1 container against a database that has already been migrated by v2.

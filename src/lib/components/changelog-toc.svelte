@@ -94,9 +94,11 @@
 	<aside class={cn('hidden w-56 shrink-0 lg:block', className)}>
 		<div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pb-6">
 			<div
-				class="rounded-2xl border border-border/70 bg-background/70 p-4 shadow-sm backdrop-blur-md"
+				class="docs-surface p-4"
 			>
-				<p class="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+				<p
+					class="mb-3 font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
+				>
 					Versions
 				</p>
 				<nav class="relative flex flex-col gap-1">

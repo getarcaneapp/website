@@ -22,7 +22,7 @@ If you'd rather set things up yourself, or if you're on a different platform, us
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'
@@ -93,7 +93,7 @@ You can generate the required secrets either with the Arcane CLI in a temporary 
 
 Via Docker Container:
 
-<Snippet text="docker run --rm ghcr.io/getarcaneapp/arcane:latest /app/arcane generate secret" class="mt-2" />
+<Snippet text="docker run --rm ghcr.io/getarcaneapp/manager:latest /app/arcane generate secret" class="mt-2" />
 
 If you already have the Arcane CLI installed:
 
@@ -150,4 +150,4 @@ This version asks before removing Arcane data, the Arcane user/group, or Docker.
 
 ## Next (Preview) Builds
 
-Want to try the latest features before they are officially released? See the <Link href="/docs/setup/next-images">Next Builds</Link> guide for the `:next` and `:next-distroless` images.
+Want to try the latest features before they are officially released? See the <Link href="/docs/setup/next-images">Next Builds</Link> guide for the `:next` and `:next-static` images.

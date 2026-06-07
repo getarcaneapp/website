@@ -38,7 +38,7 @@ If you would rather verify a single binary directly, use the matching Sigstore b
 
 Container images work the same way. Use the image digest you pulled, or the one published with the release:
 
-<Snippet text='cosign verify --key "https://getarcane.app/cosign.pub" ghcr.io/getarcaneapp/arcane@sha256:...' class="mt-2" />
+<Snippet text='cosign verify --key "https://getarcane.app/cosign.pub" ghcr.io/getarcaneapp/manager@sha256:...' class="mt-2" />
 
 > [!TIP]
 > Need the image digest first? Here are a few easy ways to find it.
@@ -53,7 +53,7 @@ Container images work the same way. Use the image digest you pulled, or the one 
 >
 > For remote images without pulling:
 >
-> <Snippet text={'docker buildx imagetools inspect ghcr.io/getarcaneapp/arcane:latest --format "{{json .Manifest}}" | jq -r .digest'} class="mt-2" />
+> <Snippet text={'docker buildx imagetools inspect ghcr.io/getarcaneapp/manager:latest --format "{{json .Manifest}}" | jq -r .digest'} class="mt-2" />
 >
 > If you prefer the GitHub UI, open the Arcane repository on GitHub, go to **Packages**, open the `arcane` container package, and copy the digest for the tag you want.
 >

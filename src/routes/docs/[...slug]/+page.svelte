@@ -1,6 +1,11 @@
 <script lang="ts">
+	import ChevronLeft from 'virtual:icons/lucide/chevron-left';
+	import ChevronRight from 'virtual:icons/lucide/chevron-right';
 	import ExternalLink from 'virtual:icons/lucide/external-link';
+	import Pencil from 'virtual:icons/lucide/pencil';
+	import { page } from '$app/state';
 	import * as Toc from '$lib/components/ui/toc/index.js';
+	import { findNeighbors } from '$lib/config/docs.js';
 	import { UseToc } from '$lib/hooks/use-toc.svelte.js';
 
 	let { data } = $props();
@@ -18,6 +23,8 @@
 			.filter((segment) => segment && segment !== 'index')
 			.map(formatBreadcrumb)
 	);
+
+	const neighbors = $derived(findNeighbors(page.url.pathname));
 
 	const attachToc = (node: HTMLElement) => {
 		toc.ref = node;
@@ -37,26 +44,24 @@
 <div class="flex min-w-0 flex-1">
 	<div
 		use:attachToc
-		class="mx-auto flex w-full max-w-400 min-w-0 flex-1 gap-10 px-4 py-6 sm:px-6 md:px-8 lg:px-10"
+		class="mx-auto flex w-full max-w-[88rem] min-w-0 flex-1 justify-center gap-12 px-4 py-8 sm:px-6 lg:px-10"
 	>
-		<article class="min-w-0 flex-1">
-			<header
-				class="relative overflow-hidden rounded-3xl border border-border/70 bg-background/80 p-5 shadow-[0_18px_50px_-40px_oklch(0_0_0/0.35)] backdrop-blur sm:p-6 md:p-8"
+		<article class="w-full min-w-0 max-w-4xl">
+			<!-- Breadcrumb -->
+			<nav
+				class="mb-5 flex flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground"
+				aria-label="Breadcrumb"
 			>
-				<div
-					class="flex flex-wrap items-center gap-2 text-[0.65rem] font-semibold tracking-[0.24em] text-muted-foreground uppercase"
-				>
-					<span class="text-muted-foreground">Docs</span>
-					{#each breadcrumbs as crumb, i (crumb)}
-						<span class="text-muted-foreground/60">/</span>
-						<span
-							class={i === breadcrumbs.length - 1 ? 'text-foreground' : 'text-muted-foreground'}
-						>
-							{crumb}
-						</span>
-					{/each}
-				</div>
-				<h1 class="mt-4 scroll-m-20 font-heading text-4xl font-semibold tracking-tight md:text-5xl">
+				<a href="/docs" class="transition-colors hover:text-foreground">docs</a>
+				{#each breadcrumbs as crumb, i (crumb)}
+					<ChevronRight class="size-3 text-muted-foreground/50" />
+					<span class={i === breadcrumbs.length - 1 ? 'text-foreground' : ''}>{crumb}</span>
+				{/each}
+			</nav>
+
+			<!-- Page header -->
+			<header class="border-b border-border pb-6">
+				<h1 class="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
 					{doc.title}
 				</h1>
 				{#if doc.description}
@@ -66,39 +71,72 @@
 				{/if}
 			</header>
 
-			<div
-				class="mt-8 w-full rounded-3xl border border-border/70 bg-card/80 p-5 shadow-sm backdrop-blur sm:p-6 md:p-8"
-			>
+			<!-- Content -->
+			<div class="mt-8">
 				<Markdown />
 			</div>
 
+			<!-- Prev / next pager -->
+			{#if neighbors.previous || neighbors.next}
+				<nav class="mt-12 grid gap-4 sm:grid-cols-2" aria-label="Pagination">
+					{#if neighbors.previous}
+						<a
+							href={neighbors.previous.href}
+							class="docs-surface group flex flex-col gap-1 p-4 transition-colors hover:border-primary/40"
+						>
+							<span class="flex items-center gap-1 text-xs text-muted-foreground">
+								<ChevronLeft class="size-3.5" /> Previous
+							</span>
+							<span class="font-medium text-foreground transition-colors group-hover:text-primary">
+								{neighbors.previous.title}
+							</span>
+						</a>
+					{:else}
+						<div></div>
+					{/if}
+					{#if neighbors.next}
+						<a
+							href={neighbors.next.href}
+							class="docs-surface group flex flex-col gap-1 p-4 text-right transition-colors hover:border-primary/40 sm:items-end"
+						>
+							<span class="flex items-center gap-1 text-xs text-muted-foreground">
+								Next <ChevronRight class="size-3.5" />
+							</span>
+							<span class="font-medium text-foreground transition-colors group-hover:text-primary">
+								{neighbors.next.title}
+							</span>
+						</a>
+					{/if}
+				</nav>
+			{/if}
+
+			<!-- Edit on GitHub -->
 			<footer
-				class="mt-8 rounded-2xl border border-border/70 bg-background/70 px-3 py-3 shadow-sm backdrop-blur sm:px-4"
+				class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6"
 			>
-				<div class="flex flex-wrap items-center justify-between gap-4">
-					<span class="text-sm text-muted-foreground">Help improve this page</span>
-					<a
-						href={`https://github.com/getarcaneapp/website/edit/main/content/${doc.path}.md`}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1.5 text-xs font-semibold text-foreground/80 transition hover:border-primary/40 hover:text-foreground"
-					>
-						Edit this page on GitHub
-						<ExternalLink class="size-4" />
-					</a>
-				</div>
+				<span class="text-sm text-muted-foreground">Was this page helpful?</span>
+				<a
+					href={`https://github.com/getarcaneapp/website/edit/main/content/${doc.path}.md`}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+				>
+					<Pencil class="size-3.5" />
+					Edit this page on GitHub
+					<ExternalLink class="size-3.5" />
+				</a>
 			</footer>
 		</article>
 
 		{#if toc.current.length > 0}
-			<aside class="hidden w-60 shrink-0 xl:block">
-				<div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pb-6">
-					<div
-						class="rounded-2xl border border-border/70 bg-background/80 p-5 shadow-sm backdrop-blur"
+			<aside class="hidden w-56 shrink-0 xl:block">
+				<div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+					<p
+						class="mb-3 font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
 					>
-						<p class="mb-3 text-xs font-semibold tracking-[0.25em] text-muted-foreground uppercase">
-							On this page
-						</p>
+						On this page
+					</p>
+					<div class="border-l border-border pl-4">
 						<Toc.Root toc={toc.current} />
 					</div>
 				</div>

@@ -61,17 +61,17 @@
 				<Button
 					href="https://demo.getarcane.app"
 					target="_blank"
-					variant="outline"
+					variant="brand"
 					size="sm"
-					class="h-8 border-purple-500/30 bg-purple-50/50 text-xs font-semibold text-purple-700 shadow-[0_2px_10px_-3px_rgba(147,51,234,0.15)] backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20"
+					class="h-8 text-xs font-semibold"
 				>
 					Try the Demo
 				</Button>
 				<Separator orientation="vertical" />
 				{#if version}
 					<Badge
-						variant="default"
-						class="flex h-8 items-center rounded-md border border-purple-500/30 bg-purple-50/80 px-3 text-xs font-semibold text-purple-700 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20"
+						variant="outline"
+						class="flex h-8 items-center rounded-md border-primary/30 bg-primary/10 px-3 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm transition-colors hover:bg-primary/15"
 					>
 						v{version}
 					</Badge>

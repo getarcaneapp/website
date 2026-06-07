@@ -30,6 +30,19 @@ export function generateDockerCompose(config: Record<string, string | boolean>):
 		}
 	}
 
+	// When a host projects directory is selected, the bind mount is 1:1 (the same
+	// path on the host and inside the container) and PROJECTS_DIRECTORY points at
+	// that exact path, so Compose and Arcane agree on where projects live.
+	const hostProjectsDir =
+		config.enableHostProjects &&
+		typeof config.projectsPath === 'string' &&
+		config.projectsPath.trim()
+			? config.projectsPath.trim()
+			: null;
+	if (hostProjectsDir) {
+		environment.push(`PROJECTS_DIRECTORY=${hostProjectsDir}`);
+	}
+
 	// Add SQLite database URL if not using external database
 	if (!config.enableDatabase) {
 		environment.push(
@@ -41,14 +54,30 @@ export function generateDockerCompose(config: Record<string, string | boolean>):
 	const dataPath = (config.dataPath as string) || 'arcane-data';
 	const dockerSocket = (config.dockerSocket as string) || '/var/run/docker.sock';
 
+	const arcaneVolumes = [`${dockerSocket}:/var/run/docker.sock`, `${dataPath}:/app/data`];
+
+	// Same path on both sides, identical to PROJECTS_DIRECTORY above.
+	if (hostProjectsDir) {
+		arcaneVolumes.push(`${hostProjectsDir}:${hostProjectsDir}`);
+	}
+
 	const services: Record<string, unknown> = {
 		arcane: {
-			image: 'ghcr.io/getarcaneapp/arcane:latest',
+			image: 'ghcr.io/getarcaneapp/manager:latest',
 			container_name: 'arcane',
 			restart: 'unless-stopped',
 			ports: [`${port}:3552`],
-			volumes: [`${dockerSocket}:/var/run/docker.sock`, `${dataPath}:/app/data`],
-			environment
+			volumes: arcaneVolumes,
+			environment,
+			// Host cgroup namespace lets Arcane reliably detect its own container.
+			cgroup: 'host',
+			healthcheck: {
+				test: ['CMD-SHELL', 'curl -fsS http://localhost:3552/api/health || exit 1'],
+				interval: '10s',
+				timeout: '3s',
+				retries: 5,
+				start_period: '15s'
+			}
 		}
 	};
 

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import BookOpen from 'virtual:icons/lucide/book-open';
-	import Settings from 'virtual:icons/lucide/settings';
-	import Sparkles from 'virtual:icons/lucide/sparkles';
+	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import { resolve } from '$app/paths';
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
+	import MobileBetaCallout from '$lib/components/mobile-beta-callout.svelte';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Code from '$lib/components/ui/code/index.js';
 	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
 	import { features } from '$lib/config/features.js';
 
@@ -23,6 +24,25 @@
 
 	const STATS_URL = 'https://checkin.getarcane.app/stats';
 	const HISTORY_WINDOW = 14;
+
+	const composeFile = `services:
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+    environment:
+      - ENCRYPTION_KEY=your-32-char-encryption-key
+      - JWT_SECRET=your-jwt-secret
+      - TZ=UTC
+    cgroup: host
+    restart: unless-stopped
+
+volumes:
+  arcane-data:`;
 
 	let stats = $state<StatsResponse | null>(null);
 	let statusError = $state<string | null>(null);
@@ -94,101 +114,91 @@
 <div class="docs-theme relative isolate">
 	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
 	<ContentWrapper>
-		<!-- Subtle Background Glow -->
-		<div class="pointer-events-none fixed inset-0 -z-10" aria-hidden="true"></div>
-
+		<!-- Hero -->
 		<section class="relative mt-10 mb-16">
 			<div
-				class="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-background/70 px-6 py-12 shadow-[0_30px_70px_-60px_oklch(0_0_0/0.6)] backdrop-blur md:px-12"
+				class="relative overflow-hidden rounded-[2rem] border border-border/60 bg-background/70 px-6 py-10 shadow-[0_30px_70px_-60px_oklch(0_0_0/0.6)] backdrop-blur md:px-10 md:py-14"
 			>
-				<div class="relative flex flex-col items-center text-center">
-					<h1 class="relative mt-6 mb-4 flex flex-col items-center gap-4 font-black tracking-tight">
-						<span
-							class="relative inline-block w-full px-4 sm:max-w-130 md:max-w-170 lg:max-w-210 xl:max-w-225"
-						>
-							<span class="sr-only">Arcane</span>
-							<enhanced:img
-								src="../lib/assets/logo-full.svg"
-								alt="Arcane — Modern Docker Management"
-								width="457"
-								height="112"
-								decoding="async"
-								loading="eager"
-								fetchpriority="high"
-								class="mx-auto h-auto w-full object-contain opacity-100 drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] transition-all duration-500 select-none hover:drop-shadow-[0_4px_22px_rgba(147,51,234,0.28)]"
-								sizes="(min-width: 1280px) 900px, (min-width: 1024px) 840px, (min-width: 640px) 520px, 90vw"
-							/>
-						</span>
-						<span
-							class="mt-2 block text-center text-[clamp(1rem,1.8vw,1.5rem)] leading-tight font-light text-foreground/90 md:text-[clamp(1.1rem,1.6vw,1.75rem)]"
-						>
-							Modern Docker Management, <span
-								class="animate-gradient bg-linear-to-r from-purple-600 via-violet-500 to-purple-600 bg-size-[200%_auto] bg-clip-text font-semibold text-transparent"
-								>Designed for Everyone.</span
-							>
-						</span>
-					</h1>
-
-					<p
-						class="mt-2 max-w-2xl text-center text-base leading-relaxed text-muted-foreground md:text-lg"
-					>
-						A beautiful, intuitive interface for managing your Docker containers, images, networks,
-						and volumes.
-						<span class="font-medium text-foreground/80">No terminal required.</span>
-					</p>
-
-					<div class="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-						<Button
-							variant="outline"
-							size="lg"
-							href="/docs/setup/installation"
-							class="group border-purple-500/30 bg-purple-50/50 text-purple-700 shadow-[0_2px_10px_-3px_rgba(147,51,234,0.15)] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20"
-						>
-							<Sparkles
-								class="size-4 opacity-70 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-100 dark:opacity-80"
-							/>
-							Get Started
-						</Button>
-
-						<Button
-							variant="outline"
-							size="lg"
-							href="https://demo.getarcane.app"
-							target="_blank"
-							class="group border-purple-500/30 bg-purple-50/50 text-purple-700 shadow-[0_2px_10px_-3px_rgba(147,51,234,0.15)] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20"
-						>
-							<BookOpen
-								class="size-4 opacity-70 transition-opacity group-hover:opacity-100 dark:opacity-80"
-							/>
-							Try the Demo
-						</Button>
-
-						<div class="relative">
-							<Button
-								variant="outline"
-								size="lg"
-								href="/generator"
-								class="group border-purple-500/30 bg-purple-50/50 text-purple-700 shadow-[0_2px_10px_-3px_rgba(147,51,234,0.15)] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20"
-							>
-								<Settings
-									class="size-4 opacity-70 transition-transform duration-500 group-hover:rotate-90 group-hover:opacity-100 dark:opacity-80"
+				<div class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+					<!-- Left: copy + CTAs -->
+					<div class="flex flex-col items-center text-center lg:items-start lg:text-left">
+						<h1 class="flex flex-col items-center gap-3 lg:items-start">
+							<span class="inline-block w-full max-w-100">
+								<span class="sr-only">Arcane</span>
+								<enhanced:img
+									src="../lib/assets/logo-full.svg"
+									alt="Arcane — Modern Docker Management"
+									width="457"
+									height="112"
+									decoding="async"
+									loading="eager"
+									fetchpriority="high"
+									class="h-auto w-full object-contain drop-shadow-[0_2px_14px_rgba(147,51,234,0.2)] select-none"
+									sizes="(min-width: 1024px) 400px, 80vw"
 								/>
-								Compose Generator
-							</Button>
-							<span
-								class="absolute -top-2.5 -right-4 rotate-12 rounded-full bg-linear-to-r from-purple-600 to-violet-600 px-2.5 py-1 text-xs font-semibold text-white shadow-lg ring-2 shadow-purple-500/30 ring-white/20 dark:ring-black/20"
-							>
-								New
 							</span>
+							<span
+								class="block text-[clamp(1.1rem,2vw,1.6rem)] leading-tight font-light text-foreground/90"
+							>
+								Modern Docker Management, <span
+									class="animate-gradient bg-linear-to-r from-purple-600 via-violet-500 to-purple-600 bg-size-[200%_auto] bg-clip-text font-semibold text-transparent"
+									>Designed for Everyone.</span
+								>
+							</span>
+						</h1>
+
+						<p class="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+							A beautiful, intuitive interface for managing your Docker containers, images, networks,
+							and volumes.
+							<span class="font-medium text-foreground/80">No terminal required.</span>
+						</p>
+
+						<div class="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+							<Button size="lg" href="/docs/setup/installation" class="group">
+								Get Started
+								<ArrowRight class="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+							</Button>
+							<Button variant="outline" size="lg" href="https://demo.getarcane.app" target="_blank">
+								Try the Demo
+							</Button>
+							<Button variant="ghost" size="lg" href="/generator" class="gap-2">
+								Compose Generator
+								<Badge
+									variant="secondary"
+									class="border-primary/30 bg-primary/10 text-primary"
+								>
+									New
+								</Badge>
+							</Button>
+						</div>
+					</div>
+
+					<!-- Right: compose.yaml window -->
+					<div class="relative w-full">
+						<div
+							class="overflow-hidden rounded-xl border border-border/70 bg-card/80 shadow-[0_24px_60px_-40px_oklch(0_0_0/0.6)] backdrop-blur"
+						>
+							<div class="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
+								<span class="size-3 rounded-full bg-red-400/80"></span>
+								<span class="size-3 rounded-full bg-yellow-400/80"></span>
+								<span class="size-3 rounded-full bg-green-400/80"></span>
+								<span class="ml-2 font-mono text-xs text-muted-foreground">compose.yaml</span>
+							</div>
+							<Code.Root lang="yaml" code={composeFile} data-code-overflow class="rounded-none border-0">
+								<Code.CopyButton size="sm" variant="ghost" />
+							</Code.Root>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 
+		<MobileBetaCallout />
+
+		<!-- Capabilities -->
 		<section class="relative mb-20">
-			<div class="mb-6 flex flex-col gap-2">
-				<p class="text-xs font-semibold tracking-[0.35em] text-muted-foreground uppercase">
+			<div class="mb-8 flex flex-col gap-2">
+				<p class="font-mono text-xs font-medium tracking-[0.2em] text-primary uppercase">
 					Capabilities
 				</p>
 				<h2 class="font-heading text-3xl font-semibold tracking-tight">
@@ -199,35 +209,32 @@
 					without dropping into the CLI.
 				</p>
 			</div>
-			<div
-				class="rounded-4xl border border-border/60 bg-card/70 p-6 shadow-[0_22px_55px_-55px_oklch(0_0_0/0.55)] md:p-8"
-			>
-				<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-					{#each features as feature, i (feature.title)}
-						<div
-							style="animation-delay: {i * 100}ms;"
-							class="animate-in duration-500 fill-mode-backwards fade-in slide-in-from-bottom-4"
-						>
-							<FeatureCard
-								icon={feature.icon}
-								title={feature.title}
-								description={feature.description}
-								fullWidth={feature.fullWidth}
-							/>
-						</div>
-					{/each}
-				</div>
+			<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+				{#each features as feature, i (feature.title)}
+					<div
+						style="animation-delay: {i * 100}ms;"
+						class="animate-in duration-500 fill-mode-backwards fade-in slide-in-from-bottom-4"
+					>
+						<FeatureCard
+							icon={feature.icon}
+							title={feature.title}
+							description={feature.description}
+							fullWidth={feature.fullWidth}
+						/>
+					</div>
+				{/each}
 			</div>
 		</section>
 
+		<!-- Analytics Heartbeat -->
 		<section class="relative mb-20">
 			<div
-				class="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-background/70 px-6 py-8 shadow-[0_24px_60px_-55px_oklch(0_0_0/0.5)] backdrop-blur-xl md:px-10"
+				class="relative overflow-hidden rounded-[2rem] border border-border/60 bg-background/70 px-6 py-8 shadow-[0_24px_60px_-55px_oklch(0_0_0/0.5)] backdrop-blur-xl md:px-10"
 			>
 				<div class="relative">
 					<div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 						<div class="space-y-2">
-							<p class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+							<p class="font-mono text-xs font-medium tracking-[0.15em] text-primary uppercase">
 								Heartbeat status
 							</p>
 							<h2 class="text-2xl font-semibold tracking-tight text-foreground">
@@ -279,15 +286,13 @@
 					<div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_240px]">
 						<div class="space-y-4">
 							<div>
-								<p class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+								<p class="font-mono text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase">
 									By version
 								</p>
 								{#if versionBreakdown.length}
 									<div class="mt-3 flex flex-wrap gap-2 text-xs">
 										{#each versionBreakdown as version (version.version)}
-											<span
-												class="rounded-full border border-border/60 bg-background/70 px-2.5 py-1"
-											>
+											<span class="rounded-full border border-border/60 bg-background/70 px-2.5 py-1">
 												v{version.version} · {version.count}
 											</span>
 										{/each}
@@ -299,14 +304,12 @@
 
 							{#if typeBreakdown.length}
 								<div>
-									<p class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+									<p class="font-mono text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase">
 										By type
 									</p>
 									<div class="mt-3 flex flex-wrap gap-2 text-xs">
 										{#each typeBreakdown as type (type.type)}
-											<span
-												class="rounded-full border border-border/60 bg-background/70 px-2.5 py-1"
-											>
+											<span class="rounded-full border border-border/60 bg-background/70 px-2.5 py-1">
 												{type.type} · {type.count}
 											</span>
 										{/each}
@@ -316,14 +319,14 @@
 						</div>
 
 						<div>
-							<p class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+							<p class="font-mono text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase">
 								Recent activity
 							</p>
 							{#if history.length}
 								<div class="mt-3 flex items-end gap-1" aria-label="Recent heartbeat activity">
 									{#each history as entry (entry.date)}
 										<div
-											class="w-2 rounded-sm bg-purple-500/70"
+											class="w-2 rounded-sm bg-primary/70"
 											style={`height: ${Math.max(8, Math.round((entry.count / historyMax) * 44))}px`}
 											title={`${entry.date}: ${entry.count}`}
 										>
@@ -344,12 +347,13 @@
 			</div>
 		</section>
 
+		<!-- Supported by -->
 		<section class="py-12">
 			<div
-				class="rounded-4xl border border-border/60 bg-background/70 px-6 py-6 text-center shadow-[0_20px_45px_-45px_oklch(0_0_0/0.5)] backdrop-blur"
+				class="rounded-[2rem] border border-border/60 bg-background/70 px-6 py-6 text-center shadow-[0_20px_45px_-45px_oklch(0_0_0/0.5)] backdrop-blur"
 			>
-				<div class="mx-auto flex max-w-3xl flex-col items-center justify-center gap-2 text-center">
-					<span class="text-sm font-medium tracking-wider text-muted-foreground uppercase"
+				<div class="mx-auto flex max-w-3xl flex-col items-center justify-center gap-4 text-center">
+					<span class="font-mono text-xs font-medium tracking-[0.15em] text-muted-foreground uppercase"
 						>Supported by</span
 					>
 					<div class="flex flex-wrap items-center justify-center gap-8">
