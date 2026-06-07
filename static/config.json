@@ -9,7 +9,9 @@
       "env": "ADMIN_STATIC_API_KEY",
       "field": "AdminStaticAPIKey",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -28,7 +30,9 @@
       "env": "AGENT_TOKEN",
       "field": "AgentToken",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -75,10 +79,14 @@
       "field": "AutoLoginPassword",
       "type": "string",
       "defaultValue": "arcane-admin",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "conditional": true,
-      "buildTags": ["buildables"],
+      "buildTags": [
+        "buildables"
+      ],
       "source": "config.BuildablesConfig",
       "sourceFile": "backend/internal/config/buildables_config.go",
       "sourceSymbol": "config.BuildablesConfig.AutoLoginPassword"
@@ -90,7 +98,9 @@
       "defaultValue": "arcane",
       "description": "Auto-login credentials (used only when built with the buildables tag + autologin feature flag).",
       "conditional": true,
-      "buildTags": ["buildables"],
+      "buildTags": [
+        "buildables"
+      ],
       "source": "config.BuildablesConfig",
       "sourceFile": "backend/internal/config/buildables_config.go",
       "sourceSymbol": "config.BuildablesConfig.AutoLoginUsername"
@@ -100,7 +110,9 @@
       "field": "DatabaseURL",
       "type": "string",
       "defaultValue": "file:data/arcane.db?_pragma=journal_mode(WAL)\u0026_pragma=busy_timeout(2500)\u0026_txlock=immediate",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -196,7 +208,9 @@
       "field": "EdgeMTLSMode",
       "type": "string",
       "defaultValue": "disabled",
-      "options": ["toLower"],
+      "options": [
+        "toLower"
+      ],
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSMode"
@@ -224,7 +238,9 @@
       "field": "EdgeTransport",
       "type": "string",
       "defaultValue": "auto",
-      "options": ["toLower"],
+      "options": [
+        "toLower"
+      ],
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeTransport"
@@ -234,7 +250,9 @@
       "field": "EncryptionKey",
       "type": "string",
       "defaultValue": "arcane-dev-key-32-characters!!!",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -317,7 +335,9 @@
       "field": "JWTSecret",
       "type": "string",
       "defaultValue": "default-jwt-secret-change-me",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -345,7 +365,9 @@
       "field": "LogLevel",
       "type": "string",
       "defaultValue": "info",
-      "options": ["toLower"],
+      "options": [
+        "toLower"
+      ],
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.LogLevel"
@@ -357,22 +379,6 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ManagerApiUrl"
-    },
-    {
-      "env": "OIDC_ADMIN_CLAIM",
-      "field": "OidcAdminClaim",
-      "type": "string",
-      "source": "config.Config",
-      "sourceFile": "backend/internal/config/config.go",
-      "sourceSymbol": "config.Config.OidcAdminClaim"
-    },
-    {
-      "env": "OIDC_ADMIN_VALUE",
-      "field": "OidcAdminValue",
-      "type": "string",
-      "source": "config.Config",
-      "sourceFile": "backend/internal/config/config.go",
-      "sourceSymbol": "config.Config.OidcAdminValue"
     },
     {
       "env": "OIDC_AUTO_REDIRECT_TO_PROVIDER",
@@ -387,7 +393,9 @@
       "env": "OIDC_CLIENT_ID",
       "field": "OidcClientID",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -397,7 +405,9 @@
       "env": "OIDC_CLIENT_SECRET",
       "field": "OidcClientSecret",
       "type": "string",
-      "options": ["file"],
+      "options": [
+        "file"
+      ],
       "supportsFile": true,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
@@ -411,6 +421,15 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcEnabled"
+    },
+    {
+      "env": "OIDC_GROUPS_CLAIM",
+      "field": "OidcGroupsClaim",
+      "type": "string",
+      "defaultValue": "groups",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.OidcGroupsClaim"
     },
     {
       "env": "OIDC_ISSUER_URL",
@@ -444,6 +463,19 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcProviderName"
+    },
+    {
+      "env": "OIDC_ROLE_MAPPINGS",
+      "field": "OidcRoleMappings",
+      "type": "string",
+      "description": "OidcRoleMappings declaratively defines OIDC group→role mappings as a JSON array of role.OidcRoleMappingSpec. Reconciled into source='env' rows on every boot; rows are read-only at runtime. Supports *_FILE for Docker secrets. Leave empty to manage mappings purely via the UI/API.",
+      "options": [
+        "file"
+      ],
+      "supportsFile": true,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.OidcRoleMappings"
     },
     {
       "env": "OIDC_SCOPES",
@@ -671,6 +703,36 @@
       "sourceSymbol": "models.Settings.ExpiredSessionsCleanupInterval"
     },
     {
+      "env": "ACTIVITY_HISTORY_MAX_ENTRIES",
+      "settingKey": "activityHistoryMaxEntries",
+      "description": "Maximum completed Activity Center entries to keep per environment. Set 0 to disable count-based cleanup.",
+      "defaultValue": "1000",
+      "type": "number",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "activity",
+      "public": false,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.ActivityHistoryMaxEntries"
+    },
+    {
+      "env": "ACTIVITY_HISTORY_RETENTION_DAYS",
+      "settingKey": "activityHistoryRetentionDays",
+      "description": "Delete completed Activity Center entries older than this many days. Set 0 to disable age-based cleanup.",
+      "defaultValue": "30",
+      "type": "number",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "activity",
+      "public": false,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.ActivityHistoryRetentionDays"
+    },
+    {
       "env": "APPLICATION_THEME",
       "settingKey": "applicationTheme",
       "description": "Choose the overall visual theme for the application",
@@ -684,6 +746,21 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.ApplicationTheme"
+    },
+    {
+      "env": "ICON_CATALOG",
+      "settingKey": "iconCatalog",
+      "description": "Choose the catalog used to resolve project and container icon slugs",
+      "defaultValue": "selfhst",
+      "type": "select",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "appearance",
+      "public": true,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.IconCatalog"
     },
     {
       "env": "KEYBOARD_SHORTCUTS_ENABLED",
@@ -761,21 +838,6 @@
       "sourceSymbol": "models.Settings.AuthLocalEnabled"
     },
     {
-      "env": "AUTH_OIDC_CONFIG",
-      "settingKey": "authOidcConfig",
-      "description": "OIDC provider configuration (deprecated - use individual fields)",
-      "type": "text",
-      "sensitive": true,
-      "deprecated": true,
-      "category": "authentication",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
-      "note": "Deprecated legacy JSON OIDC configuration. Prefer the discrete OIDC_* environment variables.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AuthOidcConfig"
-    },
-    {
       "env": "AUTH_PASSWORD_POLICY",
       "settingKey": "authPasswordPolicy",
       "description": "Set password strength requirements",
@@ -804,32 +866,6 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.AuthSessionTimeout"
-    },
-    {
-      "env": "OIDC_ADMIN_CLAIM",
-      "settingKey": "oidcAdminClaim",
-      "description": "Claim name for admin role mapping",
-      "type": "text",
-      "sensitive": false,
-      "deprecated": false,
-      "category": "authentication",
-      "public": false,
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcAdminClaim"
-    },
-    {
-      "env": "OIDC_ADMIN_VALUE",
-      "settingKey": "oidcAdminValue",
-      "description": "Claim value that grants admin access",
-      "type": "text",
-      "sensitive": false,
-      "deprecated": false,
-      "category": "authentication",
-      "public": false,
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcAdminValue"
     },
     {
       "env": "OIDC_AUTHORIZATION_ENDPOINT",
@@ -910,6 +946,20 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.OidcEnabled"
+    },
+    {
+      "env": "OIDC_GROUPS_CLAIM",
+      "settingKey": "oidcGroupsClaim",
+      "description": "Claim name to read group memberships from for role mapping (default: groups)",
+      "defaultValue": "groups",
+      "type": "text",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "authentication",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.OidcGroupsClaim"
     },
     {
       "env": "OIDC_ISSUER_URL",
@@ -1349,6 +1399,21 @@
       "sourceSymbol": "models.Settings.AutoUpdate"
     },
     {
+      "env": "AUTO_UPDATE_COMPOSE_STANDALONE_FALLBACK",
+      "settingKey": "autoUpdateComposeStandaloneFallback",
+      "description": "Allow auto-update to recreate Compose-managed containers directly when Arcane cannot resolve the owning project. Restart Arcane after changing this setting.",
+      "defaultValue": "false",
+      "type": "boolean",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "internal",
+      "public": false,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.AutoUpdateComposeStandaloneFallback"
+    },
+    {
       "env": "AUTO_UPDATE_EXCLUDED_CONTAINERS",
       "settingKey": "autoUpdateExcludedContainers",
       "description": "Comma-separated list of containers to exclude from auto-update",
@@ -1420,21 +1485,6 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.DockerHost"
-    },
-    {
-      "env": "GITOPS_SYNC_INTERVAL",
-      "settingKey": "gitopsSyncInterval",
-      "description": "How often to run GitOps synchronization checks (cron expression)",
-      "defaultValue": "0 */1 * * * *",
-      "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
-      "category": "internal",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.GitopsSyncInterval"
     },
     {
       "env": "MAX_IMAGE_UPLOAD_SIZE",
@@ -1627,38 +1677,6 @@
       "sourceSymbol": "models.Settings.PruneVolumeMode"
     },
     {
-      "env": "SCHEDULED_PRUNE_BUILD_CACHE",
-      "settingKey": "scheduledPruneBuildCache",
-      "description": "Legacy boolean build cache prune flag retained for migration compatibility",
-      "defaultValue": "false",
-      "type": "boolean",
-      "sensitive": false,
-      "deprecated": true,
-      "category": "internal",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
-      "note": "Legacy boolean prune flag retained for migration compatibility. Prefer PRUNE_BUILD_CACHE_MODE.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ScheduledPruneBuildCache"
-    },
-    {
-      "env": "SCHEDULED_PRUNE_CONTAINERS",
-      "settingKey": "scheduledPruneContainers",
-      "description": "Legacy boolean container prune flag retained for migration compatibility",
-      "defaultValue": "true",
-      "type": "boolean",
-      "sensitive": false,
-      "deprecated": true,
-      "category": "internal",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
-      "note": "Legacy boolean prune flag retained for migration compatibility. Prefer PRUNE_CONTAINER_MODE.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ScheduledPruneContainers"
-    },
-    {
       "env": "SCHEDULED_PRUNE_ENABLED",
       "settingKey": "scheduledPruneEnabled",
       "description": "Enable scheduled pruning of unused Docker resources",
@@ -1674,22 +1692,6 @@
       "sourceSymbol": "models.Settings.ScheduledPruneEnabled"
     },
     {
-      "env": "SCHEDULED_PRUNE_IMAGES",
-      "settingKey": "scheduledPruneImages",
-      "description": "Legacy boolean image prune flag retained for migration compatibility",
-      "defaultValue": "true",
-      "type": "boolean",
-      "sensitive": false,
-      "deprecated": true,
-      "category": "internal",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
-      "note": "Legacy boolean prune flag retained for migration compatibility. Prefer PRUNE_IMAGE_MODE.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ScheduledPruneImages"
-    },
-    {
       "env": "SCHEDULED_PRUNE_INTERVAL",
       "settingKey": "scheduledPruneInterval",
       "description": "How often to run scheduled prunes (cron expression)",
@@ -1703,38 +1705,6 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.ScheduledPruneInterval"
-    },
-    {
-      "env": "SCHEDULED_PRUNE_NETWORKS",
-      "settingKey": "scheduledPruneNetworks",
-      "description": "Legacy boolean network prune flag retained for migration compatibility",
-      "defaultValue": "true",
-      "type": "boolean",
-      "sensitive": false,
-      "deprecated": true,
-      "category": "internal",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
-      "note": "Legacy boolean prune flag retained for migration compatibility. Prefer PRUNE_NETWORK_MODE.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ScheduledPruneNetworks"
-    },
-    {
-      "env": "SCHEDULED_PRUNE_VOLUMES",
-      "settingKey": "scheduledPruneVolumes",
-      "description": "Legacy boolean volume prune flag retained for migration compatibility",
-      "defaultValue": "false",
-      "type": "boolean",
-      "sensitive": false,
-      "deprecated": true,
-      "category": "internal",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
-      "note": "Legacy boolean prune flag retained for migration compatibility. Prefer PRUNE_VOLUME_MODE.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ScheduledPruneVolumes"
     },
     {
       "env": "SWARM_STACK_SOURCES_DIRECTORY",
