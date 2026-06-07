@@ -133,7 +133,7 @@
 	/>
 </svelte:head>
 
-<div class="docs-theme relative isolate">
+<div class="docs-theme docs-reading relative isolate">
 	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
 	<div class="container mx-auto flex min-w-0 flex-1 px-4 py-6 lg:py-8">
 		<div class="mx-auto flex w-full max-w-400 flex-col gap-8">

@@ -21,7 +21,10 @@
 					'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:shadow-md active:scale-[0.98]',
 				ghost:
 					'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 active:scale-[0.98]',
-				link: 'text-primary underline-offset-4 hover:underline'
+				link: 'text-primary underline-offset-4 hover:underline',
+				brand:
+					'border border-primary/30 bg-primary/10 text-primary shadow-sm backdrop-blur-sm hover:bg-primary/15 hover:border-primary/40 hover:shadow-md active:scale-[0.98]',
+				flat: 'bg-card text-foreground border border-border hover:bg-muted active:scale-[0.98]'
 			},
 			size: {
 				default: 'h-10 px-5 py-2.5 has-[>svg]:px-4',

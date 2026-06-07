@@ -50,6 +50,13 @@
 }
 
 @font-face {
+	font-family: 'Geist Mono';
+	src: url('/fonts/Geist/geist-mono.woff2') format('woff2');
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
 	font-family: 'Fraunces';
 	src: url('/fonts/Fraunces/Fraunces.woff2') format('woff2');
 	font-style: normal;
@@ -440,7 +447,7 @@
 /* ===== Docs Theme ===== */
 .docs-theme {
 	--font-sans: 'Onest', sans-serif;
-	--font-mono: 'IBM Plex Mono', 'Geist Mono', monospace;
+	--font-mono: 'Geist Mono', monospace;
 	--font-heading: 'Onest', sans-serif;
 	--background: oklch(0.985 0.01 300);
 	--foreground: oklch(0.2 0.02 285);
@@ -516,6 +523,38 @@
 	--selection-foreground: oklch(0.97 0.01 300);
 }
 
+/* ===== Docs Reading =====
+   Flat / technical overrides layered on top of .docs-theme. Applied alongside
+   .docs-theme on the docs layout + reading utility pages (NOT the homepage, which
+   keeps the glassy .docs-theme tokens). Equal specificity to .docs-theme, so these
+   rules must stay AFTER it in source order to win. */
+.docs-reading {
+	--radius: 0.375rem; /* cascades to --radius-sm/md/lg/xl (see @theme inline) */
+	--card: oklch(0.995 0.003 285);
+	--muted: oklch(0.965 0.004 285);
+	--muted-foreground: oklch(0.5 0.02 285);
+	--border: oklch(0.9 0.006 285); /* opaque, neutral, crisp 1px hairline */
+	--input: oklch(0.9 0.006 285);
+	--ring: var(--primary);
+}
+
+.dark .docs-reading {
+	--card: oklch(0.17 0.008 285);
+	--muted: oklch(0.21 0.008 285);
+	--muted-foreground: oklch(0.7 0.02 285);
+	--border: oklch(0.27 0.01 285); /* opaque dark hairline (not white/12%) */
+	--input: oklch(0.3 0.01 285);
+	--ring: var(--primary);
+}
+
+@utility docs-surface {
+	@apply rounded-lg border border-border bg-card;
+}
+
+@utility docs-divider {
+	@apply border-border;
+}
+
 .docs-shell {
 	position: fixed;
 	inset: 0;
@@ -556,35 +595,162 @@
 	opacity: 0.4;
 }
 
-.docs-theme .mdsx {
+.docs-theme .markdown {
 	font-size: 1.02rem;
 	line-height: 1.75;
 	color: color-mix(in oklab, var(--foreground) 85%, transparent);
 }
 
-.docs-theme .mdsx a {
+.docs-theme .markdown a {
 	color: var(--primary);
 	text-decoration-color: color-mix(in oklab, var(--primary) 55%, transparent);
 	text-decoration-thickness: 2px;
 	text-underline-offset: 0.18em;
 }
 
-.docs-theme .mdsx a:hover {
+.docs-theme .markdown a:hover {
 	color: var(--foreground);
 	text-decoration-color: var(--primary);
 }
 
-.docs-theme .mdsx :is(h2, h3, h4) {
+.docs-theme .markdown :is(h2, h3, h4) {
 	letter-spacing: -0.012em;
 }
 
-.docs-theme .mdsx code:not(pre code) {
-	background-color: color-mix(in oklab, var(--primary) 12%, transparent);
+.docs-theme .markdown code:not(pre code) {
+	background-color: var(--muted);
 	color: var(--foreground);
 }
 
-.docs-theme .mdsx hr {
+.docs-theme .markdown hr {
 	border-color: color-mix(in oklab, var(--border) 80%, transparent);
+}
+
+.docs-reading .markdown :is(h1, h2, h3, h4) {
+	letter-spacing: -0.018em;
+}
+
+.docs-theme .markdown kbd {
+	font-family: var(--font-mono);
+	font-size: 0.8rem;
+	padding: 0.1rem 0.35rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	background-color: var(--muted);
+	color: var(--foreground);
+	white-space: nowrap;
+}
+
+/* mdsvex build-time fenced code blocks — mirrors src/lib/components/ui/code styling.
+   These blocks render outside code.svelte, so the Shiki styles live globally here. */
+.markdown .code-block {
+	position: relative;
+	margin-block: 0.75rem;
+	overflow: auto;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--border);
+	background-color: var(--card);
+}
+
+/* Language label rendered from the highlighter's data-lang (Docker-docs style). */
+.markdown .code-block[data-lang]::before {
+	content: attr(data-lang);
+	display: block;
+	border-bottom: 1px solid var(--border);
+	padding: 0.4rem 0.75rem;
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--muted-foreground);
+}
+
+.markdown .code-block .copy-code-button {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	border-radius: 0.375rem;
+	color: var(--muted-foreground);
+	background-color: transparent;
+	opacity: 0;
+	cursor: pointer;
+	transition:
+		opacity 0.15s ease,
+		color 0.15s ease,
+		background-color 0.15s ease;
+}
+
+.markdown .code-block:hover .copy-code-button,
+.markdown .code-block .copy-code-button:focus-visible {
+	opacity: 1;
+}
+
+.markdown .code-block .copy-code-button:hover {
+	color: var(--foreground);
+	background-color: var(--muted);
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+	color: var(--shiki-dark) !important;
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+pre.shiki {
+	overflow-x: auto;
+	background-color: inherit;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	font-family: var(--font-mono);
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+}
+
+pre.shiki code {
+	display: grid;
+	min-width: 100%;
+	padding: 0;
+	background-color: transparent;
+	overflow-wrap: break-word;
+	counter-reset: line;
+	box-decoration-break: clone;
+}
+
+pre.line-numbers {
+	counter-reset: step;
+	counter-increment: step 0;
+}
+
+pre.line-numbers .line::before {
+	content: counter(step);
+	counter-increment: step;
+	display: inline-block;
+	width: 1.8rem;
+	margin-right: 1.4rem;
+	text-align: right;
+	color: var(--muted-foreground);
+}
+
+pre .line {
+	display: inline-block;
+	width: 100%;
+	min-height: 1rem;
+	padding-top: 0.125rem;
+	padding-right: 1rem;
+	padding-bottom: 0.125rem;
+	padding-left: 1rem;
+}
+
+pre.line-numbers .line {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
 }
 
 @utility no-scrollbar {
@@ -725,7 +891,7 @@
 		font-size: 0.8rem;
 	}
 
-	.mdsx code:not(pre code) {
+	.markdown code:not(pre code) {
 		@apply relative rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] outline-none;
 	}
 
@@ -768,8 +934,8 @@
 	}
 
 	/* Improve spacing around custom components */
-	.mdsx .git-command,
-	.mdsx .snippet {
+	.markdown .git-command,
+	.markdown .snippet {
 		@apply my-4;
 	}
 }

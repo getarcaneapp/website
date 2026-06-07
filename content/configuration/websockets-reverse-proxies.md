@@ -94,7 +94,7 @@ Traefik proxies WebSocket connections automatically, so no extra middleware is n
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     environment:
       - APP_URL=https://arcane.example.com
@@ -133,6 +133,9 @@ docker network inspect <network> --format '{{range .IPAM.Config}}{{.Subnet}}{{en
 ```
 
 `TRUSTED_PROXIES` accepts a comma-separated list of IPs or CIDR ranges. Only requests whose direct peer is in this list have their forwarded headers trusted, so an untrusted client cannot spoof its IP via `X-Forwarded-For`. See the <Link href="/docs/configuration/environment">Environment Variables</Link> reference for all configuration options.
+
+> [!NOTE]
+> When you bind Arcane to a loopback address with `LISTEN` (for example `LISTEN=127.0.0.1`, the usual same-host proxy setup), Arcane automatically trusts loopback proxies (`127.0.0.0/8`, `::1/128`), so you do not need to set `TRUSTED_PROXIES`. Auto-trust applies only to literal loopback IPs, not hostnames such as `localhost`.
 
 ## Additional Resources
 

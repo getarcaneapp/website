@@ -5,9 +5,9 @@ import { join } from 'node:path';
 
 /**
  * Scan content markdown files for Svelte component imports
- * MDSX allows importing components in markdown via <script> tags
+ * mdsvex allows importing components in markdown via <script> tags
  */
-function resolveMdsxImport(importPath: string): string | null {
+function resolveMarkdownImport(importPath: string): string | null {
 	const resolvedImport = importPath.replace('$lib/', 'src/lib/');
 	const candidates = [
 		resolvedImport.replace(/\.js$/, '.ts'),
@@ -32,7 +32,7 @@ function resolveMdsxImport(importPath: string): string | null {
 	return null;
 }
 
-function getMdsxComponentImports(contentDir: string): string[] {
+function getMarkdownComponentImports(contentDir: string): string[] {
 	const imports = new Set<string>();
 
 	function scanDir(dir: string) {
@@ -48,7 +48,7 @@ function getMdsxComponentImports(contentDir: string): string[] {
 				const importRegex = /from\s+['"](\$lib\/[^'"]+)['"]/g;
 				let match;
 				while ((match = importRegex.exec(content)) !== null) {
-					const importPath = resolveMdsxImport(match[1]);
+					const importPath = resolveMarkdownImport(match[1]);
 					if (importPath) imports.add(importPath);
 				}
 			}
@@ -65,7 +65,7 @@ function getMdsxComponentImports(contentDir: string): string[] {
 }
 
 // Get component imports from markdown content files
-const mdsxImports = getMdsxComponentImports('./content');
+const markdownImports = getMarkdownComponentImports('./content');
 
 const config: KnipConfig = {
 	compilers: {
@@ -76,13 +76,13 @@ const config: KnipConfig = {
 		'src/routes/**/+*.{js,ts,svelte}',
 		// Lib exports
 		'src/lib/index.{js,ts}',
-		// MDSX blueprint and components (used by markdown processor)
-		'src/lib/components/mdsx/**/*.{svelte,ts}',
+		// mdsvex layout and components (used by markdown processor)
+		'src/lib/components/markdown/**/*.{svelte,ts}',
 		// Config files
-		'mdsx.config.js',
+		'mdsvex.config.js',
 		'velite.config.js',
 		// Components imported in markdown files (discovered dynamically)
-		...mdsxImports
+		...markdownImports
 	],
 	project: ['src/**/*.{js,ts,svelte}', 'src/**/*.d.ts'],
 	ignoreFiles: [
@@ -119,7 +119,7 @@ const config: KnipConfig = {
 		'only-allow'
 	],
 	ignoreDependencies: [
-		// Used in mdsx.config.js but referenced as strings
+		// Used in mdsvex.config.js but referenced as strings
 		'rehype-pretty-code',
 		'remark-code-import',
 		'unist-builder',

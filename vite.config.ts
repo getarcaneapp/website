@@ -47,7 +47,7 @@ export default defineConfig({
 					'vite.config.ts',
 					'svelte.config.js',
 					'velite.config.js',
-					'mdsx.config.js',
+					'mdsvex.config.js',
 					'knip.ts'
 				],
 				env: {

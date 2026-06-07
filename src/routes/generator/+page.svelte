@@ -7,7 +7,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 </script>
 
-<div class="docs-theme relative isolate">
+<div class="docs-theme docs-reading relative isolate">
 	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
 	<ContentWrapper>
 		<section class="generator-hero px-4">
@@ -25,7 +25,7 @@
 						variant="outline"
 						size="sm"
 						href="/docs/setup/installation"
-						class="group border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5"
+						class="group border-primary/30 hover:border-primary/50 hover:bg-primary/5"
 					>
 						<BookOpen class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
 						Setup Guide
@@ -34,7 +34,7 @@
 						variant="outline"
 						size="sm"
 						href="/docs/configuration/environment"
-						class="group border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5"
+						class="group border-primary/30 hover:border-primary/50 hover:bg-primary/5"
 					>
 						<Settings class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
 						Environment Docs
@@ -58,11 +58,12 @@
 
 	.generator-hero__eyebrow {
 		margin: 0 0 0.5rem;
+		font-family: var(--font-mono);
 		font-size: 0.7rem;
-		letter-spacing: 0.32em;
+		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--muted-foreground);
-		font-weight: 600;
+		color: var(--primary);
+		font-weight: 500;
 	}
 
 	.generator-hero__title {

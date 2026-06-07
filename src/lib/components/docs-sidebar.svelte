@@ -38,24 +38,24 @@
 	{...restProps}
 >
 	<Sidebar.Content
-		class="no-scrollbar min-h-0 flex-1 overflow-y-auto rounded-3xl border border-sidebar-border/60 bg-sidebar/70 px-3 py-4 shadow-[0_20px_45px_-35px_oklch(0_0_0/0.45)] backdrop-blur"
+		class="no-scrollbar min-h-0 flex-1 overflow-y-auto rounded-xl border border-border bg-card/85 px-2 py-4 shadow-sm backdrop-blur-md"
 	>
 		{#each navItems as item (item.title)}
-			<Sidebar.Group>
+			<Sidebar.Group class="mt-5 first:mt-0 px-0 py-0">
 				<Sidebar.GroupLabel
-					class="text-[0.6rem] font-extrabold tracking-[0.26em] text-muted-foreground/80 uppercase"
+					class="px-2 font-mono text-xs font-medium tracking-[0.12em] text-foreground/70 uppercase"
 				>
 					{item.title}
 				</Sidebar.GroupLabel>
 				<Sidebar.GroupContent>
 					{#if item.items.length}
-						<Sidebar.Menu class="gap-1">
+						<Sidebar.Menu class="gap-0.5">
 							{#each item.items as subItem (subItem.href)}
 								{#if subItem.items.length === 0}
 									<Sidebar.MenuItem>
 										<Sidebar.MenuButton
 											isActive={isItemActive(subItem)}
-											class="group relative h-8 w-full justify-start rounded-xl border border-transparent pr-2.5 pl-6 text-[0.8rem] font-medium text-muted-foreground transition-all duration-200 after:absolute after:top-1/2 after:left-3 after:h-2.5 after:w-0.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:opacity-0 hover:border-border/80 hover:bg-accent/50 hover:text-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground data-[active=true]:after:opacity-100"
+											class="group relative h-7 w-full justify-start rounded-md border-l-2 border-transparent pr-2.5 pl-4 text-sm font-normal text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-foreground data-[active=true]:border-primary data-[active=true]:bg-primary/5 data-[active=true]:font-medium data-[active=true]:text-primary"
 										>
 											{#snippet child(snippetProps: { props: Record<string, unknown> })}
 												{@const href = subItem.href}
@@ -87,7 +87,7 @@
 									<Sidebar.MenuItem>
 										<Sidebar.MenuButton
 											isActive={isItemActive(subItem)}
-											class="group relative h-8 w-full justify-start rounded-xl border border-transparent pr-9 pl-6 text-[0.8rem] font-medium text-muted-foreground transition-all duration-200 after:absolute after:top-1/2 after:left-3 after:h-2.5 after:w-0.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:opacity-0 hover:border-border/80 hover:bg-accent/50 hover:text-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground data-[active=true]:after:opacity-100"
+											class="group relative h-7 w-full justify-start rounded-md border-l-2 border-transparent pr-9 pl-4 text-sm font-normal text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-foreground data-[active=true]:border-primary data-[active=true]:bg-primary/5 data-[active=true]:font-medium data-[active=true]:text-primary"
 										>
 											{#snippet child(snippetProps: { props: Record<string, unknown> })}
 												{@const href = subItem.href}

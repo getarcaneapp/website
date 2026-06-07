@@ -1,53 +1,92 @@
 <script lang="ts">
-	import ChevronRight from 'virtual:icons/lucide/chevron-right';
-	import FileText from 'virtual:icons/lucide/file-text';
-	import { resolve } from '$app/paths';
+	import type { Component } from 'svelte';
+	import ArrowRight from 'virtual:icons/lucide/arrow-right';
+	import BookOpen from 'virtual:icons/lucide/book-open';
+	import Boxes from 'virtual:icons/lucide/boxes';
+	import Code from 'virtual:icons/lucide/code';
+	import Network from 'virtual:icons/lucide/network';
+	import Rocket from 'virtual:icons/lucide/rocket';
+	import Settings2 from 'virtual:icons/lucide/settings-2';
+	import ShieldCheck from 'virtual:icons/lucide/shield-check';
+	import Terminal from 'virtual:icons/lucide/terminal';
 	import { SidebarNavItems } from '$lib/config/docs.js';
 
-	// Show the same groups as the sidebar, in the same order, minus Community.
-	const sections = SidebarNavItems.filter((s) => s.title !== 'Community').map((s) => ({
-		title: s.title,
-		docs: s.items.flatMap((item) => {
-			const own = item.href ? [{ title: item.title, href: item.href }] : [];
-			const children = item.items.map((c) => ({ title: c.title, href: c.href ?? '' }));
-			return [...own, ...children];
-		})
-	}));
+	type IconComponent = Component<{ class?: string }>;
+
+	// Icon + blurb per sidebar section title (keys must match SidebarNavItems titles).
+	const SECTION_META: Record<string, { icon: IconComponent; description: string }> = {
+		'Get Started': {
+			icon: Rocket,
+			description: 'Install Arcane and get your first instance running.'
+		},
+		Security: {
+			icon: ShieldCheck,
+			description: 'Harden access with RBAC, mTLS, and verified artifacts.'
+		},
+		Configuration: {
+			icon: Settings2,
+			description: 'Environment, appearance, notifications, SSO, and analytics.'
+		},
+		Networking: {
+			icon: Network,
+			description: 'Reverse proxies, WebSockets, and TLS configuration.'
+		},
+		Features: {
+			icon: Boxes,
+			description: 'Containers, images, volumes, networks, Swarm, and more.'
+		},
+		Guides: {
+			icon: BookOpen,
+			description: 'Task-focused walkthroughs for common workflows.'
+		},
+		CLI: {
+			icon: Terminal,
+			description: 'Install and configure the Arcane command-line tool.'
+		},
+		Development: {
+			icon: Code,
+			description: 'Contribute code or translations to Arcane.'
+		}
+	};
+
+	const cards = SidebarNavItems.filter((section) => SECTION_META[section.title]).map((section) => {
+		const docs = section.items.flatMap((item) => [
+			...(item.href ? [{ title: item.title, href: item.href }] : []),
+			...item.items.map((child) => ({ title: child.title, href: child.href ?? '' }))
+		]);
+		return {
+			title: section.title,
+			...SECTION_META[section.title],
+			href: docs[0]?.href ?? '/docs',
+			count: docs.length
+		};
+	});
 </script>
 
-<div class="not-prose grid gap-10">
-	{#each sections as section (section.title)}
-		{#if section.docs.length > 0}
-			<section class="grid gap-4">
-				<div class="flex items-center justify-between gap-4">
-					<h3 class="text-xl font-bold tracking-tight text-foreground">{section.title}</h3>
-				</div>
-				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-					{#each section.docs as d (d.href)}
-						<a
-							class="group relative flex items-center justify-between gap-4 overflow-hidden rounded-xl border border-black/5 bg-zinc-50/30 p-4 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-purple-500/30 hover:bg-white hover:shadow-md hover:shadow-purple-500/5 dark:border-white/5 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]"
-							href={d.href}
-						>
-							<div
-								class="pointer-events-none absolute inset-0 transition-colors duration-500 group-hover:bg-gradient-to-r group-hover:from-purple-500/5 group-hover:to-transparent"
-							></div>
-
-							<div class="relative flex items-center gap-3">
-								<FileText
-									class="size-[1.125rem] shrink-0 text-muted-foreground/50 transition-colors duration-300 group-hover:text-purple-600 dark:group-hover:text-purple-400"
-								/>
-								<span
-									class="text-[0.925rem] leading-tight font-medium tracking-tight text-foreground/90 transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-300"
-									>{d.title}</span
-								>
-							</div>
-							<ChevronRight
-								class="relative size-[1.125rem] shrink-0 text-muted-foreground/30 transition-all duration-300 group-hover:translate-x-1 group-hover:text-purple-600 dark:group-hover:text-purple-400"
-							/>
-						</a>
-					{/each}
-				</div>
-			</section>
-		{/if}
+<div class="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+	{#each cards as card (card.title)}
+		{@const Icon = card.icon}
+		<a
+			href={card.href}
+			class="docs-surface group flex flex-col gap-3 p-5 transition-colors hover:border-primary/40"
+		>
+			<div class="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+				<Icon class="size-5" />
+			</div>
+			<div class="flex-1">
+				<span
+					class="block font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary"
+				>
+					{card.title}
+				</span>
+				<p class="mt-1 text-sm text-muted-foreground">{card.description}</p>
+			</div>
+			<span class="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+				{card.count} article{card.count === 1 ? '' : 's'}
+				<ArrowRight
+					class="size-3.5 transition-transform group-hover:translate-x-0.5"
+				/>
+			</span>
+		</a>
 	{/each}
 </div>

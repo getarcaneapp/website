@@ -3,7 +3,7 @@
 
 	const composeFile = `services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:v1
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'
@@ -11,16 +11,14 @@
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
     environment:
-      - PUID=1000
-      - PGID=1000
-      - DATABASE_URL=sqlite:///app/data/arcane.db
-      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxx
+      - ENCRYPTION_KEY=your-32-char-encryption-key
+      - JWT_SECRET=your-jwt-secret
+      - TZ=UTC
+    cgroup: host
     restart: unless-stopped
 
 volumes:
-  arcane-data:
-    driver: local`;
+  arcane-data:`;
 </script>
 
 <Code.Root lang="yaml" class="m-4 w-full" code={composeFile}>

@@ -77,14 +77,16 @@ const GET_STARTED = group('Get Started', [
 	leaf('setup/installation'),
 	leaf('setup/podman'),
 	leaf('guides/lxc-container'),
-	leaf('setup/migrate-v1'),
+	leaf('setup/migrate-v2'),
 	leaf('setup/next-images')
 ]);
 
 const SECURITY = group('Security', [
 	leaf('security/verify-artifacts'),
 	leaf('setup/socket-proxy'),
-	leaf('security/edge-mtls')
+	leaf('security/edge-mtls'),
+	leaf('security/rbac', 'Access Control'),
+	leaf('security/federated-credentials')
 ]);
 
 const CONFIGURATION = group('Configuration', [

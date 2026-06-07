@@ -61,7 +61,7 @@ export function generateDockerCompose(config: Record<string, string | boolean>):
 	}
 
 	const arcaneService: Record<string, unknown> = {
-		image: 'ghcr.io/getarcaneapp/arcane:latest',
+		image: 'ghcr.io/getarcaneapp/manager:latest',
 		container_name: 'arcane',
 		restart: 'unless-stopped',
 		ports: [`${port}:3552`],

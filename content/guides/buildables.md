@@ -69,8 +69,8 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 	-o /out/arcane \
 	./cmd/main.go
 
-FROM ghcr.io/getarcaneapp/arcane:latest
-# For headless builds, use: ghcr.io/getarcaneapp/arcane-headless:latest
+FROM ghcr.io/getarcaneapp/manager:latest
+# For headless builds, use: ghcr.io/getarcaneapp/agent:latest
 COPY --from=builder /out/arcane /app/arcane
 ```
 

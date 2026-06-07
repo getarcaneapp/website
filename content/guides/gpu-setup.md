@@ -5,7 +5,9 @@ order: 3
 ---
 
 > [!IMPORTANT]
-> This guide assumes GPU drivers are already installed and configured on your host system. Refer to the respective vendor documentation for driver installation. 
+> This guide assumes GPU drivers are already installed and configured on your host system. Refer to the respective vendor documentation for driver installation.
+>
+> Official Arcane images use a minimal hardened runtime base and do not bundle vendor GPU utilities. NVIDIA monitoring relies on `nvidia-smi` being injected by the NVIDIA container runtime. AMD monitoring reads `/sys/class/drm` directly. Intel monitoring requires an image/runtime that provides `intel_gpu_top`.
 
 ## NVIDIA GPU Setup
 
@@ -14,7 +16,7 @@ Configure Arcane with NVIDIA GPU support in your `compose.yaml`:
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'
@@ -50,7 +52,7 @@ Configure Arcane with AMD GPU support in your `compose.yaml`:
 ```yaml
 services:
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'

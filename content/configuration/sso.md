@@ -9,6 +9,7 @@ import * as Code from '$lib/components/ui/code/index.js';
 import OidcTable from '$lib/components/oidc-table.svelte';
 import * as Alert from '$lib/components/ui/alert/index.js';
 import InfoIcon from 'virtual:icons/lucide/info';
+import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
 ## Configure OIDC in the UI
@@ -30,17 +31,32 @@ You can also configure OIDC using environment variables:
 
 <OidcTable />
 
-## Admin Role Assignment
+## Mapping OIDC Groups to Roles
 
-The `OIDC_ADMIN_CLAIM` and `OIDC_ADMIN_VALUE` settings let Arcane make certain users admins based on information in their login token.
+Role assignment is driven from your IdP. Arcane reads the user's group claim on every login and grants role assignments based on the mappings you configure under **Settings → OIDC Mappings**.
 
-- **OIDC_ADMIN_CLAIM**: the part of the login token to check, such as `groups` or `roles`
-- **OIDC_ADMIN_VALUE**: the value or values that should grant admin access. Use commas for more than one value, such as `arcane-admins,super-users`
+1. Make sure the group claim is included in `OIDC_SCOPES` — for group membership, add `groups`: `openid email profile groups`.
+2. Set the **OIDC Groups Claim** under **Settings → Settings** if your IdP uses something other than `groups` (e.g. `realm_access.roles` for Keycloak, `memberOf` for Azure AD).
+3. Add mappings under **Settings → OIDC Mappings**, each binding a claim value to a role and an environment scope (Global or a specific environment).
 
-When someone signs in, Arcane checks whether their token contains the matching value. If it does, they become an admin.
+See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the full role catalog and mapping details.
 
-> [!IMPORTANT]
-> The claim you want to use, such as `groups`, must be included in `OIDC_SCOPES`. For example, if you want group membership to control admin access, make sure your scopes include `groups`: `openid email profile groups`
+## Declarative role mappings (IaC)
+
+Instead of the UI, you can declare OIDC group → role mappings with the `OIDC_ROLE_MAPPINGS` environment variable. It takes a JSON array, where each entry binds a claim value to a role and (optionally) an environment:
+
+```json
+[
+  { "claimValue": "arcane-admins", "roleId": "role_admin" },
+  { "claimValue": "arcane-devops", "roleId": "role_editor", "environmentId": "env-prod" }
+]
+```
+
+- `claimValue` — the value to match in the user's groups claim.
+- `roleId` — the role to grant (see <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the role catalog).
+- `environmentId` — optional; scope the assignment to one environment. Omit for a global assignment.
+
+Arcane reconciles these mappings on every startup, so they are read-only in the UI (shown as environment-managed); update them by changing `OIDC_ROLE_MAPPINGS`. The variable also supports the `_FILE` suffix for Docker secrets.
 
 ## Example Compose Configuration
 
@@ -55,7 +71,5 @@ services:
       - OIDC_CLIENT_SECRET="your_super_secret_client_secret_from_provider"
       - OIDC_ISSUER_URL="https://auth.example.com"
       - OIDC_SCOPES=openid email profile groups
-      - OIDC_ADMIN_CLAIM=groups
-      - OIDC_ADMIN_VALUE=_arcane_admins
-      - OIDC_MERGE_ACCOUNTS=true
+      - OIDC_GROUPS_CLAIM=groups
 ```

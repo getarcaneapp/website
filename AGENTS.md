@@ -2,13 +2,13 @@
 
 ## Project Summary
 - SvelteKit app using Svelte 5 (runes syntax) with Tailwind CSS 4.
-- Docs content is Markdown via MDSX and organized/validated by Velite.
+- Docs content is Markdown via mdsvex and organized/validated by Velite.
 - Static site build (adapter-static) with Cloudflare Workers previews/deployments.
 
 ## Key Paths
-- Content source: `content/` (Markdown; MDSX renders via blueprint).
+- Content source: `content/` (Markdown; mdsvex renders via layout).
 - Velite config: `velite.config.js` (collections + schema).
-- MDSX config: `mdsx.config.js` and `src/lib/components/mdsx/blueprint.svelte`.
+- mdsvex config: `mdsvex.config.js` and `src/lib/components/markdown/layout.svelte`.
 - Docs data/helpers: `src/lib/docs.ts`.
 - Sidebar/nav config: `src/lib/config/docs.ts`.
 - UI primitives: `src/lib/components/ui/` (shadcn-svelte style index exports).

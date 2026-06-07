@@ -27,21 +27,8 @@
 		},
 		{
 			name: 'OIDC_SCOPES',
-			description: 'Scopes to request',
+			description: 'Scopes to request. Include the groups claim if you use OIDC group mappings.',
 			defaultValue: 'openid email profile'
-		},
-		{
-			name: 'OIDC_ADMIN_CLAIM',
-			description: 'Where to find the admin claim in the OIDC token',
-			defaultValue: '—',
-			exampleValue: 'groups'
-		},
-		{
-			name: 'OIDC_ADMIN_VALUE',
-			description:
-				'Values to check in the OIDC_ADMIN_CLAIM to give a user admin access. Multiple values can be comma-separated.',
-			defaultValue: '—',
-			exampleValue: '_admin_group,_admin_group2'
 		},
 		{
 			name: 'OIDC_MERGE_ACCOUNTS',
@@ -67,6 +54,14 @@
 			name: 'OIDC_PROVIDER_LOGO_URL',
 			description: 'Provider logo URL shown on the login screen',
 			defaultValue: '—'
+		},
+		{
+			name: 'OIDC_ROLE_MAPPINGS',
+			description:
+				'Declarative OIDC group→role mappings as a JSON array. Reconciled at every boot; rows are read-only in the UI. Set to [] to wipe env-managed mappings. Supports OIDC_ROLE_MAPPINGS_FILE for Docker secrets.',
+			defaultValue: '—',
+			exampleValue:
+				'[{"claimValue":"docker-admins","roleId":"role_admin"},{"claimValue":"devops","roleId":"role_editor","environmentId":"env-prod"}]'
 		}
 	];
 

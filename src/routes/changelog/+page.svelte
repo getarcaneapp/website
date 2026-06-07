@@ -212,7 +212,7 @@
 	<meta name="description" content={doc.description} />
 </svelte:head>
 
-<div class="docs-theme relative isolate">
+<div class="docs-theme docs-reading relative isolate">
 	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
 	<div class="changelog-shell relative overflow-hidden">
 		<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
@@ -372,11 +372,12 @@
 	}
 
 	.changelog-eyebrow {
+		font-family: var(--font-mono);
 		text-transform: uppercase;
-		letter-spacing: 0.2em;
+		letter-spacing: 0.12em;
 		font-size: 0.7rem;
-		font-weight: 600;
-		color: var(--muted-foreground);
+		font-weight: 500;
+		color: var(--primary);
 	}
 
 	.changelog-title {
@@ -399,7 +400,7 @@
 
 	.changelog-meta-card {
 		padding: 1rem 1.25rem;
-		border-radius: 1.25rem;
+		border-radius: var(--radius);
 		background: color-mix(in oklab, var(--background) 92%, var(--muted) 8%);
 		border: 1px solid var(--changelog-stroke);
 		box-shadow: 0 12px 30px -28px rgba(0, 0, 0, 0.35);
@@ -443,10 +444,9 @@
 		flex-direction: column;
 		gap: 0.75rem;
 		padding: 1rem;
-		border-radius: 1.25rem;
+		border-radius: var(--radius);
 		border: 1px solid var(--changelog-stroke);
 		background: color-mix(in oklab, var(--background) 94%, var(--muted) 6%);
-		backdrop-filter: blur(8px);
 	}
 
 	.changelog-search {
@@ -496,13 +496,13 @@
 
 	.changelog-empty {
 		padding: 1.5rem;
-		border-radius: 1.5rem;
+		border-radius: var(--radius);
 		background: color-mix(in oklab, var(--background) 96%, var(--muted) 4%);
 		border: 1px dashed var(--changelog-stroke);
 		color: var(--muted-foreground);
 	}
 
-	:global(.changelog-body .mdsx) {
+	:global(.changelog-body .markdown) {
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
@@ -510,7 +510,7 @@
 
 	:global(.changelog-entry) {
 		position: relative;
-		border-radius: 1.5rem;
+		border-radius: var(--radius);
 		border: 1px solid var(--changelog-stroke);
 		background: color-mix(in oklab, var(--background) 94%, var(--muted) 6%);
 		box-shadow: 0 16px 42px -36px rgba(0, 0, 0, 0.45);

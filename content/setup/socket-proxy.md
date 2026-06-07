@@ -70,7 +70,7 @@ services:
       - no-new-privileges:true
 
   arcane:
-    image: ghcr.io/getarcaneapp/arcane:latest
+    image: ghcr.io/getarcaneapp/manager:latest
     container_name: arcane
     ports:
       - '3552:3552'
@@ -160,7 +160,7 @@ You can generate the required secrets with the Arcane CLI in a temporary contain
 
 Via Docker Container:
 
-<Snippet text="docker run --rm ghcr.io/getarcaneapp/arcane:latest /app/arcane generate secret" class="mt-2" />
+<Snippet text="docker run --rm ghcr.io/getarcaneapp/manager:latest /app/arcane generate secret" class="mt-2" />
 
 Standalone Arcane Binary:
 

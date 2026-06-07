@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { mainNavItems, SidebarNavItems } from '$lib/config/docs.js';
@@ -13,6 +14,13 @@
 	let { class: className, ...restProps }: ComponentProps<typeof Button> = $props();
 
 	let open = $state(false);
+
+	const isActive = (href?: string | null) => {
+		if (!href) return false;
+		const path = page.url.pathname;
+		if (href === '/') return path === '/';
+		return path === href || path.startsWith(`${href}/`);
+	};
 </script>
 
 {#snippet MobileLink({ href, content, class: className, ...props }: MobileLinkProps)}
@@ -21,7 +29,11 @@
 		onclick={() => {
 			open = false;
 		}}
-		class={cn('text-2xl font-medium', className)}
+		class={cn(
+			'text-2xl font-medium transition-colors',
+			isActive(href) ? 'text-primary' : 'text-foreground hover:text-primary',
+			className
+		)}
 		{...props}
 	>
 		{content}
@@ -71,7 +83,7 @@
 	>
 		<div class="flex flex-col gap-12 overflow-auto px-6 py-6">
 			<div class="flex flex-col gap-4">
-				<div class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">Menu</div>
+				<div class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Menu</div>
 				<div class="flex flex-col gap-3">
 					{@render MobileLink({ href: '/', content: 'Home' })}
 					{#each mainNavItems as item, i (i)}
@@ -82,7 +94,7 @@
 			<div class="flex flex-col gap-8">
 				{#each SidebarNavItems as group (group.title)}
 					<div class="flex flex-col gap-4">
-						<div class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+						<div class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">
 							{group.title}
 						</div>
 						<div class="flex flex-col gap-3">

@@ -26,30 +26,30 @@
 		note: {
 			icon: Info,
 			label: 'Note',
-			class: 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-900 dark:text-blue-100'
+			class: 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-100'
 		},
 		tip: {
 			icon: Lightbulb,
 			label: 'Tip',
 			class:
-				'border-l-green-500 bg-green-50 dark:bg-green-950/30 text-green-900 dark:text-green-100'
+				'border-l-green-500 bg-green-50 dark:bg-green-950/40 text-green-900 dark:text-green-100'
 		},
 		important: {
 			icon: AlertCircle,
 			label: 'Important',
 			class:
-				'border-l-purple-500 bg-purple-50 dark:bg-purple-950/30 text-purple-900 dark:text-purple-100'
+				'border-l-primary bg-purple-50 dark:bg-purple-950/40 text-purple-900 dark:text-purple-100'
 		},
 		warning: {
 			icon: AlertTriangle,
 			label: 'Warning',
 			class:
-				'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/30 text-yellow-900 dark:text-yellow-100'
+				'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/40 text-yellow-900 dark:text-yellow-100'
 		},
 		caution: {
 			icon: OctagonAlert,
 			label: 'Caution',
-			class: 'border-l-red-500 bg-red-50 dark:bg-red-950/30 text-red-900 dark:text-red-100'
+			class: 'border-l-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-100'
 		}
 	};
 
@@ -84,14 +84,16 @@
 {#if type && config}
 	{@const Icon = config.icon}
 	<div
-		class={cn('mt-6 rounded-sm border-l-2 p-4 not-italic', config.class, className)}
+		class={cn('mt-6 rounded-md border-l-[3px] p-4 not-italic', config.class, className)}
 		{...restProps}
 		use:handleMount
 	>
 		<div class="flex min-w-0 items-start gap-3">
 			<Icon class="mt-0.5 size-5 shrink-0" />
 			<div class="min-w-0 flex-1">
-				<div class="mb-1 font-semibold">{config.label}</div>
+				<div class="mb-1.5 font-mono text-xs font-medium tracking-[0.12em] uppercase">
+					{config.label}
+				</div>
 				<div class="min-w-0 [&_.snippet]:w-full [&_.snippet]:max-w-full [&>p]:mb-2 last:[&>p]:mb-0">
 					{@render children?.()}
 				</div>
@@ -100,7 +102,7 @@
 	</div>
 {:else}
 	<blockquote
-		class={cn('mt-6 rounded-sm border-l-2 border-l-primary bg-muted p-5 italic', className)}
+		class={cn('mt-6 rounded-md border-l-[3px] border-l-primary bg-muted p-5', className)}
 		{...restProps}
 		use:handleMount
 	>

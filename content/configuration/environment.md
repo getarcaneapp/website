@@ -31,6 +31,22 @@ Replace each placeholder with the real value from your database.
 - `<postgres_port>`: the port Postgres uses
 - `<postgres_db_name>`: the database name to connect to
 
+## Container runtime user
+
+Official Arcane images set `ARCANE_DEFAULT_NONROOT=true`, so the process drops to the built-in non-root user (`65532:65532`) when `PUID` and `PGID` are not set.
+
+Use `PUID` and `PGID` if mounted files should be owned by a specific host user and group. If you use a custom Unix Docker socket with `DOCKER_HOST`, Arcane uses that socket path when adding the runtime user to the socket group.
+
+## Timezone and scheduled jobs
+
+Arcane runs recurring background jobs — image update polling, auto-updates, vulnerability scans, scheduled pruning, GitOps sync, and environment health checks. Their cron-style schedules are evaluated in the timezone set by `TZ`.
+
+Set `TZ` to an [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) so schedules run at the local times you expect:
+
+<Snippet text="TZ=America/New_York" class="mt-2 mb-2 w-full" />
+
+If `TZ` is unset, Arcane uses the container's local time (`Local`), which is UTC on the official images. Individual job intervals and cron expressions are configured in the Settings UI, or via the environment when `UI_CONFIGURATION_DISABLED=true` or `AGENT_MODE=true` (see [Settings Overrides via Environment](#settings-overrides-via-environment)).
+
 ## Environment Variables
 
 <EnvTable />
