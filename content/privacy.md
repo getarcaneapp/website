@@ -26,6 +26,15 @@ The following is stored locally on your own server or device and is never transm
 
 You can remove this data at any time by deleting your local configuration, signing out, or removing the app/hosting volume.
 
+## Arcane Mobile account deletion
+
+Arcane Mobile connects to user-managed Arcane servers. Account data is stored on the Arcane server selected by the user, not in the Android app.
+
+To delete an Arcane account:
+1. Ask an administrator of your Arcane server to delete your user from Settings > Users.
+2. If you are the administrator, open Arcane, go to Settings > Users, select the user, and delete the account.
+3. For hosted demo accounts, data is temporary and deleted when the demo session ends.
+
 ## Information sent over the network
 
 - **Your Docker hosts & servers.** All communications between your dashboard/client and your Docker environments happen directly within your own network or over the connections you establish. This data is managed or operated by you or your organization, and handling of this data is governed by your own configuration — not by Arcane project maintainers.

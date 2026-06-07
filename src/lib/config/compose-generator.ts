@@ -3,8 +3,6 @@ import type { GeneratorConfig } from '$lib/types/compose-generator.type.js';
 /**
  * Configuration for the Docker Compose Generator UI.
  * Add new fields/sections here to automatically update the generator UI.
- *
- * Env vars mirror the Arcane v2 backend config (backend/internal/config/config.go).
  */
 export const generatorConfig: GeneratorConfig = [
 	{
@@ -22,7 +20,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'appUrl',
 						envName: 'APP_URL',
 						label: 'App URL',
-						description: 'Public URL Arcane is reached on (used for redirects and links)',
+						description: 'The URL arcane runs on',
 						type: 'text',
 						defaultValue: 'http://localhost:3552',
 						placeholder: 'http://localhost:3552',
@@ -32,7 +30,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'port',
 						envName: 'PORT',
 						label: 'Port',
-						description: 'The port Arcane should run on',
+						description: 'The port arcane should run on',
 						type: 'text',
 						defaultValue: '3552',
 						placeholder: '3552',
@@ -42,28 +40,17 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'dataPath',
 						envName: '',
 						label: 'Data Volume',
-						description: 'Docker volume name for persistent data (mounted at /app/data)',
+						description: 'Docker volume name for persistent data',
 						type: 'text',
 						defaultValue: 'arcane-data',
 						placeholder: 'arcane-data',
 						includeInCompose: false
 					},
 					{
-						key: 'timezone',
-						envName: 'TZ',
-						label: 'Timezone (TZ)',
-						description:
-							'IANA timezone used for cron scheduling (e.g. America/New_York, Europe/London)',
-						type: 'text',
-						defaultValue: 'UTC',
-						placeholder: 'UTC',
-						includeInCompose: true
-					},
-					{
 						key: 'puid',
 						envName: 'PUID',
 						label: 'PUID (User ID)',
-						description: 'Optional host user ID that owns files under /app/data',
+						description: 'File owner user ID',
 						type: 'text',
 						defaultValue: '1000',
 						placeholder: '1000',
@@ -73,92 +60,99 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'pgid',
 						envName: 'PGID',
 						label: 'PGID (Group ID)',
-						description: 'Optional host group ID that owns files under /app/data',
+						description: 'File owner group ID',
 						type: 'text',
 						defaultValue: '1000',
 						placeholder: '1000',
 						includeInCompose: true
 					}
 				]
-			},
+			}
+		]
+	},
+	{
+		id: 'dockerAccess',
+		label: 'Docker Access',
+		icon: 'settings',
+		sections: [
 			{
-				id: 'secrets',
-				title: 'Security',
-				description: 'Encryption and authentication secrets',
-				icon: 'shield',
+				id: 'daemon',
+				title: 'Docker Access',
+				description: 'Choose how Arcane talks to Docker.',
+				icon: 'settings',
 				fields: [
 					{
-						key: 'encryptionKey',
-						envName: 'ENCRYPTION_KEY',
-						label: 'Encryption Key',
-						description: 'Key for encrypting sensitive data at rest (auto-generated if empty)',
-						type: 'password',
-						defaultValue: '',
-						placeholder: 'Auto-generated if empty',
-						canGenerate: true,
-						includeInCompose: true
+						key: 'dockerSocket',
+						envName: '',
+						label: 'Docker Socket',
+						description: 'Docker daemon socket path (used only when not using a socket proxy)',
+						type: 'text',
+						defaultValue: '/var/run/docker.sock',
+						placeholder: '/var/run/docker.sock',
+						includeInCompose: false
 					},
 					{
-						key: 'jwtSecret',
-						envName: 'JWT_SECRET',
-						label: 'JWT Secret',
-						description: 'Secret used to sign session tokens (auto-generated if empty)',
-						type: 'password',
-						defaultValue: '',
-						placeholder: 'Auto-generated if empty',
-						canGenerate: true,
-						includeInCompose: true
-					}
-				]
-			},
-			{
-				id: 'projects',
-				title: 'Projects',
-				description:
-					'By default Compose projects live in the data volume (/app/data/projects). Enable this to bind-mount a host directory instead.',
-				icon: 'folder',
-				hasToggle: true,
-				toggleKey: 'enableHostProjects',
-				fields: [
-					{
-						key: 'enableHostProjects',
+						key: 'useSocketProxy',
 						envName: '',
-						label: 'Bind-mount a host directory for projects',
+						label: 'Use Socket Proxy',
+						description:
+							'Use a Docker socket proxy container instead of mounting the Docker socket directly',
 						type: 'checkbox',
 						defaultValue: false,
 						includeInCompose: false
 					},
 					{
-						key: 'projectsPath',
-						envName: 'PROJECTS_DIRECTORY',
-						label: 'Projects Directory (host path)',
-						description: 'Absolute host path, bind-mounted into the container at the same path',
-						type: 'text',
-						defaultValue: '/opt/arcane/projects',
-						placeholder: '/opt/arcane/projects',
-						dependsOn: 'enableHostProjects',
-						// Emitted (env + 1:1 bind mount) together in the generator util
-						// so PROJECTS_DIRECTORY always equals the mount path.
+						key: 'enableSelinux',
+						envName: '',
+						label: 'Enable SELinux compatibility',
+						description:
+							'Add SELinux-related compose settings for mounted paths and direct socket mode',
+						type: 'checkbox',
+						defaultValue: false,
 						includeInCompose: false
 					}
 				]
-			},
+			}
+		]
+	},
+	{
+		id: 'projectStorage',
+		label: 'Project Storage',
+		icon: 'folder',
+		sections: [
 			{
-				id: 'advanced',
-				title: 'Advanced',
-				description: 'Docker and logging settings',
-				icon: 'cog',
+				id: 'projects',
+				title: 'Project Storage',
+				description:
+					"Optional host mount for your projects (compose) folder. It's recommended to have this match on both sides so relative paths work correctly.",
+				icon: 'folder',
 				fields: [
 					{
-						key: 'dockerSocket',
-						envName: 'DOCKER_HOST',
-						label: 'Docker Socket',
-						description: 'Docker daemon socket path',
+						key: 'projectsHostPath',
+						envName: '',
+						label: 'Projects Host Path',
+						description:
+							'Optional absolute host path to mount as Arcane projects directory (for project storage)',
 						type: 'text',
-						defaultValue: '/var/run/docker.sock',
-						placeholder: '/var/run/docker.sock',
-						includeInCompose: false // Used for volume mount
-					},
+						defaultValue: '',
+						placeholder: '/opt/docker/projects',
+						includeInCompose: false
+					}
+				]
+			}
+		]
+	},
+	{
+		id: 'runtime',
+		label: 'Runtime',
+		icon: 'settings',
+		sections: [
+			{
+				id: 'runtime',
+				title: 'Runtime',
+				description: 'Logging and runtime behavior',
+				icon: 'settings',
+				fields: [
 					{
 						key: 'logLevel',
 						envName: 'LOG_LEVEL',
@@ -181,6 +175,44 @@ export const generatorConfig: GeneratorConfig = [
 						description: 'Enable JSON formatted logs',
 						type: 'checkbox',
 						defaultValue: false,
+						includeInCompose: true
+					}
+				]
+			}
+		]
+	},
+	{
+		id: 'secrets',
+		label: 'Security',
+		icon: 'key',
+		sections: [
+			{
+				id: 'secrets',
+				title: 'Security',
+				description: 'Encryption and authentication secrets',
+				icon: 'key',
+				fields: [
+					{
+						key: 'encryptionKey',
+						envName: 'ENCRYPTION_KEY',
+						label: 'Encryption Key',
+						description:
+							'Encryption key for secure stored sensitive data (auto-generated if empty)',
+						type: 'password',
+						defaultValue: '',
+						placeholder: 'Auto-generated if empty',
+						canGenerate: true,
+						includeInCompose: true
+					},
+					{
+						key: 'jwtSecret',
+						envName: 'JWT_SECRET',
+						label: 'JWT Secret',
+						description: 'Session secret (auto-generated if empty)',
+						type: 'password',
+						defaultValue: '',
+						placeholder: 'Auto-generated if empty',
+						canGenerate: true,
 						includeInCompose: true
 					}
 				]
@@ -319,13 +351,24 @@ export const generatorConfig: GeneratorConfig = [
 						includeInCompose: true
 					},
 					{
-						key: 'oidcGroupsClaim',
-						envName: 'OIDC_GROUPS_CLAIM',
-						label: 'Groups Claim',
-						description: "Token claim that contains the user's groups (used for role mapping)",
+						key: 'oidcAdminClaim',
+						envName: 'OIDC_ADMIN_CLAIM',
+						label: 'Admin Claim',
+						description: 'Token claim to check for admin access',
 						type: 'text',
-						defaultValue: 'groups',
+						defaultValue: '',
 						placeholder: 'groups',
+						dependsOn: 'enableOIDC',
+						includeInCompose: true
+					},
+					{
+						key: 'oidcAdminValue',
+						envName: 'OIDC_ADMIN_VALUE',
+						label: 'Admin Value',
+						description: 'Value(s) that grant admin access (comma-separated)',
+						type: 'text',
+						defaultValue: '',
+						placeholder: 'arcane-admins',
 						dependsOn: 'enableOIDC',
 						includeInCompose: true
 					},
@@ -344,6 +387,16 @@ export const generatorConfig: GeneratorConfig = [
 						envName: 'OIDC_AUTO_REDIRECT_TO_PROVIDER',
 						label: 'Auto Redirect',
 						description: 'Automatically redirect users to the OIDC provider on login',
+						type: 'checkbox',
+						defaultValue: false,
+						dependsOn: 'enableOIDC',
+						includeInCompose: true
+					},
+					{
+						key: 'oidcMergeAccounts',
+						envName: 'OIDC_MERGE_ACCOUNTS',
+						label: 'Merge Accounts',
+						description: 'Link OIDC logins to existing local accounts by email',
 						type: 'checkbox',
 						defaultValue: false,
 						dependsOn: 'enableOIDC',

@@ -22,6 +22,7 @@
 	// Tab animation state
 	let activeTab = $state(generatorConfig[0].id);
 	let slideDirection = $state<'left' | 'right'>('right');
+	let highestVisitedTabIndex = $state(0);
 
 	// Derived values for navigation
 	let currentTabIndex = $derived(generatorConfig.findIndex((t) => t.id === activeTab));
@@ -43,12 +44,21 @@
 			.filter(Boolean)
 			.join(' • ')
 	);
+	let stepProgressText = $derived(`Step ${currentTabIndex + 1} of ${stepCount}`);
+
+	function canAccessTab(index: number): boolean {
+		return index <= highestVisitedTabIndex + 1;
+	}
 
 	function handleTabChange(newTab: string) {
 		const currentIndex = generatorConfig.findIndex((t) => t.id === activeTab);
 		const newIndex = generatorConfig.findIndex((t) => t.id === newTab);
+		if (newIndex > highestVisitedTabIndex + 1) return;
 		slideDirection = newIndex > currentIndex ? 'right' : 'left';
 		activeTab = newTab;
+		if (newIndex > highestVisitedTabIndex) {
+			highestVisitedTabIndex = newIndex;
+		}
 	}
 
 	function goToPrevTab() {
@@ -75,6 +85,9 @@
 	}
 
 	function shouldShowField(field: GeneratorField): boolean {
+		if (field.key === 'dockerSocket' && config.useSocketProxy === true) {
+			return false;
+		}
 		if (!field.dependsOn) return true;
 		return config[field.dependsOn] === true;
 	}
@@ -132,6 +145,7 @@
 						{#each generatorConfig as tab, index (tab.id)}
 							<Tabs.Trigger
 								value={tab.id}
+								disabled={!canAccessTab(index)}
 								class="wizard-step h-auto! flex-none! justify-start! rounded-none! border-0! bg-transparent! shadow-none"
 							>
 								<span class="wizard-step__index">{index + 1}</span>
@@ -139,6 +153,7 @@
 							</Tabs.Trigger>
 						{/each}
 					</Tabs.List>
+					<p class="wizard-step-count">{stepProgressText}</p>
 
 					<div class="wizard-progress">
 						<div class="wizard-progress__track">
@@ -209,7 +224,7 @@
 																			handleSelectChange(field.key, value)}
 																	>
 																		<Select.Trigger
-																			class="w-full border-border/50 focus:border-primary/50 focus:ring-primary/20"
+																			class="w-full border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
 																		>
 																			{config[field.key] || field.placeholder || 'Select...'}
 																		</Select.Trigger>
@@ -240,13 +255,13 @@
 																			type={field.type === 'password' ? 'password' : 'text'}
 																			bind:value={config[field.key]}
 																			placeholder={field.placeholder}
-																			class="flex-1 border-border/50 focus:border-primary/50 focus:ring-primary/20"
+																			class="flex-1 border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
 																		/>
 																		<Button
 																			type="button"
 																			variant="outline"
 																			onclick={() => (config[field.key] = generateRandomKey())}
-																			class="border-primary/30 hover:border-primary/50 hover:bg-primary/5"
+																			class="border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5"
 																		>
 																			Generate
 																		</Button>
@@ -269,7 +284,7 @@
 																		type={field.type === 'password' ? 'password' : 'text'}
 																		bind:value={config[field.key]}
 																		placeholder={field.placeholder}
-																		class="border-border/50 focus:border-primary/50 focus:ring-primary/20"
+																		class="border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
 																	/>
 																</div>
 															</div>
@@ -323,7 +338,7 @@
 						size="sm"
 						onclick={goToPrevTab}
 						disabled={!canGoPrev}
-						class="flex items-center gap-2 border-border/50 hover:border-primary/30 disabled:opacity-40"
+						class="flex items-center gap-2 border-border/50 hover:border-purple-500/30 disabled:opacity-40"
 					>
 						<ChevronLeft class="h-4 w-4" />
 						Back
@@ -334,7 +349,7 @@
 						size="sm"
 						onclick={isLastStep ? handleGenerateDockerCompose : goToNextTab}
 						disabled={!canGoNext && !isLastStep}
-						class="wizard-next flex items-center gap-2 border-border/50 hover:border-primary/30 disabled:opacity-40"
+						class="wizard-next flex items-center gap-2 border-border/50 hover:border-purple-500/30 disabled:opacity-40"
 					>
 						{#if isLastStep}
 							<FileText class="h-4 w-4" />
@@ -383,6 +398,12 @@
 		overflow-x: auto;
 	}
 
+	.wizard-step-count {
+		font-size: 0.78rem;
+		color: var(--muted-foreground);
+		letter-spacing: 0.05em;
+	}
+
 	.wizard-shell :global(.wizard-step) {
 		flex: 0 0 auto;
 		display: inline-flex;
@@ -405,15 +426,25 @@
 		box-shadow: none;
 	}
 
+	.wizard-step:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+
+	.wizard-step:disabled:hover {
+		border-bottom-color: transparent;
+	}
+
 	.wizard-step__index {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 1.35rem;
-		height: 1.35rem;
+		display: inline-grid;
+		place-items: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		padding: 0;
 		border-radius: 999px;
 		font-size: 0.65rem;
 		font-weight: 700;
+		line-height: 1;
 		background: transparent;
 		border: 1px solid color-mix(in oklab, var(--border) 65%, transparent);
 		color: var(--muted-foreground);
@@ -477,7 +508,7 @@
 	}
 
 	.wizard-shell :global(.wizard-panel) {
-		border-radius: var(--radius);
+		border-radius: 1.4rem;
 		background: color-mix(in oklab, var(--card) 70%, transparent);
 		box-shadow: 0 12px 32px -32px oklch(0 0 0 / 0.35);
 	}
@@ -495,7 +526,7 @@
 		display: grid;
 		gap: 0.6rem;
 		padding: 0.75rem;
-		border-radius: var(--radius);
+		border-radius: 0.9rem;
 		border: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
 		background: color-mix(in oklab, var(--background) 88%, transparent);
 	}
@@ -531,7 +562,7 @@
 	}
 
 	.wizard-summary__card {
-		border-radius: var(--radius);
+		border-radius: 1.25rem;
 		border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
 		background: color-mix(in oklab, var(--background) 85%, transparent);
 		padding: 1.25rem 1.5rem 1.35rem;
@@ -540,6 +571,7 @@
 		box-shadow:
 			0 24px 50px -45px oklch(0 0 0 / 0.6),
 			0 0 0 1px color-mix(in oklab, var(--border) 25%, transparent);
+		animation: summaryFloat 7s ease-in-out infinite;
 		transition:
 			transform 0.35s ease,
 			box-shadow 0.35s ease;

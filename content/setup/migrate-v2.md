@@ -178,7 +178,7 @@ See <Link href="/docs/guides/custom-metadata">Custom Metadata</Link>.
 ## 7. Update the container image and runtime
 
 - Change the image to `ghcr.io/getarcaneapp/manager:v2`.
-- Set `APP_URL` to the exact URL your browser uses to reach Arcane (scheme, host, and port). v2 blocks cookie-authenticated cross-origin writes, so a missing or mismatched `APP_URL` causes `403 Cross-origin request blocked` errors in the UI. Behind a reverse proxy, also configure <Link href="/docs/configuration/websockets-reverse-proxies#trusted-proxies">Trusted proxies</Link>.
+- Set `APP_URL` to the exact URL your browser uses to reach Arcane (scheme, host, and port). v2 blocks cookie-authenticated cross-origin writes, so a missing or mismatched `APP_URL` causes `403 Cross-origin request blocked` errors in the UI. Behind a reverse proxy, also configure <Link href="/docs/configuration/websockets-reverse-proxies#trust-the-proxy-with-trusted_proxies">trusted proxies</Link>.
 - Stop relying on root-owned writes from the Arcane container.
 - Check write permissions for `/app/data`, your projects directory, `/builds`, and `/backups`.
 - Use `PUID` and `PGID` only if bind-mounted host files need a specific host owner.

@@ -37,6 +37,25 @@ services:
 
 where USER is the id of your user.
 
+If you are on Windows 11 with Podman Desktop, the socket is exposed inside the VM and this mount has been used successfully:
+
+```diff
+services:
+  arcane:
+    volumes:
+      - /run/podman/podman.sock:/var/run/docker.sock
+```
+
+If you mount additional volumes, keep Arcane’s data mount as normal:
+
+```diff
+services:
+  arcane:
+    volumes:
+      - /run/podman/podman.sock:/var/run/docker.sock
+      - ./arcane-data:/app/data
+```
+
 ## 3. Limitations:
 
 Podman exposes a Docker-compliant API through the socket allowing Arcane to manage containers as though it were using Docker. However, podman native features, e.g. Quadlets, Pods, are not exposed through the API. Additional development is needed to support native Podman features.

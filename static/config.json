@@ -1765,6 +1765,21 @@
       "sourceSymbol": "models.Settings.TemplatesDirectory"
     },
     {
+      "env": "VOLUME_BROWSER_HELPER_IDLE_TIMEOUT",
+      "settingKey": "volumeBrowserHelperIdleTimeout",
+      "description": "Minutes a volume-browser helper container may sit idle before automatic removal (default: 10",
+      "defaultValue": "10",
+      "type": "number",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "internal",
+      "public": false,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.VolumeBrowserHelperIdleTimeout"
+    },
+    {
       "env": "TRIVY_CONCURRENT_SCAN_CONTAINERS",
       "settingKey": "trivyConcurrentScanContainers",
       "description": "Maximum number of concurrent Trivy scan containers for manual and scheduled scans. Minimum 1",
