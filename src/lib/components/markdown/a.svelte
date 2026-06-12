@@ -13,7 +13,10 @@
 	{href}
 	{target}
 	{rel}
-	class={cn('font-medium underline underline-offset-4', className)}
+	class={cn(
+		'font-medium underline decoration-primary/40 underline-offset-[0.2em] hover:decoration-primary',
+		className
+	)}
 	{...restProps}
 >
 	{@render children?.()}

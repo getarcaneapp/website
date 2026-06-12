@@ -133,19 +133,16 @@
 	/>
 </svelte:head>
 
-<div class="docs-theme docs-reading relative isolate">
-	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
+<div class="relative isolate">
 	<div class="container mx-auto flex min-w-0 flex-1 px-4 py-6 lg:py-8">
 		<div class="mx-auto flex w-full max-w-400 flex-col gap-8">
 			<!-- Header -->
 			<header class="sbom-hero">
 				<div class="sbom-hero__title">
-					<div class="sbom-hero__icon">
-						<Shield class="size-6 text-white" />
-					</div>
+					<Shield class="size-6 text-muted-foreground" />
 					<div>
 						<p class="sbom-eyebrow">Security transparency</p>
-						<h1 class="scroll-m-20 font-heading text-4xl font-semibold tracking-tight">
+						<h1 class="scroll-m-20 font-heading text-3xl font-semibold tracking-tight">
 							Software Bill of Materials
 						</h1>
 					</div>
@@ -333,11 +330,8 @@
 	.sbom-hero {
 		display: grid;
 		gap: 0.85rem;
-		padding: 1.5rem;
-		border-radius: 1.5rem;
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-		background: color-mix(in oklab, var(--card) 75%, transparent);
-		box-shadow: 0 28px 60px -50px oklch(0 0 0 / 0.45);
+		padding-bottom: 1.5rem;
+		border-bottom: 1px solid var(--border);
 	}
 
 	.sbom-hero__title {
@@ -347,23 +341,11 @@
 		flex-wrap: wrap;
 	}
 
-	.sbom-hero__icon {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 44px;
-		height: 44px;
-		border-radius: 14px;
-		background: linear-gradient(135deg, oklch(0.606 0.25 292.717), oklch(0.7 0.23 300));
-		box-shadow: 0 16px 30px -20px oklch(0.6 0.2 292 / 0.6);
-	}
-
 	.sbom-eyebrow {
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.32em;
-		color: var(--muted-foreground);
-		font-weight: 600;
+		font-size: 0.75rem;
+		font-family: var(--font-mono);
+		color: var(--primary);
+		font-weight: 500;
 	}
 
 	.sbom-hero__subtitle {
@@ -378,9 +360,9 @@
 		justify-content: space-between;
 		gap: 1.5rem;
 		padding: 1rem 1.25rem;
-		border-radius: 1.25rem;
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-		background: color-mix(in oklab, var(--background) 90%, transparent);
+		border-radius: var(--radius);
+		border: 1px solid var(--border);
+		background: var(--background);
 	}
 
 	.sbom-meta__left {
@@ -400,10 +382,6 @@
 		color: var(--muted-foreground);
 	}
 
-	:global(.sbom-download) {
-		border-color: color-mix(in oklab, var(--primary) 35%, transparent);
-	}
-
 	.sbom-controls {
 		display: grid;
 		gap: 1.5rem;
@@ -415,11 +393,9 @@
 	}
 
 	.sbom-control__label {
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.26em;
+		font-size: 0.75rem;
 		color: var(--muted-foreground);
-		font-weight: 600;
+		font-weight: 500;
 	}
 
 	.sbom-stats {
@@ -429,9 +405,9 @@
 	}
 
 	.sbom-stat {
-		border-radius: 1.1rem;
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-		background: color-mix(in oklab, var(--card) 75%, transparent);
+		border-radius: var(--radius);
+		border: 1px solid var(--border);
+		background: var(--background);
 		padding: 1rem 1.1rem;
 	}
 
@@ -460,27 +436,25 @@
 	}
 
 	.sbom-search__label {
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.26em;
+		font-size: 0.75rem;
 		color: var(--muted-foreground);
-		font-weight: 600;
+		font-weight: 500;
 	}
 
 	.sbom-search__input {
-		height: 42px;
-		border-radius: 0.9rem;
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-		background: color-mix(in oklab, var(--background) 92%, transparent);
+		height: 38px;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--border);
+		background: var(--background);
 		padding: 0 0.9rem;
-		font-size: 0.95rem;
+		font-size: 0.9rem;
 		color: var(--foreground);
 	}
 
 	.sbom-search__input:focus-visible {
 		outline: none;
 		box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent);
-		border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+		border-color: var(--primary);
 	}
 
 	.sbom-filter-tabs {
@@ -489,25 +463,23 @@
 	}
 
 	.sbom-table {
-		border-radius: 1.25rem;
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+		border-radius: var(--radius);
+		border: 1px solid var(--border);
 		overflow: hidden;
-		background: color-mix(in oklab, var(--card) 75%, transparent);
+		background: var(--background);
 	}
 
 	:global(.sbom-table__head) {
-		background: color-mix(in oklab, var(--background) 85%, transparent);
+		background: var(--surface);
 	}
 
 	:global(.sbom-table__head) :global(th) {
-		font-size: 0.7rem;
-		letter-spacing: 0.24em;
-		text-transform: uppercase;
+		font-size: 0.75rem;
 		color: var(--muted-foreground);
 	}
 
 	:global(.sbom-table__row) {
-		border-color: color-mix(in oklab, var(--border) 60%, transparent);
+		border-color: var(--border);
 	}
 
 	:global(.sbom-table__package),

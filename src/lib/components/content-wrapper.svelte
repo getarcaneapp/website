@@ -7,13 +7,9 @@
 </script>
 
 <div class="relative flex max-w-[100vw] flex-col text-foreground">
-	<div class="flex min-h-screen w-full justify-center">
-		<main class="flex w-full justify-center">
-			<div
-				class="w-full px-4 py-6 sm:max-w-4xl sm:px-6 sm:py-10 md:max-w-5xl md:px-8 lg:max-w-7xl xl:max-w-440"
-			>
-				{@render children?.()}
-			</div>
-		</main>
-	</div>
+	<main class="flex min-h-screen w-full justify-center">
+		<div class="mx-auto w-full max-w-screen-2xl px-4 py-6 sm:py-10 lg:px-6">
+			{@render children?.()}
+		</div>
+	</main>
 </div>

@@ -7,13 +7,11 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 </script>
 
-<div class="docs-theme docs-reading relative isolate">
-	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
+<div class="relative isolate">
 	<ContentWrapper>
 		<section class="generator-hero px-4">
 			<div class="generator-hero__inner generator-offset mx-auto max-w-375">
 				<div class="generator-hero__intro">
-					<p class="generator-hero__eyebrow">Compose Generator</p>
 					<h1 class="generator-hero__title">Docker Compose Generator</h1>
 					<p class="generator-hero__subtitle">
 						Follow the guided steps to configure Arcane services, credentials, and storage. Your
@@ -21,21 +19,11 @@
 					</p>
 				</div>
 				<div class="generator-hero__links">
-					<Button
-						variant="outline"
-						size="sm"
-						href="/docs/setup/installation"
-						class="group border-primary/30 hover:border-primary/50 hover:bg-primary/5"
-					>
+					<Button variant="outline" size="sm" href="/docs/setup/installation" class="group">
 						<BookOpen class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
 						Setup Guide
 					</Button>
-					<Button
-						variant="outline"
-						size="sm"
-						href="/docs/configuration/environment"
-						class="group border-primary/30 hover:border-primary/50 hover:bg-primary/5"
-					>
+					<Button variant="outline" size="sm" href="/docs/configuration/environment" class="group">
 						<Settings class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
 						Environment Docs
 					</Button>
@@ -56,20 +44,10 @@
 		margin: 1.25rem 0 1rem;
 	}
 
-	.generator-hero__eyebrow {
-		margin: 0 0 0.5rem;
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--primary);
-		font-weight: 500;
-	}
-
 	.generator-hero__title {
-		margin: 0.7rem 0 0.5rem;
+		margin: 0 0 0.5rem;
 		font-size: clamp(1.9rem, 3vw, 2.6rem);
-		font-weight: 800;
+		font-weight: 600;
 		letter-spacing: -0.02em;
 	}
 

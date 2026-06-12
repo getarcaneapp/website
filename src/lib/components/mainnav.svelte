@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import { cn } from '$lib/utils.js';
 
 	let { items, class: className = '' } = $props<{
@@ -15,18 +14,18 @@
 	};
 </script>
 
-<nav class="{className} flex items-center gap-1 text-sm">
+<nav class="{className} flex items-center gap-5 text-sm">
 	{#each items as item (item.href)}
-		<Button
+		<a
 			href={item.href}
-			variant="ghost"
-			size="sm"
 			class={cn(
-				'text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground',
-				isActive(item.href) && 'bg-accent text-primary'
+				'transition-colors duration-200',
+				isActive(item.href)
+					? 'font-medium text-foreground'
+					: 'text-muted-foreground hover:text-foreground'
 			)}
 		>
 			{item.label}
-		</Button>
+		</a>
 	{/each}
 </nav>

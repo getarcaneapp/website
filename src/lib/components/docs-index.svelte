@@ -1,9 +1,12 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
+	import ArrowUpCircle from 'virtual:icons/lucide/arrow-up-circle';
 	import BookOpen from 'virtual:icons/lucide/book-open';
 	import Boxes from 'virtual:icons/lucide/boxes';
 	import Code from 'virtual:icons/lucide/code';
+	import KeyRound from 'virtual:icons/lucide/key-round';
+	import LayoutTemplate from 'virtual:icons/lucide/layout-template';
 	import Network from 'virtual:icons/lucide/network';
 	import Rocket from 'virtual:icons/lucide/rocket';
 	import Settings2 from 'virtual:icons/lucide/settings-2';
@@ -19,25 +22,37 @@
 			icon: Rocket,
 			description: 'Install Arcane and get your first instance running.'
 		},
-		Security: {
-			icon: ShieldCheck,
-			description: 'Harden access with RBAC, mTLS, and verified artifacts.'
+		Features: {
+			icon: Boxes,
+			description: 'Containers, images, volumes, networks, Swarm, and more.'
+		},
+		Templates: {
+			icon: LayoutTemplate,
+			description: 'Reusable project templates and template registries.'
 		},
 		Configuration: {
 			icon: Settings2,
-			description: 'Environment, appearance, notifications, SSO, and analytics.'
+			description: 'Environment variables, appearance, notifications, and analytics.'
+		},
+		'Authentication & Access': {
+			icon: KeyRound,
+			description: 'SSO, access control, and federated credentials.'
 		},
 		Networking: {
 			icon: Network,
 			description: 'Reverse proxies, WebSockets, and TLS configuration.'
 		},
-		Features: {
-			icon: Boxes,
-			description: 'Containers, images, volumes, networks, Swarm, and more.'
+		'Security & Hardening': {
+			icon: ShieldCheck,
+			description: 'Socket proxy, edge mTLS, and verified artifacts.'
 		},
 		Guides: {
 			icon: BookOpen,
 			description: 'Task-focused walkthroughs for common workflows.'
+		},
+		'Upgrade & Migration': {
+			icon: ArrowUpCircle,
+			description: 'Move to Arcane 2.0 and try preview builds.'
 		},
 		CLI: {
 			icon: Terminal,
@@ -68,7 +83,7 @@
 		{@const Icon = card.icon}
 		<a
 			href={card.href}
-			class="docs-surface group flex flex-col gap-3 p-5 transition-colors hover:border-primary/40"
+			class="group flex flex-col gap-3 docs-surface p-5 transition-colors hover:border-primary/40"
 		>
 			<div class="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
 				<Icon class="size-5" />
@@ -83,9 +98,7 @@
 			</div>
 			<span class="flex items-center gap-1 text-xs font-medium text-muted-foreground">
 				{card.count} article{card.count === 1 ? '' : 's'}
-				<ArrowRight
-					class="size-3.5 transition-transform group-hover:translate-x-0.5"
-				/>
+				<ArrowRight class="size-3.5 transition-transform group-hover:translate-x-0.5" />
 			</span>
 		</a>
 	{/each}

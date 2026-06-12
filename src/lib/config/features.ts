@@ -5,6 +5,7 @@ import Clock from 'virtual:icons/lucide/clock';
 import Globe from 'virtual:icons/lucide/globe';
 import HardDrive from 'virtual:icons/lucide/hard-drive';
 import Package from 'virtual:icons/lucide/package';
+import ShieldCheck from 'virtual:icons/lucide/shield-check';
 import Sparkles from 'virtual:icons/lucide/sparkles';
 import Wrench from 'virtual:icons/lucide/wrench';
 
@@ -14,7 +15,6 @@ export interface Feature {
 	icon: IconComponent;
 	title: string;
 	description: string;
-	fullWidth?: boolean;
 }
 
 export const features: Feature[] = [
@@ -54,10 +54,13 @@ export const features: Feature[] = [
 		description: 'Visual graphs for CPU, memory, and network usage.'
 	},
 	{
+		icon: ShieldCheck,
+		title: 'Vulnerability Scanning',
+		description: 'Scan images for known vulnerabilities right from the dashboard.'
+	},
+	{
 		icon: BookOpen,
 		title: 'Fully Documented API',
-		description:
-			'RESTful API built with Huma on Gin, featuring built-in OpenAPI 3.1 documentation.',
-		fullWidth: true
+		description: 'RESTful API built with Huma on Gin, featuring built-in OpenAPI 3.1 documentation.'
 	}
 ];
