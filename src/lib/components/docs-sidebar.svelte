@@ -33,29 +33,25 @@
 </script>
 
 <Sidebar.Root
-	class="sticky top-24 z-30 hidden h-auto bg-transparent px-2 lg:flex lg:h-[calc(100vh-6rem)] lg:flex-col lg:self-start lg:overflow-hidden lg:px-3 lg:pb-6"
+	class="sticky top-14 z-30 hidden h-auto border-r border-border bg-transparent px-2 lg:flex lg:h-[calc(100vh-3.5rem)] lg:flex-col lg:self-start lg:overflow-hidden lg:pr-4 lg:pb-6"
 	collapsible="none"
 	{...restProps}
 >
-	<Sidebar.Content
-		class="no-scrollbar min-h-0 flex-1 overflow-y-auto rounded-xl border border-border bg-card/85 px-2 py-4 shadow-sm backdrop-blur-md"
-	>
+	<Sidebar.Content class="no-scrollbar min-h-0 flex-1 overflow-y-auto bg-transparent py-6">
 		{#each navItems as item (item.title)}
-			<Sidebar.Group class="mt-5 first:mt-0 px-0 py-0">
-				<Sidebar.GroupLabel
-					class="px-2 font-mono text-xs font-medium tracking-[0.12em] text-foreground/70 uppercase"
-				>
+			<Sidebar.Group class="mt-6 px-0 py-0 first:mt-0">
+				<Sidebar.GroupLabel class="px-0 text-sm font-medium text-foreground">
 					{item.title}
 				</Sidebar.GroupLabel>
 				<Sidebar.GroupContent>
 					{#if item.items.length}
-						<Sidebar.Menu class="gap-0.5">
+						<Sidebar.Menu class="mt-1 gap-0.5 border-l border-border pl-0">
 							{#each item.items as subItem (subItem.href)}
 								{#if subItem.items.length === 0}
 									<Sidebar.MenuItem>
 										<Sidebar.MenuButton
 											isActive={isItemActive(subItem)}
-											class="group relative h-7 w-full justify-start rounded-md border-l-2 border-transparent pr-2.5 pl-4 text-sm font-normal text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-foreground data-[active=true]:border-primary data-[active=true]:bg-primary/5 data-[active=true]:font-medium data-[active=true]:text-primary"
+											class="group relative -ml-px h-8 w-full justify-start rounded-none border-l border-transparent pr-2.5 pl-3 text-sm font-normal text-muted-foreground transition-colors duration-150 hover:bg-transparent hover:text-foreground data-[active=true]:border-primary data-[active=true]:bg-transparent data-[active=true]:font-medium data-[active=true]:text-foreground"
 										>
 											{#snippet child(snippetProps: { props: Record<string, unknown> })}
 												{@const href = subItem.href}
@@ -87,7 +83,7 @@
 									<Sidebar.MenuItem>
 										<Sidebar.MenuButton
 											isActive={isItemActive(subItem)}
-											class="group relative h-7 w-full justify-start rounded-md border-l-2 border-transparent pr-9 pl-4 text-sm font-normal text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-foreground data-[active=true]:border-primary data-[active=true]:bg-primary/5 data-[active=true]:font-medium data-[active=true]:text-primary"
+											class="group relative -ml-px h-8 w-full justify-start rounded-none border-l border-transparent pr-9 pl-3 text-sm font-normal text-muted-foreground transition-colors duration-150 hover:bg-transparent hover:text-foreground data-[active=true]:border-primary data-[active=true]:bg-transparent data-[active=true]:font-medium data-[active=true]:text-foreground"
 										>
 											{#snippet child(snippetProps: { props: Record<string, unknown> })}
 												{@const href = subItem.href}

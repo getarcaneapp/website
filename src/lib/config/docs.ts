@@ -76,31 +76,7 @@ function group(title: string, children: Array<SidebarNavItem | null>): SidebarNa
 const GET_STARTED = group('Get Started', [
 	leaf('setup/installation'),
 	leaf('setup/podman'),
-	leaf('guides/lxc-container'),
-	leaf('setup/migrate-v2'),
-	leaf('setup/next-images')
-]);
-
-const SECURITY = group('Security', [
-	leaf('security/verify-artifacts'),
-	leaf('setup/socket-proxy'),
-	leaf('security/edge-mtls'),
-	leaf('security/rbac', 'Access Control'),
-	leaf('security/federated-credentials')
-]);
-
-const CONFIGURATION = group('Configuration', [
-	leaf('configuration/environment'),
-	leaf('configuration/appearance'),
-	leaf('configuration/notifications'),
-	leaf('configuration/sso'),
-	leaf('configuration/analytics')
-]);
-
-const NETWORKING = group('Networking', [
-	leaf('configuration/proxy'),
-	leaf('configuration/websockets-reverse-proxies'),
-	leaf('configuration/tls')
+	leaf('guides/lxc-container')
 ]);
 
 const SWARM_PARENT: SidebarNavItem = {
@@ -123,14 +99,47 @@ const FEATURES = group('Features', [
 	leaf('features/networks'),
 	leaf('features/vulnerability-scans'),
 	leaf('features/environments'),
-	leaf('guides/updates'),
-	leaf('guides/custom-metadata'),
-	docByPath.has('templates') ? leaf('templates') : null,
-	docByPath.has('templates/registries') ? leaf('templates/registries') : null,
 	SWARM_PARENT
 ]);
 
-const GUIDES = group('Guides', [leaf('guides/buildables'), leaf('guides/gpu-setup')]);
+const TEMPLATES = group('Templates', [
+	docByPath.has('templates') ? leaf('templates', 'Using Templates') : null,
+	docByPath.has('templates/registries') ? leaf('templates/registries') : null
+]);
+
+const CONFIGURATION = group('Configuration', [
+	leaf('configuration/environment'),
+	leaf('configuration/appearance'),
+	leaf('configuration/notifications'),
+	leaf('configuration/analytics')
+]);
+
+const AUTH_ACCESS = group('Authentication & Access', [
+	leaf('configuration/sso'),
+	leaf('security/rbac', 'Access Control'),
+	leaf('security/federated-credentials')
+]);
+
+const NETWORKING = group('Networking', [
+	leaf('configuration/proxy'),
+	leaf('configuration/websockets-reverse-proxies'),
+	leaf('configuration/tls')
+]);
+
+const SECURITY = group('Security & Hardening', [
+	leaf('setup/socket-proxy'),
+	leaf('security/edge-mtls'),
+	leaf('security/verify-artifacts')
+]);
+
+const GUIDES = group('Guides', [
+	leaf('guides/updates'),
+	leaf('guides/custom-metadata'),
+	leaf('guides/buildables'),
+	leaf('guides/gpu-setup')
+]);
+
+const UPGRADE = group('Upgrade & Migration', [leaf('setup/migrate-v2'), leaf('setup/next-images')]);
 
 const CLI = group('CLI', [leaf('cli/install'), leaf('cli/config')]);
 
@@ -150,10 +159,13 @@ const COMMUNITY: SidebarNavItem = {
 
 const sectionNavItems: SidebarNavItem[] = [
 	GET_STARTED,
-	SECURITY,
-	CONFIGURATION,
-	NETWORKING,
+	UPGRADE,
 	FEATURES,
+	TEMPLATES,
+	CONFIGURATION,
+	AUTH_ACCESS,
+	NETWORKING,
+	SECURITY,
 	GUIDES,
 	CLI,
 	DEVELOPMENT

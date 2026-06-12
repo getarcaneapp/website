@@ -7,7 +7,7 @@
 
 <th
 	class={cn(
-		'px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right',
+		'bg-surface px-4 py-2 text-left text-xs font-medium text-muted-foreground [&[align=center]]:text-center [&[align=right]]:text-right',
 		className
 	)}
 	{...restProps}

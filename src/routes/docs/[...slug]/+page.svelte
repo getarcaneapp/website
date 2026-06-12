@@ -42,17 +42,14 @@
 </svelte:head>
 
 <div class="flex min-w-0 flex-1">
-	<div
-		use:attachToc
-		class="mx-auto flex w-full max-w-[88rem] min-w-0 flex-1 justify-center gap-12 px-4 py-8 sm:px-6 lg:px-10"
-	>
-		<article class="w-full min-w-0 max-w-4xl">
+	<div use:attachToc class="mx-auto flex w-full min-w-0 flex-1 justify-center gap-12 py-8 lg:pl-8">
+		<article class="w-full max-w-3xl min-w-0">
 			<!-- Breadcrumb -->
 			<nav
-				class="mb-5 flex flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground"
+				class="mb-5 flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground"
 				aria-label="Breadcrumb"
 			>
-				<a href="/docs" class="transition-colors hover:text-foreground">docs</a>
+				<a href="/docs" class="transition-colors hover:text-foreground">Docs</a>
 				{#each breadcrumbs as crumb, i (crumb)}
 					<ChevronRight class="size-3 text-muted-foreground/50" />
 					<span class={i === breadcrumbs.length - 1 ? 'text-foreground' : ''}>{crumb}</span>
@@ -61,11 +58,11 @@
 
 			<!-- Page header -->
 			<header class="border-b border-border pb-6">
-				<h1 class="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
+				<h1 class="font-heading text-3xl font-semibold tracking-tight">
 					{doc.title}
 				</h1>
 				{#if doc.description}
-					<p class="mt-3 text-lg leading-relaxed text-balance text-muted-foreground">
+					<p class="mt-3 text-base leading-relaxed text-balance text-muted-foreground">
 						{doc.description}
 					</p>
 				{/if}
@@ -82,7 +79,7 @@
 					{#if neighbors.previous}
 						<a
 							href={neighbors.previous.href}
-							class="docs-surface group flex flex-col gap-1 p-4 transition-colors hover:border-primary/40"
+							class="group flex flex-col gap-1 docs-surface p-4 transition-colors hover:bg-surface"
 						>
 							<span class="flex items-center gap-1 text-xs text-muted-foreground">
 								<ChevronLeft class="size-3.5" /> Previous
@@ -97,7 +94,7 @@
 					{#if neighbors.next}
 						<a
 							href={neighbors.next.href}
-							class="docs-surface group flex flex-col gap-1 p-4 text-right transition-colors hover:border-primary/40 sm:items-end"
+							class="group flex flex-col gap-1 docs-surface p-4 text-right transition-colors hover:bg-surface sm:items-end"
 						>
 							<span class="flex items-center gap-1 text-xs text-muted-foreground">
 								Next <ChevronRight class="size-3.5" />
@@ -130,12 +127,8 @@
 
 		{#if toc.current.length > 0}
 			<aside class="hidden w-56 shrink-0 xl:block">
-				<div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
-					<p
-						class="mb-3 font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
-					>
-						On this page
-					</p>
+				<div class="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
+					<p class="mb-3 text-sm font-medium text-foreground">On this page</p>
 					<div class="border-l border-border pl-4">
 						<Toc.Root toc={toc.current} />
 					</div>

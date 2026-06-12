@@ -117,7 +117,7 @@
 	{@const Content = content}
 	<kbd
 		class={cn(
-			"pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-border/60 bg-muted/60 px-1 font-sans text-[0.7rem] font-medium text-muted-foreground shadow-[0_2px_6px_-4px_oklch(0_0_0/0.35)] select-none dark:bg-surface/70 dark:text-surface-foreground/70 [&_svg:not([class*='size-'])]:size-3",
+			"pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-border bg-muted px-1 font-sans text-[0.7rem] font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3",
 			className
 		)}
 		{...restProps}
@@ -137,7 +137,7 @@
 				{...snippetProps.props}
 				variant="secondary"
 				class={cn(
-					'relative h-9 w-full justify-start border border-border/60 bg-background/80 pl-3 font-normal text-muted-foreground shadow-[0_8px_20px_-20px_oklch(0_0_0/0.45)] backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:text-foreground sm:pr-12 md:w-40 lg:w-56 xl:w-64 dark:border-white/10 dark:bg-surface/80 dark:text-surface-foreground/70 dark:hover:border-primary/40'
+					'relative h-8 w-full justify-start border border-border bg-background pl-3 font-normal text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground sm:pr-12 md:w-40 lg:w-56 xl:w-64'
 				)}
 				onclick={() => (open = true)}
 			>
@@ -152,7 +152,7 @@
 	</Dialog.Trigger>
 	<Dialog.Content
 		showCloseButton={false}
-		class="rounded-3xl border border-border/60 bg-background/95 bg-clip-padding p-2 pb-2 shadow-[0_18px_50px_-20px_oklch(0_0_0/0.4)] backdrop-blur-xl dark:bg-surface/95 dark:shadow-[0_20px_60px_-25px_oklch(0_0_0/0.55)]"
+		class="rounded-lg border border-border bg-popover p-2 pb-2 shadow-lg"
 	>
 		<Dialog.Header class="sr-only">
 			<Dialog.Title>Search documentation...</Dialog.Title>
@@ -160,7 +160,7 @@
 		</Dialog.Header>
 
 		<Command.Root
-			class="rounded-none bg-transparent **:data-[slot=command-input]:h-10 **:data-[slot=command-input]:py-0 **:data-[slot=command-input]:text-sm **:data-[slot=command-input]:placeholder:text-muted-foreground/70 **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:h-10 **:data-[slot=command-input-wrapper]:rounded-2xl **:data-[slot=command-input-wrapper]:border **:data-[slot=command-input-wrapper]:border-border/60 **:data-[slot=command-input-wrapper]:bg-background/80 **:data-[slot=command-input-wrapper]:px-2 **:data-[slot=command-input-wrapper]:shadow-[inset_0_1px_0_oklch(1_0_0/0.08)]"
+			class="rounded-none bg-transparent **:data-[slot=command-input]:h-10 **:data-[slot=command-input]:py-0 **:data-[slot=command-input]:text-sm **:data-[slot=command-input]:placeholder:text-muted-foreground/70 **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:h-10 **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border **:data-[slot=command-input-wrapper]:border-border **:data-[slot=command-input-wrapper]:bg-background **:data-[slot=command-input-wrapper]:px-2"
 		>
 			<Command.Input
 				placeholder="Search documentation..."

@@ -31,21 +31,16 @@
 		>
 			<span
 				class={cn(
-					'block rounded-[28px] bg-linear-to-br from-purple-500/30 via-violet-500/10 to-fuchsia-500/30 p-[1.5px] shadow-[0_30px_80px_-50px_rgba(124,58,237,0.55)]',
+					'block overflow-hidden rounded-lg border border-border bg-surface p-2',
 					frameClass
 				)}
 			>
-				<span class="block rounded-[26px] bg-background/80 p-2 ring-1 ring-border/70 backdrop-blur">
-					<img
-						{...restProps}
-						{src}
-						{alt}
-						class={cn(
-							'w-full rounded-[20px] border border-border/60 shadow-lg transition-transform duration-500 group-hover:scale-[1.01]',
-							className
-						)}
-					/>
-				</span>
+				<img
+					{...restProps}
+					{src}
+					{alt}
+					class={cn('w-full rounded-md border border-border', className)}
+				/>
 			</span>
 		</Dialog.Trigger>
 

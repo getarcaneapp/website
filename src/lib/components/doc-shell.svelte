@@ -27,16 +27,15 @@
 	<meta name="description" content={metadata.description ?? ''} />
 </svelte:head>
 
-<div class="docs-theme docs-reading relative isolate">
-	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
+<div class="relative isolate">
 	<div class="container mx-auto flex min-w-0 flex-1 px-4 py-8 lg:py-10">
 		<article class="mx-auto w-full min-w-0 {wide ? 'max-w-5xl' : 'max-w-3xl'}">
 			<header class="border-b border-border pb-6">
-				<h1 class="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
+				<h1 class="font-heading text-3xl font-semibold tracking-tight">
 					{metadata.title}
 				</h1>
 				{#if metadata.description}
-					<p class="mt-3 text-lg leading-relaxed text-balance text-muted-foreground">
+					<p class="mt-3 text-base leading-relaxed text-balance text-muted-foreground">
 						{metadata.description}
 					</p>
 				{/if}

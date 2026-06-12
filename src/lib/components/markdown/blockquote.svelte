@@ -26,30 +26,27 @@
 		note: {
 			icon: Info,
 			label: 'Note',
-			class: 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-100'
+			iconClass: 'text-blue-600 dark:text-blue-400'
 		},
 		tip: {
 			icon: Lightbulb,
 			label: 'Tip',
-			class:
-				'border-l-green-500 bg-green-50 dark:bg-green-950/40 text-green-900 dark:text-green-100'
+			iconClass: 'text-green-600 dark:text-green-400'
 		},
 		important: {
 			icon: AlertCircle,
 			label: 'Important',
-			class:
-				'border-l-primary bg-purple-50 dark:bg-purple-950/40 text-purple-900 dark:text-purple-100'
+			iconClass: 'text-primary'
 		},
 		warning: {
 			icon: AlertTriangle,
 			label: 'Warning',
-			class:
-				'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/40 text-yellow-900 dark:text-yellow-100'
+			iconClass: 'text-amber-600 dark:text-amber-400'
 		},
 		caution: {
 			icon: OctagonAlert,
 			label: 'Caution',
-			class: 'border-l-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-100'
+			iconClass: 'text-red-600 dark:text-red-400'
 		}
 	};
 
@@ -84,17 +81,19 @@
 {#if type && config}
 	{@const Icon = config.icon}
 	<div
-		class={cn('mt-6 rounded-md border-l-[3px] p-4 not-italic', config.class, className)}
+		class={cn('mt-6 rounded-md border border-border bg-surface p-4 not-italic', className)}
 		{...restProps}
 		use:handleMount
 	>
 		<div class="flex min-w-0 items-start gap-3">
-			<Icon class="mt-0.5 size-5 shrink-0" />
+			<Icon class={cn('mt-0.5 size-4 shrink-0', config.iconClass)} />
 			<div class="min-w-0 flex-1">
-				<div class="mb-1.5 font-mono text-xs font-medium tracking-[0.12em] uppercase">
+				<div class="mb-1 text-sm font-medium text-foreground">
 					{config.label}
 				</div>
-				<div class="min-w-0 [&_.snippet]:w-full [&_.snippet]:max-w-full [&>p]:mb-2 last:[&>p]:mb-0">
+				<div
+					class="min-w-0 text-sm [&_.snippet]:w-full [&_.snippet]:max-w-full [&>p]:mb-2 last:[&>p]:mb-0"
+				>
 					{@render children?.()}
 				</div>
 			</div>
@@ -102,7 +101,7 @@
 	</div>
 {:else}
 	<blockquote
-		class={cn('mt-6 rounded-md border-l-[3px] border-l-primary bg-muted p-5', className)}
+		class={cn('mt-6 border-l-2 border-border pl-4 text-muted-foreground italic', className)}
 		{...restProps}
 		use:handleMount
 	>

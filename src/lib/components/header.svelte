@@ -3,7 +3,6 @@
 	import { CommandSearch } from '$lib/components/command-search/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { mainNavItems } from '$lib/config/docs.js';
 	import GithubLink from './github-link.svelte';
 	import Logo from './logo.svelte';
@@ -40,47 +39,39 @@
 	});
 </script>
 
-<header class="sticky top-0 z-50 w-full bg-transparent py-3">
-	<div class="container-wrapper px-4 sm:px-6">
-		<div
-			class="flex h-16 items-center gap-2 rounded-2xl border border-white/35 bg-white/40 px-3 shadow-[0_18px_45px_-35px_oklch(0_0_0/0.55)] backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 **:data-[slot=separator]:h-4! dark:border-white/10 dark:bg-black/35 dark:shadow-[0_18px_45px_-35px_oklch(0_0_0/0.7)]"
-		>
-			<Button href="/" variant="ghost" size="icon" class="hidden size-8 lg:flex">
-				<Logo class="size-5" />
-				<span class="sr-only">Arcane</span>
-			</Button>
-			<MainNav items={mainNavItems} class="hidden lg:flex" />
+<header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+	<div class="flex h-14 w-full items-center gap-4 px-4 lg:px-6">
+		<a href="/" class="hidden items-center gap-2 lg:flex">
+			<Logo class="size-5" />
+			<span class="text-sm font-semibold tracking-tight">Arcane</span>
+		</a>
+		<MainNav items={mainNavItems} class="hidden lg:flex" />
 
-			<MobileNav class="flex lg:hidden" />
+		<MobileNav class="flex lg:hidden" />
 
-			<div class="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
-				<div class="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
-					<CommandSearch />
-				</div>
-				<Separator orientation="vertical" />
-				<Button
-					href="https://demo.getarcane.app"
-					target="_blank"
-					variant="brand"
-					size="sm"
-					class="h-8 text-xs font-semibold"
-				>
-					Try the Demo
-				</Button>
-				<Separator orientation="vertical" />
-				{#if version}
-					<Badge
-						variant="outline"
-						class="flex h-8 items-center rounded-md border-primary/30 bg-primary/10 px-3 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm transition-colors hover:bg-primary/15"
-					>
-						v{version}
-					</Badge>
-				{/if}
-				<Separator orientation="vertical" />
-				<GithubLink />
-				<Separator orientation="vertical" />
-				<ModeSwitcher />
+		<div class="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
+			<div class="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
+				<CommandSearch />
 			</div>
+			{#if version}
+				<Badge
+					variant="outline"
+					class="hidden h-7 items-center rounded-full border-border px-2.5 font-mono text-xs font-medium text-muted-foreground sm:flex"
+				>
+					v{version}
+				</Badge>
+			{/if}
+			<GithubLink />
+			<ModeSwitcher />
+			<Button
+				href="https://demo.getarcane.app"
+				target="_blank"
+				variant="brand"
+				size="sm"
+				class="h-8 text-xs font-semibold"
+			>
+				Try the Demo
+			</Button>
 		</div>
 	</div>
 </header>

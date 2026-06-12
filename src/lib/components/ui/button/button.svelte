@@ -8,29 +8,25 @@
 	import { tv, type VariantProps } from 'tailwind-variants';
 
 	export const buttonVariants = tv({
-		base: "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 relative inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-lg text-sm font-medium whitespace-nowrap outline-hidden transition-all duration-300 select-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+		base: "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 relative inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-md text-sm font-medium whitespace-nowrap outline-hidden transition-colors duration-150 select-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 		variants: {
 			variant: {
-				default:
-					'bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/35 hover:bg-primary/90 active:scale-[0.98]',
+				default: 'bg-primary text-primary-foreground hover:bg-primary/90',
 				destructive:
-					'bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 text-white shadow-lg shadow-destructive/25 hover:shadow-xl hover:shadow-destructive/35',
+					'bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-white',
 				outline:
-					'bg-background/80 backdrop-blur-sm hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 border border-border/60 shadow-sm hover:shadow-md hover:border-primary/40 active:scale-[0.98]',
-				secondary:
-					'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:shadow-md active:scale-[0.98]',
-				ghost:
-					'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 active:scale-[0.98]',
+					'border border-border bg-background text-foreground hover:bg-muted hover:text-foreground',
+				secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+				ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
 				link: 'text-primary underline-offset-4 hover:underline',
-				brand:
-					'border border-primary/30 bg-primary/10 text-primary shadow-sm backdrop-blur-sm hover:bg-primary/15 hover:border-primary/40 hover:shadow-md active:scale-[0.98]',
-				flat: 'bg-card text-foreground border border-border hover:bg-muted active:scale-[0.98]'
+				brand: 'bg-primary text-primary-foreground hover:bg-primary/90',
+				flat: 'bg-card text-foreground border border-border hover:bg-muted'
 			},
 			size: {
 				default: 'h-10 px-5 py-2.5 has-[>svg]:px-4',
 				sm: 'h-9 gap-1.5 rounded-md px-4 has-[>svg]:px-3',
-				lg: 'h-11 rounded-lg px-7 text-base has-[>svg]:px-5',
-				icon: 'size-10 rounded-lg'
+				lg: 'h-11 rounded-md px-7 text-base has-[>svg]:px-5',
+				icon: 'size-10 rounded-md'
 			}
 		},
 		defaultVariants: {

@@ -212,19 +212,13 @@
 	<meta name="description" content={doc.description} />
 </svelte:head>
 
-<div class="docs-theme docs-reading relative isolate">
-	<div class="docs-shell pointer-events-none" aria-hidden="true"></div>
+<div class="relative isolate">
 	<div class="changelog-shell relative overflow-hidden">
-		<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-			<div class="changelog-grid"></div>
-		</div>
-
 		<div
-			class="container mx-auto flex min-w-0 flex-1 flex-col gap-10 px-4 pt-24 pb-8 lg:pt-28 lg:pb-12"
+			class="container mx-auto flex min-w-0 flex-1 flex-col gap-10 px-4 pt-12 pb-8 lg:pt-16 lg:pb-12"
 		>
 			<section class="changelog-hero">
 				<div class="changelog-hero__content">
-					<p class="changelog-eyebrow">Release Notes</p>
 					<h1 class="changelog-title">{doc.title}</h1>
 					{#if doc.description}
 						<p class="changelog-subtitle">{doc.description}</p>
@@ -339,24 +333,6 @@
 		--changelog-stroke: color-mix(in oklab, var(--border) 95%, var(--foreground) 5%);
 	}
 
-	.changelog-grid {
-		position: absolute;
-		inset: 0;
-		background-image:
-			linear-gradient(
-				to right,
-				color-mix(in oklab, var(--border) 70%, transparent) 1px,
-				transparent 1px
-			),
-			linear-gradient(
-				to bottom,
-				color-mix(in oklab, var(--border) 70%, transparent) 1px,
-				transparent 1px
-			);
-		background-size: 120px 120px;
-		opacity: 0.15;
-	}
-
 	.changelog-hero {
 		display: flex;
 		flex-direction: column;
@@ -369,15 +345,6 @@
 		flex-direction: column;
 		gap: 1rem;
 		max-width: 48rem;
-	}
-
-	.changelog-eyebrow {
-		font-family: var(--font-mono);
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		font-size: 0.7rem;
-		font-weight: 500;
-		color: var(--primary);
 	}
 
 	.changelog-title {
@@ -401,18 +368,15 @@
 	.changelog-meta-card {
 		padding: 1rem 1.25rem;
 		border-radius: var(--radius);
-		background: color-mix(in oklab, var(--background) 92%, var(--muted) 8%);
-		border: 1px solid var(--changelog-stroke);
-		box-shadow: 0 12px 30px -28px rgba(0, 0, 0, 0.35);
+		background: var(--background);
+		border: 1px solid var(--border);
 		display: flex;
 		flex-direction: column;
 		gap: 0.4rem;
 	}
 
 	.changelog-meta-label {
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.16em;
+		font-size: 0.75rem;
 		color: var(--muted-foreground);
 	}
 
@@ -445,8 +409,8 @@
 		gap: 0.75rem;
 		padding: 1rem;
 		border-radius: var(--radius);
-		border: 1px solid var(--changelog-stroke);
-		background: color-mix(in oklab, var(--background) 94%, var(--muted) 6%);
+		border: 1px solid var(--border);
+		background: var(--background);
 	}
 
 	.changelog-search {
@@ -455,8 +419,8 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.5rem 0.75rem;
-		border-radius: 999px;
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+		border-radius: var(--radius-md);
+		border: 1px solid var(--border);
 		background: var(--background);
 	}
 
@@ -511,9 +475,8 @@
 	:global(.changelog-entry) {
 		position: relative;
 		border-radius: var(--radius);
-		border: 1px solid var(--changelog-stroke);
-		background: color-mix(in oklab, var(--background) 94%, var(--muted) 6%);
-		box-shadow: 0 16px 42px -36px rgba(0, 0, 0, 0.45);
+		border: 1px solid var(--border);
+		background: var(--background);
 		overflow: hidden;
 		scroll-margin-top: 8rem;
 	}
@@ -524,8 +487,8 @@
 		justify-content: space-between;
 		gap: 1rem;
 		padding: 1.25rem 1.5rem;
-		background: color-mix(in oklab, var(--background) 96%, var(--muted) 4%);
-		border-bottom: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+		background: var(--surface);
+		border-bottom: 1px solid var(--border);
 	}
 
 	:global(.changelog-entry__title) {
@@ -543,8 +506,7 @@
 
 	:global(.changelog-entry__date) {
 		font-size: 0.75rem;
-		text-transform: uppercase;
-		letter-spacing: 0.16em;
+		font-family: var(--font-mono);
 		color: var(--muted-foreground);
 	}
 
@@ -553,11 +515,12 @@
 		align-items: center;
 		gap: 0.35rem;
 		font-size: 0.85rem;
-		font-weight: 600;
+		font-weight: 500;
 		text-decoration: none;
-		padding: 0.35rem 0.7rem;
-		border-radius: 999px;
-		background: color-mix(in oklab, var(--muted) 70%, transparent);
+		padding: 0.3rem 0.7rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--border);
+		background: var(--background);
 		color: var(--foreground);
 	}
 
@@ -567,21 +530,18 @@
 		justify-content: center;
 		font-size: 0.8rem;
 		font-weight: 600;
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+		border: 1px solid var(--border);
 		width: 2.25rem;
 		height: 2.25rem;
 		padding: 0;
-		border-radius: 999px;
+		border-radius: var(--radius-md);
 		background: var(--background);
 		cursor: pointer;
-		transition:
-			transform 200ms ease,
-			box-shadow 200ms ease;
+		transition: background-color 150ms ease;
 	}
 
 	:global(.changelog-entry__toggle:hover) {
-		box-shadow: 0 4px 12px -8px rgba(0, 0, 0, 0.5);
-		transform: translateY(-1px);
+		background: var(--muted);
 	}
 
 	:global(.changelog-entry__chevron) {
@@ -618,17 +578,15 @@
 
 	:global(.changelog-entry__body h3) {
 		margin-top: 0.75rem;
-		font-size: 0.95rem;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
+		font-size: 0.8rem;
 		font-weight: 600;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
-		padding: 0.35rem 0.75rem;
-		border-radius: 999px;
-		background: color-mix(in oklab, var(--background) 92%, var(--muted) 8%);
-		border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+		padding: 0.3rem 0.7rem;
+		border-radius: var(--radius-md);
+		background: var(--surface);
+		border: 1px solid var(--border);
 		width: fit-content;
 	}
 

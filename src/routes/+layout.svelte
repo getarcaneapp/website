@@ -3,6 +3,7 @@
 	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import { ModeWatcher } from 'mode-watcher';
+	import Footer from '$lib/components/footer.svelte';
 	import Header from '$lib/components/header.svelte';
 
 	let { children } = $props();
@@ -51,11 +52,10 @@
 	</div>
 {/if}
 
-<div class="relative flex min-h-screen flex-col text-foreground">
-	<!-- Global background -->
-	<div class="fixed inset-0 -z-50 bg-background" aria-hidden="true"></div>
+<div class="relative flex min-h-screen flex-col bg-background text-foreground">
 	<Header />
 	<main class="flex-1">
 		{@render children()}
 	</main>
+	<Footer />
 </div>

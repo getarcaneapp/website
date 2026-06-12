@@ -15,7 +15,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 
 ## Docker Compose (Recommended)
 
-If you'd rather set things up yourself, or if you're on a different platform, use Docker Compose:
+Docker Compose is the recommended way to run Arcane. Follow the steps below to get up and running in a few minutes:
 
 ## 1. Create `compose.yaml`:
 
