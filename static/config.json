@@ -1399,21 +1399,6 @@
       "sourceSymbol": "models.Settings.AutoUpdate"
     },
     {
-      "env": "AUTO_UPDATE_COMPOSE_STANDALONE_FALLBACK",
-      "settingKey": "autoUpdateComposeStandaloneFallback",
-      "description": "Allow auto-update to recreate Compose-managed containers directly when Arcane cannot resolve the owning project. Restart Arcane after changing this setting.",
-      "defaultValue": "false",
-      "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
-      "category": "internal",
-      "public": false,
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
-      "source": "models.Settings + services.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoUpdateComposeStandaloneFallback"
-    },
-    {
       "env": "AUTO_UPDATE_EXCLUDED_CONTAINERS",
       "settingKey": "autoUpdateExcludedContainers",
       "description": "Comma-separated list of containers to exclude from auto-update",
