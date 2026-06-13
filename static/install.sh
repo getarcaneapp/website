@@ -581,12 +581,14 @@ setup_arcane_user() {
     
     # Create directories
     mkdir -p "$ARCANE_INSTALL_DIR"
+    mkdir -p "$ARCANE_INSTALL_DIR/.docker"
     mkdir -p "$ARCANE_DATA_DIR"
     mkdir -p "$ARCANE_DATA_DIR/data"
     mkdir -p /var/log/arcane
     
     # Set permissions
     chown -R "$ARCANE_USER:$ARCANE_GROUP" "$ARCANE_INSTALL_DIR"
+    chown -R "$ARCANE_USER:$ARCANE_GROUP" "$ARCANE_INSTALL_DIR/.docker"
     chown -R "$ARCANE_USER:$ARCANE_GROUP" "$ARCANE_DATA_DIR"
     chown -R "$ARCANE_USER:$ARCANE_GROUP" /var/log/arcane
 
@@ -697,6 +699,10 @@ create_arcane_config() {
             echo "APP_URL=http://${HOST_IP}:${ARCANE_PORT}" >> "$ENV_FILE"
             log_info "Added APP_URL to existing environment file"
         fi
+        if ! grep -q '^DOCKER_CONFIG=' "$ENV_FILE"; then
+            echo "DOCKER_CONFIG=${ARCANE_INSTALL_DIR}/.docker" >> "$ENV_FILE"
+            log_info "Added DOCKER_CONFIG to existing environment file"
+        fi
         progress_skip
         return 0
     fi
@@ -734,6 +740,7 @@ JWT_SECRET=${JWT_SECRET}
 
 # Docker Configuration
 DOCKER_HOST=unix:///var/run/docker.sock
+DOCKER_CONFIG=${ARCANE_INSTALL_DIR}/.docker
 
 # Projects
 PROJECTS_DIRECTORY=/opt/arcane/projects
