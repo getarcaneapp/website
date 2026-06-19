@@ -522,6 +522,15 @@
       "sourceSymbol": "config.Config.ProjectsDirectory"
     },
     {
+      "env": "PROJECT_FILE_TREE_MAX_DEPTH",
+      "field": "ProjectFileTreeMaxDepth",
+      "type": "int",
+      "defaultValue": "20",
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.ProjectFileTreeMaxDepth"
+    },
+    {
       "env": "PROJECT_SCAN_MAX_DEPTH",
       "field": "ProjectScanMaxDepth",
       "type": "int",
