@@ -93,9 +93,7 @@
 {#if versions.length}
 	<aside class={cn('hidden w-56 shrink-0 lg:block', className)}>
 		<div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pb-6">
-			<div
-				class="docs-surface p-4"
-			>
+			<div class="docs-surface p-4">
 				<p
 					class="mb-3 font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
 				>

@@ -5,6 +5,7 @@ description: 'Connect Arcane to remote Docker hosts using the Arcane Agent.'
 
 <script lang="ts">
 import { Snippet } from '$lib/components/ui/snippet/index.js';
+import { Link } from '$lib/components/ui/link/index.js';
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
@@ -117,12 +118,29 @@ volumes:
   agent-data: {}
 ```
 
-## Update an environment
+## Edit an environment
 
 1. Open **Environments**.
 2. Select the environment.
 3. Change the settings you need.
 4. Save.
+
+## Update all environments
+
+Arcane can upgrade **itself** across your whole fleet in one action. On the **Environments** page, click **Update All** to open the **Update all environments** dialog and confirm.
+
+Arcane upgrades the manager first, then each connected agent that has an update available. The manager restarts during its own upgrade — the dialog reconnects automatically and resumes with the remaining environments. Environments that are offline or already up to date are skipped.
+
+The dialog tracks each environment as it goes:
+
+- **Pending** — waiting in the queue.
+- **Updating** — upgrade in progress.
+- **Updated** / **Update triggered** — the new version was applied, or handed off to the agent to finish.
+- **Already up to date** / **Offline — skipped** — nothing to do, or unreachable.
+- **Failed** — the upgrade didn't complete; the error is shown inline.
+
+> [!NOTE]
+> This upgrades the Arcane manager and agents themselves — not the containers or projects they run. To keep your *workloads* current, see <Link href="/docs/guides/updates">Auto Updates</Link>. **Update All** requires the `system:upgrade` permission.
 
 ## Standalone binary
 

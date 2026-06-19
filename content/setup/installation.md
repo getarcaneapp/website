@@ -209,6 +209,35 @@ Password:
 
 If Arcane needs to reach the internet through a proxy, for example to download templates or check for updates, see the <Link href="/docs/configuration/proxy">HTTP Proxy Configuration Guide</Link>.
 
+## Supported architectures
+
+Arcane's container images and release binaries are built for several CPU architectures, so the same setup works on x86 servers, ARM boards (including the Raspberry Pi), and RISC-V hardware.
+
+The `manager` and `agent` images are published for:
+
+- `linux/amd64`
+- `linux/arm64`
+- `linux/arm/v7`
+- `linux/riscv64`
+
+Docker automatically pulls the variant that matches your host, so no extra configuration is needed. The CLI and agent binaries on the <Link href="https://github.com/getarcaneapp/arcane/releases/latest">GitHub Releases</Link> page additionally cover Linux `386` and macOS (`amd64`, `arm64`).
+
+## Container health check
+
+The Arcane image ships an `arcane health` command for use as a Docker health check. It makes a local request to Arcane's `/api/health` endpoint and exits non-zero if the server isn't responding. Add it to your `compose.yaml`:
+
+```yaml
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    # ...
+    healthcheck:
+      test: ['CMD', '/app/arcane', 'health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+```
+
 ## Convenience Script
 
 If you're using Linux, you can run our installer to set up Arcane and Docker for you.

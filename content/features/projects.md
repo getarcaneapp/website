@@ -95,6 +95,28 @@ Optional request fields:
 
 For the manual Build Workspace, build history, and API details, see <Link href="/docs/features/image-builds">Image Builds</Link>.
 
+## Manage project files
+
+A project is more than its compose file. Flip the **Workspace** toggle on a project to switch from the classic editor to the **tree** layout — a **Project Files** panel alongside a tabbed editor that lets you work with every file in the project folder. The same panel is available on the **Create Project** page, so you can stage extra files before the project is first deployed.
+
+From the **Project Files** panel you can:
+
+- **New File** / **New Folder** — create files and folders anywhere in the project, including nested paths.
+- **Upload File** — add a text file from your computer (UTF-8, up to 1 MB).
+- **Edit** — open any text file in its own tab and change the contents.
+- **Rename**, **Move**, and **Delete** — reorganize the folder; non-empty folders can be deleted recursively.
+
+Open files show up as tabs next to the compose and `.env` editors. Edits you make in the tree — creating, changing, renaming, moving, or deleting — are staged and committed together when you **Save** the project.
+
+> [!NOTE]
+> The compose file, `.env`, `.env.git`, and `project.env` are **protected**. They show a lock icon and can't be renamed, moved, or deleted from the tree — edit them through their own editors instead.
+
+A few limits to keep in mind:
+
+- Only UTF-8 text files can be edited or uploaded; binary files are read-only.
+- Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden from the tree.
+- For **Git-synced projects**, the workspace is read-only — manage those files in the source repository.
+
 ## Where files are stored
 
 Arcane saves project files and `.env` files in its data directory — by default `/app/data/projects`, or whatever you set as the Projects Directory in settings.

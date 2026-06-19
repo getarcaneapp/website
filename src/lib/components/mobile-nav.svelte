@@ -83,7 +83,11 @@
 	>
 		<div class="flex flex-col gap-12 overflow-auto px-6 py-6">
 			<div class="flex flex-col gap-4">
-				<div class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Menu</div>
+				<div
+					class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
+				>
+					Menu
+				</div>
 				<div class="flex flex-col gap-3">
 					{@render MobileLink({ href: '/', content: 'Home' })}
 					{#each mainNavItems as item, i (i)}
@@ -94,7 +98,9 @@
 			<div class="flex flex-col gap-8">
 				{#each SidebarNavItems as group (group.title)}
 					<div class="flex flex-col gap-4">
-						<div class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">
+						<div
+							class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
+						>
 							{group.title}
 						</div>
 						<div class="flex flex-col gap-3">

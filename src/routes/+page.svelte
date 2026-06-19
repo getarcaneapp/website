@@ -69,10 +69,28 @@ volumes:
 		return latest.date;
 	};
 
+	const normalizeVersion = (version: string): string => {
+		const bare = version.replace(/^v/, '');
+		return /^\d/.test(bare) ? `v${bare}` : bare;
+	};
+
 	const buildBreakdown = (record: Record<string, number> | undefined) =>
 		Object.entries(record ?? {})
 			.map(([key, count]) => ({ key, count }))
 			.sort((a, b) => b.count - a.count);
+
+	const buildVersionBreakdown = (record: Record<string, number> | undefined) => {
+		const normalized: Record<string, number> = {};
+
+		for (const [version, count] of Object.entries(record ?? {})) {
+			const key = normalizeVersion(version);
+			normalized[key] = (normalized[key] ?? 0) + count;
+		}
+
+		return Object.entries(normalized)
+			.map(([version, count]) => ({ version, count }))
+			.sort((a, b) => b.count - a.count);
+	};
 
 	const buildHistory = (entries: StatsHistoryEntry[]): StatsHistoryEntry[] => {
 		const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
@@ -92,10 +110,7 @@ volumes:
 			const data: StatsResponse = await response.json();
 			stats = data;
 
-			versionBreakdown = buildBreakdown(data.by_version).map(({ key, count }) => {
-				const bare = key.replace(/^v/, '');
-				return { version: /^\d/.test(bare) ? `v${bare}` : bare, count };
-			});
+			versionBreakdown = buildVersionBreakdown(data.by_version);
 			typeBreakdown = buildBreakdown(data.by_type).map(({ key, count }) => ({ type: key, count }));
 
 			const historyEntries = Array.isArray(data.history) ? data.history : [];
