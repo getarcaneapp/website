@@ -16,7 +16,7 @@ jobs:
     runs-on: depot-ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Fetch releases list
         id: releases
@@ -92,7 +92,7 @@ jobs:
 
       - name: Checkout arcane repo
         if: steps.check.outputs.do_sbom == 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: getarcaneapp/arcane
           ref: ${{ steps.check.outputs.version }}
