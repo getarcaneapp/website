@@ -1,0 +1,83 @@
+{
+	"$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+	"entry": [
+		"src/routes/**/+*.{js,ts,svelte}",
+		"src/lib/index.{js,ts}",
+		"src/lib/components/markdown/**/*.{svelte,ts}",
+		"mdsvex.config.js",
+		"velite.config.js",
+		"src/lib/components/binary-downloads.svelte",
+		"src/lib/components/buildables-table.svelte",
+		"src/lib/components/docs-index.svelte",
+		"src/lib/components/env-overrides-table.svelte",
+		"src/lib/components/env-table.svelte",
+		"src/lib/components/oidc-table.svelte",
+		"src/lib/components/screenshot-frame.svelte",
+		"src/lib/components/setup-code.svelte",
+		"src/lib/components/ui/alert/index.ts",
+		"src/lib/components/ui/code/index.ts",
+		"src/lib/components/ui/git-command/index.ts",
+		"src/lib/components/ui/link/index.ts",
+		"src/lib/components/ui/snippet/index.ts"
+	],
+	"ignorePatterns": [
+		"src/lib/components/icons/**",
+		"src/lib/types/**",
+		"src/lib/components/agent-env-table.svelte",
+		"src/lib/components/architecture-diagram.svelte",
+		"src/lib/components/copy-button.svelte",
+		"src/lib/components/preview-banner.svelte",
+		"src/lib/components/table-of-contents.svelte"
+	],
+	"ignoreDependencies": [
+		"rehype-pretty-code",
+		"remark-code-import",
+		"unist-builder",
+		"unist-util-visit",
+		"prettier-plugin-svelte",
+		"prettier-plugin-tailwindcss",
+		"tw-animate-css"
+	],
+	"ignoreUnresolvedImports": ["$velite/*"],
+	"ignoreExportsUsedInFile": {
+		"interface": true,
+		"type": true
+	},
+	"rules": {
+		"circular-dependencies": "off"
+	},
+	"ignoreExports": [
+		{
+			"file": "src/lib/components/ui/**",
+			"exports": ["*"]
+		},
+		{
+			"file": "src/lib/components/command-search/index.ts",
+			"exports": ["*"]
+		},
+		{
+			"file": "src/lib/config/docs.ts",
+			"exports": ["*"]
+		},
+		{
+			"file": "src/lib/hooks/use-toc.svelte.ts",
+			"exports": ["*"]
+		}
+	],
+	"overrides": [
+		{
+			"files": ["src/lib/components/ui/**"],
+			"rules": {
+				"unused-files": "off",
+				"unused-exports": "off",
+				"unused-types": "off"
+			}
+		},
+		{
+			"files": ["src/lib/utils.ts", "src/lib/utils/utils.ts"],
+			"rules": {
+				"unused-types": "off"
+			}
+		}
+	]
+}

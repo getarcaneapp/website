@@ -426,12 +426,12 @@
 		box-shadow: none;
 	}
 
-	.wizard-step:disabled {
+	.wizard-shell :global(.wizard-step:disabled) {
 		opacity: 0.45;
 		cursor: not-allowed;
 	}
 
-	.wizard-step:disabled:hover {
+	.wizard-shell :global(.wizard-step:disabled:hover) {
 		border-bottom-color: transparent;
 	}
 

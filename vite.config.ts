@@ -47,13 +47,7 @@ export default defineConfig({
 		},
 		overrides: [
 			{
-				files: [
-					'vite.config.ts',
-					'svelte.config.js',
-					'velite.config.js',
-					'mdsvex.config.js',
-					'knip.ts'
-				],
+				files: ['vite.config.ts', 'svelte.config.js', 'velite.config.js', 'mdsvex.config.js'],
 				env: {
 					node: true
 				}
