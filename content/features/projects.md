@@ -68,6 +68,19 @@ Each project has these actions:
 - **Redeploy** — pull the latest images and restart.
 - **Destroy** — remove the project and its resources. You choose whether to keep or delete volumes and project files.
 
+## Rename a project with managed volumes
+
+When you rename a stopped project, Arcane preserves Compose-managed named volumes whose names were generated from the old project name. It creates the new Compose-generated volume name, copies the old volume data into it, updates the project, and removes the old source volume after the rename is committed.
+
+Arcane skips volumes with an explicit Compose `name:` and volumes marked `external: true`, because those are not owned by the generated project name.
+
+The rename is blocked if:
+
+- the project is still running
+- the target volume name already exists
+- a source volume is still attached to a container
+- Docker reports insufficient space to copy the volume data
+
 ## Build images from a project
 
 If your Compose file has services with a `build:` directive, Arcane shows build actions on the project page:

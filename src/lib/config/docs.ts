@@ -134,6 +134,7 @@ const SECURITY = group('Security & Hardening', [
 
 const GUIDES = group('Guides', [
 	leaf('guides/updates'),
+	leaf('guides/gitops-lifecycle-hooks'),
 	leaf('guides/custom-metadata'),
 	leaf('guides/buildables'),
 	leaf('guides/gpu-setup')

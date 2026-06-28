@@ -30,7 +30,7 @@ These six are immutable. Clone one if you need a starting point for a custom rol
 | **Admin** | Instance operators | Everything, everywhere. |
 | **Editor** | Day-to-day Docker work | Read+write on all Docker resources, GitOps, webhooks, jobs, notifications, vulnerabilities. Read-only on settings/users. |
 | **No-Shell Editor** | Editor without shell access | Same as Editor, minus `containers:exec`. |
-| **Deployer** | CI/CD and on-call | Deploy projects, start/stop/restart/redeploy containers, sync GitOps, pull images. No create/delete, no settings. |
+| **Deployer** | CI/CD and on-call | Deploy projects, run container lifecycle actions, sync GitOps, pull/tag/commit images. No create/delete, no settings. |
 | **Monitor** | Read-only with logs | Read resources, view logs, dashboards, events. No mutations, no exec. |
 | **Viewer** | Auditors | Read-only across Docker resources and most org pages. No logs, no actions. |
 
@@ -110,13 +110,13 @@ You cannot grant a key more permissions than you have yourself.
 
 | Resource | Actions |
 | --- | --- |
-| `containers` | `list`, `read`, `logs`, `create`, `start`, `stop`, `restart`, `redeploy`, `delete`, `exec`, `autoupdate` |
+| `containers` | `list`, `read`, `logs`, `create`, `start`, `stop`, `restart`, `redeploy`, `kill`, `pause`, `delete`, `exec`, `autoupdate` |
 | `projects` | `list`, `read`, `logs`, `create`, `update`, `deploy`, `down`, `restart`, `delete`, `archive` |
-| `images` | `list`, `read`, `pull`, `push`, `build`, `prune`, `delete`, `upload` |
+| `images` | `list`, `read`, `pull`, `push`, `build`, `tag`, `commit`, `prune`, `delete`, `upload` |
 | `volumes` | `list`, `read`, `create`, `delete`, `prune`, `browse`, `upload`, `backup` |
 | `networks` | `list`, `read`, `create`, `delete`, `prune` |
 | `swarm` | `read`, `init`, `join`, `leave`, `spec`, `nodes`, `services`, `services:logs`, `stacks`, `configs`, `secrets`, `unlock` |
-| `gitops` | `list`, `read`, `create`, `update`, `delete`, `sync` |
+| `gitops` | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle` |
 | `webhooks` | `list`, `create`, `update`, `delete` |
 | `jobs` | `manage` |
 | `notifications` | `manage` |
@@ -125,6 +125,8 @@ You cannot grant a key more permissions than you have yourself.
 | `image-updates` | `read`, `check` |
 | `vulnerabilities` | `read`, `scan`, `manage` |
 | `build-workspaces` | `manage` |
+
+`gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
 
 ## Upgrade & migration
 

@@ -7,7 +7,7 @@ description: 'Manage Docker containers from Arcane.'
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
-The **Containers** page lists every container on your Docker host and lets you start, stop, inspect, and remove them. Use it for one-off containers; for grouped services, see [Projects](/docs/features/projects).
+The **Containers** page lists every container on your Docker host and lets you start, stop, pause, kill, inspect, commit, and remove them. Use it for one-off containers; for grouped services, see [Projects](/docs/features/projects).
 
 <ScreenshotFrame
 	src="/img/screenshots/containers-page.jpeg"
@@ -29,12 +29,25 @@ If you have a lot of published ports, the table collapses long port lists behind
 2. Fill in name and image. The other fields (ports, volumes, environment variables, restart policy, and so on) are optional.
 3. Click **Create**.
 
-## Start, stop, restart, redeploy
+## Start, stop, restart, pause, kill
 
 Each container row has action buttons:
 
 - **Start** / **Stop** / **Restart** — change the running state.
+- **Pause** / **Unpause** — suspend and resume all processes in the container. Requires `containers:pause`.
+- **Kill** — send a signal to the container's main process. Requires `containers:kill`.
 - **Redeploy** — pull the latest image and recreate the container with the same name, mounts, labels, networks, and restart policy. Use this to update a single container in place.
+
+## Commit a container to an image
+
+Open a container detail page and click **Commit** to create a new image from the container's current filesystem. You can set:
+
+- repository and tag
+- commit comment
+- author
+- whether Docker should skip its default pause during commit
+
+The new image appears on the **Images** page after the commit finishes. Committing requires `images:commit`.
 
 ## Inspect a container
 

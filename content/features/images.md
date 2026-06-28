@@ -7,7 +7,7 @@ description: 'Manage Docker images in Arcane.'
 import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 </script>
 
-The **Images** page lists every Docker image on the selected host and lets you pull, inspect, prune, and remove them. Arcane also flags images that have a newer release available.
+The **Images** page lists every Docker image on the selected host and lets you search registries, pull, tag, inspect, prune, and remove images. Arcane also flags images that have a newer release available.
 
 <ScreenshotFrame
   src="/img/screenshots/images-page.png"
@@ -27,9 +27,32 @@ Open **Images** in the sidebar. The table shows tag, ID, size, and creation date
 2. Enter the image reference, e.g. `redis:latest`.
 3. Click **Pull**. The image appears in the list once the download finishes.
 
+### Search a registry
+
+Use **Search Registry** from the pull dialog when you do not know the exact image name. Enter a search term, pick a result, choose a tag, and Arcane pulls the selected image.
+
 ## Inspect an image
 
-Click the image's name, ID, or **Inspect** button to see its full details — tags, configuration, history, and labels.
+Click the image's name, ID, or **Inspect** button to see its full details: tags, configuration, layer history, vulnerability results, and labels.
+
+### Image history
+
+The **History** tab shows the Docker layer history for the image, including layer IDs, creation time, size, command, tags, and comments. Use it to inspect how a local image was built or to compare images after a rebuild.
+
+### Attestations
+
+The **Attestations** tab shows in-toto attestations when Arcane can resolve the image to a usable registry tag or digest. Images that only exist as local IDs may not have a registry reference Arcane can query.
+
+You can filter attestations by platform and predicate type. Open an attestation to inspect its digest, media type, statement type, subject, platform, and size.
+
+## Tag an image
+
+1. Open the image detail page.
+2. Click **Tag Image**.
+3. Enter the target repository and tag. If the tag is omitted, Docker uses `latest`.
+4. Save.
+
+Tagging requires the `images:tag` permission.
 
 ## Remove an image
 
