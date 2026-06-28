@@ -1188,6 +1188,21 @@
       "sourceSymbol": "models.Settings.AccentColor"
     },
     {
+      "env": "AVATAR_MAX_UPLOAD_SIZE_MB",
+      "settingKey": "avatarMaxUploadSizeMb",
+      "description": "Maximum size in MB for profile picture uploads (default: 2)",
+      "defaultValue": "2",
+      "type": "number",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "general",
+      "public": false,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.AvatarMaxUploadSizeMb"
+    },
+    {
       "env": "BASE_SERVER_URL",
       "settingKey": "baseServerUrl",
       "description": "Set the base URL for the application",
@@ -1744,6 +1759,48 @@
       "sourceSymbol": "models.Settings.VolumeBrowserHelperIdleTimeout"
     },
     {
+      "env": "LIFECYCLE_DEFAULT_RUNNER_IMAGE",
+      "settingKey": "lifecycleDefaultRunnerImage",
+      "description": "Default container image used to run GitOps pre-deploy lifecycle scripts when a sync does not override it",
+      "defaultValue": "alpine:latest",
+      "type": "text",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "security",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.LifecycleDefaultRunnerImage"
+    },
+    {
+      "env": "LIFECYCLE_ENABLED",
+      "settingKey": "lifecycleEnabled",
+      "description": "Allow GitOps syncs to configure pre-deploy lifecycle scripts. Disabled by default because scripts are repo-trusted code that runs on every deploy",
+      "defaultValue": "false",
+      "type": "boolean",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "security",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.LifecycleEnabled"
+    },
+    {
+      "env": "LIFECYCLE_MAX_TIMEOUT_SEC",
+      "settingKey": "lifecycleMaxTimeoutSec",
+      "description": "Maximum allowed timeout for lifecycle scripts in seconds (default: 300)",
+      "defaultValue": "300",
+      "type": "number",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "security",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.LifecycleMaxTimeoutSec"
+    },
+    {
       "env": "TRIVY_CONCURRENT_SCAN_CONTAINERS",
       "settingKey": "trivyConcurrentScanContainers",
       "description": "Maximum number of concurrent Trivy scan containers for manual and scheduled scans. Minimum 1",
@@ -1798,6 +1855,20 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.TrivyIgnore"
+    },
+    {
+      "env": "TRIVY_IGNORE_UNFIXED",
+      "settingKey": "trivyIgnoreUnfixed",
+      "description": "Only report vulnerabilities that have a known fix available. Reduces noise from vulnerabilities you cannot act on.",
+      "defaultValue": "true",
+      "type": "boolean",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "security",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.TrivyIgnoreUnfixed"
     },
     {
       "env": "TRIVY_IMAGE",
@@ -1895,6 +1966,46 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.TrivySecurityOpts"
+    },
+    {
+      "env": "TRIVY_SERVER_ENABLED",
+      "settingKey": "trivyServerEnabled",
+      "description": "Scan against a remote Trivy server instead of downloading the vulnerability database locally. Recommended for 32-bit hosts (arm/v7) where the local DB cannot be memory-mapped.",
+      "defaultValue": "false",
+      "type": "boolean",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "security",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.TrivyServerEnabled"
+    },
+    {
+      "env": "TRIVY_SERVER_TOKEN",
+      "settingKey": "trivyServerToken",
+      "description": "Optional authentication token sent to the remote Trivy server. Leave empty if the server requires no token.",
+      "type": "password",
+      "sensitive": true,
+      "deprecated": false,
+      "category": "security",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.TrivyServerToken"
+    },
+    {
+      "env": "TRIVY_SERVER_URL",
+      "settingKey": "trivyServerUrl",
+      "description": "URL of the remote Trivy server (e.g. http://trivy.example.com:4954). Used when client/server mode is enabled.",
+      "type": "text",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "security",
+      "public": false,
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.TrivyServerUrl"
     },
     {
       "env": "VULNERABILITY_SCAN_ENABLED",
