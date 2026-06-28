@@ -13,11 +13,14 @@ Arcane can poll your registries on a schedule and update containers (or whole Co
 
 ## Enable auto updates
 
-1. Go to **Environments → [your environment] → Settings → Docker**.
-2. Turn on **Image Polling** and pick a schedule (or enter a custom one).
-3. Turn on **Auto Updates**.
-4. Set the run interval (in minutes).
-5. Save.
+1. Go to **Environments** from the left-hand menu.
+2. Select the environment you want to configure, for example **Local Docker**.
+3. Open the **Job Schedules** tab.
+4. Scroll down to the **Updates** section.
+5. Turn on **Image Polling** and pick a schedule, or enter a custom one.
+6. Turn on **Auto Update**.
+7. Set the run interval or schedule.
+8. Save.
 
 > [!NOTE]
 > Very low intervals are clamped to a safer minimum.
