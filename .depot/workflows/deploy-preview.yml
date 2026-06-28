@@ -45,9 +45,14 @@ jobs:
         with:
           node-version: latest
           cache: true
+          run-install: false
 
       - name: Install dependencies
-        run: vp install
+        shell: bash
+        run: |
+          [[ -f ~/.profile ]] && source ~/.profile
+          [[ -f ~/.bashrc ]] && source ~/.bashrc
+          vp install
 
       - name: Generate content data
         run: vp run velite
