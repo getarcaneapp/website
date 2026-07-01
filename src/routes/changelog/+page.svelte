@@ -149,7 +149,11 @@
 
 			const releaseUrl = releaseParagraph?.querySelector('a')?.getAttribute('href') ?? undefined;
 
-			const contentNodes = nodes.filter((node) => node !== releaseParagraph);
+			const contentNodes = nodes.filter(
+				(node) =>
+					node !== releaseParagraph &&
+					!(node.nodeType === Node.TEXT_NODE && !node.textContent?.trim())
+			);
 			const tocItems: TocEntry[] = [];
 			for (const node of contentNodes) {
 				if (node instanceof HTMLHeadingElement && node.tagName.toLowerCase() === 'h3') {
@@ -486,8 +490,16 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding: 1.25rem 1.5rem;
+		padding: 1.1rem 1.5rem;
 		background: var(--surface);
+		transition: background-color 150ms ease;
+	}
+
+	:global(.changelog-entry__header:hover) {
+		background: color-mix(in oklab, var(--surface) 85%, var(--muted) 15%);
+	}
+
+	:global(.changelog-entry:has(.changelog-entry__body) .changelog-entry__header) {
 		border-bottom: 1px solid var(--border);
 	}
 
@@ -555,15 +567,23 @@
 	}
 
 	:global(.changelog-entry__body) {
-		padding: 1.25rem 1.5rem 1.75rem;
+		padding: 1.25rem 1.5rem 1.5rem;
 		display: block;
 	}
 
 	:global(.changelog-entry__content) {
 		display: grid;
-		gap: 1rem;
+		gap: 0.75rem;
 		overflow-wrap: anywhere;
 		word-break: break-word;
+	}
+
+	:global(.changelog-entry__content > :first-child) {
+		margin-top: 0;
+	}
+
+	:global(.changelog-entry__content :is(ul, ol, p)) {
+		margin-block: 0;
 	}
 
 	:global(.changelog-entry__content :is(p, li, a, code)) {
@@ -577,7 +597,8 @@
 	}
 
 	:global(.changelog-entry__body h3) {
-		margin-top: 0.75rem;
+		margin-top: 0.5rem;
+		margin-bottom: 0;
 		font-size: 0.8rem;
 		font-weight: 600;
 		display: inline-flex;
@@ -588,6 +609,10 @@
 		background: var(--surface);
 		border: 1px solid var(--border);
 		width: fit-content;
+	}
+
+	:global(.changelog-entry__body h3:first-child) {
+		margin-top: 0;
 	}
 
 	:global(.changelog-entry__body h3[data-kind='features']) {

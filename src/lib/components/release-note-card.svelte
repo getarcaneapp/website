@@ -93,7 +93,7 @@
 	});
 </script>
 
-<Card.Root {id} class={cn('changelog-entry', className)}>
+<Card.Root {id} class={cn('changelog-entry gap-0 py-0', className)}>
 	<Card.Header
 		class="changelog-entry__header cursor-pointer select-none"
 		role="button"
