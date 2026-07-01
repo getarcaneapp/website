@@ -742,6 +742,21 @@
       "sourceSymbol": "models.Settings.ActivityHistoryRetentionDays"
     },
     {
+      "env": "ANIMATIONS_ENABLED",
+      "settingKey": "animationsEnabled",
+      "description": "Enable decorative interface animations. Disable to reduce motion and GPU usage.",
+      "defaultValue": "true",
+      "type": "boolean",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "appearance",
+      "public": true,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.AnimationsEnabled"
+    },
+    {
       "env": "APPLICATION_THEME",
       "settingKey": "applicationTheme",
       "description": "Choose the overall visual theme for the application",
@@ -755,6 +770,21 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.ApplicationTheme"
+    },
+    {
+      "env": "GLASS_EFFECTS_ENABLED",
+      "settingKey": "glassEffectsEnabled",
+      "description": "Apply blur and glass effects to UI surfaces. Disable for solid surfaces and lower GPU usage.",
+      "defaultValue": "true",
+      "type": "boolean",
+      "sensitive": false,
+      "deprecated": false,
+      "category": "appearance",
+      "public": true,
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.GlassEffectsEnabled"
     },
     {
       "env": "ICON_CATALOG",
