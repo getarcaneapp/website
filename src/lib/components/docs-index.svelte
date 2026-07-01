@@ -83,9 +83,14 @@
 		{@const Icon = card.icon}
 		<a
 			href={card.href}
-			class="group flex flex-col gap-3 docs-surface p-5 transition-colors hover:border-primary/40"
+			class="group relative flex flex-col gap-3 overflow-hidden rounded-md border border-border bg-background p-5 no-underline! transition-all duration-300 hover:border-primary/30 hover:no-underline! hover:shadow-sm hover:shadow-primary/5 focus-visible:no-underline!"
 		>
-			<div class="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+			<div
+				class="absolute inset-x-0 top-0 h-0.5 scale-x-0 bg-linear-to-r from-transparent via-primary/40 to-transparent transition-transform duration-300 group-hover:scale-x-100"
+			></div>
+			<div
+				class="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary/15"
+			>
 				<Icon class="size-5" />
 			</div>
 			<div class="flex-1">
@@ -94,7 +99,7 @@
 				>
 					{card.title}
 				</span>
-				<p class="mt-1 text-sm text-muted-foreground">{card.description}</p>
+				<p class="mt-1 text-sm leading-relaxed text-muted-foreground">{card.description}</p>
 			</div>
 			<span class="flex items-center gap-1 text-xs font-medium text-muted-foreground">
 				{card.count} article{card.count === 1 ? '' : 's'}

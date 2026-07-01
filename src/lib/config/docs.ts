@@ -14,7 +14,8 @@ export const mainNavItems = [
 	{ href: '/api-reference', label: 'API' },
 	{ href: '/generator', label: 'Compose Generator' },
 	{ href: '/sbom', label: 'SBOM' },
-	{ href: '/changelog', label: 'Changelog' }
+	{ href: '/changelog', label: 'Changelog' },
+	{ href: '/community', label: 'Community' }
 ];
 
 export type NavItem = {

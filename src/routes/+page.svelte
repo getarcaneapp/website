@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
+	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
 	import { resolve } from '$app/paths';
+	import CommunityPreview from '$lib/components/community/community-preview.svelte';
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import MobileBetaCallout from '$lib/components/mobile-beta-callout.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -125,55 +127,101 @@ volumes:
 	});
 </script>
 
-<div class="relative isolate">
+<div class="relative isolate overflow-hidden">
+	<!-- Purple ambient glow behind hero -->
+	<div
+		class="pointer-events-none absolute -inset-x-40 -top-40 h-150 opacity-60 dark:opacity-40"
+		aria-hidden="true"
+	>
+		<div
+			class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,oklch(0.6_0.26_292.717/0.2),transparent_70%)] dark:bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,oklch(0.65_0.24_292.717/0.15),transparent_70%)]"
+		></div>
+	</div>
+
 	<ContentWrapper>
 		<!-- Hero -->
-		<section class="relative mt-16 mb-20 md:mt-24">
-			<div
-				class="pointer-events-none absolute -inset-x-8 -top-24 -bottom-8 hero-dot-grid"
-				aria-hidden="true"
-			></div>
-			<div class="relative mx-auto flex max-w-3xl flex-col items-center text-center">
+		<section class="relative pt-20 pb-16 md:pt-28 md:pb-20">
+			<!-- Dot grid background -->
+			<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
+
+			<div class="relative mx-auto flex max-w-4xl flex-col items-center text-center">
+				<!-- Announcement pill -->
 				<a
 					href="/changelog"
-					class="group mb-6 inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+					class="group mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary transition-all duration-300 hover:border-primary/40 hover:bg-primary/10"
 				>
-					<span class="size-1.5 rounded-full bg-primary"></span>
+					<span class="relative flex size-2">
+						<span
+							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60 opacity-75"
+						></span>
+						<span class="relative inline-flex size-2 rounded-full bg-primary"></span>
+					</span>
 					See what's new in the changelog
 					<ArrowRight
 						class="size-3 transition-transform duration-200 group-hover:translate-x-0.5"
 					/>
 				</a>
+
+				<!-- Main heading with gradient text -->
 				<h1
-					class="text-4xl font-semibold tracking-tighter text-balance text-foreground sm:text-5xl md:text-6xl"
+					class="text-4xl font-semibold tracking-tighter text-balance sm:text-5xl md:text-6xl lg:text-7xl"
 				>
-					Modern Docker management,
-					<span class="text-muted-foreground">designed for everyone.</span>
+					<span
+						class="bg-linear-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent"
+					>
+						Modern Docker management,
+					</span>
+					<br />
+					<span
+						class="bg-linear-to-r from-primary via-purple-400 to-purple-300 bg-clip-text text-transparent dark:via-purple-400 dark:to-purple-300"
+					>
+						designed for everyone.
+					</span>
 				</h1>
-				<p class="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+
+				<p class="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
 					A beautiful, intuitive interface for managing your Docker containers, images, networks,
 					and volumes. No terminal required.
 				</p>
-				<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-					<Button size="lg" href="/docs/setup/installation" class="group">
+
+				<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+					<Button size="lg" href="/docs/setup/installation" class="group px-8">
 						Get Started
 						<ArrowRight
 							class="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
 						/>
 					</Button>
-					<Button variant="outline" size="lg" href="https://demo.getarcane.app" target="_blank">
+					<Button
+						variant="outline"
+						size="lg"
+						href="https://demo.getarcane.app"
+						target="_blank"
+						class="group px-8"
+					>
 						Try the Demo
+						<ArrowUpRight
+							class="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+						/>
 					</Button>
 				</div>
 			</div>
 
-			<!-- compose.yaml window -->
-			<div class="relative mx-auto mt-14 w-full max-w-2xl">
-				<div class="overflow-hidden rounded-lg border border-border bg-code">
-					<div
-						class="flex items-center justify-between border-b border-border bg-surface px-4 py-2"
-					>
-						<span class="font-mono text-xs text-muted-foreground">compose.yaml</span>
+			<div class="relative mx-auto mt-16 w-full max-w-2xl">
+				<div
+					class="pointer-events-none absolute -inset-4 rounded-2xl bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,oklch(0.6_0.26_292.717/0.1),transparent_70%)] opacity-60 dark:opacity-40"
+					aria-hidden="true"
+				></div>
+
+				<div
+					class="relative overflow-hidden rounded-xl border border-primary/20 bg-code shadow-lg shadow-primary/5"
+				>
+					<div class="flex items-center gap-3 border-b border-primary/10 bg-surface/80 px-5 py-3">
+						<div class="flex items-center gap-1.5">
+							<span class="size-2.5 rounded-full bg-red-400/80"></span>
+							<span class="size-2.5 rounded-full bg-yellow-400/80"></span>
+							<span class="size-2.5 rounded-full bg-green-400/80"></span>
+						</div>
+						<span class="font-mono text-xs text-muted-foreground/70">compose.yaml</span>
 					</div>
 					<Code.Root
 						lang="yaml"
@@ -189,15 +237,17 @@ volumes:
 
 		<MobileBetaCallout />
 
-		<!-- Capabilities -->
-		<section class="relative mb-20">
-			<div class="mb-8 flex flex-col gap-2">
-				<h2 class="font-heading text-3xl font-semibold tracking-tight text-primary">
-					Capabilities
+		<section class="relative pb-20">
+			<div class="mb-10 flex flex-col items-center gap-2 text-center">
+				<h2 class="mt-3 font-heading text-3xl font-semibold tracking-tight md:text-4xl">
+					Everything you need to manage Docker
 				</h2>
+				<p class="mt-2 max-w-xl text-sm text-muted-foreground">
+					A comprehensive set of tools to handle every aspect of your container infrastructure.
+				</p>
 			</div>
 			<div
-				class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
+				class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border shadow-sm sm:grid-cols-2 lg:grid-cols-3"
 			>
 				{#each features as feature, i (feature.title)}
 					<FeatureCard
@@ -210,61 +260,79 @@ volumes:
 			</div>
 		</section>
 
-		<!-- Analytics Heartbeat -->
-		<section class="relative mb-20">
-			<div class="overflow-hidden rounded-lg border border-border">
+		<CommunityPreview />
+
+		<section class="relative pb-20">
+			<div class="overflow-hidden rounded-xl border border-border shadow-sm">
 				<div
-					class="flex flex-col gap-2 border-b border-border px-6 py-5 md:flex-row md:items-center md:justify-between md:px-8"
+					class="flex flex-col gap-2 border-b border-border bg-linear-to-r from-transparent via-primary/2 to-transparent px-6 py-6 md:flex-row md:items-center md:justify-between md:px-8"
 				>
-					<h2 class="text-xl font-semibold tracking-tight text-foreground">Analytics Heartbeat</h2>
-					<p class="text-sm leading-relaxed text-muted-foreground">
-						Live, anonymized check-ins from running Arcane servers.
-						<a
-							href={resolve('/docs/configuration/analytics')}
-							class="font-medium text-foreground underline underline-offset-4"
-						>
-							Learn more
-						</a>
-					</p>
+					<div>
+						<h2 class="text-xl font-semibold tracking-tight text-foreground">
+							Analytics Heartbeat
+						</h2>
+						<p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+							Live, anonymized check-ins from running Arcane servers.
+							<a
+								href={resolve('/docs/configuration/analytics')}
+								class="font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
+							>
+								Learn more
+							</a>
+						</p>
+					</div>
 				</div>
 
-				<!-- Stat strip -->
 				<div class="grid grid-cols-2 divide-x divide-border border-b border-border md:grid-cols-4">
-					<div class="flex flex-col gap-1 px-6 py-5 md:px-8">
-						<span class="text-xs text-muted-foreground">Active instances</span>
-						<span class="text-2xl font-semibold tracking-tight text-foreground">
+					<div class="flex flex-col gap-1.5 px-6 py-6 md:px-8">
+						<span class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase"
+							>Active instances</span
+						>
+						<span class="text-3xl font-bold tracking-tight text-foreground">
 							{stats ? stats.total : '—'}
 						</span>
 					</div>
-					<div class="flex flex-col gap-1 px-6 py-5 md:px-8">
-						<span class="text-xs text-muted-foreground">Last update</span>
-						<span class="text-2xl font-semibold tracking-tight text-foreground">
+					<div class="flex flex-col gap-1.5 px-6 py-6 md:px-8">
+						<span class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase"
+							>Last update</span
+						>
+						<span class="text-3xl font-bold tracking-tight text-foreground">
 							{latestDateLabel ?? '—'}
 						</span>
 					</div>
-					<div class="flex flex-col gap-1 px-6 py-5 md:px-8">
-						<span class="text-xs text-muted-foreground">Versions</span>
-						<span class="text-2xl font-semibold tracking-tight text-foreground">
+					<div class="flex flex-col gap-1.5 px-6 py-6 md:px-8">
+						<span class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase"
+							>Versions</span
+						>
+						<span class="text-3xl font-bold tracking-tight text-foreground">
 							{versionBreakdown.length || '—'}
 						</span>
 					</div>
-					<div class="flex flex-col gap-1 px-6 py-5 md:px-8">
-						<span class="text-xs text-muted-foreground">Most common</span>
-						<span class="text-2xl font-semibold tracking-tight text-foreground">
+					<div class="flex flex-col gap-1.5 px-6 py-6 md:px-8">
+						<span class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase"
+							>Most common</span
+						>
+						<span class="font-mono text-3xl font-bold tracking-tight text-foreground">
 							{versionBreakdown.length ? versionBreakdown[0].version : '—'}
 						</span>
 					</div>
 				</div>
 
 				<div class="grid gap-6 px-6 py-6 md:px-8 lg:grid-cols-[minmax(0,1fr)_240px]">
-					<div class="space-y-4">
+					<div class="space-y-6">
 						<div>
-							<p class="text-xs font-medium text-muted-foreground">By version</p>
+							<p class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase">
+								By version
+							</p>
 							{#if versionBreakdown.length}
-								<div class="mt-3 flex flex-wrap gap-2 text-xs">
+								<div class="mt-3 flex flex-wrap gap-2">
 									{#each versionBreakdown as version (version.version)}
-										<span class="rounded-md border border-border px-2.5 py-1 font-mono">
-											{version.version} · {version.count}
+										<span
+											class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors hover:border-primary/30 hover:bg-primary/3"
+										>
+											{version.version}
+											<span class="text-muted-foreground">·</span>
+											<span class="font-medium text-foreground">{version.count}</span>
 										</span>
 									{/each}
 								</div>
@@ -275,11 +343,17 @@ volumes:
 
 						{#if typeBreakdown.length}
 							<div>
-								<p class="text-xs font-medium text-muted-foreground">By type</p>
-								<div class="mt-3 flex flex-wrap gap-2 text-xs">
+								<p class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase">
+									By type
+								</p>
+								<div class="mt-3 flex flex-wrap gap-2">
 									{#each typeBreakdown as type (type.type)}
-										<span class="rounded-md border border-border px-2.5 py-1 font-mono">
-											{type.type} · {type.count}
+										<span
+											class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors hover:border-primary/30 hover:bg-primary/3"
+										>
+											{type.type}
+											<span class="text-muted-foreground">·</span>
+											<span class="font-medium text-foreground">{type.count}</span>
 										</span>
 									{/each}
 								</div>
@@ -288,12 +362,14 @@ volumes:
 					</div>
 
 					<div>
-						<p class="text-xs font-medium text-muted-foreground">Recent activity</p>
+						<p class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase">
+							Recent activity
+						</p>
 						{#if history.length}
 							<div class="mt-3 flex items-end gap-1" aria-label="Recent heartbeat activity">
 								{#each history as entry (entry.date)}
 									<div
-										class="w-2 rounded-[1px] bg-primary"
+										class="w-2.5 rounded-sm bg-primary/60 transition-all duration-200 hover:bg-primary"
 										style={`height: ${Math.max(8, Math.round((entry.count / historyMax) * 44))}px`}
 										title={`${entry.date}: ${entry.count}`}
 									>
@@ -301,6 +377,9 @@ volumes:
 									</div>
 								{/each}
 							</div>
+							<p class="mt-3 text-xs text-muted-foreground">
+								{history[0].date} — {history[history.length - 1].date}
+							</p>
 						{:else}
 							<p class="mt-3 text-sm text-muted-foreground">No activity yet.</p>
 						{/if}
@@ -308,7 +387,9 @@ volumes:
 				</div>
 
 				{#if statusError}
-					<p class="px-6 pb-5 text-xs text-muted-foreground md:px-8">{statusError}</p>
+					<p class="border-t border-border px-6 pt-4 pb-5 text-xs text-muted-foreground md:px-8">
+						{statusError}
+					</p>
 				{/if}
 			</div>
 		</section>

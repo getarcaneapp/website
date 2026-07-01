@@ -16,6 +16,7 @@
 			links: [
 				{ label: 'API Reference', href: '/api-reference' },
 				{ label: 'SBOM', href: '/sbom' },
+				{ label: 'Community', href: '/community' },
 				{ label: 'GitHub', href: 'https://github.com/getarcaneapp/arcane', external: true }
 			]
 		},
@@ -27,18 +28,21 @@
 </script>
 
 <footer class="border-t border-border">
+	<div class="h-px w-full bg-linear-to-r from-transparent via-primary/30 to-transparent"></div>
 	<div class="w-full px-4 py-12 lg:px-6">
 		<div class="flex flex-col justify-between gap-10 md:flex-row">
-			<div class="flex flex-col gap-3">
-				<a href="/" class="flex items-center gap-2">
+			<div class="flex max-w-xs flex-col gap-4">
+				<a href="/" class="flex items-center gap-2.5 transition-opacity hover:opacity-80">
 					<Logo class="size-5" />
 					<span class="text-sm font-semibold tracking-tight">Arcane</span>
 				</a>
-				<p class="max-w-xs text-sm text-muted-foreground">
+				<p class="text-sm leading-relaxed text-muted-foreground">
 					Modern Docker management, designed for everyone.
 				</p>
-				<div class="mt-4 flex flex-col gap-3">
-					<span class="text-xs font-medium text-muted-foreground">Supported by</span>
+				<div class="mt-6 flex flex-col gap-3">
+					<span class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase"
+						>Supported by</span
+					>
 					<div class="flex flex-wrap items-center gap-6">
 						<a
 							href="https://greptile.com"

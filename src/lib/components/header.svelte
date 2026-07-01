@@ -39,9 +39,12 @@
 	});
 </script>
 
-<header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+<header
+	class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-lg supports-backdrop-filter:bg-background/60"
+>
+	<div class="h-0.5 w-full bg-linear-to-r from-transparent via-primary/50 to-transparent"></div>
 	<div class="flex h-14 w-full items-center gap-4 px-4 lg:px-6">
-		<a href="/" class="hidden items-center gap-2 lg:flex">
+		<a href="/" class="hidden items-center gap-2.5 transition-opacity hover:opacity-80 lg:flex">
 			<Logo class="size-5" />
 			<span class="text-sm font-semibold tracking-tight">Arcane</span>
 		</a>
