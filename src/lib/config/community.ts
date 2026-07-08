@@ -30,6 +30,17 @@ export const communityItems: CommunityItem[] = [
 	},
 	{
 		kind: 'article',
+		title:
+			'Switching from Portainer to Arcane - Why We Looked for an Alternative in Docker Management',
+		author: 'Erhan Baştürk',
+		url: 'https://erhanbasturk.com.tr/blog/en/switching-from-portainer-to-arcane-docker-management',
+		publishedAt: '2026-06-29',
+		thumbnail:
+			'https://miro.medium.com/v2/resize:fit:1400/format:webp/1*f2CZGei9wnyXzsD7Q4MJDQ.png',
+		featured: true
+	},
+	{
+		kind: 'article',
 		title: 'Why Arcane Might Be the Next Big Docker UI for the Home Lab',
 		author: 'Brandon Lee',
 		url: 'https://www.virtualizationhowto.com/2025/12/why-arcane-might-be-the-next-big-docker-ui-for-the-home-lab/',
