@@ -262,4 +262,4 @@ This version asks before removing Arcane data, the Arcane user/group, or Docker.
 
 ## Next (Preview) Builds
 
-Want to try the latest features before they are officially released? See the <Link href="/docs/setup/next-images">Next Builds</Link> guide for the `:next` and `:next-static` images.
+Want to try the latest features before they are officially released? See the <Link href="/docs/setup/next-images">Next Builds</Link> guide for the `:next` images.
