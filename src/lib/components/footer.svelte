@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Logo from './logo.svelte';
+
+	const DISCORD_URL = 'https://discord.gg/WyXYpdyV3Z';
 
 	const columns = [
 		{
@@ -17,6 +20,7 @@
 				{ label: 'API Reference', href: '/api-reference' },
 				{ label: 'SBOM', href: '/sbom' },
 				{ label: 'Community', href: '/community' },
+				{ label: 'Discord', href: DISCORD_URL, external: true },
 				{ label: 'GitHub', href: 'https://github.com/getarcaneapp/arcane', external: true }
 			]
 		},
@@ -25,6 +29,29 @@
 			links: [{ label: 'Privacy', href: '/privacy' }]
 		}
 	];
+
+	let discordOnlineCount = $state<number | null>(null);
+
+	onMount(async () => {
+		try {
+			const response = await fetch('/api/discord/presence');
+			if (!response.ok) return;
+
+			const data: unknown = await response.json();
+			if (
+				typeof data === 'object' &&
+				data !== null &&
+				'online' in data &&
+				typeof data.online === 'number' &&
+				Number.isInteger(data.online) &&
+				data.online >= 0
+			) {
+				discordOnlineCount = data.online;
+			}
+		} catch {
+			discordOnlineCount = null;
+		}
+	});
 </script>
 
 <footer class="border-t border-border">
@@ -171,9 +198,16 @@
 										href={link.href}
 										target={link.external ? '_blank' : undefined}
 										rel={link.external ? 'noopener noreferrer' : undefined}
-										class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+										class="group text-sm text-muted-foreground transition-colors hover:text-foreground"
 									>
 										{link.label}
+										{#if link.href === DISCORD_URL && discordOnlineCount !== null}
+											<span
+												class="ml-1 inline-flex translate-y-px items-center rounded-full border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-[10px] leading-none font-medium text-primary tabular-nums transition-colors group-hover:border-primary/30 group-hover:bg-primary/15"
+											>
+												{discordOnlineCount.toLocaleString()} online
+											</span>
+										{/if}
 									</a>
 								</li>
 							{/each}

@@ -23,6 +23,9 @@
  */
 
 const ALLOWED_PREFIXES = ['bin/arcane-next/', 'bin/cli-next/'];
+const DISCORD_INVITE_URL =
+	'https://discord.com/api/v10/invites/WyXYpdyV3Z?with_counts=true&with_expiration=true';
+const DISCORD_PRESENCE_PATH = '/api/discord/presence';
 
 /**
  * @param {string} key
@@ -36,9 +39,10 @@ export default {
 	/**
 	 * @param {Request} request
 	 * @param {Env} env
+	 * @param {{ waitUntil: (promise: Promise<unknown>) => void }} ctx
 	 * @returns {Promise<Response>}
 	 */
-	async fetch(request, env) {
+	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
 
 		// Redirect arcane.ofkm.dev to getarcane.app (301 permanent redirect)
@@ -47,6 +51,68 @@ export default {
 			redirectUrl.hostname = 'getarcane.app';
 
 			return Response.redirect(redirectUrl.toString(), 301);
+		}
+
+		// Public Discord presence count for the footer badge
+		if (url.pathname === DISCORD_PRESENCE_PATH) {
+			if (request.method !== 'GET') {
+				return new Response('Method not allowed', {
+					status: 405,
+					headers: { Allow: 'GET' }
+				});
+			}
+
+			const discordCache = await caches.open('discord-presence');
+			const cacheKey = new Request(new URL(DISCORD_PRESENCE_PATH, url.origin), { method: 'GET' });
+			const cachedResponse = await discordCache.match(cacheKey);
+			if (cachedResponse) {
+				return cachedResponse;
+			}
+
+			try {
+				const discordResponse = await fetch(DISCORD_INVITE_URL, {
+					headers: { Accept: 'application/json' }
+				});
+				if (!discordResponse.ok) {
+					throw new Error(`Discord returned status ${discordResponse.status}`);
+				}
+
+				const data = /** @type {unknown} */ (await discordResponse.json());
+				if (
+					typeof data !== 'object' ||
+					data === null ||
+					!('approximate_presence_count' in data) ||
+					typeof data.approximate_presence_count !== 'number' ||
+					!Number.isInteger(data.approximate_presence_count) ||
+					data.approximate_presence_count < 0
+				) {
+					throw new Error('Discord returned an invalid presence count');
+				}
+				const online = data.approximate_presence_count;
+
+				const response = Response.json(
+					{ online },
+					{
+						headers: {
+							'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600'
+						}
+					}
+				);
+				ctx.waitUntil(discordCache.put(cacheKey, response.clone()));
+
+				return response;
+			} catch (error) {
+				console.error(
+					JSON.stringify({
+						message: 'Failed to load Discord presence',
+						error: error instanceof Error ? error.message : String(error)
+					})
+				);
+				return Response.json(
+					{ error: 'Discord presence is currently unavailable' },
+					{ status: 503, headers: { 'Cache-Control': 'no-store' } }
+				);
+			}
 		}
 
 		// R2 bucket listing API
