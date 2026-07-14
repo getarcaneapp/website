@@ -11,6 +11,8 @@ import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
 
 A **Remote Environment** is a Docker host outside the Arcane Manager that you want to manage from the same UI. You create the environment in Arcane, copy the generated agent settings, and run the **Arcane Agent** on the remote host. The Agent needs Docker access — typically via `/var/run/docker.sock`.
 
+If that host is also a Docker Swarm node, the same Agent can remain a visible Remote Environment and provide verified node coverage in **Swarm → Nodes**. Arcane reuses the environment's existing token; attaching it to a node does not rotate or replace the token.
+
 <ScreenshotFrame
   src="/img/screenshots/environments-page.jpeg"
   alt="Remote environments page in Arcane"
@@ -34,6 +36,22 @@ Connection mode is *who connects to whom*. Transport mode is *how the live chann
 - **`EDGE_TRANSPORT=poll`** — check in periodically instead of holding a tunnel open. The first action on an idle environment can take a moment while the connection wakes up.
 
 Generated agent snippets default to `EDGE_TRANSPORT=poll`.
+
+The canonical container image is `ghcr.io/getarcaneapp/agent`. The older `ghcr.io/getarcaneapp/arcane-headless` name remains a supported release alias for existing installations.
+
+## Use an environment with Swarm
+
+With an active Swarm manager selected, you can start the same **Easy Join** workflow from:
+
+- **Swarm → Cluster** to join one or more Remote Environments.
+- An eligible environment's detail page to join that environment.
+- An eligible environment's row menu on the **Environments** page.
+
+Select a worker or manager role, an availability mode, and any optional per-environment listen, advertise, or data-path address. Arcane discovers a reachable manager address and retrieves the correct join token internally; neither needs to be copied into the Easy Join dialog or returned in its result.
+
+The single-environment actions appear only when the Remote Environment is enabled, online, not already bound to a Swarm node, and you have the required permissions. The selected environment is always the Swarm manager, so it cannot also be an Easy Join target.
+
+After a verified join, the environment is bound to its Swarm node. From the node's Agent dialog you can switch to the environment's Containers, Images, Volumes, or Networks pages when permitted.
 
 ## Status meanings
 
