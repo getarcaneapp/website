@@ -1,4 +1,5 @@
 import type { Action } from 'svelte/action';
+import { trackEvent } from '$lib/analytics.js';
 
 // Lucide `copy` and `check` icons, inlined so the action stays framework-free.
 const COPY_ICON =
@@ -32,6 +33,7 @@ export const copyCode: Action = (node) => {
 			try {
 				await navigator.clipboard.writeText(codeEl.textContent ?? '');
 				button.innerHTML = CHECK_ICON;
+				trackEvent('Docs Code Copied', { language: block.dataset.lang || 'plain_text' });
 			} catch {
 				// clipboard may be unavailable (insecure context / denied permission)
 			}

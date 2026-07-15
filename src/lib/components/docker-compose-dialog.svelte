@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Download from 'virtual:icons/lucide/download';
+	import { trackEvent } from '$lib/analytics.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Code from '$lib/components/ui/code/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -20,6 +21,13 @@
 		a.download = 'docker-compose.yml';
 		a.click();
 		URL.revokeObjectURL(url);
+		trackEvent('Compose Exported', { method: 'download' });
+	}
+
+	function handleCopy(status: 'success' | 'failure' | undefined) {
+		if (status === 'success') {
+			trackEvent('Compose Exported', { method: 'copy' });
+		}
 	}
 
 	function handleOpenChange(newOpen: boolean) {
@@ -41,7 +49,7 @@
 
 		<div class="flex min-h-0 flex-1 flex-col space-y-4">
 			<Code.Root lang="yaml" class="min-h-0 flex-1 overflow-y-auto" code={generatedCompose}>
-				<Code.CopyButton size="default" variant="ghost" />
+				<Code.CopyButton size="default" variant="ghost" onCopy={handleCopy} />
 			</Code.Root>
 
 			<div

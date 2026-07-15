@@ -13,8 +13,8 @@ overrides:
   typescript: '^7.0.1-rc'
   sharp: '0.34.5'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.2.2
-  vite-plus: ^0.2.2
+  vite: npm:@voidzero-dev/vite-plus-core@0.2.4
+  vite-plus: ^0.2.4
 peerDependencyRules:
   allowAny:
     - vite
@@ -38,3 +38,4 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview-win32-arm64@7.0.0-dev.20260628.1'
   - '@typescript/native-preview-win32-x64@7.0.0-dev.20260628.1'
   - '@typescript/native-preview@7.0.0-dev.20260628.1'
+  - prettier-plugin-tailwindcss@0.8.1

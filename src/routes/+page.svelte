@@ -3,6 +3,7 @@
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
 	import { resolve } from '$app/paths';
+	import { trackEvent } from '$lib/analytics.js';
 	import CommunityPreview from '$lib/components/community/community-preview.svelte';
 	import ContentWrapper from '$lib/components/content-wrapper.svelte';
 	import MobileBetaCallout from '$lib/components/mobile-beta-callout.svelte';
@@ -148,6 +149,8 @@ volumes:
 				<!-- Announcement pill -->
 				<a
 					href="/changelog"
+					onclick={() =>
+						trackEvent('CTA Clicked', { cta: 'changelog', placement: 'home_announcement' })}
 					class="group mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary transition-all duration-300 hover:border-primary/40 hover:bg-primary/10"
 				>
 					<span class="relative flex size-2">
@@ -185,7 +188,13 @@ volumes:
 				</p>
 
 				<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-					<Button size="lg" href="/docs/setup/installation" class="group px-8">
+					<Button
+						size="lg"
+						href="/docs/setup/installation"
+						onclick={() =>
+							trackEvent('CTA Clicked', { cta: 'get_started', placement: 'home_hero' })}
+						class="group px-8"
+					>
 						Get Started
 						<ArrowRight
 							class="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
@@ -196,6 +205,7 @@ volumes:
 						size="lg"
 						href="https://demo.getarcane.app"
 						target="_blank"
+						onclick={() => trackEvent('CTA Clicked', { cta: 'demo', placement: 'home_hero' })}
 						class="group px-8"
 					>
 						Try the Demo

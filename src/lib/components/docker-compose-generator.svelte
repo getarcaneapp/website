@@ -2,6 +2,7 @@
 	import ChevronLeft from 'virtual:icons/lucide/chevron-left';
 	import ChevronRight from 'virtual:icons/lucide/chevron-right';
 	import FileText from 'virtual:icons/lucide/file-text';
+	import { trackEvent } from '$lib/analytics.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
@@ -75,6 +76,16 @@
 
 	function handleGenerateDockerCompose() {
 		generatedCompose = generateDockerCompose(config);
+		trackEvent('Compose Generated', {
+			access_method: config.useSocketProxy === true ? 'socket_proxy' : 'direct_socket',
+			database: config.enableDatabase === true ? 'postgresql' : 'sqlite',
+			authentication: config.enableOIDC === true ? 'oidc' : 'local',
+			project_storage:
+				typeof config.projectsHostPath === 'string' && config.projectsHostPath.trim()
+					? 'host_mount'
+					: 'named_volume',
+			selinux: config.enableSelinux === true ? 'enabled' : 'disabled'
+		});
 		dialogOpen = true;
 	}
 
