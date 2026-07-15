@@ -4,11 +4,21 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/img/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<script
-			defer
-			src="https://analytics.ofkm.us/script.js"
-			data-website-id="f81e69bb-9cbd-4a37-8897-57f6ff59cfa8"
-		></script>
+		<!-- Privacy-friendly analytics by Plausible -->
+		<script async src="https://plausible.ofkm.us/js/pa-IsfcMHM5HU-XgkIZ_1O28.js"></script>
+		<script>
+			((window.plausible =
+				window.plausible ||
+				function () {
+					(plausible.q = plausible.q || []).push(arguments);
+				}),
+				(plausible.init =
+					plausible.init ||
+					function (i) {
+						plausible.o = i || {};
+					}));
+			plausible.init();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body
