@@ -13,25 +13,25 @@ Create a JSON file that lists your templates. If you use a code editor, include 
 
 ```json
 {
-  "$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
-  "name": "My Company Templates",
-  "description": "Docker templates for internal applications",
-  "version": "1.0.0",
-  "author": "Your Team",
-  "url": "https://github.com/yourcompany/docker-templates",
-  "templates": [
-    {
-      "id": "internal-app",
-      "name": "Internal Application",
-      "description": "Company application stack with database",
-      "version": "1.0.0",
-      "author": "DevOps Team",
-      "compose_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/docker-compose.yml",
-      "env_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/.env.example",
-      "documentation_url": "https://github.com/yourcompany/docker-templates/tree/main/internal-app",
-      "tags": ["internal", "webapp", "postgres"]
-    }
-  ]
+	"$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
+	"name": "My Company Templates",
+	"description": "Docker templates for internal applications",
+	"version": "1.0.0",
+	"author": "Your Team",
+	"url": "https://github.com/yourcompany/docker-templates",
+	"templates": [
+		{
+			"id": "internal-app",
+			"name": "Internal Application",
+			"description": "Company application stack with database",
+			"version": "1.0.0",
+			"author": "DevOps Team",
+			"compose_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/docker-compose.yml",
+			"env_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/.env.example",
+			"documentation_url": "https://github.com/yourcompany/docker-templates/tree/main/internal-app",
+			"tags": ["internal", "webapp", "postgres"]
+		}
+	]
 }
 ```
 
@@ -152,25 +152,25 @@ Here is a minimal GitHub setup:
 2. **Add registry.json:**
    ```json
    {
-     "$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
-     "name": "My Templates",
-     "description": "Custom Docker templates",
-     "version": "1.0.0",
-     "author": "Acme Corp",
-     "url": "https://github.com/username/my-docker-templates",
-     "templates": [
-       {
-         "id": "wordpress",
-         "name": "WordPress",
-         "description": "Production-ready WordPress with MariaDB and health checks.",
-         "version": "1.2.3",
-         "author": "Acme Corp",
-         "compose_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/docker-compose.yml",
-         "env_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/.env.example",
-         "documentation_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/README.md",
-         "tags": ["cms", "php", "wordpress"]
-       }
-     ]
+   	"$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
+   	"name": "My Templates",
+   	"description": "Custom Docker templates",
+   	"version": "1.0.0",
+   	"author": "Acme Corp",
+   	"url": "https://github.com/username/my-docker-templates",
+   	"templates": [
+   		{
+   			"id": "wordpress",
+   			"name": "WordPress",
+   			"description": "Production-ready WordPress with MariaDB and health checks.",
+   			"version": "1.2.3",
+   			"author": "Acme Corp",
+   			"compose_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/docker-compose.yml",
+   			"env_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/.env.example",
+   			"documentation_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/README.md",
+   			"tags": ["cms", "php", "wordpress"]
+   		}
+   	]
    }
    ```
 3. **Registry URL:** `https://raw.githubusercontent.com/username/my-docker-templates/main/registry.json`

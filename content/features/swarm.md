@@ -31,12 +31,12 @@ For node-level coverage, Arcane also supports per-node agents. They handle node 
 
 ## What's in the workspace
 
-| Page | What it covers |
-| --- | --- |
-| <Link href="/docs/features/swarm-cluster">Cluster</Link> | Initialize a Swarm, join, leave, unlock, rotate join tokens, update cluster spec. |
-| <Link href="/docs/features/swarm-workloads">Workloads</Link> | Stacks, services, tasks, scaling, rollbacks, logs. |
-| <Link href="/docs/features/swarm-nodes-agents">Nodes & Agents</Link> | Node operations, agent coverage, deployment flow, troubleshooting. |
-| <Link href="/docs/features/swarm-configs-secrets">Configs & Secrets</Link> | Create and delete configs vs. secrets, and when to use each. |
+| Page                                                                       | What it covers                                                                    |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| <Link href="/docs/features/swarm-cluster">Cluster</Link>                   | Initialize a Swarm, join, leave, unlock, rotate join tokens, update cluster spec. |
+| <Link href="/docs/features/swarm-workloads">Workloads</Link>               | Stacks, services, tasks, scaling, rollbacks, logs.                                |
+| <Link href="/docs/features/swarm-nodes-agents">Nodes & Agents</Link>       | Node operations, agent coverage, deployment flow, troubleshooting.                |
+| <Link href="/docs/features/swarm-configs-secrets">Configs & Secrets</Link> | Create and delete configs vs. secrets, and when to use each.                      |
 
 ## Suggested workflow
 

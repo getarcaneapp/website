@@ -28,7 +28,7 @@ Pick one when you create the environment:
 
 ## Transport mode
 
-Connection mode is *who connects to whom*. Transport mode is *how the live channel behaves*:
+Connection mode is _who connects to whom_. Transport mode is _how the live channel behaves_:
 
 - **`EDGE_TRANSPORT=auto`** — keep a continuous tunnel open. Arcane uses gRPC where possible and falls back to WebSocket.
 - **`EDGE_TRANSPORT=poll`** — check in periodically instead of holding a tunnel open. The first action on an idle environment can take a moment while the connection wakes up.
@@ -48,7 +48,7 @@ In poll mode, you'll see:
 
 - Arcane Manager running and reachable from the Agent host.
 - Docker installed on the Agent host with permission to mount `/var/run/docker.sock`.
-- The environment must be created in Arcane *before* you start the Agent.
+- The environment must be created in Arcane _before_ you start the Agent.
 - For **Direct** mode: the Manager must reach the Agent on port `3553`.
 - For **Edge** mode: the Agent must reach the Manager from inside its network.
 
@@ -140,7 +140,7 @@ The dialog tracks each environment as it goes:
 - **Failed** — the upgrade didn't complete; the error is shown inline.
 
 > [!NOTE]
-> This upgrades the Arcane manager and agents themselves — not the containers or projects they run. To keep your *workloads* current, see <Link href="/docs/guides/updates">Auto Updates</Link>. **Update All** requires the `system:upgrade` permission.
+> This upgrades the Arcane manager and agents themselves — not the containers or projects they run. To keep your _workloads_ current, see <Link href="/docs/guides/updates">Auto Updates</Link>. **Update All** requires the `system:upgrade` permission.
 
 ## Standalone binary
 

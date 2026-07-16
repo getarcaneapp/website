@@ -21,7 +21,7 @@ import { Link } from '$lib/components/ui/link/index.js';
 
 ```bash
 systemctl --user enable podman.socket
-  
+
 loginctl enable-linger <user>
 ```
 

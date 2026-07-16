@@ -25,15 +25,7 @@ export default defineConfig({
 			preserveWhitespace: true
 		},
 		experimentalSortPackageJson: true,
-		ignorePatterns: [
-			'package-lock.json',
-			'pnpm-lock.yaml',
-			'*.md',
-			'tsconfig.json',
-			'svelte.config.js',
-			'src/*.json',
-			'static/**'
-		]
+		ignorePatterns: ['static/**']
 	},
 	lint: {
 		plugins: ['oxc', 'typescript', 'unicorn'],
@@ -85,6 +77,16 @@ export default defineConfig({
 		}
 	},
 	build: {
-		minify: 'oxc'
+		minify: 'oxc',
+		rolldownOptions: {
+			treeshake: true,
+			output: {
+				minify: {
+					compress: {
+						dropConsole: true
+					}
+				}
+			}
+		}
 	}
 });

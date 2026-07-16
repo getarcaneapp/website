@@ -16,7 +16,7 @@ Upgrading from a pre-2.0 release? Jump to [Upgrade & migration](#upgrade--migrat
 
 - **Permissions** look like `<resource>:<action>` (e.g. `containers:start`). You don't pick these one at a time — you assign roles.
 - **Roles** are named permission sets. Six built-in, plus your own.
-- **Assignments** bind a user to a role, either **Global** (org-wide) or scoped to one environment. A user can hold several — e.g. *Editor on prod, Viewer on staging*.
+- **Assignments** bind a user to a role, either **Global** (org-wide) or scoped to one environment. A user can hold several — e.g. _Editor on prod, Viewer on staging_.
 - **OIDC mappings** turn SSO group claims into assignments on every login.
 
 Permissions are either org-level (settings, users, registries — need a Global assignment) or env-scoped (containers, projects, images — per environment).
@@ -25,14 +25,14 @@ Permissions are either org-level (settings, users, registries — need a Global 
 
 These six are immutable. Clone one if you need a starting point for a custom role.
 
-| Role | For | Grants |
-| --- | --- | --- |
-| **Admin** | Instance operators | Everything, everywhere. |
-| **Editor** | Day-to-day Docker work | Read+write on all Docker resources, GitOps, webhooks, jobs, notifications, vulnerabilities. Read-only on settings/users. |
-| **No-Shell Editor** | Editor without shell access | Same as Editor, minus `containers:exec`. |
-| **Deployer** | CI/CD and on-call | Deploy projects, run container lifecycle actions, sync GitOps, pull/tag/commit images. No create/delete, no settings. |
-| **Monitor** | Read-only with logs | Read resources, view logs, dashboards, events. No mutations, no exec. |
-| **Viewer** | Auditors | Read-only across Docker resources and most org pages. No logs, no actions. |
+| Role                | For                         | Grants                                                                                                                   |
+| ------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Admin**           | Instance operators          | Everything, everywhere.                                                                                                  |
+| **Editor**          | Day-to-day Docker work      | Read+write on all Docker resources, GitOps, webhooks, jobs, notifications, vulnerabilities. Read-only on settings/users. |
+| **No-Shell Editor** | Editor without shell access | Same as Editor, minus `containers:exec`.                                                                                 |
+| **Deployer**        | CI/CD and on-call           | Deploy projects, run container lifecycle actions, sync GitOps, pull/tag/commit images. No create/delete, no settings.    |
+| **Monitor**         | Read-only with logs         | Read resources, view logs, dashboards, events. No mutations, no exec.                                                    |
+| **Viewer**          | Auditors                    | Read-only across Docker resources and most org pages. No logs, no actions.                                               |
 
 > [!IMPORTANT]
 > At least one user must always hold **Admin** globally. Arcane refuses any change that would leave the instance with zero global admins.
@@ -92,39 +92,39 @@ You cannot grant a key more permissions than you have yourself.
 
 ### Org-level (Global scope)
 
-| Resource | Actions |
-| --- | --- |
-| `users` | `list`, `read`, `create`, `update`, `delete` |
-| `roles` | `list`, `read`, `create`, `update`, `delete`, `assign` |
-| `oidc-mappings` | `manage` |
-| `apikeys` | `list`, `read`, `create`, `update`, `delete` |
-| `settings` | `read`, `write` |
-| `environments` | `list`, `read`, `create`, `update`, `delete`, `pair`, `sync` |
-| `registries` | `list`, `read`, `create`, `update`, `delete`, `test` |
-| `templates` | `list`, `read`, `create`, `update`, `delete` |
+| Resource           | Actions                                                      |
+| ------------------ | ------------------------------------------------------------ |
+| `users`            | `list`, `read`, `create`, `update`, `delete`                 |
+| `roles`            | `list`, `read`, `create`, `update`, `delete`, `assign`       |
+| `oidc-mappings`    | `manage`                                                     |
+| `apikeys`          | `list`, `read`, `create`, `update`, `delete`                 |
+| `settings`         | `read`, `write`                                              |
+| `environments`     | `list`, `read`, `create`, `update`, `delete`, `pair`, `sync` |
+| `registries`       | `list`, `read`, `create`, `update`, `delete`, `test`         |
+| `templates`        | `list`, `read`, `create`, `update`, `delete`                 |
 | `git-repositories` | `list`, `read`, `create`, `update`, `delete`, `test`, `sync` |
-| `events` | `read` |
-| `customize` | `manage` |
+| `events`           | `read`                                                       |
+| `customize`        | `manage`                                                     |
 
 ### Env-scoped (per environment)
 
-| Resource | Actions |
-| --- | --- |
-| `containers` | `list`, `read`, `logs`, `create`, `start`, `stop`, `restart`, `redeploy`, `kill`, `pause`, `delete`, `exec`, `autoupdate` |
-| `projects` | `list`, `read`, `logs`, `create`, `update`, `deploy`, `down`, `restart`, `delete`, `archive` |
-| `images` | `list`, `read`, `pull`, `push`, `build`, `tag`, `commit`, `prune`, `delete`, `upload` |
-| `volumes` | `list`, `read`, `create`, `delete`, `prune`, `browse`, `upload`, `backup` |
-| `networks` | `list`, `read`, `create`, `delete`, `prune` |
-| `swarm` | `read`, `init`, `join`, `leave`, `spec`, `nodes`, `services`, `services:logs`, `stacks`, `configs`, `secrets`, `unlock` |
-| `gitops` | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle` |
-| `webhooks` | `list`, `create`, `update`, `delete` |
-| `jobs` | `manage` |
-| `notifications` | `manage` |
-| `dashboard` | `read` |
-| `system` | `read`, `prune`, `upgrade` |
-| `image-updates` | `read`, `check` |
-| `vulnerabilities` | `read`, `scan`, `manage` |
-| `build-workspaces` | `manage` |
+| Resource           | Actions                                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `containers`       | `list`, `read`, `logs`, `create`, `start`, `stop`, `restart`, `redeploy`, `kill`, `pause`, `delete`, `exec`, `autoupdate` |
+| `projects`         | `list`, `read`, `logs`, `create`, `update`, `deploy`, `down`, `restart`, `delete`, `archive`                              |
+| `images`           | `list`, `read`, `pull`, `push`, `build`, `tag`, `commit`, `prune`, `delete`, `upload`                                     |
+| `volumes`          | `list`, `read`, `create`, `delete`, `prune`, `browse`, `upload`, `backup`                                                 |
+| `networks`         | `list`, `read`, `create`, `delete`, `prune`                                                                               |
+| `swarm`            | `read`, `init`, `join`, `leave`, `spec`, `nodes`, `services`, `services:logs`, `stacks`, `configs`, `secrets`, `unlock`   |
+| `gitops`           | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle`                                                         |
+| `webhooks`         | `list`, `create`, `update`, `delete`                                                                                      |
+| `jobs`             | `manage`                                                                                                                  |
+| `notifications`    | `manage`                                                                                                                  |
+| `dashboard`        | `read`                                                                                                                    |
+| `system`           | `read`, `prune`, `upgrade`                                                                                                |
+| `image-updates`    | `read`, `check`                                                                                                           |
+| `vulnerabilities`  | `read`, `scan`, `manage`                                                                                                  |
+| `build-workspaces` | `manage`                                                                                                                  |
 
 `gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
 

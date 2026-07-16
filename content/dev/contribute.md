@@ -155,6 +155,7 @@ just gomod tidy all
 ```
 
 ### Environment Management
+
 ```bash
 # Start development environment
 ./scripts/development/dev.sh start
@@ -176,6 +177,7 @@ just gomod tidy all
 ```
 
 ### Debugging & Logs
+
 ```bash
 # Interactive log selection
 ./scripts/development/dev.sh logs
@@ -216,7 +218,6 @@ docker compose -f docker/compose.dev.yaml exec frontend pnpm format
 docker compose -f docker/compose.dev.yaml exec backend go fmt ./...
 docker compose -f docker/compose.dev.yaml exec backend go vet ./...
 ```
-
 
 ## 📝 Commit Guidelines
 

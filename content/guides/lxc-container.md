@@ -80,4 +80,3 @@ services:
       - AGENT_TOKEN=your-agent-token
     restart: unless-stopped
 ```
-

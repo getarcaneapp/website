@@ -18,7 +18,7 @@ You register a **trust rule** once. From then on, any workload that matches the 
 
 ## How it works
 
-1. An admin registers a federated credential — a rule that says *"tokens from this issuer, for this audience, with this subject, get this role."*
+1. An admin registers a federated credential — a rule that says _"tokens from this issuer, for this audience, with this subject, get this role."_
 2. In CI, the workload (or the Arcane CLI) fetches its OIDC token from the platform.
 3. The CLI sends that token to Arcane.
 4. Arcane verifies the token's signature against the issuer's published keys, checks the audience and subject against your rule, then returns a short-lived Arcane token.
@@ -34,16 +34,16 @@ There is no global switch to flip — federated credentials become active as soo
 2. Fill in the fields below.
 3. Save, and toggle **Enabled** on.
 
-| Field          | What it does                                                                                                              |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Name           | A label to identify the rule.                                                                                             |
-| Issuer URL     | The OIDC issuer that signs the workload's tokens, e.g. `https://token.actions.githubusercontent.com`. Must be HTTPS.       |
-| Audience       | The audience the token must carry. Pick a value you control (your Arcane URL works well) and request the same one in CI.   |
+| Field          | What it does                                                                                                                        |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Name           | A label to identify the rule.                                                                                                       |
+| Issuer URL     | The OIDC issuer that signs the workload's tokens, e.g. `https://token.actions.githubusercontent.com`. Must be HTTPS.                |
+| Audience       | The audience the token must carry. Pick a value you control (your Arcane URL works well) and request the same one in CI.            |
 | Subject match  | Which workloads to trust, compared against the token's `sub` claim. Use **exact** for one subject, or **glob** (`*`) for a pattern. |
-| Role           | The Arcane role granted to matching workloads.                                                                            |
-| Scope          | Apply the role globally or to a single environment.                                                                       |
-| Token lifetime | How long each issued Arcane token lasts (60–3600 seconds, default 900).                                                   |
-| Enabled        | Whether the rule currently accepts exchanges.                                                                             |
+| Role           | The Arcane role granted to matching workloads.                                                                                      |
+| Scope          | Apply the role globally or to a single environment.                                                                                 |
+| Token lifetime | How long each issued Arcane token lasts (60–3600 seconds, default 900).                                                             |
+| Enabled        | Whether the rule currently accepts exchanges.                                                                                       |
 
 > [!CAUTION]
 > A broad subject match — `*`, or a whole organization — trusts **every** workflow in that scope, including forks and pull requests. Always match the most specific subject you can, usually a single repository and branch.
@@ -116,15 +116,15 @@ You can also use `--token-file <path>` or `--token-stdin`.
 
 ### `arcane-cli auth federated` flags
 
-| Flag                                       | Description                                                                          |
-| ------------------------------------------ | ------------------------------------------------------------------------------------ |
-| `--audience`                               | Audience to request and send. Falls back to the `federated_audience` config value.   |
-| `--server`                                 | Arcane server URL to use for this exchange.                                          |
-| `--provider`                               | `auto` (default), `github`, `gitlab`, or `generic`.                                  |
-| `--token`, `--token-file`, `--token-stdin` | Supply the external token explicitly instead of auto-detecting it.                   |
-| `--export`                                 | Print `export ARCANE_TOKEN=…` for reuse by later commands in the same shell.         |
-| `--json`                                   | Output the result as JSON.                                                           |
-| `--persist`                                | Save the issued token to the CLI config file (off by default).                       |
+| Flag                                       | Description                                                                        |
+| ------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `--audience`                               | Audience to request and send. Falls back to the `federated_audience` config value. |
+| `--server`                                 | Arcane server URL to use for this exchange.                                        |
+| `--provider`                               | `auto` (default), `github`, `gitlab`, or `generic`.                                |
+| `--token`, `--token-file`, `--token-stdin` | Supply the external token explicitly instead of auto-detecting it.                 |
+| `--export`                                 | Print `export ARCANE_TOKEN=…` for reuse by later commands in the same shell.       |
+| `--json`                                   | Output the result as JSON.                                                         |
+| `--persist`                                | Save the issued token to the CLI config file (off by default).                     |
 
 Under the hood, Arcane exposes a standard <Link href="https://datatracker.ietf.org/doc/html/rfc8693">OAuth 2.0 Token Exchange (RFC 8693)</Link> endpoint at `/api/auth/federated/token`. The CLI calls it for you, but any compliant client can use it too.
 

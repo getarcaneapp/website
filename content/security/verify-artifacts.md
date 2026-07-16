@@ -1,6 +1,6 @@
 ---
-title: "Verify Artifacts"
-description: "Verify Arcane release artifacts and container images with Cosign."
+title: 'Verify Artifacts'
+description: 'Verify Arcane release artifacts and container images with Cosign.'
 order: 1
 ---
 

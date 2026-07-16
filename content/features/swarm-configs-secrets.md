@@ -8,12 +8,12 @@ Swarm **configs** and **secrets** let you ship runtime data to services and stac
 
 ## Configs vs. secrets
 
-| Use a **config** for | Use a **secret** for |
-| --- | --- |
-| application config files | API tokens |
-| feature flags | passwords |
-| non-sensitive env defaults | private keys |
-|  | registry credentials |
+| Use a **config** for       | Use a **secret** for |
+| -------------------------- | -------------------- |
+| application config files   | API tokens           |
+| feature flags              | passwords            |
+| non-sensitive env defaults | private keys         |
+|                            | registry credentials |
 
 If a value is sensitive, use a secret. Otherwise a config is fine.
 

@@ -1,6 +1,6 @@
 ---
-title: "Edge Agent mTLS"
-description: "Add mutual TLS authentication between the Arcane Manager and its edge agents."
+title: 'Edge Agent mTLS'
+description: 'Add mutual TLS authentication between the Arcane Manager and its edge agents.'
 order: 2
 ---
 

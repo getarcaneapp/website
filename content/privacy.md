@@ -31,6 +31,7 @@ You can remove this data at any time by deleting your local configuration, signi
 Arcane Mobile connects to user-managed Arcane servers. Account data is stored on the Arcane server selected by the user, not in the Android app.
 
 To delete an Arcane account:
+
 1. Ask an administrator of your Arcane server to delete your user from Settings > Users.
 2. If you are the administrator, open Arcane, go to Settings > Users, select the user, and delete the account.
 3. For hosted demo accounts, data is temporary and deleted when the demo session ends.

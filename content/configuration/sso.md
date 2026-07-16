@@ -47,8 +47,8 @@ Instead of the UI, you can declare OIDC group → role mappings with the `OIDC_R
 
 ```json
 [
-  { "claimValue": "arcane-admins", "roleId": "role_admin" },
-  { "claimValue": "arcane-devops", "roleId": "role_editor", "environmentId": "env-prod" }
+	{ "claimValue": "arcane-admins", "roleId": "role_admin" },
+	{ "claimValue": "arcane-devops", "roleId": "role_editor", "environmentId": "env-prod" }
 ]
 ```
 

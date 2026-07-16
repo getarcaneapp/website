@@ -194,23 +194,23 @@ To create several syncs at once, paste or upload a JSON array:
 
 ```json
 [
-  {
-    "syncName": "project-name",
-    "gitRepo": "my-git-repo",
-    "branch": "main",
-    "dockerComposePath": "compose/myproject/compose.yaml",
-    "autoSync": true,
-    "syncInterval": 5,
-    "syncDirectory": true
-  },
-  {
-    "syncName": "project-name2",
-    "gitRepo": "my-git-repo",
-    "branch": "main",
-    "dockerComposePath": "compose/myproject2/compose.yaml",
-    "autoSync": true,
-    "syncInterval": 5
-  }
+	{
+		"syncName": "project-name",
+		"gitRepo": "my-git-repo",
+		"branch": "main",
+		"dockerComposePath": "compose/myproject/compose.yaml",
+		"autoSync": true,
+		"syncInterval": 5,
+		"syncDirectory": true
+	},
+	{
+		"syncName": "project-name2",
+		"gitRepo": "my-git-repo",
+		"branch": "main",
+		"dockerComposePath": "compose/myproject2/compose.yaml",
+		"autoSync": true,
+		"syncInterval": 5
+	}
 ]
 ```
 

@@ -133,12 +133,12 @@ New API key create/update payloads need explicit permission grants:
 
 ```json
 {
-  "name": "production deploy bot",
-  "permissions": [
-    { "permission": "projects:list", "environmentId": "env-prod" },
-    { "permission": "projects:read", "environmentId": "env-prod" },
-    { "permission": "projects:deploy", "environmentId": "env-prod" }
-  ]
+	"name": "production deploy bot",
+	"permissions": [
+		{ "permission": "projects:list", "environmentId": "env-prod" },
+		{ "permission": "projects:read", "environmentId": "env-prod" },
+		{ "permission": "projects:deploy", "environmentId": "env-prod" }
+	]
 }
 ```
 
@@ -198,8 +198,8 @@ services:
       APP_URL: http://localhost:3552
       ENCRYPTION_KEY: your-existing-encryption-key
       JWT_SECRET: your-existing-jwt-secret
-      PUID: "1000"
-      PGID: "1000"
+      PUID: '1000'
+      PGID: '1000'
 ```
 
 If you use a Docker socket proxy, keep the proxy host setting in the same Compose service:

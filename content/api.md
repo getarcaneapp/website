@@ -7,7 +7,6 @@ description: How to use the Arcane API
 import { Link } from '$lib/components/ui/link/index.js';
 </script>
 
-
 Arcane provides a REST API that allows you to programmatically manage your Docker resources. The API documentation is built into Arcane and available directly from your instance.
 
 ## Accessing the API Documentation
@@ -47,7 +46,7 @@ Static keys are protected in the UI so they cannot be edited or deleted accident
 ## Using the API
 
 > [!TIP]
-> You can use the API using the official <Link href="/docs/cli/install">arcane-cli</Link> client. 
+> You can use the API using the official <Link href="/docs/cli/install">arcane-cli</Link> client.
 
 All API endpoints require authentication using the `X-Api-Key` header:
 
