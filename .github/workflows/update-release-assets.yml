@@ -101,7 +101,7 @@ jobs:
 
       - name: Set up Go
         if: steps.check.outputs.do_sbom == 'true'
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version-file: arcane/go.mod
 
