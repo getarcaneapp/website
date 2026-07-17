@@ -6,8 +6,7 @@
 	import { box } from 'svelte-toolbelt';
 	import { cn } from '$lib/utils.js';
 	import { useCode } from './code.svelte.js';
-	import { codeVariants } from './index.js';
-	import type { CodeRootProps } from './types.js';
+	import { codeVariants, type CodeRootProps } from './types.js';
 
 	let {
 		ref = $bindable(null),

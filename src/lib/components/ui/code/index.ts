@@ -2,28 +2,22 @@
 	Installed from @ieedan/shadcn-svelte-extras
 */
 
-import { tv, type VariantProps } from 'tailwind-variants';
 import Root from './code.svelte';
 import CopyButton from './code-copy-button.svelte';
 import Overflow from './code-overflow.svelte';
-import type { CodeCopyButtonProps, CodeRootProps } from './types.js';
-
-export const codeVariants = tv({
-	base: 'not-prose relative h-full overflow-auto rounded-lg border',
-	variants: {
-		variant: {
-			default: 'border-border bg-code',
-			secondary: 'bg-secondary/50 border-transparent'
-		}
-	}
-});
-
-export type CodeVariant = VariantProps<typeof codeVariants>['variant'];
+import {
+	codeVariants,
+	type CodeCopyButtonProps,
+	type CodeRootProps,
+	type CodeVariant
+} from './types.js';
 
 export {
 	Root,
 	CopyButton,
 	Overflow,
+	codeVariants,
+	type CodeVariant,
 	type CodeRootProps as RootProps,
 	type CodeCopyButtonProps as CopyButtonProps
 };

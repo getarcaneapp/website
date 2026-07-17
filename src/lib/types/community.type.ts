@@ -1,5 +1,3 @@
-export type CommunityItemKind = 'video' | 'article';
-
 interface CommunityItemBase {
 	title: string;
 	author: string;

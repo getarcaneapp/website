@@ -22,6 +22,11 @@
  * @property {R2Bucket | undefined} BUCKET
  */
 
+/**
+ * @typedef {Object} ExecutionContext
+ * @property {(promise: Promise<unknown>) => void} waitUntil
+ */
+
 const ALLOWED_PREFIXES = ['bin/arcane-next/', 'bin/cli-next/'];
 const DISCORD_INVITE_URL =
 	'https://discord.com/api/v10/invites/WyXYpdyV3Z?with_counts=true&with_expiration=true';
@@ -35,155 +40,185 @@ function getDownloadFilename(key) {
 	return (key.split('/').pop() ?? 'download').replace(/["\r\n]/g, '');
 }
 
+/**
+ * @param {Request} request
+ * @param {URL} url
+ * @returns {Response | null}
+ */
+function getLegacyRedirect(request, url) {
+	if (url.hostname !== 'arcane.ofkm.dev') return null;
+
+	const redirectUrl = new URL(request.url);
+	redirectUrl.hostname = 'getarcane.app';
+	return Response.redirect(redirectUrl.toString(), 301);
+}
+
+/**
+ * @param {unknown} data
+ * @returns {number | null}
+ */
+function getDiscordPresenceCount(data) {
+	if (
+		typeof data !== 'object' ||
+		data === null ||
+		!('approximate_presence_count' in data) ||
+		typeof data.approximate_presence_count !== 'number' ||
+		!Number.isInteger(data.approximate_presence_count) ||
+		data.approximate_presence_count < 0
+	) {
+		return null;
+	}
+
+	return data.approximate_presence_count;
+}
+
+/**
+ * @param {Request} request
+ * @param {URL} url
+ * @param {ExecutionContext} ctx
+ * @returns {Promise<Response>}
+ */
+async function getDiscordPresenceResponse(request, url, ctx) {
+	if (request.method !== 'GET') {
+		return new Response('Method not allowed', {
+			status: 405,
+			headers: { Allow: 'GET' }
+		});
+	}
+
+	const discordCache = await caches.open('discord-presence');
+	const cacheKey = new Request(new URL(DISCORD_PRESENCE_PATH, url.origin), { method: 'GET' });
+	const cachedResponse = await discordCache.match(cacheKey);
+	if (cachedResponse) return cachedResponse;
+
+	try {
+		const discordResponse = await fetch(DISCORD_INVITE_URL, {
+			headers: { Accept: 'application/json' }
+		});
+		if (!discordResponse.ok) {
+			throw new Error(`Discord returned status ${discordResponse.status}`);
+		}
+
+		const online = getDiscordPresenceCount(await discordResponse.json());
+		if (online === null) {
+			throw new Error('Discord returned an invalid presence count');
+		}
+
+		const response = Response.json(
+			{ online },
+			{
+				headers: {
+					'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600'
+				}
+			}
+		);
+		ctx.waitUntil(discordCache.put(cacheKey, response.clone()));
+		return response;
+	} catch (error) {
+		console.error(
+			JSON.stringify({
+				message: 'Failed to load Discord presence',
+				error: error instanceof Error ? error.message : String(error)
+			})
+		);
+		return Response.json(
+			{ error: 'Discord presence is currently unavailable' },
+			{ status: 503, headers: { 'Cache-Control': 'no-store' } }
+		);
+	}
+}
+
+/**
+ * @param {URL} url
+ * @param {Env} env
+ * @returns {Promise<Response>}
+ */
+async function getR2ListResponse(url, env) {
+	const prefix = url.searchParams.get('prefix') ?? '';
+	if (!ALLOWED_PREFIXES.includes(prefix)) {
+		return Response.json({ error: 'Invalid prefix' }, { status: 400 });
+	}
+	if (!env.BUCKET) {
+		return Response.json({ error: 'Storage not configured' }, { status: 503 });
+	}
+
+	const listed = await env.BUCKET.list({ prefix });
+	const files = listed.objects
+		.filter(
+			(object) =>
+				!object.key.endsWith('.txt') && !object.key.endsWith('index.html') && object.size > 0
+		)
+		.map((object) => ({ key: object.key, size: object.size, modified: object.uploaded }));
+
+	return Response.json({ files }, { headers: { 'Cache-Control': 'public, max-age=60' } });
+}
+
+/**
+ * @param {URL} url
+ * @param {Env} env
+ * @returns {Promise<Response>}
+ */
+async function getR2ObjectResponse(url, env) {
+	const key = url.searchParams.get('key') ?? '';
+	if (!key || !ALLOWED_PREFIXES.some((prefix) => key.startsWith(prefix))) {
+		return new Response('Invalid key', { status: 400 });
+	}
+	if (!env.BUCKET) {
+		return new Response('Storage not configured', { status: 503 });
+	}
+
+	const object = await env.BUCKET.get(key);
+	if (!object) {
+		return new Response('Not found', { status: 404 });
+	}
+
+	return new Response(object.body, {
+		headers: {
+			'Content-Type': object.httpMetadata?.contentType ?? 'application/octet-stream',
+			'Content-Disposition': `attachment; filename="${getDownloadFilename(key)}"`,
+			'Cache-Control': 'public, max-age=3600'
+		}
+	});
+}
+
+/**
+ * @param {Request} request
+ * @param {URL} url
+ * @param {Env} env
+ * @returns {Promise<Response>}
+ */
+async function getAssetResponse(request, url, env) {
+	const response = await env.ASSETS.fetch(request);
+	if (response.status !== 404) return response;
+
+	const hasExtension = url.pathname.includes('.') && !url.pathname.endsWith('/');
+	if (hasExtension) return response;
+
+	const fallbackRequest = new Request(new URL('/index.html', url.origin), request);
+	return env.ASSETS.fetch(fallbackRequest);
+}
+
 export default {
 	/**
 	 * @param {Request} request
 	 * @param {Env} env
-	 * @param {{ waitUntil: (promise: Promise<unknown>) => void }} ctx
+	 * @param {ExecutionContext} ctx
 	 * @returns {Promise<Response>}
 	 */
 	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
+		const redirect = getLegacyRedirect(request, url);
+		if (redirect) return redirect;
 
-		// Redirect arcane.ofkm.dev to getarcane.app (301 permanent redirect)
-		if (url.hostname === 'arcane.ofkm.dev') {
-			const redirectUrl = new URL(request.url);
-			redirectUrl.hostname = 'getarcane.app';
-
-			return Response.redirect(redirectUrl.toString(), 301);
+		switch (url.pathname) {
+			case DISCORD_PRESENCE_PATH:
+				return getDiscordPresenceResponse(request, url, ctx);
+			case '/api/r2/list':
+				return getR2ListResponse(url, env);
+			case '/api/r2/get':
+				return getR2ObjectResponse(url, env);
+			default:
+				return getAssetResponse(request, url, env);
 		}
-
-		// Public Discord presence count for the footer badge
-		if (url.pathname === DISCORD_PRESENCE_PATH) {
-			if (request.method !== 'GET') {
-				return new Response('Method not allowed', {
-					status: 405,
-					headers: { Allow: 'GET' }
-				});
-			}
-
-			const discordCache = await caches.open('discord-presence');
-			const cacheKey = new Request(new URL(DISCORD_PRESENCE_PATH, url.origin), { method: 'GET' });
-			const cachedResponse = await discordCache.match(cacheKey);
-			if (cachedResponse) {
-				return cachedResponse;
-			}
-
-			try {
-				const discordResponse = await fetch(DISCORD_INVITE_URL, {
-					headers: { Accept: 'application/json' }
-				});
-				if (!discordResponse.ok) {
-					throw new Error(`Discord returned status ${discordResponse.status}`);
-				}
-
-				const data = /** @type {unknown} */ (await discordResponse.json());
-				if (
-					typeof data !== 'object' ||
-					data === null ||
-					!('approximate_presence_count' in data) ||
-					typeof data.approximate_presence_count !== 'number' ||
-					!Number.isInteger(data.approximate_presence_count) ||
-					data.approximate_presence_count < 0
-				) {
-					throw new Error('Discord returned an invalid presence count');
-				}
-				const online = data.approximate_presence_count;
-
-				const response = Response.json(
-					{ online },
-					{
-						headers: {
-							'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600'
-						}
-					}
-				);
-				ctx.waitUntil(discordCache.put(cacheKey, response.clone()));
-
-				return response;
-			} catch (error) {
-				console.error(
-					JSON.stringify({
-						message: 'Failed to load Discord presence',
-						error: error instanceof Error ? error.message : String(error)
-					})
-				);
-				return Response.json(
-					{ error: 'Discord presence is currently unavailable' },
-					{ status: 503, headers: { 'Cache-Control': 'no-store' } }
-				);
-			}
-		}
-
-		// R2 bucket listing API
-		if (url.pathname === '/api/r2/list') {
-			const prefix = url.searchParams.get('prefix') ?? '';
-			if (!ALLOWED_PREFIXES.includes(prefix)) {
-				return new Response(JSON.stringify({ error: 'Invalid prefix' }), {
-					status: 400,
-					headers: { 'Content-Type': 'application/json' }
-				});
-			}
-			if (!env.BUCKET) {
-				return new Response(JSON.stringify({ error: 'Storage not configured' }), {
-					status: 503,
-					headers: { 'Content-Type': 'application/json' }
-				});
-			}
-			const listed = await env.BUCKET.list({ prefix });
-			const files = listed.objects
-				.filter((o) => !o.key.endsWith('.txt') && !o.key.endsWith('index.html') && o.size > 0)
-				.map((o) => ({ key: o.key, size: o.size, modified: o.uploaded }));
-			return new Response(JSON.stringify({ files }), {
-				headers: {
-					'Content-Type': 'application/json',
-					'Cache-Control': 'public, max-age=60'
-				}
-			});
-		}
-
-		// R2 file download proxy
-		if (url.pathname === '/api/r2/get') {
-			const key = url.searchParams.get('key') ?? '';
-			if (!key || !ALLOWED_PREFIXES.some((p) => key.startsWith(p))) {
-				return new Response('Invalid key', { status: 400 });
-			}
-			if (!env.BUCKET) {
-				return new Response('Storage not configured', { status: 503 });
-			}
-			const obj = await env.BUCKET.get(key);
-			if (!obj) {
-				return new Response('Not found', { status: 404 });
-			}
-			const filename = getDownloadFilename(key);
-			return new Response(obj.body, {
-				headers: {
-					'Content-Type': obj.httpMetadata?.contentType ?? 'application/octet-stream',
-					'Content-Disposition': `attachment; filename="${filename}"`,
-					'Cache-Control': 'public, max-age=3600'
-				}
-			});
-		}
-
-		// Try to serve static assets first
-		const response = await env.ASSETS.fetch(request);
-		// If the asset exists, return it
-		if (response.status !== 404) {
-			return response;
-		}
-
-		// For 404s on HTML pages (not static files like .js, .css, images),
-		// serve the SPA fallback (index.html)
-		const pathname = url.pathname;
-		const hasExtension = pathname.includes('.') && !pathname.endsWith('/');
-
-		if (!hasExtension) {
-			// This is likely a SPA route, serve index.html
-			const fallbackRequest = new Request(new URL('/index.html', url.origin), request);
-			return env.ASSETS.fetch(fallbackRequest);
-		}
-
-		// For actual missing static files, return the 404
-		return response;
 	}
 };

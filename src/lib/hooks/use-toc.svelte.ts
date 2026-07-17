@@ -11,7 +11,7 @@ export type Heading = {
 	children: Heading[];
 };
 
-export const INDEX_ATTRIBUTE = 'data-toc-index';
+const INDEX_ATTRIBUTE = 'data-toc-index';
 
 const ACTIVE_HEADING_OFFSET = 140;
 const BOTTOM_SCROLL_EPSILON = 4;

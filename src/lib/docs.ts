@@ -1,12 +1,14 @@
 import { error } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 import {
+	api,
 	cli,
 	configuration,
 	development,
 	features,
 	guides,
 	indexPage,
+	privacy,
 	security,
 	setup,
 	templates
@@ -16,6 +18,8 @@ type CollectionDoc = (typeof indexPage)[number];
 
 const allDocs: CollectionDoc[] = [
 	...indexPage,
+	...api,
+	...privacy,
 	...setup,
 	...security,
 	...configuration,

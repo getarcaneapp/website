@@ -1,6 +1,6 @@
 import type { CommunityItem } from '$lib/types/community.type.js';
 
-export const communityItems: CommunityItem[] = [
+const communityItems: CommunityItem[] = [
 	{
 		kind: 'video',
 		videoId: 'YwpWqdexEIk',

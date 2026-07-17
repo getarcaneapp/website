@@ -197,19 +197,3 @@ export function findNeighbors(pathName: string): {
 		next: flat[idx + 1] ?? null
 	};
 }
-
-// Kept for any callers that still rely on it.
-export function sortDocs<T extends { title: string; order?: number }>(arr: T[]) {
-	const hasOrder = arr.some((item) => typeof item.order === 'number');
-	if (!hasOrder) {
-		return [...arr].sort((a, b) =>
-			a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
-		);
-	}
-	return [...arr].sort((a, b) => {
-		const ao = a.order ?? Number.MAX_SAFE_INTEGER;
-		const bo = b.order ?? Number.MAX_SAFE_INTEGER;
-		if (ao !== bo) return ao - bo;
-		return a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' });
-	});
-}

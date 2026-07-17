@@ -4,9 +4,21 @@
 
 import type { WithChildren, WithoutChildren } from 'bits-ui';
 import type { HTMLAttributes } from 'svelte/elements';
+import { tv, type VariantProps } from 'tailwind-variants';
 import type { CopyButtonPropsWithoutHTML } from '$lib/components/ui/copy-button/types.js';
-import type { CodeVariant } from './index.js';
 import type { SupportedLanguage } from './shiki.js';
+
+export const codeVariants = tv({
+	base: 'not-prose relative h-full overflow-auto rounded-lg border',
+	variants: {
+		variant: {
+			default: 'border-border bg-code',
+			secondary: 'bg-secondary/50 border-transparent'
+		}
+	}
+});
+
+export type CodeVariant = VariantProps<typeof codeVariants>['variant'];
 
 export type CodeRootPropsWithoutHTML = WithChildren<{
 	ref?: HTMLDivElement | null;

@@ -1,11 +1,10 @@
 {
-	"$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-	"entry": [
-		"src/routes/**/+*.{js,ts,svelte}",
-		"src/lib/index.{js,ts}",
-		"src/lib/components/markdown/**/*.{svelte,ts}",
-		"mdsvex.config.js",
-		"velite.config.js",
+	"$schema": "./node_modules/fallow/schema.json",
+
+	// mdsvex compiles these imports from content/**/*.md, which is outside
+	// Fallow's JavaScript and Svelte module graph.
+	"dynamicallyLoaded": [
+		"src/lib/components/markdown/**/*.svelte",
 		"src/lib/components/binary-downloads.svelte",
 		"src/lib/components/buildables-table.svelte",
 		"src/lib/components/docs-index.svelte",
@@ -20,35 +19,18 @@
 		"src/lib/components/ui/link/index.ts",
 		"src/lib/components/ui/snippet/index.ts"
 	],
-	"ignorePatterns": [
-		"src/lib/components/icons/**",
-		"src/lib/types/**",
-		"src/lib/components/agent-env-table.svelte",
-		"src/lib/components/architecture-diagram.svelte",
-		"src/lib/components/copy-button.svelte",
-		"src/lib/components/preview-banner.svelte",
-		"src/lib/components/table-of-contents.svelte"
-	],
-	"ignoreDependencies": [
-		"rehype-pretty-code",
-		"remark-code-import",
-		"unist-builder",
-		"unist-util-visit",
-		"prettier-plugin-svelte",
-		"prettier-plugin-tailwindcss",
-		"tw-animate-css"
-	],
+
+	// unplugin-icons loads the local Iconify collection without a source import.
+	"ignoreDependencies": ["@iconify/json"],
+
+	// Velite generates this aliased module during development and builds.
 	"ignoreUnresolvedImports": ["$velite/*"],
-	"ignoreExportsUsedInFile": {
-		"interface": true,
-		"type": true
-	},
-	"rules": {
-		"circular-dependencies": "off"
-	},
+
+	// Component namespace barrels expose both short and prefixed aliases as a
+	// stable API. Their individual re-exports are not application entry points.
 	"ignoreExports": [
 		{
-			"file": "src/lib/components/ui/**",
+			"file": "src/lib/components/ui/**/index.ts",
 			"exports": ["*"]
 		},
 		{
@@ -56,28 +38,29 @@
 			"exports": ["*"]
 		},
 		{
-			"file": "src/lib/config/docs.ts",
-			"exports": ["*"]
-		},
-		{
-			"file": "src/lib/hooks/use-toc.svelte.ts",
-			"exports": ["*"]
+			"file": "src/routes/api/command/+server.ts",
+			"exports": ["prerender"]
 		}
 	],
-	"overrides": [
-		{
-			"files": ["src/lib/components/ui/**"],
-			"rules": {
-				"unused-files": "off",
-				"unused-exports": "off",
-				"unused-types": "off"
-			}
-		},
-		{
-			"files": ["src/lib/utils.ts", "src/lib/utils/utils.ts"],
-			"rules": {
-				"unused-types": "off"
-			}
-		}
-	]
+
+	// This is a fully bundled static site, so package placement does not map to
+	// Fallow's production/test runtime model.
+	"rules": {
+		"dev-dependencies-in-production": "off",
+		"test-only-dependencies": "off"
+	},
+
+	// Svelte template markup produces low-signal clone groups. Keep clone
+	// detection enabled for JavaScript and TypeScript modules.
+	"duplicates": {
+		"ignore": ["**/*.svelte"]
+	},
+
+	// Fallow models an entire Svelte template as one function and estimates CRAP
+	// without coverage. Analyze non-Svelte complexity, but do not gate on the
+	// estimated CRAP score until coverage data is available.
+	"health": {
+		"ignore": ["**/*.svelte"],
+		"maxCrap": 1000000
+	}
 }

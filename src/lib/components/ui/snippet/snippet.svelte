@@ -6,7 +6,7 @@
 	import { tv, type VariantProps } from 'tailwind-variants';
 	import { CopyButton } from '$lib/components/ui/copy-button/index.js';
 	import type { UseClipboard } from '$lib/hooks/use-clipboard.svelte.js';
-	import { cn } from '$lib/utils/utils.js';
+	import { cn } from '$lib/utils.js';
 	import type { SupportedLanguage } from '../code/shiki.js';
 
 	const style = tv({

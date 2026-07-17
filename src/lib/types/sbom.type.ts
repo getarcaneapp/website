@@ -95,7 +95,7 @@ export interface DisplayPackage {
 	purl?: string;
 }
 
-export function parsePackageType(pkg: SpdxPackage): 'deb' | 'go-module' | 'other' {
+function parsePackageType(pkg: SpdxPackage): 'deb' | 'go-module' | 'other' {
 	const purl = pkg.externalRefs?.find((ref) => ref.referenceType === 'purl')?.referenceLocator;
 
 	if (purl?.startsWith('pkg:deb/')) return 'deb';
