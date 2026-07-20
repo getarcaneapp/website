@@ -1,21 +1,25 @@
 {
   "version": "v2.4.0",
-  "updated": "2026-07-11T13:01:25Z",
+  "updated": "2026-07-20T00:00:00Z",
   "images": {
     "manager": {
       "name": "ghcr.io/getarcaneapp/arcane",
-      "architectures": ["linux/amd64", "linux/arm64"],
+      "architectures": ["linux/amd64", "linux/arm64", "linux/arm/v7", "linux/riscv64"],
       "sbomFiles": {
         "amd64": "/sbom/manager/linux_amd64.spdx.json",
-        "arm64": "/sbom/manager/linux_arm64.spdx.json"
+        "arm64": "/sbom/manager/linux_arm64.spdx.json",
+        "armv7": "/sbom/manager/linux_armv7.spdx.json",
+        "riscv64": "/sbom/manager/linux_riscv64.spdx.json"
       }
     },
     "agent": {
       "name": "ghcr.io/getarcaneapp/arcane-headless",
-      "architectures": ["linux/amd64", "linux/arm64"],
+      "architectures": ["linux/amd64", "linux/arm64", "linux/arm/v7", "linux/riscv64"],
       "sbomFiles": {
         "amd64": "/sbom/agent/linux_amd64.spdx.json",
-        "arm64": "/sbom/agent/linux_arm64.spdx.json"
+        "arm64": "/sbom/agent/linux_arm64.spdx.json",
+        "armv7": "/sbom/agent/linux_armv7.spdx.json",
+        "riscv64": "/sbom/agent/linux_riscv64.spdx.json"
       }
     }
   }

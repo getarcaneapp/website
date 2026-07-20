@@ -117,63 +117,46 @@ jobs:
           cd arcane
           just docs config ../static/config.json
 
-      - name: Set up Depot CLI
+      - name: Extract SBOMs from published images
         if: steps.check.outputs.do_sbom == 'true'
-        uses: depot/setup-action@v1
-
-      - name: Generate SBOM for manager image
-        if: steps.check.outputs.do_sbom == 'true'
-        uses: depot/build-push-action@v1
-        with:
-          project: np622krb2x
-          context: arcane
-          file: arcane/docker/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: false
-          sbom: true
-          sbom-dir: sbom-output/manager
-          build-args: |
-            VERSION=${{ steps.check.outputs.version }}
-            REVISION=sbom-generation
-
-      - name: Generate SBOM for agent image
-        if: steps.check.outputs.do_sbom == 'true'
-        uses: depot/build-push-action@v1
-        with:
-          project: np622krb2x
-          context: arcane
-          file: arcane/docker/Dockerfile-agent
-          platforms: linux/amd64,linux/arm64
-          push: false
-          sbom: true
-          sbom-dir: sbom-output/agent
-          build-args: |
-            VERSION=${{ steps.check.outputs.version }}
-            REVISION=sbom-generation
-
-      - name: Copy SBOM files and cleanup
-        if: steps.check.outputs.do_sbom == 'true'
+        shell: bash
         run: |
           set -euo pipefail
           VERSION="${{ steps.check.outputs.version }}"
           mkdir -p static/sbom/manager static/sbom/agent
 
-          # Copy expected SBOM files
-          cp sbom-output/manager/linux_amd64.spdx.json static/sbom/manager/linux_amd64.spdx.json
-          cp sbom-output/manager/linux_arm64.spdx.json static/sbom/manager/linux_arm64.spdx.json
-          cp sbom-output/agent/linux_amd64.spdx.json static/sbom/agent/linux_amd64.spdx.json
-          cp sbom-output/agent/linux_arm64.spdx.json static/sbom/agent/linux_arm64.spdx.json
-
-          # Validate + normalize formatting to avoid compact single-line JSON in repo diffs
-          for file in \
-            static/sbom/manager/linux_amd64.spdx.json \
-            static/sbom/manager/linux_arm64.spdx.json \
-            static/sbom/agent/linux_amd64.spdx.json \
-            static/sbom/agent/linux_arm64.spdx.json
-          do
-            jq '.' "$file" > "$file.tmp"
-            mv "$file.tmp" "$file"
+          # Pull the SBOM attestations attached to the published images, so
+          # the data matches exactly what ships. On a multi-platform tag,
+          # `.SBOM` is a map keyed by platform, each entry holding the SPDX
+          # document. jq pretty-prints to avoid compact single-line JSON in
+          # repo diffs; -e fails the job if a platform has no attestation.
+          for image in manager agent; do
+            if [[ "$image" == "manager" ]]; then
+              ref="ghcr.io/getarcaneapp/arcane:$VERSION"
+            else
+              ref="ghcr.io/getarcaneapp/arcane-headless:$VERSION"
+            fi
+            sboms=$(docker buildx imagetools inspect "$ref" --format '{{ json .SBOM }}')
+            for spec in \
+              "linux/amd64:linux_amd64" \
+              "linux/arm64:linux_arm64" \
+              "linux/arm/v7:linux_armv7" \
+              "linux/riscv64:linux_riscv64"
+            do
+              platform="${spec%:*}"
+              out="static/sbom/$image/${spec##*:}.spdx.json"
+              if ! jq -e --arg p "$platform" '.[$p].SPDX' <<< "$sboms" > "$out"; then
+                echo "No SBOM attestation for $platform in $ref" >&2
+                exit 1
+              fi
+            done
           done
+
+      - name: Write SBOM metadata and cleanup
+        if: steps.check.outputs.do_sbom == 'true'
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.check.outputs.version }}"
 
           # Save version
           echo "$VERSION" > static/sbom/version.txt
@@ -186,18 +169,22 @@ jobs:
             "images": {
               "manager": {
                 "name": "ghcr.io/getarcaneapp/arcane",
-                "architectures": ["linux/amd64", "linux/arm64"],
+                "architectures": ["linux/amd64", "linux/arm64", "linux/arm/v7", "linux/riscv64"],
                 "sbomFiles": {
                   "amd64": "/sbom/manager/linux_amd64.spdx.json",
-                  "arm64": "/sbom/manager/linux_arm64.spdx.json"
+                  "arm64": "/sbom/manager/linux_arm64.spdx.json",
+                  "armv7": "/sbom/manager/linux_armv7.spdx.json",
+                  "riscv64": "/sbom/manager/linux_riscv64.spdx.json"
                 }
               },
               "agent": {
                 "name": "ghcr.io/getarcaneapp/arcane-headless",
-                "architectures": ["linux/amd64", "linux/arm64"],
+                "architectures": ["linux/amd64", "linux/arm64", "linux/arm/v7", "linux/riscv64"],
                 "sbomFiles": {
                   "amd64": "/sbom/agent/linux_amd64.spdx.json",
-                  "arm64": "/sbom/agent/linux_arm64.spdx.json"
+                  "arm64": "/sbom/agent/linux_arm64.spdx.json",
+                  "armv7": "/sbom/agent/linux_armv7.spdx.json",
+                  "riscv64": "/sbom/agent/linux_riscv64.spdx.json"
                 }
               }
             }
@@ -209,8 +196,8 @@ jobs:
           ls -la static/sbom/manager/
           ls -la static/sbom/agent/
 
-          # Clean up cloned repo and build output
-          rm -rf arcane sbom-output
+          # Clean up cloned repo
+          rm -rf arcane
 
       - name: Check for changes
         id: changes

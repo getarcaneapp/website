@@ -83,6 +83,8 @@ export interface SbomImageInfo {
 	sbomFiles: {
 		amd64: string;
 		arm64: string;
+		armv7?: string;
+		riscv64?: string;
 	};
 }
 

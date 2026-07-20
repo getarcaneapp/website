@@ -11,29 +11,47 @@
 	import type { SpdxDocument, DisplayPackage, SbomMetadata } from '$lib/types/sbom.type.js';
 	import { extractDisplayPackages } from '$lib/types/sbom.type.js';
 
+	const archFiles = {
+		amd64: 'linux_amd64.spdx.json',
+		arm64: 'linux_arm64.spdx.json',
+		armv7: 'linux_armv7.spdx.json',
+		riscv64: 'linux_riscv64.spdx.json'
+	} as const;
+
+	const archLabels = {
+		amd64: 'linux/amd64',
+		arm64: 'linux/arm64',
+		armv7: 'linux/arm/v7',
+		riscv64: 'linux/riscv64'
+	} as const;
+
+	type Arch = keyof typeof archFiles;
+
+	const arches = Object.keys(archFiles) as Arch[];
+
+	type ArchSboms = Record<Arch, SpdxDocument | null>;
+
 	interface SbomData {
 		metadata: SbomMetadata | null;
-		manager: {
-			amd64: SpdxDocument | null;
-			arm64: SpdxDocument | null;
-		};
-		agent: {
-			amd64: SpdxDocument | null;
-			arm64: SpdxDocument | null;
-		};
+		manager: ArchSboms;
+		agent: ArchSboms;
+	}
+
+	function emptyArchSboms(): ArchSboms {
+		return { amd64: null, arm64: null, armv7: null, riscv64: null };
 	}
 
 	let sbomData = $state<SbomData>({
 		metadata: null,
-		manager: { amd64: null, arm64: null },
-		agent: { amd64: null, arm64: null }
+		manager: emptyArchSboms(),
+		agent: emptyArchSboms()
 	});
 
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 
 	let selectedImage = $state<'manager' | 'agent'>('manager');
-	let selectedArch = $state<'amd64' | 'arm64'>('amd64');
+	let selectedArch = $state<Arch>('amd64');
 	let packageFilter = $state<'all' | 'go-module' | 'deb'>('all');
 	let searchQuery = $state('');
 
@@ -70,17 +88,14 @@
 			sbomData.metadata = await metaRes.json();
 
 			// Load all SBOM files in parallel
-			const [managerAmd64, managerArm64, agentAmd64, agentArm64] = await Promise.all([
-				fetch('/sbom/manager/linux_amd64.spdx.json').then((r) => (r.ok ? r.json() : null)),
-				fetch('/sbom/manager/linux_arm64.spdx.json').then((r) => (r.ok ? r.json() : null)),
-				fetch('/sbom/agent/linux_amd64.spdx.json').then((r) => (r.ok ? r.json() : null)),
-				fetch('/sbom/agent/linux_arm64.spdx.json').then((r) => (r.ok ? r.json() : null))
-			]);
-
-			sbomData.manager.amd64 = managerAmd64;
-			sbomData.manager.arm64 = managerArm64;
-			sbomData.agent.amd64 = agentAmd64;
-			sbomData.agent.arm64 = agentArm64;
+			await Promise.all(
+				(['manager', 'agent'] as const).flatMap((image) =>
+					arches.map(async (arch) => {
+						const res = await fetch(`/sbom/${image}/${archFiles[arch]}`);
+						sbomData[image][arch] = res.ok ? await res.json() : null;
+					})
+				)
+			);
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Failed to load SBOM data';
 		} finally {
@@ -226,8 +241,9 @@
 						<p class="sbom-control__label">Architecture</p>
 						<Tabs.Root bind:value={selectedArch}>
 							<Tabs.List>
-								<Tabs.Trigger value="amd64">linux/amd64</Tabs.Trigger>
-								<Tabs.Trigger value="arm64">linux/arm64</Tabs.Trigger>
+								{#each arches as arch (arch)}
+									<Tabs.Trigger value={arch}>{archLabels[arch]}</Tabs.Trigger>
+								{/each}
 							</Tabs.List>
 						</Tabs.Root>
 					</div>
@@ -300,7 +316,9 @@
 							{:else}
 								<Table.Row>
 									<Table.Cell colspan={4} class="py-8 text-center text-muted-foreground">
-										No packages found matching your search.
+										{currentSbom
+											? 'No packages found matching your search.'
+											: `SBOM for ${archLabels[selectedArch]} is not available yet. It is generated with the next release.`}
 									</Table.Cell>
 								</Table.Row>
 							{/each}
@@ -311,13 +329,8 @@
 				<!-- Footer info -->
 				<div class="text-center text-sm text-muted-foreground">
 					<p>
-						SBOM generated using <a
-							href="https://depot.dev"
-							target="_blank"
-							rel="noopener noreferrer"
-							class="text-foreground underline underline-offset-4">Depot</a
-						>
-						during the container build process.
+						SBOMs are generated during the container image build and extracted from the attestations
+						attached to the published images, so they reflect exactly what ships.
 					</p>
 					<p>Format: SPDX 2.3 JSON</p>
 				</div>

@@ -11,6 +11,8 @@ import { Snippet } from '$lib/components/ui/snippet/index.js';
 
 > [!NOTE]
 > These steps apply to every Arcane release after `v1.17.4`, including all `next` images.
+>
+> Starting with releases after `v2.4.0`, only the checksums file carries a Sigstore bundle — individual binaries and archives are verified through it. Releases `v2.4.0` and earlier also shipped a `.sigstore.json` bundle per file.
 
 If you want to double-check that the Arcane binary or image you downloaded is really the one we published, you can verify it with Cosign.
 
@@ -22,15 +24,25 @@ The Arcane public key lives at <Link href="https://getarcane.app/cosign.pub">get
 
 ## Verify checksums
 
-For most people, the easiest flow is to verify the published checksum file first. Once that checks out, `sha256sum` can confirm the individual files you downloaded.
+The verification flow is: verify the checksum file's signature first, then use `sha256sum` to confirm the individual files you downloaded against it.
 
-<Snippet text='cosign verify-blob --key "https://getarcane.app/cosign.pub" --bundle "arcane_checksums.sigstore.json" "arcane_checksums.txt"' class="mt-2" />
+The checksum file and its Sigstore bundle sit next to each other wherever you got your artifacts:
+
+- GitHub Releases: `arcane_<version>_checksums.txt` and `arcane_<version>_checksums.txt.sigstore.json`
+- S3 (`next` binaries): `arcane_checksums.txt` and `arcane_checksums.txt.sigstore.json`
+- S3 (`next` CLI): `arcane-cli_checksums.txt` and `arcane-cli_checksums.txt.sigstore.json`
+
+<Snippet text='cosign verify-blob --key "https://getarcane.app/cosign.pub" --bundle "arcane_checksums.txt.sigstore.json" "arcane_checksums.txt"' class="mt-2" />
 
 <Snippet text="sha256sum -c arcane_checksums.txt" class="mt-2" />
 
 ## Verify a release binary
 
-If you would rather verify a single binary directly, use the matching Sigstore bundle for that file:
+For releases after `v2.4.0`, individual binaries are covered by the signed checksum file — verify the checksum file as above, then check the binary against it:
+
+<Snippet text='sha256sum -c arcane_checksums.txt --ignore-missing' class="mt-2" />
+
+For releases `v2.4.0` and earlier, each file also has its own Sigstore bundle you can verify directly:
 
 <Snippet text='cosign verify-blob --key "https://getarcane.app/cosign.pub" --bundle "arcane-cli_linux_amd64.sigstore.json" "arcane-cli"' class="mt-2" />
 
