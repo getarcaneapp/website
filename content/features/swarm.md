@@ -21,7 +21,7 @@ Arcane reads cluster data directly from the Swarm manager:
 
 That means the Stacks list is **live** — not built from a database, and not reconstructed from saved Compose files. A stack created outside Arcane shows up as long as the manager can see its services.
 
-For node-level coverage, Arcane also supports per-node agents. They handle node identity verification and per-node operations; they don't merge every node's local resources into one cluster-wide inventory.
+For node-level coverage, Arcane verifies the same Agents used by visible Remote Environments. The Manager's local Docker node is covered automatically, and dedicated hidden Agents remain available as a fallback.
 
 ## Permissions and modes
 
@@ -43,7 +43,7 @@ For node-level coverage, Arcane also supports per-node agents. They handle node 
 1. Pick the environment.
 2. Open **Swarm → Cluster** and confirm the environment is in the expected Swarm.
 3. Check **Nodes** — managers, workers, and availability.
-4. Deploy Arcane node agents to the nodes you want covered.
+4. Use **Easy Join** from the Cluster page, an environment detail page, or an environment row menu. Arcane handles manager addressing and join tokens, then binds unique verified Agent identities automatically.
 5. Create the **Configs** and **Secrets** your app needs.
 6. Deploy from **Stacks**.
 7. Use **Services** and **Tasks** to inspect rollout health and logs.
@@ -60,5 +60,7 @@ For node-level coverage, Arcane also supports per-node agents. They handle node 
 - the token is still current
 
 **A node agent shows `mismatched`.** An agent connected, but the reported node identity doesn't match the row you deployed it for. Regenerate the API key and redeploy on the right node.
+
+**A node agent shows `ambiguous`.** Multiple visible environments reported the node identity. Open the node's Agent dialog and select the intended environment.
 
 **Services or stacks visible, but per-node coverage is incomplete.** Expected if some nodes don't have Arcane agents connected. Cluster-level resources come from the Swarm manager; per-node coverage is tracked separately.
