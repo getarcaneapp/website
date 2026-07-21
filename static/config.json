@@ -13,6 +13,7 @@
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AdminStaticAPIKey"
@@ -22,6 +23,8 @@
       "field": "AgentMode",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AgentMode"
@@ -34,6 +37,7 @@
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AgentToken"
@@ -43,6 +47,8 @@
       "field": "AllowDowngrade",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AllowDowngrade"
@@ -52,6 +58,8 @@
       "field": "AnalyticsDisabled",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AnalyticsDisabled"
@@ -61,6 +69,8 @@
       "field": "AppUrl",
       "type": "string",
       "defaultValue": "http://localhost:3552",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AppUrl"
@@ -70,6 +80,8 @@
       "field": "BackupVolumeName",
       "type": "string",
       "defaultValue": "arcane-backups",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.BackupVolumeName"
@@ -97,6 +109,7 @@
       "type": "string",
       "defaultValue": "arcane",
       "description": "Auto-login credentials (used only when built with the buildables tag + autologin feature flag).",
+      "supportsFile": false,
       "conditional": true,
       "buildTags": [
         "buildables"
@@ -109,11 +122,12 @@
       "env": "DATABASE_URL",
       "field": "DatabaseURL",
       "type": "string",
-      "defaultValue": "file:data/arcane.db?_pragma=journal_mode(WAL)\u0026_pragma=busy_timeout(2500)\u0026_txlock=immediate",
+      "defaultValue": "file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate",
       "options": [
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DatabaseURL"
@@ -123,6 +137,8 @@
       "field": "DirPerm",
       "type": "os.FileMode",
       "defaultValue": "0755",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DirPerm"
@@ -132,6 +148,8 @@
       "field": "DockerAPITimeout",
       "type": "int",
       "defaultValue": "0",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DockerAPITimeout"
@@ -140,6 +158,8 @@
       "env": "DOCKER_CONFIG",
       "field": "DockerConfig",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DockerConfig"
@@ -149,6 +169,8 @@
       "field": "DockerHost",
       "type": "string",
       "defaultValue": "unix:///var/run/docker.sock",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DockerHost"
@@ -158,6 +180,8 @@
       "field": "DockerImagePullTimeout",
       "type": "int",
       "defaultValue": "0",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DockerImagePullTimeout"
@@ -167,6 +191,8 @@
       "field": "EdgeAgent",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeAgent"
@@ -175,6 +201,8 @@
       "env": "EDGE_MTLS_ASSETS_DIR",
       "field": "EdgeMTLSAssetsDir",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSAssetsDir"
@@ -183,6 +211,8 @@
       "env": "EDGE_MTLS_CA_FILE",
       "field": "EdgeMTLSCAFile",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSCAFile"
@@ -191,6 +221,8 @@
       "env": "EDGE_MTLS_CERT_FILE",
       "field": "EdgeMTLSCertFile",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSCertFile"
@@ -199,6 +231,8 @@
       "env": "EDGE_MTLS_KEY_FILE",
       "field": "EdgeMTLSKeyFile",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSKeyFile"
@@ -211,6 +245,8 @@
       "options": [
         "toLower"
       ],
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSMode"
@@ -219,6 +255,8 @@
       "env": "EDGE_MTLS_SERVER_NAME",
       "field": "EdgeMTLSServerName",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeMTLSServerName"
@@ -229,6 +267,8 @@
       "type": "int",
       "defaultValue": "5",
       "description": "seconds",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeReconnectInterval"
@@ -241,6 +281,8 @@
       "options": [
         "toLower"
       ],
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EdgeTransport"
@@ -254,6 +296,7 @@
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EncryptionKey"
@@ -263,6 +306,8 @@
       "field": "Environment",
       "type": "AppEnvironment",
       "defaultValue": "production",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.Environment"
@@ -272,6 +317,8 @@
       "field": "FilePerm",
       "type": "os.FileMode",
       "defaultValue": "0644",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.FilePerm"
@@ -281,6 +328,8 @@
       "field": "GitOperationTimeout",
       "type": "int",
       "defaultValue": "0",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.GitOperationTimeout"
@@ -290,6 +339,8 @@
       "field": "GitWorkDir",
       "type": "string",
       "defaultValue": "data/git",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.GitWorkDir"
@@ -299,6 +350,8 @@
       "field": "GPUMonitoringEnabled",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.GPUMonitoringEnabled"
@@ -308,6 +361,8 @@
       "field": "GPUType",
       "type": "string",
       "defaultValue": "auto",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.GPUType"
@@ -317,6 +372,8 @@
       "field": "HTTPClientTimeout",
       "type": "int",
       "defaultValue": "0",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.HTTPClientTimeout"
@@ -326,6 +383,8 @@
       "field": "JWTRefreshExpiry",
       "type": "time.Duration",
       "defaultValue": "168h",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.JWTRefreshExpiry"
@@ -339,6 +398,7 @@
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.JWTSecret"
@@ -347,6 +407,8 @@
       "env": "LISTEN",
       "field": "Listen",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.Listen"
@@ -356,6 +418,8 @@
       "field": "LogJson",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.LogJson"
@@ -368,6 +432,8 @@
       "options": [
         "toLower"
       ],
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.LogLevel"
@@ -376,6 +442,8 @@
       "env": "MANAGER_API_URL",
       "field": "ManagerApiUrl",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ManagerApiUrl"
@@ -385,6 +453,8 @@
       "field": "OidcAutoRedirectToProvider",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcAutoRedirectToProvider"
@@ -397,6 +467,7 @@
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcClientID"
@@ -409,6 +480,7 @@
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcClientSecret"
@@ -418,6 +490,8 @@
       "field": "OidcEnabled",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcEnabled"
@@ -427,6 +501,8 @@
       "field": "OidcGroupsClaim",
       "type": "string",
       "defaultValue": "groups",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcGroupsClaim"
@@ -435,6 +511,8 @@
       "env": "OIDC_ISSUER_URL",
       "field": "OidcIssuerURL",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcIssuerURL"
@@ -444,6 +522,8 @@
       "field": "OidcMobileRedirectUris",
       "type": "string",
       "defaultValue": "arcane-mobile://oidc-callback",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcMobileRedirectUris"
@@ -452,6 +532,8 @@
       "env": "OIDC_PROVIDER_LOGO_URL",
       "field": "OidcProviderLogoUrl",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcProviderLogoUrl"
@@ -460,6 +542,8 @@
       "env": "OIDC_PROVIDER_NAME",
       "field": "OidcProviderName",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcProviderName"
@@ -473,6 +557,7 @@
         "file"
       ],
       "supportsFile": true,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcRoleMappings"
@@ -482,6 +567,8 @@
       "field": "OidcScopes",
       "type": "string",
       "defaultValue": "openid email profile",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcScopes"
@@ -491,6 +578,8 @@
       "field": "OidcSkipTlsVerify",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcSkipTlsVerify"
@@ -499,6 +588,8 @@
       "env": "PGID",
       "field": "PGID",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.PGID"
@@ -508,6 +599,8 @@
       "field": "Port",
       "type": "string",
       "defaultValue": "3552",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.Port"
@@ -517,6 +610,8 @@
       "field": "ProjectsDirectory",
       "type": "string",
       "defaultValue": "/app/data/projects",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ProjectsDirectory"
@@ -526,6 +621,8 @@
       "field": "ProjectFileTreeMaxDepth",
       "type": "int",
       "defaultValue": "20",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ProjectFileTreeMaxDepth"
@@ -535,6 +632,8 @@
       "field": "ProjectScanMaxDepth",
       "type": "int",
       "defaultValue": "3",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ProjectScanMaxDepth"
@@ -544,6 +643,8 @@
       "field": "ProjectScanSkipDirs",
       "type": "string",
       "defaultValue": ".git,node_modules,vendor,.venv,venv,__pycache__,.cache,dist,build,target,.next,.nuxt,.svelte-kit",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ProjectScanSkipDirs"
@@ -553,6 +654,8 @@
       "field": "ProxyRequestTimeout",
       "type": "int",
       "defaultValue": "0",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ProxyRequestTimeout"
@@ -561,6 +664,8 @@
       "env": "PUID",
       "field": "PUID",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.PUID"
@@ -570,6 +675,8 @@
       "field": "RegistryTimeout",
       "type": "int",
       "defaultValue": "0",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.RegistryTimeout"
@@ -579,6 +686,8 @@
       "field": "TemplatesDirectory",
       "type": "string",
       "defaultValue": "/app/data/templates",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.TemplatesDirectory"
@@ -587,6 +696,8 @@
       "env": "TLS_CERT_FILE",
       "field": "TLSCertFile",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.TLSCertFile"
@@ -596,6 +707,8 @@
       "field": "TLSEnabled",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.TLSEnabled"
@@ -604,6 +717,8 @@
       "env": "TLS_KEY_FILE",
       "field": "TLSKeyFile",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.TLSKeyFile"
@@ -613,6 +728,8 @@
       "field": "TrivyScanTimeout",
       "type": "int",
       "defaultValue": "0",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.TrivyScanTimeout"
@@ -621,6 +738,8 @@
       "env": "TRUSTED_PROXIES",
       "field": "TrustedProxies",
       "type": "string",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.TrustedProxies"
@@ -631,6 +750,8 @@
       "type": "string",
       "defaultValue": "Local",
       "description": "Timezone for cron job scheduling. Uses IANA timezone names (e.g., \"America/New_York\", \"Europe/London\"). \"Local\" uses the system's local timezone, \"UTC\" for Coordinated Universal Time.",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.Timezone"
@@ -640,6 +761,8 @@
       "field": "UIConfigurationDisabled",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.UIConfigurationDisabled"
@@ -649,6 +772,8 @@
       "field": "UpdateCheckDisabled",
       "type": "bool",
       "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.UpdateCheckDisabled"
@@ -661,13 +786,13 @@
       "description": "How often to check container health (cron expression)",
       "defaultValue": "*/30 * * * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. AUTO_HEAL_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoHealInterval"
+      "sourceSymbol": "models.Settings.AutoHealInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "ENVIRONMENT_HEALTH_INTERVAL",
@@ -675,13 +800,13 @@
       "description": "How often to check environment connectivity (cron expression)",
       "defaultValue": "0 */2 * * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.EnvironmentHealthInterval"
+      "sourceSymbol": "models.Settings.EnvironmentHealthInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "EVENT_CLEANUP_INTERVAL",
@@ -689,13 +814,13 @@
       "description": "How often to delete old events (cron expression)",
       "defaultValue": "0 0 */6 * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.EventCleanupInterval"
+      "sourceSymbol": "models.Settings.EventCleanupInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "EXPIRED_SESSIONS_CLEANUP_INTERVAL",
@@ -703,13 +828,13 @@
       "description": "How often to delete expired and old revoked sessions (cron expression)",
       "defaultValue": "0 0 0 * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ExpiredSessionsCleanupInterval"
+      "sourceSymbol": "models.Settings.ExpiredSessionsCleanupInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "ACTIVITY_HISTORY_MAX_ENTRIES",
@@ -717,14 +842,14 @@
       "description": "Maximum completed Activity Center entries to keep per environment. Set 0 to disable count-based cleanup.",
       "defaultValue": "1000",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "activity",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ActivityHistoryMaxEntries"
+      "sourceSymbol": "models.Settings.ActivityHistoryMaxEntries",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "ACTIVITY_HISTORY_RETENTION_DAYS",
@@ -732,14 +857,29 @@
       "description": "Delete completed Activity Center entries older than this many days. Set 0 to disable age-based cleanup.",
       "defaultValue": "30",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "activity",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ActivityHistoryRetentionDays"
+      "sourceSymbol": "models.Settings.ActivityHistoryRetentionDays",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "MAX_CONCURRENT_ACTIVITIES",
+      "settingKey": "maxConcurrentActivities",
+      "description": "Maximum long-running activities per environment before new ones queue. Set 0 for unlimited.",
+      "defaultValue": "5",
+      "type": "number",
+      "category": "activity",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.MaxConcurrentActivities",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "ANIMATIONS_ENABLED",
@@ -747,14 +887,14 @@
       "description": "Enable decorative interface animations. Disable to reduce motion and GPU usage.",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": true,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AnimationsEnabled"
+      "sourceSymbol": "models.Settings.AnimationsEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "APPLICATION_THEME",
@@ -762,14 +902,14 @@
       "description": "Choose the overall visual theme for the application",
       "defaultValue": "default",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": true,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ApplicationTheme"
+      "sourceSymbol": "models.Settings.ApplicationTheme",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "GLASS_EFFECTS_ENABLED",
@@ -777,14 +917,14 @@
       "description": "Apply blur and glass effects to UI surfaces. Disable for solid surfaces and lower GPU usage.",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": true,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.GlassEffectsEnabled"
+      "sourceSymbol": "models.Settings.GlassEffectsEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "ICON_CATALOG",
@@ -792,14 +932,14 @@
       "description": "Choose the catalog used to resolve project and container icon slugs",
       "defaultValue": "selfhst",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": true,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.IconCatalog"
+      "sourceSymbol": "models.Settings.IconCatalog",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "KEYBOARD_SHORTCUTS_ENABLED",
@@ -807,14 +947,14 @@
       "description": "Enable keyboard shortcuts for navigation and show shortcut hints in tooltips",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.KeyboardShortcutsEnabled"
+      "sourceSymbol": "models.Settings.KeyboardShortcutsEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "MOBILE_NAVIGATION_MODE",
@@ -822,14 +962,14 @@
       "description": "Choose between floating or docked navigation on mobile",
       "defaultValue": "floating",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.MobileNavigationMode"
+      "sourceSymbol": "models.Settings.MobileNavigationMode",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "MOBILE_NAVIGATION_SHOW_LABELS",
@@ -837,14 +977,14 @@
       "description": "Display text labels alongside navigation icons",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.MobileNavigationShowLabels"
+      "sourceSymbol": "models.Settings.MobileNavigationShowLabels",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "SIDEBAR_HOVER_EXPANSION",
@@ -852,14 +992,14 @@
       "description": "Expand sidebar on hover in desktop mode",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "appearance",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.SidebarHoverExpansion"
+      "sourceSymbol": "models.Settings.SidebarHoverExpansion",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTH_LOCAL_ENABLED",
@@ -867,14 +1007,14 @@
       "description": "Enable local username/password authentication",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": true,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AuthLocalEnabled"
+      "sourceSymbol": "models.Settings.AuthLocalEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "AUTH_PASSWORD_POLICY",
@@ -882,14 +1022,14 @@
       "description": "Set password strength requirements",
       "defaultValue": "strong",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AuthPasswordPolicy"
+      "sourceSymbol": "models.Settings.AuthPasswordPolicy",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTH_SESSION_TIMEOUT",
@@ -897,27 +1037,27 @@
       "description": "How long user sessions remain active",
       "defaultValue": "1440",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AuthSessionTimeout"
+      "sourceSymbol": "models.Settings.AuthSessionTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_AUTHORIZATION_ENDPOINT",
       "settingKey": "oidcAuthorizationEndpoint",
       "description": "Override OIDC authorization endpoint",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcAuthorizationEndpoint"
+      "sourceSymbol": "models.Settings.OidcAuthorizationEndpoint",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_AUTO_REDIRECT_TO_PROVIDER",
@@ -925,52 +1065,52 @@
       "description": "Automatically redirect to OIDC provider on login page",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": true,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcAutoRedirectToProvider"
+      "sourceSymbol": "models.Settings.OidcAutoRedirectToProvider",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "OIDC_CLIENT_ID",
       "settingKey": "oidcClientId",
       "description": "OIDC provider client ID",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcClientId"
+      "sourceSymbol": "models.Settings.OidcClientId",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_CLIENT_SECRET",
       "settingKey": "oidcClientSecret",
       "description": "OIDC provider client secret",
       "type": "password",
-      "sensitive": true,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcClientSecret"
+      "sourceSymbol": "models.Settings.OidcClientSecret",
+      "sensitive": true,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_DEVICE_AUTHORIZATION_ENDPOINT",
       "settingKey": "oidcDeviceAuthorizationEndpoint",
       "description": "Override OIDC device authorization endpoint for CLI authentication",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcDeviceAuthorizationEndpoint"
+      "sourceSymbol": "models.Settings.OidcDeviceAuthorizationEndpoint",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_ENABLED",
@@ -978,13 +1118,13 @@
       "description": "Enable OpenID Connect (OIDC) authentication",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": true,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcEnabled"
+      "sourceSymbol": "models.Settings.OidcEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "OIDC_GROUPS_CLAIM",
@@ -992,39 +1132,39 @@
       "description": "Claim name to read group memberships from for role mapping (default: groups)",
       "defaultValue": "groups",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcGroupsClaim"
+      "sourceSymbol": "models.Settings.OidcGroupsClaim",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_ISSUER_URL",
       "settingKey": "oidcIssuerUrl",
       "description": "OIDC provider issuer URL",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcIssuerUrl"
+      "sourceSymbol": "models.Settings.OidcIssuerUrl",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_JWKS_ENDPOINT",
       "settingKey": "oidcJwksEndpoint",
       "description": "Override OIDC JWKS endpoint",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcJwksEndpoint"
+      "sourceSymbol": "models.Settings.OidcJwksEndpoint",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_MERGE_ACCOUNTS",
@@ -1032,13 +1172,13 @@
       "description": "Allow OIDC logins to merge with existing accounts by email",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcMergeAccounts"
+      "sourceSymbol": "models.Settings.OidcMergeAccounts",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_MOBILE_REDIRECT_URIS",
@@ -1046,39 +1186,39 @@
       "description": "Comma-separated allowlist of native app redirect URIs (e.g., arcane-mobile://oidc-callback)",
       "defaultValue": "arcane-mobile://oidc-callback",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcMobileRedirectUris"
+      "sourceSymbol": "models.Settings.OidcMobileRedirectUris",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_PROVIDER_LOGO_URL",
       "settingKey": "oidcProviderLogoUrl",
       "description": "Custom logo URL for the OIDC provider",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": true,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcProviderLogoUrl"
+      "sourceSymbol": "models.Settings.OidcProviderLogoUrl",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "OIDC_PROVIDER_NAME",
       "settingKey": "oidcProviderName",
       "description": "Custom name for the OIDC provider (e.g., Authentik, Keycloak)",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": true,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcProviderName"
+      "sourceSymbol": "models.Settings.OidcProviderName",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "OIDC_SCOPES",
@@ -1086,13 +1226,13 @@
       "description": "OIDC scopes to request",
       "defaultValue": "openid email profile",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcScopes"
+      "sourceSymbol": "models.Settings.OidcScopes",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_SKIP_TLS_VERIFY",
@@ -1100,39 +1240,39 @@
       "description": "Skip TLS verification for OIDC provider",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcSkipTlsVerify"
+      "sourceSymbol": "models.Settings.OidcSkipTlsVerify",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_TOKEN_ENDPOINT",
       "settingKey": "oidcTokenEndpoint",
       "description": "Override OIDC token endpoint",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcTokenEndpoint"
+      "sourceSymbol": "models.Settings.OidcTokenEndpoint",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OIDC_USERINFO_ENDPOINT",
       "settingKey": "oidcUserinfoEndpoint",
       "description": "Override OIDC userinfo endpoint",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "authentication",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OidcUserinfoEndpoint"
+      "sourceSymbol": "models.Settings.OidcUserinfoEndpoint",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "BUILDS_DIRECTORY",
@@ -1140,13 +1280,13 @@
       "description": "Root directory for manual build workspaces",
       "defaultValue": "/builds",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "build",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.BuildsDirectory"
+      "sourceSymbol": "models.Settings.BuildsDirectory",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "BUILD_PROVIDER",
@@ -1154,13 +1294,13 @@
       "description": "Default build provider (local or depot)",
       "defaultValue": "local",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "build",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.BuildProvider"
+      "sourceSymbol": "models.Settings.BuildProvider",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "BUILD_TIMEOUT",
@@ -1168,39 +1308,39 @@
       "description": "Timeout for BuildKit builds in seconds (default: 1800 = 30 minutes)",
       "defaultValue": "1800",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "build",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.BuildTimeout"
+      "sourceSymbol": "models.Settings.BuildTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DEPOT_PROJECT_ID",
       "settingKey": "depotProjectId",
       "description": "Depot project identifier",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "build",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DepotProjectId"
+      "sourceSymbol": "models.Settings.DepotProjectId",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DEPOT_TOKEN",
       "settingKey": "depotToken",
       "description": "Depot API token",
       "type": "password",
-      "sensitive": true,
-      "deprecated": false,
       "category": "build",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DepotToken"
+      "sourceSymbol": "models.Settings.DepotToken",
+      "sensitive": true,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "ACCENT_COLOR",
@@ -1208,14 +1348,14 @@
       "description": "Primary accent color for UI",
       "defaultValue": "oklch(0.606 0.25 292.717)",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": true,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AccentColor"
+      "sourceSymbol": "models.Settings.AccentColor",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "AVATAR_MAX_UPLOAD_SIZE_MB",
@@ -1223,14 +1363,14 @@
       "description": "Maximum size in MB for profile picture uploads (default: 2)",
       "defaultValue": "2",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AvatarMaxUploadSizeMb"
+      "sourceSymbol": "models.Settings.AvatarMaxUploadSizeMb",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "BASE_SERVER_URL",
@@ -1238,14 +1378,14 @@
       "description": "Set the base URL for the application",
       "defaultValue": "http://localhost",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.BaseServerURL"
+      "sourceSymbol": "models.Settings.BaseServerURL",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DEFAULT_SHELL",
@@ -1253,14 +1393,14 @@
       "description": "Default shell to use for commands",
       "defaultValue": "/bin/sh",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DefaultShell"
+      "sourceSymbol": "models.Settings.DefaultShell",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DISK_USAGE_PATH",
@@ -1268,14 +1408,14 @@
       "description": "Path used for disk usage calculations",
       "defaultValue": "/app/data/projects",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DiskUsagePath"
+      "sourceSymbol": "models.Settings.DiskUsagePath",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "ENABLE_GRAVATAR",
@@ -1283,14 +1423,14 @@
       "description": "Enable Gravatar profile pictures for users",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.EnableGravatar"
+      "sourceSymbol": "models.Settings.EnableGravatar",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "FOLLOW_PROJECT_SYMLINKS",
@@ -1298,13 +1438,13 @@
       "description": "Treat symlinked child directories inside the projects directory as Docker Compose projects",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.FollowProjectSymlinks"
+      "sourceSymbol": "models.Settings.FollowProjectSymlinks",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "GIT_SYNC_MAX_BINARY_SIZE_MB",
@@ -1312,13 +1452,13 @@
       "description": "Maximum size in MB for a single binary file copied during a Git sync. Set 0 to disable the environment cap (default: 10)",
       "defaultValue": "10",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.GitSyncMaxBinarySizeMb"
+      "sourceSymbol": "models.Settings.GitSyncMaxBinarySizeMb",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "GIT_SYNC_MAX_FILES",
@@ -1326,13 +1466,13 @@
       "description": "Maximum number of repository files copied during a Git sync. Set 0 to disable the environment cap (default: 500)",
       "defaultValue": "500",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.GitSyncMaxFiles"
+      "sourceSymbol": "models.Settings.GitSyncMaxFiles",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "GIT_SYNC_MAX_TOTAL_SIZE_MB",
@@ -1340,13 +1480,13 @@
       "description": "Maximum combined size in MB for files copied during a Git sync. Set 0 to disable the environment cap (default: 50)",
       "defaultValue": "50",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.GitSyncMaxTotalSizeMb"
+      "sourceSymbol": "models.Settings.GitSyncMaxTotalSizeMb",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "OLED_MODE",
@@ -1354,14 +1494,14 @@
       "description": "Use true-black backgrounds for OLED displays (only active in dark mode)",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "general",
-      "public": true,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.OledMode"
+      "sourceSymbol": "models.Settings.OledMode",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "AUTO_HEAL_ENABLED",
@@ -1369,28 +1509,28 @@
       "description": "Automatically restart containers that become unhealthy",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoHealEnabled"
+      "sourceSymbol": "models.Settings.AutoHealEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTO_HEAL_EXCLUDED_CONTAINERS",
       "settingKey": "autoHealExcludedContainers",
       "description": "Comma-separated list of containers to exclude from auto-heal",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. AUTO_HEAL_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoHealExcludedContainers"
+      "sourceSymbol": "models.Settings.AutoHealExcludedContainers",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTO_HEAL_MAX_RESTARTS",
@@ -1398,14 +1538,14 @@
       "description": "Maximum auto-heal restarts per container within the restart window (default: 5)",
       "defaultValue": "5",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. AUTO_HEAL_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoHealMaxRestarts"
+      "sourceSymbol": "models.Settings.AutoHealMaxRestarts",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTO_HEAL_RESTART_WINDOW",
@@ -1413,14 +1553,14 @@
       "description": "Time window in minutes for counting auto-heal restarts (default: 30)",
       "defaultValue": "30",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. AUTO_HEAL_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoHealRestartWindow"
+      "sourceSymbol": "models.Settings.AutoHealRestartWindow",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTO_INJECT_ENV",
@@ -1428,14 +1568,14 @@
       "description": "Automatically inject project .env variables into all containers (default: false)",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoInjectEnv"
+      "sourceSymbol": "models.Settings.AutoInjectEnv",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTO_UPDATE",
@@ -1443,28 +1583,28 @@
       "description": "Automatically update containers when new images are available",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoUpdate"
+      "sourceSymbol": "models.Settings.AutoUpdate",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTO_UPDATE_EXCLUDED_CONTAINERS",
       "settingKey": "autoUpdateExcludedContainers",
       "description": "Comma-separated list of containers to exclude from auto-update",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoUpdateExcludedContainers"
+      "sourceSymbol": "models.Settings.AutoUpdateExcludedContainers",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "AUTO_UPDATE_INTERVAL",
@@ -1472,14 +1612,14 @@
       "description": "How often to check for automatic updates (cron expression)",
       "defaultValue": "0 0 0 * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. AUTO_UPDATE=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.AutoUpdateInterval"
+      "sourceSymbol": "models.Settings.AutoUpdateInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DEFAULT_DEPLOY_PULL_POLICY",
@@ -1487,14 +1627,14 @@
       "description": "Default image pull policy when deploying projects",
       "defaultValue": "missing",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DefaultDeployPullPolicy"
+      "sourceSymbol": "models.Settings.DefaultDeployPullPolicy",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DOCKER_CLIENT_REFRESH_INTERVAL",
@@ -1502,14 +1642,14 @@
       "description": "How often to refresh the cached Docker client API version (cron expression)",
       "defaultValue": "*/30 * * * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DockerClientRefreshInterval"
+      "sourceSymbol": "models.Settings.DockerClientRefreshInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DOCKER_HOST",
@@ -1517,13 +1657,13 @@
       "description": "URI for Docker daemon",
       "defaultValue": "unix:///var/run/docker.sock",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DockerHost"
+      "sourceSymbol": "models.Settings.DockerHost",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "MAX_IMAGE_UPLOAD_SIZE",
@@ -1531,14 +1671,14 @@
       "description": "Maximum size in MB for image archive uploads (default: 500)",
       "defaultValue": "500",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.MaxImageUploadSize"
+      "sourceSymbol": "models.Settings.MaxImageUploadSize",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "POLLING_ENABLED",
@@ -1546,14 +1686,14 @@
       "description": "Enable automatic checking for image updates",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PollingEnabled"
+      "sourceSymbol": "models.Settings.PollingEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "POLLING_INTERVAL",
@@ -1561,14 +1701,14 @@
       "description": "How often to check for image updates (cron expression)",
       "defaultValue": "0 0 * * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PollingInterval"
+      "sourceSymbol": "models.Settings.PollingInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PROJECTS_DIRECTORY",
@@ -1576,13 +1716,13 @@
       "description": "Configure where project files are stored",
       "defaultValue": "/app/data/projects",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ProjectsDirectory"
+      "sourceSymbol": "models.Settings.ProjectsDirectory",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_BUILD_CACHE_MODE",
@@ -1590,28 +1730,28 @@
       "description": "Select how build cache should be pruned when the scheduled prune job runs",
       "defaultValue": "none",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneBuildCacheMode"
+      "sourceSymbol": "models.Settings.PruneBuildCacheMode",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_BUILD_CACHE_UNTIL",
       "settingKey": "pruneBuildCacheUntil",
       "description": "Duration threshold for scheduled build cache prune when mode is olderThan",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true and PRUNE_BUILD_CACHE_MODE=olderThan to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneBuildCacheUntil"
+      "sourceSymbol": "models.Settings.PruneBuildCacheUntil",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_CONTAINER_MODE",
@@ -1619,28 +1759,28 @@
       "description": "Select how containers should be pruned when the scheduled prune job runs",
       "defaultValue": "stopped",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneContainerMode"
+      "sourceSymbol": "models.Settings.PruneContainerMode",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_CONTAINER_UNTIL",
       "settingKey": "pruneContainerUntil",
       "description": "Duration threshold for scheduled container prune when mode is olderThan",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true and PRUNE_CONTAINER_MODE=olderThan to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneContainerUntil"
+      "sourceSymbol": "models.Settings.PruneContainerUntil",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_IMAGE_MODE",
@@ -1648,28 +1788,28 @@
       "description": "Select how images should be pruned when the scheduled prune job runs",
       "defaultValue": "dangling",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneImageMode"
+      "sourceSymbol": "models.Settings.PruneImageMode",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_IMAGE_UNTIL",
       "settingKey": "pruneImageUntil",
       "description": "Duration threshold for scheduled image prune when mode is olderThan",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true and PRUNE_IMAGE_MODE=olderThan to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneImageUntil"
+      "sourceSymbol": "models.Settings.PruneImageUntil",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_NETWORK_MODE",
@@ -1677,28 +1817,28 @@
       "description": "Select how networks should be pruned when the scheduled prune job runs",
       "defaultValue": "unused",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneNetworkMode"
+      "sourceSymbol": "models.Settings.PruneNetworkMode",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_NETWORK_UNTIL",
       "settingKey": "pruneNetworkUntil",
       "description": "Duration threshold for scheduled network prune when mode is olderThan",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true and PRUNE_NETWORK_MODE=olderThan to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneNetworkUntil"
+      "sourceSymbol": "models.Settings.PruneNetworkUntil",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PRUNE_VOLUME_MODE",
@@ -1706,14 +1846,14 @@
       "description": "Select how volumes should be pruned when the scheduled prune job runs",
       "defaultValue": "none",
       "type": "select",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.PruneVolumeMode"
+      "sourceSymbol": "models.Settings.PruneVolumeMode",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "SCHEDULED_PRUNE_ENABLED",
@@ -1721,14 +1861,14 @@
       "description": "Enable scheduled pruning of unused Docker resources",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ScheduledPruneEnabled"
+      "sourceSymbol": "models.Settings.ScheduledPruneEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "SCHEDULED_PRUNE_INTERVAL",
@@ -1736,14 +1876,14 @@
       "description": "How often to run scheduled prunes (cron expression)",
       "defaultValue": "0 0 0 * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. SCHEDULED_PRUNE_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ScheduledPruneInterval"
+      "sourceSymbol": "models.Settings.ScheduledPruneInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "SWARM_STACK_SOURCES_DIRECTORY",
@@ -1751,13 +1891,13 @@
       "description": "Configure where swarm stack source files are stored",
       "defaultValue": "/app/data/swarm/sources",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.SwarmStackSourcesDirectory"
+      "sourceSymbol": "models.Settings.SwarmStackSourcesDirectory",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TEMPLATES_DIRECTORY",
@@ -1765,13 +1905,13 @@
       "description": "Configure where local compose template folders are discovered",
       "defaultValue": "/app/data/templates",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TemplatesDirectory"
+      "sourceSymbol": "models.Settings.TemplatesDirectory",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "VOLUME_BROWSER_HELPER_IDLE_TIMEOUT",
@@ -1779,14 +1919,14 @@
       "description": "Minutes a volume-browser helper container may sit idle before automatic removal (default: 10",
       "defaultValue": "10",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "internal",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.VolumeBrowserHelperIdleTimeout"
+      "sourceSymbol": "models.Settings.VolumeBrowserHelperIdleTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "LIFECYCLE_DEFAULT_RUNNER_IMAGE",
@@ -1794,13 +1934,13 @@
       "description": "Default container image used to run GitOps pre-deploy lifecycle scripts when a sync does not override it",
       "defaultValue": "alpine:latest",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.LifecycleDefaultRunnerImage"
+      "sourceSymbol": "models.Settings.LifecycleDefaultRunnerImage",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "LIFECYCLE_ENABLED",
@@ -1808,13 +1948,13 @@
       "description": "Allow GitOps syncs to configure pre-deploy lifecycle scripts. Disabled by default because scripts are repo-trusted code that runs on every deploy",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.LifecycleEnabled"
+      "sourceSymbol": "models.Settings.LifecycleEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "LIFECYCLE_MAX_TIMEOUT_SEC",
@@ -1822,13 +1962,13 @@
       "description": "Maximum allowed timeout for lifecycle scripts in seconds (default: 300)",
       "defaultValue": "300",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.LifecycleMaxTimeoutSec"
+      "sourceSymbol": "models.Settings.LifecycleMaxTimeoutSec",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_CONCURRENT_SCAN_CONTAINERS",
@@ -1836,27 +1976,27 @@
       "description": "Maximum number of concurrent Trivy scan containers for manual and scheduled scans. Minimum 1",
       "defaultValue": "1",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyConcurrentScanContainers"
+      "sourceSymbol": "models.Settings.TrivyConcurrentScanContainers",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_CONFIG",
       "settingKey": "trivyConfig",
       "description": "Trivy configuration file content in YAML format",
       "type": "textarea",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyConfig"
+      "sourceSymbol": "models.Settings.TrivyConfig",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_CPU_LIMIT",
@@ -1864,27 +2004,27 @@
       "description": "Maximum CPU cores for Trivy scan containers (supports decimals, e.g. 1.5). Set 0 to disable CPU limit",
       "defaultValue": "1",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyCpuLimit"
+      "sourceSymbol": "models.Settings.TrivyCpuLimit",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_IGNORE",
       "settingKey": "trivyIgnore",
       "description": "Trivy ignore file content - one vulnerability ID per line",
       "type": "textarea",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyIgnore"
+      "sourceSymbol": "models.Settings.TrivyIgnore",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_IGNORE_UNFIXED",
@@ -1892,13 +2032,13 @@
       "description": "Only report vulnerabilities that have a known fix available. Reduces noise from vulnerabilities you cannot act on.",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyIgnoreUnfixed"
+      "sourceSymbol": "models.Settings.TrivyIgnoreUnfixed",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_IMAGE",
@@ -1906,14 +2046,14 @@
       "description": "Override the Arcane tools image used to run Trivy vulnerability scans",
       "defaultValue": "ghcr.io/getarcaneapp/tools:latest",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyImage"
+      "sourceSymbol": "models.Settings.TrivyImage",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_MEMORY_LIMIT_MB",
@@ -1921,26 +2061,26 @@
       "description": "Maximum memory for Trivy scan containers in MB. Set 0 to disable memory limit",
       "defaultValue": "0",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyMemoryLimitMb"
+      "sourceSymbol": "models.Settings.TrivyMemoryLimitMb",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_NETWORK",
       "settingKey": "trivyNetwork",
       "description": "Docker network mode/network name used for Trivy scan containers. Leave empty to inherit Arcane's network automatically.",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyNetwork"
+      "sourceSymbol": "models.Settings.TrivyNetwork",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_PRESERVE_CACHE_ON_VOLUME_PRUNE",
@@ -1948,13 +2088,13 @@
       "description": "Keep the Trivy cache volume when unused volumes are pruned manually or on a schedule",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyPreserveCacheOnVolumePrune"
+      "sourceSymbol": "models.Settings.TrivyPreserveCacheOnVolumePrune",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_PRIVILEGED",
@@ -1962,13 +2102,13 @@
       "description": "Run Trivy scan containers in privileged mode when required by the host security policy",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyPrivileged"
+      "sourceSymbol": "models.Settings.TrivyPrivileged",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_RESOURCE_LIMITS_ENABLED",
@@ -1976,26 +2116,26 @@
       "description": "Enable CPU and memory limits for Trivy scan containers",
       "defaultValue": "true",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyResourceLimitsEnabled"
+      "sourceSymbol": "models.Settings.TrivyResourceLimitsEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_SECURITY_OPTS",
       "settingKey": "trivySecurityOpts",
       "description": "Docker security options applied to Trivy scan containers. Use commas or new lines to separate entries (for example: label=disable)",
       "type": "textarea",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivySecurityOpts"
+      "sourceSymbol": "models.Settings.TrivySecurityOpts",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_SERVER_ENABLED",
@@ -2003,39 +2143,39 @@
       "description": "Scan against a remote Trivy server instead of downloading the vulnerability database locally. Recommended for 32-bit hosts (arm/v7) where the local DB cannot be memory-mapped.",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyServerEnabled"
+      "sourceSymbol": "models.Settings.TrivyServerEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_SERVER_TOKEN",
       "settingKey": "trivyServerToken",
       "description": "Optional authentication token sent to the remote Trivy server. Leave empty if the server requires no token.",
       "type": "password",
-      "sensitive": true,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyServerToken"
+      "sourceSymbol": "models.Settings.TrivyServerToken",
+      "sensitive": true,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_SERVER_URL",
       "settingKey": "trivyServerUrl",
       "description": "URL of the remote Trivy server (e.g. http://trivy.example.com:4954). Used when client/server mode is enabled.",
       "type": "text",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyServerUrl"
+      "sourceSymbol": "models.Settings.TrivyServerUrl",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "VULNERABILITY_SCAN_ENABLED",
@@ -2043,14 +2183,14 @@
       "description": "Enable scheduled vulnerability scanning of all Docker images",
       "defaultValue": "false",
       "type": "boolean",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.VulnerabilityScanEnabled"
+      "sourceSymbol": "models.Settings.VulnerabilityScanEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "VULNERABILITY_SCAN_INTERVAL",
@@ -2058,14 +2198,14 @@
       "description": "How often to run scheduled vulnerability scans (cron expression)",
       "defaultValue": "0 0 0 * * *",
       "type": "cron",
-      "sensitive": false,
-      "deprecated": false,
       "category": "security",
-      "public": false,
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. VULNERABILITY_SCAN_ENABLED=true to have effect at runtime.",
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.VulnerabilityScanInterval"
+      "sourceSymbol": "models.Settings.VulnerabilityScanInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DOCKER_API_TIMEOUT",
@@ -2073,13 +2213,13 @@
       "description": "Timeout for Docker list operations in seconds (default: 30)",
       "defaultValue": "30",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "timeouts",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DockerAPITimeout"
+      "sourceSymbol": "models.Settings.DockerAPITimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "DOCKER_IMAGE_PULL_TIMEOUT",
@@ -2087,13 +2227,13 @@
       "description": "Timeout for Docker image pulls in seconds (default: 600 = 10 minutes)",
       "defaultValue": "600",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "timeouts",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.DockerImagePullTimeout"
+      "sourceSymbol": "models.Settings.DockerImagePullTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "GIT_OPERATION_TIMEOUT",
@@ -2101,13 +2241,13 @@
       "description": "Timeout for Git clone/fetch operations in seconds (default: 300 = 5 minutes)",
       "defaultValue": "300",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "timeouts",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.GitOperationTimeout"
+      "sourceSymbol": "models.Settings.GitOperationTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "HTTP_CLIENT_TIMEOUT",
@@ -2115,13 +2255,13 @@
       "description": "Default timeout for HTTP requests in seconds (default: 30)",
       "defaultValue": "30",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "timeouts",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.HTTPClientTimeout"
+      "sourceSymbol": "models.Settings.HTTPClientTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "PROXY_REQUEST_TIMEOUT",
@@ -2129,13 +2269,13 @@
       "description": "Timeout for proxied requests in seconds (default: 60)",
       "defaultValue": "60",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "timeouts",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.ProxyRequestTimeout"
+      "sourceSymbol": "models.Settings.ProxyRequestTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "REGISTRY_TIMEOUT",
@@ -2143,13 +2283,13 @@
       "description": "Timeout for container registry operations in seconds (default: 30)",
       "defaultValue": "30",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "timeouts",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.RegistryTimeout"
+      "sourceSymbol": "models.Settings.RegistryTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     },
     {
       "env": "TRIVY_SCAN_TIMEOUT",
@@ -2157,13 +2297,13 @@
       "description": "Timeout for Trivy image scans in seconds (default: 900 = 15 minutes)",
       "defaultValue": "900",
       "type": "number",
-      "sensitive": false,
-      "deprecated": false,
       "category": "timeouts",
-      "public": false,
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
-      "sourceSymbol": "models.Settings.TrivyScanTimeout"
+      "sourceSymbol": "models.Settings.TrivyScanTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
     }
   ]
 }
