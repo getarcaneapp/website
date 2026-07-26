@@ -6,8 +6,8 @@ import type { WithChildren, WithoutChildren } from 'bits-ui';
 import type { ComponentProps } from 'svelte';
 import type { Snippet } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
-import { Button } from '$lib/components/ui/button/index.js';
-import type { UseClipboard } from '$lib/hooks/use-clipboard.svelte.js';
+import { Button } from '#lib/components/ui/button/index.js';
+import type { UseClipboard } from '#lib/hooks/use-clipboard.svelte.js';
 
 type ButtonProps = ComponentProps<typeof Button>;
 

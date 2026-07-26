@@ -5,7 +5,7 @@ order: 2
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
 </script>
 
 ## Config File Location

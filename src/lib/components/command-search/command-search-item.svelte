@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import { useObserver } from '$lib/hooks/observer.svelte.js';
-	import { cn } from '$lib/utils.js';
+	import * as Command from '#lib/components/ui/command/index.js';
+	import { useObserver } from '#lib/hooks/observer.svelte.js';
+	import { cn } from '#lib/utils.js';
 
 	let {
 		children,

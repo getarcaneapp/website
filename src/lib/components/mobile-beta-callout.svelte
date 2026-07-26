@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Apple from 'virtual:icons/simple-icons/apple';
 	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 
 	const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Y9KUft8F';
 </script>

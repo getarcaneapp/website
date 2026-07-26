@@ -12,7 +12,7 @@
 	import Settings2 from 'virtual:icons/lucide/settings-2';
 	import ShieldCheck from 'virtual:icons/lucide/shield-check';
 	import Terminal from 'virtual:icons/lucide/terminal';
-	import { SidebarNavItems } from '$lib/config/docs.js';
+	import { SidebarNavItems } from '#lib/config/docs.js';
 
 	type IconComponent = Component<{ class?: string }>;
 

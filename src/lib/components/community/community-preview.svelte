@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { featuredCommunityItems } from '$lib/config/community.js';
+	import Button from '#lib/components/ui/button/button.svelte';
+	import { featuredCommunityItems } from '#lib/config/community.js';
 	import CommunityGrid from './community-grid.svelte';
 </script>
 

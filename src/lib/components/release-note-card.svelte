@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '#lib/components/ui/card/index.js';
 	import ChevronDown from 'virtual:icons/lucide/chevron-down';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import Button from '#lib/components/ui/button/button.svelte';
 
 	let {
 		id,

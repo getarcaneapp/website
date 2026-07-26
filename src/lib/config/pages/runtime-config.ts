@@ -1,6 +1,6 @@
-import { browser, dev } from '$app/environment';
-import type { EnvConfig } from '$lib/types/env-config.type.js';
-import type { EnvSettingOverride } from '$lib/types/env-settings-override.type.js';
+import { browser, dev } from '$app/env';
+import type { EnvConfig } from '#lib/types/env-config.type.js';
+import type { EnvSettingOverride } from '#lib/types/env-settings-override.type.js';
 import staticConfig from '../../../../static/config.json' with { type: 'json' };
 
 type RuntimeEnvConfig = {

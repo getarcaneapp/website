@@ -4,12 +4,12 @@
 	import Cpu from 'virtual:icons/lucide/cpu';
 	import Shield from 'virtual:icons/lucide/shield';
 	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import type { SpdxDocument, DisplayPackage, SbomMetadata } from '$lib/types/sbom.type.js';
-	import { extractDisplayPackages } from '$lib/types/sbom.type.js';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
+	import * as Table from '#lib/components/ui/table/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import type { SpdxDocument, DisplayPackage, SbomMetadata } from '#lib/types/sbom.type.js';
+	import { extractDisplayPackages } from '#lib/types/sbom.type.js';
 
 	const archFiles = {
 		amd64: 'linux_amd64.spdx.json',

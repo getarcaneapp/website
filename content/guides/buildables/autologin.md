@@ -5,8 +5,8 @@ published: false
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
-import { Link } from '$lib/components/ui/link/index.js';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 The **autologin** buildable allows Arcane to automatically sign in using credentials you provide at runtime. This is useful for local development, CI, or demo environments where you want to skip the login screen.

@@ -61,10 +61,7 @@ export default defineConfig({
 			adapter: adapter({
 				fallback: 'index.html',
 				pages: './build'
-			}),
-			alias: {
-				$velite: '.velite'
-			}
+			})
 		}),
 		Icons({
 			compiler: 'svelte',

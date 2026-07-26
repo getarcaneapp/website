@@ -5,8 +5,8 @@
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { page } from '$app/state';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import type { SidebarNavItem } from '$lib/config/docs.js';
+	import * as Sidebar from '#lib/components/ui/sidebar/index.js';
+	import type { SidebarNavItem } from '#lib/config/docs.js';
 
 	let {
 		navItems,

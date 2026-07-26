@@ -3,6 +3,10 @@
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
+	"imports": {
+		"#lib/*": "./src/lib/*",
+		"#velite/*": "./.velite/*"
+	},
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"velite": "velite",

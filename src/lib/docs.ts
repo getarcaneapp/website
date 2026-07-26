@@ -12,7 +12,7 @@ import {
 	security,
 	setup,
 	templates
-} from '$velite/index.js';
+} from '#velite/index.js';
 
 type CollectionDoc = (typeof indexPage)[number];
 

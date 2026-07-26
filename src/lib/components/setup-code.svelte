@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Code from '$lib/components/ui/code/index.js';
+	import * as Code from '#lib/components/ui/code/index.js';
 
 	const composeFile = `services:
   arcane:

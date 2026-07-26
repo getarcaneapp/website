@@ -68,8 +68,8 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { cn } from '#lib/utils.js';
+	import Button from '#lib/components/ui/button/button.svelte';
 
 	let {
 		toc,

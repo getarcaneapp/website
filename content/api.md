@@ -4,7 +4,7 @@ description: How to use the Arcane API
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 Arcane provides a REST API that allows you to programmatically manage your Docker resources. The API documentation is built into Arcane and available directly from your instance.

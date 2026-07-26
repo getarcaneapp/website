@@ -1,4 +1,4 @@
-import type { GeneratorConfig } from '$lib/types/compose-generator.type.js';
+import type { GeneratorConfig } from '#lib/types/compose-generator.type.js';
 
 /**
  * Configuration for the Docker Compose Generator UI.

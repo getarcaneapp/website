@@ -4,7 +4,7 @@ description: 'Manage Docker containers from Arcane.'
 ---
 
 <script lang="ts">
-import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
 The **Containers** page lists every container on your Docker host and lets you start, stop, pause, kill, inspect, commit, and remove them. Use it for one-off containers; for grouped services, see [Projects](/docs/features/projects).

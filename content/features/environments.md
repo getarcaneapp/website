@@ -4,9 +4,9 @@ description: 'Connect Arcane to remote Docker hosts using the Arcane Agent.'
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
-import { Link } from '$lib/components/ui/link/index.js';
-import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
 A **Remote Environment** is a Docker host outside the Arcane Manager that you want to manage from the same UI. You create the environment in Arcane, copy the generated agent settings, and run the **Arcane Agent** on the remote host. The Agent needs Docker access — typically via `/var/run/docker.sock`.

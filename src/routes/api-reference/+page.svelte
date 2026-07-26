@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DocShell from '$lib/components/doc-shell.svelte';
+	import DocShell from '#lib/components/doc-shell.svelte';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();

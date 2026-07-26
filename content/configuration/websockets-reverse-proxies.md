@@ -5,7 +5,7 @@ order: 4
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 Arcane uses WebSockets to keep the app updated in real time. If you place Arcane behind a reverse proxy or custom domain, make sure the proxy allows WebSocket connections and forwards the real client IP — Arcane's per-IP login rate limit relies on it to tell clients apart (see [Trust the proxy with `TRUSTED_PROXIES`](#trust-the-proxy-with-trusted_proxies)).

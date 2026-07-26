@@ -5,9 +5,9 @@ order: 3
 ---
 
 <script lang="ts">
-import SetupCode from '$lib/components/setup-code.svelte';
-import { Snippet } from '$lib/components/ui/snippet/index.js';
-import { Link } from '$lib/components/ui/link/index.js';
+import SetupCode from '#lib/components/setup-code.svelte';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE] This guide is for using Arcane with Podman.

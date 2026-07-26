@@ -4,7 +4,7 @@ description: 'Manage a Docker Swarm cluster, services, stacks, configs, secrets,
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 The **Swarm** workspace manages Docker Swarm for the currently selected environment — cluster lifecycle, application deployments, node management, and Swarm-native configs and secrets.

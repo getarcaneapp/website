@@ -7,9 +7,9 @@
 	import CopyIcon from 'virtual:icons/lucide/copy';
 	import XIcon from 'virtual:icons/lucide/x';
 	import { scale } from 'svelte/transition';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte.js';
-	import { cn } from '$lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { UseClipboard } from '#lib/hooks/use-clipboard.svelte.js';
+	import { cn } from '#lib/utils.js';
 	import type { CopyButtonProps } from './types.js';
 
 	let {

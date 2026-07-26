@@ -4,7 +4,7 @@ description: 'Manage Docker volumes in Arcane, including backups and restores.'
 ---
 
 <script lang="ts">
-import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
 The **Volumes** page lists every Docker volume on the selected host and lets you create, remove, and back up volumes.

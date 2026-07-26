@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { Component } from 'svelte';
-import { changelog as changelogMeta } from '$velite/index.js';
+import { changelog as changelogMeta } from '#velite/index.js';
 import type { PageLoad } from './$types.js';
 
 type DocModule = { default: Component; metadata?: Record<string, any> };

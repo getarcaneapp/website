@@ -4,7 +4,7 @@ description: 'Build container images in Arcane.'
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 Arcane has two ways to build images:

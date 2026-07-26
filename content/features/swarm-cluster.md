@@ -5,7 +5,7 @@ order: 1
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
 </script>
 
 The **Cluster** page covers the Swarm lifecycle and security settings for the selected environment — initialize, join, leave, unlock, rotate join tokens, and update the live Swarm spec.

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLImgAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { cn } from '#lib/utils.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
 
 	type ScreenshotFrameProps = HTMLImgAttributes & {
 		caption?: string;

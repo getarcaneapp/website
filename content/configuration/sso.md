@@ -5,11 +5,11 @@ order: 3
 ---
 
 <script lang="ts">
-import * as Code from '$lib/components/ui/code/index.js';
-import OidcTable from '$lib/components/oidc-table.svelte';
-import * as Alert from '$lib/components/ui/alert/index.js';
+import * as Code from '#lib/components/ui/code/index.js';
+import OidcTable from '#lib/components/oidc-table.svelte';
+import * as Alert from '#lib/components/ui/alert/index.js';
 import InfoIcon from 'virtual:icons/lucide/info';
-import { Link } from '$lib/components/ui/link/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 ## Configure OIDC in the UI

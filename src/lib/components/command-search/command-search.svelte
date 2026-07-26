@@ -6,12 +6,12 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { SidebarNavItems } from '$lib/config/docs.js';
-	import { useIsMac } from '$lib/hooks/is-mac.svelte.js';
-	import { cn } from '$lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Command from '#lib/components/ui/command/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { SidebarNavItems } from '#lib/config/docs.js';
+	import { useIsMac } from '#lib/hooks/is-mac.svelte.js';
+	import { cn } from '#lib/utils.js';
 	import CommandMenuItem from './command-search-item.svelte';
 
 	type KbdProps = HTMLAttributes<HTMLElement> & { content: string | Component };

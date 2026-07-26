@@ -1,4 +1,4 @@
-import type { CommunityItem } from '$lib/types/community.type.js';
+import type { CommunityItem } from '#lib/types/community.type.js';
 
 const communityItems: CommunityItem[] = [
 	{

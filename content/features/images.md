@@ -4,7 +4,7 @@ description: 'Manage Docker images in Arcane.'
 ---
 
 <script lang="ts">
-import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
 The **Images** page lists every Docker image on the selected host and lets you search registries, pull, tag, inspect, prune, and remove images. Arcane also flags images that have a newer release available.

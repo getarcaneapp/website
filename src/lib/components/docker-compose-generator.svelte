@@ -2,17 +2,17 @@
 	import ChevronLeft from 'virtual:icons/lucide/chevron-left';
 	import ChevronRight from 'virtual:icons/lucide/chevron-right';
 	import FileText from 'virtual:icons/lucide/file-text';
-	import { trackEvent } from '$lib/analytics.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import * as Select from '$lib/components/ui/select/index.js';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { generatorConfig, getDefaultConfigValues } from '$lib/config/compose-generator.js';
-	import type { GeneratorField } from '$lib/types/compose-generator.type.js';
-	import { generateDockerCompose } from '$lib/utils/docker-compose-generator.js';
+	import { trackEvent } from '#lib/analytics.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Card from '#lib/components/ui/card/index.js';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
+	import * as Select from '#lib/components/ui/select/index.js';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
+	import { generatorConfig, getDefaultConfigValues } from '#lib/config/compose-generator.js';
+	import type { GeneratorField } from '#lib/types/compose-generator.type.js';
+	import { generateDockerCompose } from '#lib/utils/docker-compose-generator.js';
 	import DockerComposeDialog from './docker-compose-dialog.svelte';
 
 	let config = $state<Record<string, string | boolean>>(getDefaultConfigValues());

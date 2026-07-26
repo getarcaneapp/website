@@ -1,4 +1,4 @@
-import type { BuildableConfig } from '$lib/types/buildable.type.js';
+import type { BuildableConfig } from '#lib/types/buildable.type.js';
 
 export const buildables: BuildableConfig[] = [
 	{

@@ -2,7 +2,7 @@
 	import MoonIcon from 'virtual:icons/lucide/moon';
 	import SunIcon from 'virtual:icons/lucide/sun';
 	import { toggleMode } from 'mode-watcher';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 </script>
 
 <Button

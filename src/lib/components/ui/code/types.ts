@@ -5,7 +5,7 @@
 import type { WithChildren, WithoutChildren } from 'bits-ui';
 import type { HTMLAttributes } from 'svelte/elements';
 import { tv, type VariantProps } from 'tailwind-variants';
-import type { CopyButtonPropsWithoutHTML } from '$lib/components/ui/copy-button/types.js';
+import type { CopyButtonPropsWithoutHTML } from '#lib/components/ui/copy-button/types.js';
 import type { SupportedLanguage } from './shiki.js';
 
 export const codeVariants = tv({

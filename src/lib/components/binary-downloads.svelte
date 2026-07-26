@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Download from 'virtual:icons/lucide/download';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
+	import * as Tabs from '#lib/components/ui/tabs/index.js';
+	import * as Table from '#lib/components/ui/table/index.js';
 
 	type FileEntry = { key: string; size: number; modified: string };
 

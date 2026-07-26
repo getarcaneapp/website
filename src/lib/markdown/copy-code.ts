@@ -1,5 +1,5 @@
 import type { Action } from 'svelte/action';
-import { trackEvent } from '$lib/analytics.js';
+import { trackEvent } from '#lib/analytics.js';
 
 // Lucide `copy` and `check` icons, inlined so the action stays framework-free.
 const COPY_ICON =

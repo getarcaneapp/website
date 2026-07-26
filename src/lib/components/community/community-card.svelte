@@ -2,8 +2,8 @@
 	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
 	import Newspaper from 'virtual:icons/lucide/newspaper';
 	import Youtube from 'virtual:icons/lucide/youtube';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import type { CommunityItem } from '$lib/types/community.type.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import type { CommunityItem } from '#lib/types/community.type.js';
 	import VideoEmbed from './video-embed.svelte';
 
 	let { item }: { item: CommunityItem } = $props();

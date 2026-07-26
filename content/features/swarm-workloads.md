@@ -5,8 +5,8 @@ order: 2
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
-import { Snippet } from '$lib/components/ui/snippet/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
 </script>
 
 The Swarm workspace has two views for deploying workloads — **Stacks** for whole applications and **Services** for direct service-level control — plus **Tasks** to see what Swarm is actually scheduling.

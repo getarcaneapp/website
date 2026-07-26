@@ -4,8 +4,8 @@ description: 'Manage Docker Compose projects in Arcane.'
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
-import ScreenshotFrame from '$lib/components/screenshot-frame.svelte';
+import { Link } from '#lib/components/ui/link/index.js';
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
 A **Project** is a folder containing a Compose file (and any related `.env` or include files). The Projects page lists every project Arcane finds in your projects directory, and lets you deploy, edit, redeploy, or destroy them.

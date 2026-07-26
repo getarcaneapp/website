@@ -2,10 +2,10 @@
 	import { onMount } from 'svelte';
 	import ExternalLink from 'virtual:icons/lucide/external-link';
 	import Search from 'virtual:icons/lucide/search';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import Input from '$lib/components/ui/input/input.svelte';
-	import ChangelogToc from '$lib/components/changelog-toc.svelte';
-	import ReleaseNoteCard from '$lib/components/release-note-card.svelte';
+	import Button from '#lib/components/ui/button/button.svelte';
+	import Input from '#lib/components/ui/input/input.svelte';
+	import ChangelogToc from '#lib/components/changelog-toc.svelte';
+	import ReleaseNoteCard from '#lib/components/release-note-card.svelte';
 	import type { PageData } from './$types.js';
 
 	type TocEntry = {

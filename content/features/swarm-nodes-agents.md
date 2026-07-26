@@ -5,7 +5,7 @@ order: 3
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 The **Nodes** page shows every member of the Swarm cluster and the current Arcane node-agent status for each one.

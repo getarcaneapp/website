@@ -28,7 +28,7 @@
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { copyCode } from '$lib/markdown/copy-code.js';
+	import { copyCode } from '#lib/markdown/copy-code.js';
 
 	// mdsvex also passes frontmatter values as props; only `children` is used.
 	let { children }: { children?: Snippet } = $props();

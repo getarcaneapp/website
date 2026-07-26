@@ -4,9 +4,9 @@
 	import ExternalLink from 'virtual:icons/lucide/external-link';
 	import Pencil from 'virtual:icons/lucide/pencil';
 	import { page } from '$app/state';
-	import * as Toc from '$lib/components/ui/toc/index.js';
-	import { findNeighbors } from '$lib/config/docs.js';
-	import { UseToc } from '$lib/hooks/use-toc.svelte.js';
+	import * as Toc from '#lib/components/ui/toc/index.js';
+	import { findNeighbors } from '#lib/config/docs.js';
+	import { UseToc } from '#lib/hooks/use-toc.svelte.js';
 
 	let { data } = $props();
 	const Markdown = $derived(data.component);

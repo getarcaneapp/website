@@ -5,8 +5,8 @@ order: 4
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
-import { Link } from '$lib/components/ui/link/index.js';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 Federated credentials let an external workload — a GitHub Actions job, a GitLab CI pipeline, or any OIDC provider — sign in to Arcane using the short-lived token its platform already issues. Nothing long-lived is stored in your pipeline: there is no API key or password to create, leak, or rotate.

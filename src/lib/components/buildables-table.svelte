@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { Link } from '$lib/components/ui/link/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { buildables } from '$lib/config/pages/buildables.js';
+	import * as Table from '#lib/components/ui/table/index.js';
+	import { Link } from '#lib/components/ui/link/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { buildables } from '#lib/config/pages/buildables.js';
 
 	const communityHref = 'https://discord.gg/WyXYpdyV3Z';
 </script>

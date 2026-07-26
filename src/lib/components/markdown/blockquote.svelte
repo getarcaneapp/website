@@ -5,7 +5,7 @@
 	import Lightbulb from 'virtual:icons/lucide/lightbulb';
 	import OctagonAlert from 'virtual:icons/lucide/octagon-alert';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 
 	let { class: className, children, ...restProps }: HTMLAttributes<HTMLElement> = $props();
 

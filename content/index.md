@@ -4,8 +4,8 @@ description: 'Welcome to the Arcane documentation! Here you will find everything
 ---
 
 <script lang="ts">
-    import { Link } from '$lib/components/ui/link/index.js';
-    import DocsIndex from '$lib/components/docs-index.svelte';
+    import { Link } from '#lib/components/ui/link/index.js';
+    import DocsIndex from '#lib/components/docs-index.svelte';
 </script>
 
 <DocsIndex />

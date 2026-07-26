@@ -5,7 +5,7 @@ order: 3
 ---
 
 <script lang="ts">
-import { Link } from '$lib/components/ui/link/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 Every action in Arcane is gated by a permission. Permissions are bundled into roles, and roles are assigned to users — globally, or scoped to a single environment.

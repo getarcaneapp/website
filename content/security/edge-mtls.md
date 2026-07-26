@@ -5,8 +5,8 @@ order: 2
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
-import { Link } from '$lib/components/ui/link/index.js';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 Edge agents connect outbound to the Arcane Manager over HTTPS. By default they authenticate with an agent token. Enabling mTLS adds a second factor: the Manager issues each agent a client certificate, and the TLS handshake proves the agent holds the matching private key. Certificates are much harder to leak than tokens - they never appear in logs, environment variables, or API responses.

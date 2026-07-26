@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import * as Table from '$lib/components/ui/table/index.js';
+	import * as Table from '#lib/components/ui/table/index.js';
 	import {
 		envSettingsOverrides,
 		getRuntimeEnvSettingsOverrides
-	} from '$lib/config/pages/runtime-config.js';
+	} from '#lib/config/pages/runtime-config.js';
 
 	let tableOverrides = $state(envSettingsOverrides);
 

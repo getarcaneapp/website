@@ -5,9 +5,9 @@ order: 100
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
-import { Link } from '$lib/components/ui/link/index.js';
-import BinaryDownloads from '$lib/components/binary-downloads.svelte';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import { Link } from '#lib/components/ui/link/index.js';
+import BinaryDownloads from '#lib/components/binary-downloads.svelte';
 </script>
 
 > [!CAUTION]

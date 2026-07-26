@@ -2,10 +2,10 @@
 	import type { ComponentProps } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import { page } from '$app/state';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { mainNavItems, SidebarNavItems } from '$lib/config/docs.js';
-	import { cn } from '$lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import { mainNavItems, SidebarNavItems } from '#lib/config/docs.js';
+	import { cn } from '#lib/utils.js';
 
 	type MobileLinkProps = HTMLAnchorAttributes & {
 		content?: string;

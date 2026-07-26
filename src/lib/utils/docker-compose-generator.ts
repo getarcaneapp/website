@@ -1,4 +1,4 @@
-import { getAllFields } from '$lib/config/compose-generator.js';
+import { getAllFields } from '#lib/config/compose-generator.js';
 
 type GeneratorConfig = Record<string, string | boolean>;
 type ComposeRecord = Record<string, unknown>;

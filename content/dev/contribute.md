@@ -5,9 +5,9 @@ blueprint: default
 ---
 
 <script lang="ts">
-  import { GitCommand } from '$lib/components/ui/git-command';
-  import { Snippet } from '$lib/components/ui/snippet/index.js';
-  import { Link } from '$lib/components/ui/link/index.js';
+  import { GitCommand } from '#lib/components/ui/git-command';
+  import { Snippet } from '#lib/components/ui/snippet/index.js';
+  import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.

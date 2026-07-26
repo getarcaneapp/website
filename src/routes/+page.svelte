@@ -3,14 +3,14 @@
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
 	import { resolve } from '$app/paths';
-	import { trackEvent } from '$lib/analytics.js';
-	import CommunityPreview from '$lib/components/community/community-preview.svelte';
-	import ContentWrapper from '$lib/components/content-wrapper.svelte';
-	import MobileBetaCallout from '$lib/components/mobile-beta-callout.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Code from '$lib/components/ui/code/index.js';
-	import { FeatureCard } from '$lib/components/ui/feature-card/index.js';
-	import { features } from '$lib/config/features.js';
+	import { trackEvent } from '#lib/analytics.js';
+	import CommunityPreview from '#lib/components/community/community-preview.svelte';
+	import ContentWrapper from '#lib/components/content-wrapper.svelte';
+	import MobileBetaCallout from '#lib/components/mobile-beta-callout.svelte';
+	import Button from '#lib/components/ui/button/button.svelte';
+	import * as Code from '#lib/components/ui/code/index.js';
+	import { FeatureCard } from '#lib/components/ui/feature-card/index.js';
+	import { features } from '#lib/config/features.js';
 
 	interface StatsHistoryEntry {
 		date: string;

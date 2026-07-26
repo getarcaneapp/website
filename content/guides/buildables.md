@@ -4,8 +4,8 @@ description: 'Compile-time optional features for Arcane builds'
 ---
 
 <script lang="ts">
-import { Snippet } from '$lib/components/ui/snippet/index.js';
-import BuildablesTable from '$lib/components/buildables-table.svelte';
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import BuildablesTable from '#lib/components/buildables-table.svelte';
 </script>
 
 Buildables are optional features that you add to Arcane when you build it. Most users do not need them.

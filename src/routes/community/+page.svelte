@@ -1,8 +1,8 @@
 <script lang="ts">
-	import CommunityGrid from '$lib/components/community/community-grid.svelte';
-	import ContentWrapper from '$lib/components/content-wrapper.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { communityArticles, communityVideos } from '$lib/config/community.js';
+	import CommunityGrid from '#lib/components/community/community-grid.svelte';
+	import ContentWrapper from '#lib/components/content-wrapper.svelte';
+	import Button from '#lib/components/ui/button/button.svelte';
+	import { communityArticles, communityVideos } from '#lib/config/community.js';
 </script>
 
 <svelte:head>

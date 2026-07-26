@@ -3,8 +3,8 @@
 	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import { ModeWatcher } from 'mode-watcher';
-	import Footer from '$lib/components/footer.svelte';
-	import Header from '$lib/components/header.svelte';
+	import Footer from '#lib/components/footer.svelte';
+	import Header from '#lib/components/header.svelte';
 
 	let { children } = $props();
 

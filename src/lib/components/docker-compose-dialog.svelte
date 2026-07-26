@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Download from 'virtual:icons/lucide/download';
-	import { trackEvent } from '$lib/analytics.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Code from '$lib/components/ui/code/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { trackEvent } from '#lib/analytics.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Code from '#lib/components/ui/code/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
 
 	interface Props {
 		open: boolean;

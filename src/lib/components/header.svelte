@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { CommandSearch } from '$lib/components/command-search/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { mainNavItems } from '$lib/config/docs.js';
+	import { CommandSearch } from '#lib/components/command-search/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { mainNavItems } from '#lib/config/docs.js';
 	import GithubLink from './github-link.svelte';
 	import Logo from './logo.svelte';
 	import MainNav from './mainnav.svelte';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import PanelLeftIcon from 'virtual:icons/lucide/panel-left';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { cn } from '#lib/utils.js';
 	import { useSidebar } from './context.svelte.js';
 
 	type Props = Omit<HTMLButtonAttributes, 'type'> & {

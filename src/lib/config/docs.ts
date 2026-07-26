@@ -7,7 +7,7 @@ import {
 	security,
 	setup,
 	templates
-} from '$velite/index.js';
+} from '#velite/index.js';
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
