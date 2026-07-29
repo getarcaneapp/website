@@ -71,7 +71,7 @@ export async function getDoc(
 	const veliteMeta = getDocMetadata(slug);
 	const resolver = resolveModule(slug);
 
-	if (!veliteMeta || !resolver) {
+	if (!veliteMeta || !resolver || (veliteMeta as any).published === false) {
 		error(404, 'Could not find the documentation page.');
 	}
 

@@ -95,11 +95,11 @@ services:
       - MANAGER_API_URL=http://10.1.1.4:3552
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - agent-data:/app/data
+      - arcane-data:/app/data
     restart: unless-stopped
 
 volumes:
-  agent-data: {}
+  arcane-data:
 ```
 
 Start it:
@@ -129,11 +129,11 @@ services:
       - MANAGER_API_URL=http://10.1.1.4:3552
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - agent-data:/app/data
+      - arcane-data:/app/data
     restart: unless-stopped
 
 volumes:
-  agent-data: {}
+  arcane-data:
 ```
 
 ## Edit an environment
@@ -143,22 +143,37 @@ volumes:
 3. Change the settings you need.
 4. Save.
 
+The environment's **name** and **API URL** are edited directly in the page header — click either to edit it inline, and use the copy button next to the API URL to copy it. Both are read-only for the built-in local environment. The header also has a **Test Connection** button, and **Regenerate API Key** for non-edge environments.
+
+### Environment tabs
+
+- **Connection & Edge** — edge environments only. Live tunnel, control plane, and heartbeat status, the agent's mTLS certificate status, expiry, and common name, buttons to download the mTLS **bundle**, **certificate**, or **key**, and **Regenerate API Key**. See <Link href="/docs/security/edge-mtls">Edge Agent mTLS</Link>.
+- **Storage & Limits** — _Directories & Storage Paths_ (Projects Directory, Templates Directory, Swarm Stack Sources Directory, Disk Usage Path, Follow Project Symlinks) and _Sync & Upload Limits_ (Max Image Upload Size, and Git Sync max files, max total size, and max binary size).
+- **Docker** — Docker connection settings, including the **Base Server URL** used to build host links.
+- **Security** — Trivy and Lifecycle sub-tabs. See <Link href="/docs/features/vulnerability-scans">Vulnerability Scans</Link> and <Link href="/docs/guides/gitops-lifecycle-hooks">GitOps Lifecycle Hooks</Link>.
+- **Automations** — scheduled jobs for this environment, including image polling and auto updates.
+- **Git Syncs** — GitOps repository syncs.
+
+An offline or disabled environment shows only **Git Syncs**, and stays on the page so you can fix the connection from the header.
+
 ## Update all environments
 
 Arcane can upgrade **itself** across your whole fleet in one action. On the **Environments** page, click **Update All** to open the **Update all environments** dialog and confirm.
 
-Arcane upgrades the manager first, then each connected agent that has an update available. The manager restarts during its own upgrade — the dialog reconnects automatically and resumes with the remaining environments. Environments that are offline or already up to date are skipped.
+Arcane upgrades the connected **agents first**, while the manager is still up to orchestrate the run and report live progress, then upgrades the **manager last**. The manager only restarts if the pull actually brought down a new image — if it is already running the latest, it skips the recreate and there is no downtime. Offline environments are skipped.
+
+Each row shows the version it is moving `from → to`, and the local environment is marked with a **Manager** badge.
 
 The dialog tracks each environment as it goes:
 
 - **Pending** — waiting in the queue.
 - **Updating** — upgrade in progress.
 - **Updated** / **Update triggered** — the new version was applied, or handed off to the agent to finish.
-- **Already up to date** / **Offline — skipped** — nothing to do, or unreachable.
+- **Up to Date** / **Offline — skipped** — nothing to do, or unreachable.
 - **Failed** — the upgrade didn't complete; the error is shown inline.
 
 > [!NOTE]
-> This upgrades the Arcane manager and agents themselves — not the containers or projects they run. To keep your _workloads_ current, see <Link href="/docs/guides/updates">Auto Updates</Link>. **Update All** requires the `system:upgrade` permission.
+> This upgrades the Arcane manager and agents themselves — not the containers or projects they run. To keep your _workloads_ current, use **Update All** on the <Link href="/docs/guides/updates">Updates</Link> page instead. The two buttons share a label but do different things. **Update All** here requires the `system:upgrade` permission.
 
 ## Standalone binary
 
@@ -168,13 +183,9 @@ You can run the Agent as a binary instead of a container.
 2. Place the binary on the target host.
 3. Create a `.env` file.
 
-> [!NOTE]
-> `GIN_MODE=release` is required when running the binary — it's not injected automatically the way it is in the container image.
-
 Direct Agent `.env` example:
 
 ```env
-GIN_MODE=release
 AGENT_MODE=true
 EDGE_TRANSPORT=poll
 AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -187,7 +198,6 @@ LISTEN=127.0.0.1
 Edge Agent `.env` example:
 
 ```env
-GIN_MODE=release
 EDGE_AGENT=true
 EDGE_TRANSPORT=poll
 AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -203,4 +213,4 @@ Start the Agent:
 
 Or pass everything inline:
 
-<Snippet text="ENVIRONMENT=production GIN_MODE=release PORT=3553 LISTEN=127.0.0.1 AGENT_MODE=true EDGE_TRANSPORT=poll AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MANAGER_API_URL=http://10.1.1.4:3552 ./arcane-agent" class="mt-2 mb-2 w-full" />
+<Snippet text="ENVIRONMENT=production PORT=3553 LISTEN=127.0.0.1 AGENT_MODE=true EDGE_TRANSPORT=poll AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MANAGER_API_URL=http://10.1.1.4:3552 ./arcane-agent" class="mt-2 mb-2 w-full" />

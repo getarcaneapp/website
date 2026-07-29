@@ -1,7 +1,6 @@
 ---
 title: 'Swarm Cluster'
 description: 'Initialize, join, unlock, and update a Docker Swarm cluster.'
-order: 1
 ---
 
 <script lang="ts">

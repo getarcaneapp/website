@@ -16,9 +16,9 @@ This page covers both, plus the provider options (Local Docker vs. Depot).
 
 ## Manual builds (Build Workspace)
 
-Open **Builds and Deployments → Builds** (`/images/builds`).
+Open **Images → Builds** (`/images/builds`).
 
-The workspace looks for build contexts in `/builds` inside the container by default. Change the path in **Settings → Build**.
+The workspace looks for build contexts in `/builds` inside the container by default. Change the path in **Settings → Builds**.
 
 Mount a host folder or named Docker volume to `/builds` in your `compose.yaml`:
 
@@ -45,7 +45,7 @@ Arcane supports two:
 
 ### How Arcane picks a provider
 
-- The default comes from **Settings → Build**.
+- The default comes from **Settings → Builds**.
 - The manual build UI lets you override it per build.
 - If Depot credentials aren't configured, Arcane falls back to Local Docker.
 
@@ -60,7 +60,7 @@ When **Local Docker** is selected, you control both **Push** and **Load**.
 
 ## Configure build settings first
 
-Open **Settings → Build** (`/settings/builds`) and configure:
+Open **Settings → Builds** (`/settings/builds`) and configure:
 
 1. **Builds Directory** — the folder the workspace opens. Use a full absolute path.
 2. **Default Build Provider** — Local Docker or Depot.

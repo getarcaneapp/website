@@ -1,30 +1,36 @@
 ---
-title: 'Appearance'
-description: 'Choose Arcane themes and display options.'
-order: 3
+title: 'Appearance & Preferences'
+description: 'Personalize themes, navigation, and display options for your Arcane account.'
 ---
 
-Arcane includes built-in appearance settings so you can match the UI to your workspace and preferences.
+<script lang="ts">
+import { Link } from '#lib/components/ui/link/index.js';
+</script>
 
-## Application theme
+Appearance in Arcane is **per user**. Every option below is saved to your own account and follows you to any browser you sign in from — changing your theme does not change anyone else's.
 
-1. Open **Settings → Appearance**.
-2. Choose the theme preset you want.
-3. Arcane applies the new theme immediately.
+Open **Account → Preferences** to find all of them.
 
-## Theme mode
+> [!NOTE]
+> Earlier versions configured appearance server-wide under Settings → Appearance. That page has been removed. When you upgrade, your existing settings are copied to every user account automatically, so Arcane looks exactly the same as it did before.
 
-Each user can choose how Arcane handles light and dark mode:
+## General
 
-- **Light** — always use light mode.
-- **Dark** — always use dark mode.
-- **System** — follow the operating system's light/dark preference.
+- **Language** — the interface language.
+- **Time Format** — how Arcane renders timestamps.
 
-The mode preference is saved on the device. It is available from **Account** and **Settings → Appearance**.
+## Appearance
 
-## Available theme variants
+- **Theme** — Light, Dark, or System. System follows your operating system.
+- **Font size** — scales text and UI density.
+- **Icon Catalog** — which catalog resolves project and container icon slugs: **selfh.st** or **Dashboard Icons**. See <Link href="/docs/guides/custom-metadata">Custom Metadata</Link> for how icon slugs are applied.
+- **Application Theme** — the overall visual theme (see below).
+- **Accent Color** — the highlight color used across the UI.
+- **OLED Mode** — deepens backgrounds to true black.
+- **Glass & Blur Effects** — translucent panel surfaces.
+- **Interface Animations** — turn off to reduce motion.
 
-Arcane includes these theme variants:
+### Available theme variants
 
 - Default
 - Graphite
@@ -33,19 +39,26 @@ Arcane includes these theme variants:
 - GitHub
 - Nord
 - Everforest
-- Rose Pine
+- Rosé Pine
 
-## OLED Mode
+OLED mode applies to the Default theme. If you switch to one of the alternate presets, Arcane keeps that preset active instead of layering OLED mode on top of it.
 
-OLED mode still works with the default theme.
+## Navigation
 
-If you switch to one of the alternate theme presets, Arcane keeps that preset active instead of layering OLED mode on top of it.
+- **Default Landing Page** — where Arcane sends you after you sign in. The default is the Dashboard. You can choose any of: Dashboard, Projects, Environments, Containers, Images, Updates, Networks, or Volumes. If a saved choice ever becomes unavailable, Arcane falls back to the Dashboard.
+- **Enable Hover Expansion** — expand the collapsed sidebar when you hover it.
+- **Keyboard Shortcuts** — enable or disable Arcane's keyboard shortcuts.
+
+## Mobile Appearance
+
+- **Navigation Mode** — **Floating** or **Docked** mobile navigation bar.
+- **Show Labels** — show text labels beneath the mobile navigation icons.
 
 ## Profile pictures
 
-Users can upload a custom profile picture from **Account**. Arcane accepts PNG, JPEG, and WebP images, opens a crop dialog before upload, and stores the cropped image as the user's profile picture.
+Upload a custom profile picture from **Account**. Arcane accepts PNG, JPEG, and WebP images, opens a crop dialog before upload, and stores the cropped image as your profile picture.
 
-Admins can configure profile picture behavior under **Settings → Appearance**:
+Profile picture behavior is server-wide and admin-controlled, under **Settings → Users**:
 
 - **Enable Gravatar** — use Gravatar as the fallback source for users without an uploaded photo.
-- **Profile Picture Upload Size (MB)** — maximum cropped image size users can upload. The default is 2 MB, and the allowed range is 1-50 MB.
+- **Profile Picture Upload Size (MB)** — maximum cropped image size users can upload. The default is 2 MB, and the allowed range is 1–50 MB.

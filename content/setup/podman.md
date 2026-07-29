@@ -1,7 +1,6 @@
 ---
 title: 'Podman'
 description: 'Use Arcane with Podman.'
-order: 3
 ---
 
 <script lang="ts">

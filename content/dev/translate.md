@@ -3,7 +3,19 @@ title: Translating Arcane
 description: Help translate Arcane into your language
 ---
 
-Help the community by translating Arcane into you language.
+<script lang="ts">
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
+</script>
+
+Help the community by translating Arcane into your language.
+
+<ScreenshotFrame
+  src="/img/screenshots/locale-switcher.jpeg"
+  alt="Language switcher in Arcane"
+  caption="Switching languages in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## Getting Started
 

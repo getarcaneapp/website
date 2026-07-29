@@ -3,20 +3,27 @@ title: 'Using Templates'
 description: 'Templates help you quickly deploy common applications and services with Docker Compose. Arcane supports both local templates and remote registries.'
 ---
 
-# Using Templates
+<script lang="ts">
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
+</script>
 
 Templates help you quickly deploy common apps and services with Docker Compose. Arcane supports both templates stored on your machine and templates from online registries.
 
 ## Quick Start
 
-1. Go to the Compose Projects page and click `Create a New Project`
-2. Click the dropdown on the button in the top right and choose `Use Template`
-3. Select the template you would like to use
+1. Go to **Customization → Templates**.
+2. Find the template you want — search by name, or use the type filter to narrow the gallery to local or remote templates.
+3. Select **Create Project** on the template card to open it as a new project.
 
-> [!NOTE]
-> Templates are grouped by where they came from, or shown in the `Local` category if they are stored on your machine.
+<ScreenshotFrame
+  src="/img/screenshots/templates-registry-page.jpeg"
+  alt="Templates page in Arcane"
+  caption="The templates gallery in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
 
-4. Click `Use Now` to start using the template.
+Each card also offers **View Details** to inspect the Compose content before you use it, and remote templates offer **Download** to save a local copy for offline use.
 
 ## Template Types
 
@@ -30,22 +37,14 @@ Templates help you quickly deploy common apps and services with Docker Compose. 
 - Downloaded from online registries
 - Can be used right away or downloaded for offline use
 
-## Using the Template Dialog
-
-When you click **Choose Template**, you'll see:
-
-- **Local Templates:** Ready to use immediately
-- **Remote Templates:** two options for each:
-  - **Use Now:** load the template into your project right away
-  - **Download:** save the template locally for later use
-- Templates with environment files show an **ENV** badge and include ready-made variables.
+Each card is labelled **Local** or **Remote** along with the registry it came from, so you can tell at a glance where a template originates.
 
 ## Adding Local Templates
 
 1. Open `data/templates` in your Arcane directory
 2. Add your Docker Compose files (`.yaml` or `.yml`)
 3. Optionally add matching `.env` files for environment variables
-4. Templates appear automatically in the template dialog
+4. Templates appear automatically in the gallery
 
 ### Example Structure
 
@@ -61,4 +60,4 @@ Don't want to create your own? Use our community registry with ready-made templa
 
 **Registry URL:** `https://registry.getarcane.app/registry.json`
 
-Add this in **Settings → Templates → Add Registry** to get started instantly with popular applications.
+Add this in **Customization → Templates → Add Registry** to get started instantly with popular applications.

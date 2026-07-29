@@ -1,7 +1,6 @@
 ---
 title: 'Configuration'
 description: 'Managing CLI settings and authentication.'
-order: 2
 ---
 
 <script lang="ts">
@@ -24,8 +23,9 @@ Here is what a typical configuration file looks like:
 
 ```yaml
 api_key: ''
+cli_update_channel: stable
 default_environment: '0'
-default_limit: 20
+federated_audience: ''
 jwt_token: ''
 log_level: info
 pagination:
@@ -40,6 +40,8 @@ pagination:
       limit: 20
     events:
       limit: 20
+    gitops-syncs:
+      limit: 20
     images:
       limit: 20
     networks:
@@ -48,6 +50,10 @@ pagination:
       limit: 20
     registries:
       limit: 20
+    repos:
+      limit: 20
+    roles:
+      limit: 20
     templates:
       limit: 20
     users:
@@ -55,18 +61,6 @@ pagination:
     volumes:
       limit: 20
 refresh_token: ''
-resource_limits:
-  apikeys: 20
-  containers: 20
-  environments: 20
-  events: 20
-  images: 20
-  networks: 20
-  projects: 20
-  registries: 20
-  templates: 20
-  users: 20
-  volumes: 20
 server_url: http://localhost:3552
 ```
 
@@ -109,6 +103,9 @@ These flags are available across the CLI:
 - `--yes` to auto-confirm destructive prompts
 - `--no-color` to disable ANSI color output
 - `--request-timeout <duration>` to override HTTP timeout per command
+- `--config`, `-c <path>` to use a config file other than the default
+- `--log-level <level>` to set verbosity (`debug`, `info`, `warn`, `error`, `fatal`, `panic`)
+- `--log-json` to emit structured JSON logs
 
 ## Utilities
 
@@ -149,4 +146,6 @@ You can configure limits with:
 
 <Snippet text="arcane-cli config set pagination.resources.containers.limit 50 pagination.resources.images.limit 100" class="mt-2" />
 
-You can also set resource limits directly in the generated config file under `resource_limits` and `pagination.resources` if you prefer editing YAML by hand.
+You can also set resource limits directly in the config file under `pagination.resources` if you prefer editing YAML by hand.
+
+The recognized resource names are `containers`, `images`, `volumes`, `networks`, `projects`, `environments`, `registries`, `templates`, `repos`, `gitops-syncs`, `users`, `roles`, `events`, and `apikeys`.

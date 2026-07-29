@@ -1,7 +1,6 @@
 ---
 title: Contributing to Arcane
 description: Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
-blueprint: default
 ---
 
 <script lang="ts">
@@ -284,8 +283,8 @@ docker system prune -f
 
 ### Need Help?
 
-- **Bug Report**: <Link href="https://github.com/ofkm/arcane/issues/new?template=bug.yml">Create an issue</Link>
-- **Feature Request**: <Link href="https://github.com/ofkm/arcane/issues/new?template=feature.yml">Suggest a feature</Link>
+- **Bug Report**: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=bug.yml">Create an issue</Link>
+- **Feature Request**: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=feature.yml">Suggest a feature</Link>
 - **Development Question**: Open a discussion in the repository
 
 Thank you for contributing to Arcane! Your help makes this project better for everyone. 🚀

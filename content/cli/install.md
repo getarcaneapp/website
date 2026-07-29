@@ -1,7 +1,6 @@
 ---
 title: 'Installation'
 description: 'Install and overview of arcane-cli'
-order: 1
 ---
 
 <script lang="ts">
@@ -30,7 +29,7 @@ You can also install the CLI with our helper script. Pick the command that match
 
 **Stable pinned**
 
-<Snippet text="curl -fsSL https://getarcane.app/install-cli.sh | sh -s -- 1.16.4" class="mt-2" />
+<Snippet text="curl -fsSL https://getarcane.app/install-cli.sh | sh -s -- 2.5.0" class="mt-2" />
 
 **Beta latest**
 
@@ -38,6 +37,13 @@ You can also install the CLI with our helper script. Pick the command that match
 
 > [!NOTE]
 > `--beta` always installs the latest `cli-next` binary from R2. It does not use a versioned beta release path.
+
+The script installs to `$HOME/.arcane/bin` unless you override `ARCANE_INSTALL_DIR`. If that directory is not already on your `PATH`, the script prints the exact export lines to add to your shell profile:
+
+```bash
+export ARCANE_INSTALL_DIR="$HOME/.arcane/bin"
+export PATH="$ARCANE_INSTALL_DIR:$PATH"
+```
 
 ### APT (Debian / Ubuntu)
 
@@ -85,6 +91,6 @@ Install:
 
 ### Go Install
 
-<Snippet text="go install github.com/getarcaneapp/arcane/cli@latest" class="mt-2" />
+<Snippet text="go install github.com/getarcaneapp/arcane/cli/v2@latest" class="mt-2" />
 
 Next see how to configure arcane-cli at [Configuration](/docs/cli/config).

@@ -1,7 +1,6 @@
 ---
 title: 'OIDC Single Sign-On'
 description: 'Configure OIDC authentication for secure single sign-on access to Arcane.'
-order: 3
 ---
 
 <script lang="ts">
@@ -16,7 +15,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 The easiest way to set up OIDC is through Arcane's web interface:
 
-1. Go to **Settings → Security → OIDC Authentication** in Arcane
+1. Go to **Settings → Authentication** in Arcane
 2. Enter your OIDC provider details
 3. Save and test the connection
 4. The UI will guide you through any missing or invalid fields
@@ -33,11 +32,11 @@ You can also configure OIDC using environment variables:
 
 ## Mapping OIDC Groups to Roles
 
-Role assignment is driven from your IdP. Arcane reads the user's group claim on every login and grants role assignments based on the mappings you configure under **Settings → OIDC Mappings**.
+Role assignment is driven from your IdP. Arcane reads the user's group claim on every login and grants role assignments based on the mappings you configure under **Settings → Authentication**.
 
 1. Make sure the group claim is included in `OIDC_SCOPES` — for group membership, add `groups`: `openid email profile groups`.
-2. Set the **OIDC Groups Claim** under **Settings → Settings** if your IdP uses something other than `groups` (e.g. `realm_access.roles` for Keycloak, `memberOf` for Azure AD).
-3. Add mappings under **Settings → OIDC Mappings**, each binding a claim value to a role and an environment scope (Global or a specific environment).
+2. Set the **OIDC Groups Claim** on the same page if your IdP uses something other than `groups` (e.g. `realm_access.roles` for Keycloak, `memberOf` for Azure AD).
+3. Add mappings in the **OIDC Role Mappings** table, each binding a claim value to a role and an environment scope (Global or a specific environment). The groups claim and the mappings that read it are configured together on this page.
 
 See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the full role catalog and mapping details.
 

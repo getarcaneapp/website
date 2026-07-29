@@ -24,7 +24,6 @@ export type NavItem = {
 	disabled?: boolean;
 	external?: boolean;
 	label?: string;
-	order?: number;
 };
 
 export type SidebarNavItem = NavItem & {
@@ -34,7 +33,6 @@ export type SidebarNavItem = NavItem & {
 type Doc = {
 	title: string;
 	path: string;
-	order?: number;
 	published?: boolean;
 };
 
@@ -100,12 +98,14 @@ const FEATURES = group('Features', [
 	leaf('features/networks'),
 	leaf('features/vulnerability-scans'),
 	leaf('features/environments'),
+	leaf('features/activity-and-events'),
 	SWARM_PARENT
 ]);
 
-const TEMPLATES = group('Templates', [
-	docByPath.has('templates') ? leaf('templates', 'Using Templates') : null,
-	docByPath.has('templates/registries') ? leaf('templates/registries') : null
+const CUSTOMIZATION = group('Customization', [
+	leaf('templates', 'Using Templates'),
+	leaf('templates/registries'),
+	leaf('features/variables')
 ]);
 
 const CONFIGURATION = group('Configuration', [
@@ -139,12 +139,13 @@ const GUIDES = group('Guides', [
 	leaf('guides/gitops-lifecycle-hooks'),
 	leaf('guides/custom-metadata'),
 	leaf('guides/buildables'),
+	leaf('guides/buildables/autologin'),
 	leaf('guides/gpu-setup')
 ]);
 
 const UPGRADE = group('Upgrade & Migration', [leaf('setup/migrate-v2'), leaf('setup/next-images')]);
 
-const CLI = group('CLI', [leaf('cli/install'), leaf('cli/config')]);
+const CLI = group('CLI', [leaf('cli/install'), leaf('cli/config'), leaf('cli/commands')]);
 
 const DEVELOPMENT = group('Development', [leaf('dev/contribute'), leaf('dev/translate')]);
 
@@ -164,7 +165,7 @@ const sectionNavItems: SidebarNavItem[] = [
 	GET_STARTED,
 	UPGRADE,
 	FEATURES,
-	TEMPLATES,
+	CUSTOMIZATION,
 	CONFIGURATION,
 	AUTH_ACCESS,
 	NETWORKING,

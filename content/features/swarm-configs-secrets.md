@@ -1,7 +1,6 @@
 ---
 title: 'Swarm Configs and Secrets'
 description: 'Manage Docker Swarm configs and secrets in Arcane.'
-order: 4
 ---
 
 Swarm **configs** and **secrets** let you ship runtime data to services and stacks without baking it into your images. Both are versioned: treat them as inputs to a workload, not as mutable live files.
@@ -37,5 +36,5 @@ Delete secrets from the same page when they're no longer used.
 
 ## Operational notes
 
-- Configs and secrets are versioned. To change one, create a replacement and update the workload that consumes it — don't mutate the existing object.
+- Configs and secrets are immutable once created — Docker itself does not allow editing them, and Arcane offers no update action. To change one, create a replacement and update the workload that consumes it.
 - Join tokens and the manager unlock key are **not** Swarm secrets. They're cluster-level credentials, managed on the Cluster page.

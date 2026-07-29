@@ -103,3 +103,6 @@ ECR is a first-class registry type. When adding an ECR registry, provide:
 - AWS region
 
 Arcane exchanges those for a temporary ECR authorization token, caches it, and refreshes it as needed — no manual long-lived Docker token required.
+
+> [!NOTE]
+> Changing a registry's URL requires you to re-enter its stored credentials in the same save — for ECR, both the access key ID and the secret access key. Arcane rejects the change otherwise rather than silently pointing your existing credentials at a new host. The same rule applies elsewhere secrets are tied to a target: an environment's API URL and its access token, the OIDC issuer URL and client secret, the Trivy server URL and its token, and a notification provider's host and its credentials.

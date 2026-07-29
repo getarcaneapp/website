@@ -1,7 +1,6 @@
 ---
 title: 'Migrate to 2.0'
 description: 'Prepare an Arcane 1.x installation for Arcane 2.0.'
-order: 2
 ---
 
 <script lang="ts">

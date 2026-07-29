@@ -19,7 +19,7 @@ GitOps lifecycle hooks let Arcane run a script from a synced repository before d
 
 ## Enable lifecycle hooks
 
-1. Open **Settings -> Security**.
+1. Open **Environments → your environment → Security → Lifecycle**.
 2. Turn on **Enable Lifecycle Hooks** (`lifecycleEnabled`).
 3. Set a default **Runner Image** (`lifecycleDefaultRunnerImage`), such as `alpine:latest`, or use an image that includes your required tools.
 4. Set **Max Timeout** (`lifecycleMaxTimeoutSec`) to cap per-sync hook runtimes.

@@ -7,9 +7,9 @@ const docSchema = s
 		description: s.string(),
 		path: s.path(),
 		published: s.boolean().default(true),
-		order: s.number().optional(),
 		toc: s.toc()
 	})
+	.strict()
 	.transform((data) => {
 		const segments = data.path.split('/');
 
