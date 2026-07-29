@@ -29,7 +29,9 @@ const ALL_DOCS = [
 export const entries: EntryGenerator = () => {
 	console.info('Prerendering /docs');
 
-	const list = ALL_DOCS.map((doc) => ({ slug: doc.path }));
+	// Unpublished docs are excluded here and 404'd in getDoc, so `published: false`
+	// actually withholds a page instead of only hiding its sidebar entry.
+	const list = ALL_DOCS.filter((doc) => doc.published !== false).map((doc) => ({ slug: doc.path }));
 
 	// Ensure /docs root works by aliasing to the index page
 	if (!list.find((e) => e.slug === 'index')) {

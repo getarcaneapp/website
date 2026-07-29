@@ -1,7 +1,6 @@
 ---
 title: 'TLS and HTTP/2'
 description: 'Set up Arcane with secure HTTPS/TLS and HTTP/2, using either a reverse proxy or direct TLS termination.'
-order: 6
 ---
 
 <script lang="ts">

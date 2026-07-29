@@ -68,4 +68,4 @@ Default: `arcane-backups`.
 
 ## Helper containers
 
-Arcane creates short-lived helper containers for backup and restore work. They carry the label `com.getarcaneapp.internal.container=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.
+Arcane creates short-lived helper containers for backup and restore work. They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.

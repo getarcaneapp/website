@@ -1,7 +1,6 @@
 ---
 title: 'Notifications'
 description: 'Configure notifications for container image updates and container events.'
-order: 1
 ---
 
 Arcane uses [Shoutrrr](https://github.com/nicholas-fedor/shoutrrr) for notifications. If Shoutrrr supports a provider, Arcane can usually support it too.

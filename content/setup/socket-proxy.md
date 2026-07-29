@@ -1,7 +1,6 @@
 ---
 title: 'Socket Proxy Setup'
 description: 'Secure your Docker socket by using a proxy layer with Arcane.'
-order: 4
 ---
 
 <script lang="ts">
@@ -76,7 +75,7 @@ services:
       - '3552:3552'
     volumes:
       - arcane-data:/app/data
-      - /path/to/stacks:/app/data/projects:z
+      - /path/to/projects:/app/data/projects:z
     environment:
       - PUID=1000
       - PGID=1000

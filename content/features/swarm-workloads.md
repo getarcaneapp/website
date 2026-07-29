@@ -1,7 +1,6 @@
 ---
 title: 'Swarm Workloads'
 description: 'Deploy and manage Docker Swarm stacks, services, and tasks.'
-order: 2
 ---
 
 <script lang="ts">
@@ -49,6 +48,16 @@ Useful shortcuts in the stack editor:
 - **Use Template** — load a saved Arcane template. See <Link href="/docs/templates">Templates</Link>.
 - **Convert from Docker Run** — paste a `docker run` and let Arcane generate Compose and env content as a starting point. For standalone prep, use the <Link href="/generator">Compose Generator</Link>.
 - **Save as Template** — save the editor content as a reusable template.
+- **Override file** — add a `compose.override.yaml` alongside the main Compose file. Arcane merges the two at deploy time, the same way the Docker CLI does.
+
+Deploy options:
+
+- **Prune removed services** — remove services that are no longer in the Compose file. Off by default, so a deploy never deletes a service you didn't explicitly drop.
+- **Send registry authentication** — forward your stored registry credentials to the Swarm managers so they can pull private images.
+- **Resolve images** — how aggressively to pin image digests: **Always** (default), **When changed**, or **Never**.
+
+> [!NOTE]
+> Arcane namespaces the networks, volumes, configs, and secrets a stack declares, so the deployed resource names are prefixed with the stack name rather than matching the raw names in your Compose file. Configs and secrets are additionally content-addressed, which lets a changed config deploy as a new object instead of failing against Docker's immutability rule.
 
 ### Update or remove a stack
 

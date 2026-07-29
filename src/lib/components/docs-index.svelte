@@ -26,9 +26,9 @@
 			icon: Boxes,
 			description: 'Containers, images, volumes, networks, Swarm, and more.'
 		},
-		Templates: {
+		Customization: {
 			icon: LayoutTemplate,
-			description: 'Reusable project templates and template registries.'
+			description: 'Project templates, template registries, and reusable variables.'
 		},
 		Configuration: {
 			icon: Settings2,

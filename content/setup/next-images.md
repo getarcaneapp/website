@@ -1,7 +1,6 @@
 ---
 title: 'Next Builds'
 description: 'Information about the latest beta and next builds of Arcane.'
-order: 100
 ---
 
 <script lang="ts">

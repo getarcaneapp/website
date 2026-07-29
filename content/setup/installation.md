@@ -1,7 +1,6 @@
 ---
 title: 'Installation'
 description: 'Get Arcane running fast with Docker Compose.'
-order: 1
 ---
 
 <script lang="ts">
@@ -37,6 +36,9 @@ services:
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
       - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
+    # Use the host cgroup namespace so Arcane can detect its own container ID
+    # more reliably — this matters for self-upgrades.
+    cgroup: host
     restart: unless-stopped
 
 volumes:
@@ -136,7 +138,7 @@ services:
       - '3552:3552'
     volumes:
       - arcane-data:/app/data
-      - /path/to/stacks:/app/data/projects:z
+      - /path/to/projects:/app/data/projects:z
     environment:
       - PUID=1000
       - PGID=1000
@@ -164,7 +166,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
-      - /path/to/stacks:/app/data/projects:z
+      - /path/to/projects:/app/data/projects:z
 ```
 
 > [!TIP]
@@ -232,11 +234,14 @@ services:
     image: ghcr.io/getarcaneapp/manager:latest
     # ...
     healthcheck:
-      test: ['CMD', '/app/arcane', 'health']
-      interval: 30s
-      timeout: 5s
-      retries: 3
+      test: ['CMD', './arcane', 'health', '--timeout', '2s']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
 ```
+
+The `start_period` gives Arcane time to run migrations on first boot before failed checks count against `retries`.
 
 ## Convenience Script
 

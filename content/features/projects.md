@@ -68,6 +68,17 @@ Each project has these actions:
 - **Redeploy** — pull the latest images and restart.
 - **Destroy** — remove the project and its resources. You choose whether to keep or delete volumes and project files.
 
+### Watch the output live
+
+**Deploy**, **Redeploy**, and **Pull** are split buttons. Open the dropdown next to any of them and choose **Watch output** to run that action in an attached terminal window instead of in the background.
+
+The window streams the same output the `docker` command line prints. For **Deploy** and **Redeploy**, once the services are up Arcane keeps following the project's live container logs, the way `docker compose up` does when you don't detach.
+
+> [!WARNING]
+> Closing the watch window for a Deploy or Redeploy **stops the project**, exactly like pressing `Ctrl-C` on an attached `docker compose up`. Arcane asks you to confirm first — the dialog is titled **Stop project?** and warns that the project and all of its containers will stop. To leave the project running, don't close the window; the operation continues on its own and you can follow it from the Activity Center.
+
+Watch output is chosen per run — there is no setting to turn it on permanently. Without it, actions run in the background and you can track them in <Link href="/docs/features/activity-and-events">Activity & Events</Link>.
+
 ## Rename a project with managed volumes
 
 When you rename a stopped project, Arcane preserves Compose-managed named volumes whose names were generated from the old project name. It creates the new Compose-generated volume name, copies the old volume data into it, updates the project, and removes the old source volume after the rename is committed.
@@ -138,10 +149,14 @@ Arcane saves project files and `.env` files in its data directory — by default
 
 Arcane can manage projects in nested subdirectories under the projects root.
 
-For symlinked layouts (e.g. GNU Stow), Arcane can follow child-directory symlinks. Enable **Follow project symlinks** in the environment's general settings to opt in.
+For symlinked layouts (e.g. GNU Stow), Arcane can follow child-directory symlinks. Enable **Follow Project Symlinks** on the environment's **Storage & Limits** tab to opt in.
 
 > [!NOTE]
 > On Linux, deeply nested project trees consume extra inotify watches because Arcane monitors them recursively. For very large trees, raise `fs.inotify.max_user_watches`.
+
+A subdirectory Arcane can't read — a bind-mounted data folder owned by another user, for example — is listed but shown with no children, rather than blocking the rest of the file tree.
+
+Compose files that reference paths **outside** the projects mount with a relative path (such as `../../data:/app/data`) are resolved against the host projects directory, so they behave the same as running `docker compose up` yourself. Include files must stay inside the project directory; a path that resolves outside it, including through a symlink, is rejected.
 
 ## Sync from Git
 
@@ -149,7 +164,7 @@ Arcane can pull projects directly from a Git repository.
 
 ### Connect a repository
 
-1. Go to **Customize → Git Repositories**.
+1. Go to **Customization → Git Repositories**.
 2. Click **Add Repository**.
 3. Enter the repository URL and a name.
 4. Configure authentication:

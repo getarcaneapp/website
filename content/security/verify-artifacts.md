@@ -1,7 +1,6 @@
 ---
 title: 'Verify Artifacts'
 description: 'Verify Arcane release artifacts and container images with Cosign.'
-order: 1
 ---
 
 <script lang="ts">

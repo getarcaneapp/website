@@ -1,7 +1,6 @@
 ---
 title: 'Federated Credentials'
 description: 'Let CI/CD pipelines and automation sign in to Arcane with short-lived OIDC tokens instead of long-lived API keys.'
-order: 4
 ---
 
 <script lang="ts">
@@ -30,7 +29,7 @@ Because the match is made on the token's cryptographically signed claims, one wo
 
 There is no global switch to flip — federated credentials become active as soon as you create an enabled trust rule, and stop working the moment you disable or delete it.
 
-1. Go to **Settings → Federated Credentials** and select **Create**.
+1. Go to **Settings → Authentication → Federated Credentials** and select **Create**.
 2. Fill in the fields below.
 3. Save, and toggle **Enabled** on.
 

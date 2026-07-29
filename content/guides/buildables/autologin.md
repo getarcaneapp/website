@@ -1,7 +1,6 @@
 ---
 title: 'Autologin'
 description: 'Automatically sign in using build-time credentials'
-published: false
 ---
 
 <script lang="ts">

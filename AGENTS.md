@@ -19,9 +19,15 @@
 
 ## Content Workflow
 
-- Every Markdown file requires frontmatter: `title` and `description`.
+- Every Markdown file requires frontmatter: `title` and `description`. Do not write an `# H1` — the route renders `title` and `description` above your content.
 - Place docs in the matching `content/` collection (see `velite.config.js`).
-- If adding a new section, update `velite.config.js` and `SECTION_BUILDERS` in `src/lib/config/docs.ts`.
+- To make a new page appear in the sidebar, add a `leaf('<dir>/<name>')` call to the right `group(...)` array in `src/lib/config/docs.ts`, **at the position you want it displayed**. Sidebar order is literal array order — the `published` flag is the only frontmatter the nav reads. Without a `leaf()` the page still builds and is reachable by URL, but is invisible in the sidebar, the `/docs` index, mobile nav, and the prev/next pager.
+- If adding a new group, also add it to `sectionNavItems` in the same file and add a matching key to `SECTION_META` in `src/lib/components/docs-index.svelte`. The `SECTION_META` key must match the group title exactly or the card silently disappears from `/docs`.
+- If adding a new top-level directory, define the collection in `velite.config.js` and register it in `ALL_DOCS` in `src/lib/config/docs.ts`.
+- Pages can live under any group regardless of their on-disk folder.
+- Cross-link with `<Link href="/docs/...">` (root-relative, no `.md`). Callouts are GitHub-style blockquote markers: `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`.
+- Do not hand-edit `static/config.json`, `content/changelog/*`, or `static/sbom/` — CI regenerates them from the latest Arcane release.
+- Do not rename or move existing content files. The static adapter has no redirect layer, so a moved page 404s every inbound link.
 
 ## Svelte Guidelines
 
@@ -37,6 +43,10 @@
 - `pnpm lint`
 - `pnpm format`
 - `pnpm fallow`
+
+`pnpm build` is the real gate for content changes: every doc is prerendered and `getDoc` throws a 404 on an unknown slug, so a broken internal `/docs/...` link or a missing `#anchor` fails the build. Run it after any content edit.
+
+`pnpm fallow` reports components imported only from Markdown as dead code — add any new one to `dynamicallyLoaded` in `.fallowrc.jsonc` first.
 
 ## Build/Runtime Notes
 

@@ -1,7 +1,6 @@
 ---
 title: 'Role-Based Access'
 description: 'Govern what users and API keys can do with fine-grained roles and permissions.'
-order: 3
 ---
 
 <script lang="ts">
@@ -58,14 +57,14 @@ Open a user under **Settings → Users**. The **Role assignments** section lists
 
 ### OIDC users
 
-If a user matches an OIDC mapping, their assignments are managed there and the user editor shows them read-only with a link to **Settings → OIDC Mappings**. Manual assignments on OIDC users (for unmapped groups) still work and survive logins.
+If a user matches an OIDC mapping, their assignments are managed there and the user editor shows them read-only with a link to **Settings → Authentication**. Manual assignments on OIDC users (for unmapped groups) still work and survive logins.
 
 ## OIDC group mappings
 
 Drive role assignment from your IdP. On every login Arcane reads the user's group claim and re-syncs their OIDC-sourced assignments.
 
-1. Set the **OIDC Groups Claim** under **Settings → Settings** if it's not `groups` (Keycloak: `realm_access.roles`, Azure AD: `memberOf`, etc.).
-2. **Settings → OIDC Mappings → Add mapping**:
+1. Set the **OIDC Groups Claim** under **Settings → Authentication** if it's not `groups` (Keycloak: `realm_access.roles`, Azure AD: `memberOf`, etc.).
+2. On the same page, in the **OIDC Role Mappings** table, **Add mapping**:
    - **Claim value** — exact string from the user's groups claim (e.g. `docker-admins`)
    - **Role** — what to grant
    - **Environment scope** — Global or a specific environment
@@ -96,15 +95,18 @@ You cannot grant a key more permissions than you have yourself.
 | ------------------ | ------------------------------------------------------------ |
 | `users`            | `list`, `read`, `create`, `update`, `delete`                 |
 | `roles`            | `list`, `read`, `create`, `update`, `delete`, `assign`       |
-| `oidc-mappings`    | `manage`                                                     |
 | `apikeys`          | `list`, `read`, `create`, `update`, `delete`                 |
+| `federated`        | `list`, `read`, `create`, `update`, `delete`                 |
 | `settings`         | `read`, `write`                                              |
 | `environments`     | `list`, `read`, `create`, `update`, `delete`, `pair`, `sync` |
 | `registries`       | `list`, `read`, `create`, `update`, `delete`, `test`         |
 | `templates`        | `list`, `read`, `create`, `update`, `delete`                 |
+| `variables`        | `read`, `create`, `update`, `delete`, `sync`                 |
 | `git-repositories` | `list`, `read`, `create`, `update`, `delete`, `test`, `sync` |
-| `events`           | `read`                                                       |
+| `events`           | `read`, `delete`                                             |
+| `notifications`    | `manage`                                                     |
 | `customize`        | `manage`                                                     |
+| `diagnostics`      | `read`                                                       |
 
 ### Env-scoped (per environment)
 
@@ -119,12 +121,14 @@ You cannot grant a key more permissions than you have yourself.
 | `gitops`           | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle`                                                         |
 | `webhooks`         | `list`, `create`, `update`, `delete`                                                                                      |
 | `jobs`             | `manage`                                                                                                                  |
-| `notifications`    | `manage`                                                                                                                  |
 | `dashboard`        | `read`                                                                                                                    |
 | `system`           | `read`, `prune`, `upgrade`                                                                                                |
 | `image-updates`    | `read`, `check`                                                                                                           |
 | `vulnerabilities`  | `read`, `scan`, `manage`                                                                                                  |
 | `build-workspaces` | `manage`                                                                                                                  |
+
+> [!NOTE]
+> `notifications:manage` is a **global** permission. Granting it scoped to a single environment does not open **Settings → Notifications** — the assignment has to be Global.
 
 `gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
 
@@ -143,7 +147,7 @@ After upgrading:
 
 1. **Check your admins** in **Settings → Users**.
 2. **Promote non-admins** off Viewer to Editor / No-Shell Editor / Deployer / Monitor on the environments they use.
-3. **Set up OIDC mappings** if you use SSO. Configure the **OIDC Groups Claim** and add mappings under **Settings → OIDC Mappings**.
+3. **Set up OIDC mappings** if you use SSO. Configure the **OIDC Groups Claim** and add mappings under **Settings → Authentication**.
 4. **Audit API keys** — the upgrade snapshot is the most permissive safe default. Tighten CI/CD keys to least privilege.
 
 See <Link href="/docs/setup/migrate-v2">Migrate to 2.0</Link> for the full upgrade walkthrough.

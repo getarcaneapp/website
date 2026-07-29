@@ -116,7 +116,7 @@ docker-templates/
 
 1. Validate JSON syntax and schema (Draft 07) against `https://github.com/getarcaneapp/arcane-templates/schema.json`
 2. Test URLs: ensure all file URLs are accessible (HTTPS)
-3. Add to Arcane: Settings → Templates → Add Registry
+3. Add to Arcane: Customization → Templates → Add Registry
 4. Verify: templates appear and download correctly
 5. Ensure no extra properties exist beyond the schema
 

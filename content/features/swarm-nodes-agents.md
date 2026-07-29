@@ -1,7 +1,6 @@
 ---
 title: 'Swarm Nodes and Agents'
 description: 'Manage Swarm nodes and Arcane node-agent coverage.'
-order: 3
 ---
 
 <script lang="ts">
