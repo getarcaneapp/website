@@ -36,7 +36,7 @@ volumes:
   arcane-backups:
 ```
 
-A named volume remains inside Docker storage and may be lost if the Docker host or volume is removed. A bind mount makes the repository location explicit, but it still needs separate protection from host or disk failure.
+A named volume remains inside Docker storage and may be lost if the Docker host or volume is removed. A bind mount makes the location of the local Rustic backup repository under `/backups` explicit, but it still needs separate protection from host or disk failure.
 
 ### Rename the fallback backup volume
 
@@ -49,7 +49,7 @@ ARCANE_BACKUP_VOLUME_NAME=<your-name>
 The default is `arcane-backups`. This setting only changes the fallback local Docker volume name. It does not change a host path mounted at `/backups` or the location of S3 backups.
 
 > [!IMPORTANT]
-> A local backup on the same host does not protect against disk or host failure. Use S3 or copy the local repository to another system for off-site recovery.
+> A local backup on the same host does not protect against disk or host failure. Use S3 or copy the local Rustic backup repository under `/backups` to another system for off-site recovery.
 
 ## S3 destinations
 
