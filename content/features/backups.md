@@ -171,7 +171,7 @@ System backups support Local, S3, and Local + S3 destinations. You can create mu
 
 For an on-demand backup, use a saved schedule's configuration or choose a custom destination. Existing local backups can also be uploaded to S3 later.
 
-The backup table shows status, trigger, destination, size, and last-run information. Use **Find S3 backups** with a destination and recovery key to discover restore points that are not present in the current database.
+The backup table shows each run's status, trigger, destination, size, and creation time. Schedule cards show the latest run's status and time. Use **Find S3 backups** with a destination and recovery key to discover restore points that are not present in the current database.
 
 ### Restore Arcane
 
