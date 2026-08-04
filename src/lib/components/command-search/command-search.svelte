@@ -4,14 +4,12 @@
 	import { tick } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import * as Command from '#lib/components/ui/command/index.js';
 	import * as Dialog from '#lib/components/ui/dialog/index.js';
 	import { SidebarNavItems } from '#lib/config/docs.js';
 	import { useIsMac } from '#lib/hooks/is-mac.svelte.js';
-	import { cn } from '#lib/utils.js';
+	import { cn, resolveInternalPath } from '#lib/utils.js';
 	import CommandMenuItem from './command-search-item.svelte';
 
 	type KbdProps = HTMLAttributes<HTMLElement> & { content: string | Component };
@@ -182,7 +180,7 @@
 							<CommandMenuItem
 								value={`${r.title} ${r.section} ${r.parentTitle ?? ''}`}
 								keywords={[r.description, ...r.headings]}
-								onSelect={() => runCommand(() => goto(resolve(r.href as Pathname)))}
+								onSelect={() => runCommand(() => goto(resolveInternalPath(r.href)))}
 							>
 								<ArrowRightIcon />
 								<div class="flex flex-col">
@@ -217,7 +215,7 @@
 												openExternal(item.href);
 												return;
 											}
-											goto(resolve(item.href as Pathname));
+											goto(resolveInternalPath(item.href));
 										})}
 								>
 									<ArrowRightIcon />

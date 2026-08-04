@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
-	import { resolve } from '$app/paths';
 	import { trackEvent } from '#lib/analytics.js';
 	import CommunityPreview from '#lib/components/community/community-preview.svelte';
 	import ContentWrapper from '#lib/components/content-wrapper.svelte';
@@ -11,6 +10,7 @@
 	import * as Code from '#lib/components/ui/code/index.js';
 	import { FeatureCard } from '#lib/components/ui/feature-card/index.js';
 	import { features } from '#lib/config/features.js';
+	import { resolveInternalPath } from '#lib/utils.js';
 
 	interface StatsHistoryEntry {
 		date: string;
@@ -284,7 +284,7 @@ volumes:
 						<p class="mt-1 text-sm leading-relaxed text-muted-foreground">
 							Live, anonymized check-ins from running Arcane servers.
 							<a
-								href={resolve('/docs/configuration/analytics')}
+								href={resolveInternalPath('/docs/configuration/analytics')}
 								class="font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
 							>
 								Learn more
