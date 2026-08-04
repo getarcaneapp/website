@@ -17,6 +17,23 @@ Arcane keeps the variables in its database and materializes the effective set fo
 
 Changes sync automatically. On a remote environment, Arcane imports any variables that already existed there once, before it takes over the file, so you don't lose values that were set up outside Arcane.
 
+## What Compose can and cannot see
+
+Compose resolves a `${VAR}` in your project from three places, in increasing order of precedence:
+
+1. A short allowlist of Arcane's own process environment — `TZ`, `LANG`, `LANGUAGE`, and `LC_ALL`, and nothing else.
+2. `.env.global`, which is what the Variables page writes.
+3. The project's own `.env`.
+
+> [!WARNING]
+> Arcane no longer passes the rest of its own environment into Compose interpolation. A `${VAR}` that used to resolve from a variable set on the Arcane container — `PUID`, `HOME`, or anything you added to Arcane's own compose file — now resolves to an empty string unless you define it as a Variable or in the project's `.env`. Pass-through entries written as `environment: - VAR` no longer inherit Arcane's value either.
+
+That leakage was the problem it looked like: Arcane's `PORT` collided with project port mappings, `HOME` and `PUID` carried container-internal values that were wrong for the project, and `JWT_SECRET` and `ENCRYPTION_KEY` were readable from any Compose file on the host.
+
+If a project stopped resolving a value after upgrading, give that value a home of its own — add it as a Variable if several projects need it, or put it in that project's `.env` if only one does.
+
+Because `.env.global` now sits above the allowlist, a `TZ` you set as a Variable overrides the Arcane container's own `TZ` for projects on that environment.
+
 ## Add a variable
 
 1. Go to **Customization → Variables**.
