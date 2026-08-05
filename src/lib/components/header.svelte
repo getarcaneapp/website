@@ -58,6 +58,8 @@
 			</div>
 			{#if version}
 				<Badge
+					href="/changelog"
+					aria-label={`View changelog for version ${version}`}
 					variant="outline"
 					class="hidden h-7 items-center rounded-full border-border px-2.5 font-mono text-xs font-medium text-muted-foreground sm:flex"
 				>

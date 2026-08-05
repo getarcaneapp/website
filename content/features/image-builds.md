@@ -75,12 +75,28 @@ Open **Settings → Builds** (`/settings/builds`) and configure:
 
 1. Open the **Build Workspace** at `/images/builds`.
 2. In the left panel, choose a context folder.
-3. In **Build Configuration**, set **Image Tags** (required).
+3. In **Build Configuration**, name the image — see [Naming the image](#naming-the-image) below.
 4. Optional: expand **Advanced** for Dockerfile path, target stage, platforms, args, labels, cache, and runtime tuning.
 5. Pick a provider.
 6. Choose **Push** and/or **Load** (Depot applies its own limits).
 7. Click **Build** and watch the live output.
 8. Find finished builds in **Build History**.
+
+### Naming the image
+
+How you name the image depends on whether the build pushes.
+
+A build that only stays local keeps the free-form **Image Tags** field: one or more full references, separated by commas or newlines.
+
+A build that pushes — **Push** toggled on, or the Depot provider, which always pushes — replaces that field with three, so the reference can only ever point at a registry you have configured:
+
+- **Registry** — one of your enabled container registries.
+- **Repository name** — one of the repository names configured on that registry.
+- **Tag** — free text, e.g. `1.0.0`.
+
+Arcane shows the resulting `host/repository:tag` as a read-only **Image reference** above the build button. Changing the registry clears the repository selection, and a repository name that is not in the selected registry's list is rejected.
+
+If the dropdown says _"No repository names configured for this registry"_, add them to the registry first — see <Link href="/docs/features/images">private registries</Link>. If it says _"No enabled registries"_, you have none configured or enabled; _"No permission to list registries"_ means your role is missing the registry read permission.
 
 ## Advanced options by provider
 

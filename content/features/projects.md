@@ -68,6 +68,25 @@ Each project has these actions:
 - **Redeploy** — pull the latest images and restart.
 - **Destroy** — remove the project and its resources. You choose whether to keep or delete volumes and project files.
 
+### Deploy options
+
+The dropdown on the **Deploy** split button carries options that apply to that run:
+
+- **Pull policy** — pull if not present, always pull latest, or never pull. It starts from the environment's **Default Deploy Pull Policy** (**Environments → the environment → Docker**) until you change it here.
+- **Force recreate containers** — recreate every container even if nothing about it changed.
+- **Recreate changed volumes (data loss)** — allow Compose to recreate a volume whose configuration no longer matches the Compose file.
+
+Pull policy and force recreate are remembered. **Recreate changed volumes** is not: it applies to the next deploy only and clears itself afterwards, because it destroys data. A bulk **Up** takes one snapshot of the option for the whole batch.
+
+> [!WARNING]
+> When a volume's configuration has diverged from what the Compose file declares, Compose has to destroy and rebuild it to apply the change — the data in it is lost. Compose asks before doing that. Arcane used to answer yes automatically for every operation; it now **declines** unless **Recreate changed volumes** is checked, and writes the question to the deploy log followed by `Declined; enable volume recreation on deploy to apply this change.` If a volume change is not taking effect, that log line is why.
+
+### What gets pulled
+
+A deploy's pull plan covers more than the `image:` of each service. Arcane also pulls images referenced by service lifecycle hooks such as `pre_start`, and images used as the source of a `type: image` volume — including for services that also have a `build:` section, where the hook or volume image can only ever be pulled.
+
+Hook and volume images follow the service's pull policy, except `type: image` volume sources, which always pull only if missing.
+
 ### Watch the output live
 
 **Deploy**, **Redeploy**, and **Pull** are split buttons. Open the dropdown next to any of them and choose **Watch output** to run that action in an attached terminal window instead of in the background.
@@ -235,3 +254,5 @@ To create several syncs at once, paste or upload a JSON array:
 ### Edit a Git-synced project
 
 The compose file is read-only for Git-synced projects. The `.env` file stays editable. To inject those env values into your services, add `env_file: .env` to your compose file.
+
+Behind the scenes, Arcane keeps the repository's environment in `.env.git`, your edits in `project.env`, and writes the combination to the effective `.env`. A key you override is rewritten **in place** on the line it occupies in the Git-sourced content, keeping the original ordering and any trailing inline comment — so overriding `PORT=3001 # Port to run the server on` with `3011` yields `PORT=3011 # Port to run the server on` rather than a duplicate `PORT` line appended at the bottom. Keys that exist only in your override are appended after the Git content, as before. Your value always wins either way; only the layout of the file you read differs.
