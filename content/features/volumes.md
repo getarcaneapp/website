@@ -4,6 +4,7 @@ description: 'Manage Docker volumes in Arcane, including backups and restores.'
 ---
 
 <script lang="ts">
+import { Link } from '#lib/components/ui/link/index.js';
 import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
@@ -38,34 +39,12 @@ Open **Volumes** in the sidebar. The table shows name, driver, and current usage
 
 ## Back up and restore
 
-Arcane runs a short-lived helper container to `tar` the volume contents into a backup, and reverses the process on restore.
+Open a volume and select **Backups** to create or schedule encrypted Rustic snapshots. Backups can use local storage, an S3-compatible destination, or both.
 
-### Backup storage
+Arcane supports multiple schedules per volume, retention policies, optional container shutdown for consistent snapshots, whole-volume restores, selected-file restores, and local safety backups before a restore.
 
-Backups are stored in a dedicated Docker volume mounted into the helper container at `/backups`. If the Arcane container itself doesn't have a host-backed mount at `/backups`, the backups UI shows a warning so you know backups only live inside Docker storage.
-
-To keep backups somewhere predictable, mount a host path or named volume to `/backups` in your `compose.yaml`:
-
-- Host path: `/srv/arcane/backups:/backups`
-- Named volume: `arcane-backups:/backups`
-
-If you use a named volume, declare it under the top-level `volumes:` section too.
-
-### Backup safety
-
-- Arcane waits for the backup container to finish and checks its exit code. If `tar` fails, the backup isn't recorded — you get an error instead of a silent failure.
-- Restore extracts the backup into a temporary directory first. Only after extraction succeeds does Arcane wipe the volume and move the data into place. If the restore container exits non-zero, you get an error noting that the volume may be partially changed.
-
-### Rename the backup volume
-
-Set this environment variable to avoid name collisions with your own volumes:
-
-```
-ARCANE_BACKUP_VOLUME_NAME=<your-name>
-```
-
-Default: `arcane-backups`.
+See <Link href="/docs/features/backups">Backups</Link> for storage setup, S3 destinations, encryption, scheduling, retention, and recovery instructions.
 
 ## Helper containers
 
-Arcane creates short-lived helper containers for backup and restore work. They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.
+Arcane creates short-lived Rustic containers for backup and restore work. They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.
