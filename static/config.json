@@ -43,6 +43,28 @@
       "sourceSymbol": "config.Config.AgentToken"
     },
     {
+      "env": "ALLOW_CLI_MFA_RESET",
+      "field": "AllowCLIMFAReset",
+      "type": "bool",
+      "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.AllowCLIMFAReset"
+    },
+    {
+      "env": "ALLOW_CLI_PASSWORD_RESET",
+      "field": "AllowCLIPasswordReset",
+      "type": "bool",
+      "defaultValue": "false",
+      "supportsFile": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.AllowCLIPasswordReset"
+    },
+    {
       "env": "ALLOW_DOWNGRADE",
       "field": "AllowDowngrade",
       "type": "bool",
@@ -1481,6 +1503,21 @@
       "source": "models.Settings + services.DefaultSettingsConfig",
       "sourceFile": "backend/internal/models/settings.go",
       "sourceSymbol": "models.Settings.DockerHost",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "IMAGE_EVENT_WATCHER_ENABLED",
+      "settingKey": "imageEventWatcherEnabled",
+      "description": "Check image registries immediately after Docker image events",
+      "defaultValue": "false",
+      "type": "boolean",
+      "category": "internal",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "models.Settings + services.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/models/settings.go",
+      "sourceSymbol": "models.Settings.ImageEventWatcherEnabled",
       "sensitive": false,
       "deprecated": false,
       "public": false
