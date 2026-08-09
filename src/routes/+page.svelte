@@ -142,13 +142,11 @@ volumes:
 
 	<ContentWrapper>
 		<!-- Hero -->
-		<section class="relative pt-20 pb-16 md:pt-28 md:pb-20">
+		<section class="relative pt-10 pb-16 md:pt-14 md:pb-20">
 			<!-- Dot grid background -->
 			<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
 
 			<div class="relative mx-auto flex max-w-4xl flex-col items-center text-center">
-				<LogoFull class="mb-10 h-16 w-auto sm:h-20" />
-
 				<!-- Announcement pill -->
 				<a
 					href="/changelog"
@@ -168,9 +166,11 @@ volumes:
 					/>
 				</a>
 
+				<LogoFull class="mb-10 h-16 w-auto sm:h-20 md:h-24" />
+
 				<!-- Main heading with gradient text -->
 				<h1
-					class="text-4xl font-semibold tracking-tighter text-balance sm:text-5xl md:text-6xl lg:text-7xl"
+					class="text-3xl font-semibold tracking-tighter text-balance sm:text-4xl md:text-5xl lg:text-6xl"
 				>
 					<span
 						class="bg-linear-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent"
