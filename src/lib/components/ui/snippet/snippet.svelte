@@ -10,7 +10,7 @@
 	import type { SupportedLanguage } from '../code/shiki.js';
 
 	const style = tv({
-		base: 'bg-background relative w-full max-w-full rounded-md border py-2.5 pr-12 pl-3',
+		base: 'bg-background relative w-full max-w-full rounded-xl border py-2.5 pr-12 pl-3',
 		variants: {
 			variant: {
 				default: 'border-border bg-card',

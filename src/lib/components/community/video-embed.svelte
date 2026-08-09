@@ -15,7 +15,7 @@
 	const embedSrc = $derived(`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`);
 </script>
 
-<div class="relative aspect-video w-full overflow-hidden rounded-md border border-border bg-muted">
+<div class="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-muted">
 	{#if playing}
 		<iframe
 			class="absolute inset-0 h-full w-full"

@@ -176,7 +176,7 @@
 				</div>
 			{:else if error}
 				<div
-					class="flex flex-col items-center gap-4 rounded-lg border border-destructive/20 bg-destructive/10 p-8"
+					class="flex flex-col items-center gap-4 rounded-xl border border-destructive/20 bg-destructive/10 p-8"
 				>
 					<AlertTriangle class="size-12 text-destructive" />
 					<p class="text-center text-destructive">{error}</p>

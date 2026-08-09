@@ -7,7 +7,7 @@
 	import { tv, type VariantProps } from 'tailwind-variants';
 
 	const style = tv({
-		base: 'border-border w-full rounded-lg border',
+		base: 'border-border w-full rounded-xl border',
 		variants: {
 			variant: {
 				default: 'bg-card',

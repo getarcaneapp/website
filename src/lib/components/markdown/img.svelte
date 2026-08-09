@@ -5,4 +5,4 @@
 	let { class: className, src, alt, ...restProps }: HTMLImgAttributes = $props();
 </script>
 
-<img {src} {alt} class={cn('rounded-md', className)} {...restProps} />
+<img {src} {alt} class={cn('rounded-xl', className)} {...restProps} />

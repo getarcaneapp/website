@@ -30,7 +30,7 @@
 
 	<div class="flex items-center gap-3">
 		<div
-			class="flex size-10 items-center justify-center rounded-lg border border-border bg-surface/50 transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/5"
+			class="flex size-10 items-center justify-center rounded-full border border-border bg-surface/50 transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/5"
 		>
 			<Icon
 				class="size-5 text-muted-foreground transition-colors duration-300 group-hover:text-primary"

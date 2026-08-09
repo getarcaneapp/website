@@ -18,7 +18,7 @@
 
 		<div class="relative flex items-start gap-5">
 			<div
-				class="flex size-12 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/5"
+				class="flex size-12 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-primary/5"
 			>
 				<Apple class="size-6 text-primary" />
 			</div>

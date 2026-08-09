@@ -47,7 +47,7 @@
 			</div>
 
 			<footer
-				class="mt-12 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-surface/50 px-6 py-4"
+				class="mt-12 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-surface/50 px-6 py-4"
 			>
 				<span class="text-sm text-muted-foreground">Was this page helpful?</span>
 				<a

@@ -150,7 +150,7 @@
 	</Dialog.Trigger>
 	<Dialog.Content
 		showCloseButton={false}
-		class="rounded-lg border border-border bg-popover p-2 pb-2 shadow-lg"
+		class="rounded-xl border border-border bg-popover p-2 pb-2 shadow-lg"
 	>
 		<Dialog.Header class="sr-only">
 			<Dialog.Title>Search documentation...</Dialog.Title>

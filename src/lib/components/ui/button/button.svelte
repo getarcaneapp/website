@@ -8,25 +8,28 @@
 	import { tv, type VariantProps } from 'tailwind-variants';
 
 	export const buttonVariants = tv({
-		base: "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 relative inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-md text-sm font-medium whitespace-nowrap outline-hidden transition-colors duration-150 select-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+		base: "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 relative inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl text-sm font-medium whitespace-nowrap outline-hidden transition-all duration-200 select-none active:scale-[0.97] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 		variants: {
 			variant: {
-				default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+				default:
+					'bg-primary text-primary-foreground shadow-xs shadow-primary/20 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30',
 				destructive:
-					'bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-white',
+					'bg-destructive shadow-xs shadow-destructive/20 hover:bg-destructive/90 hover:shadow-md hover:shadow-destructive/30 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-white',
 				outline:
-					'border border-border bg-background text-foreground hover:bg-muted hover:text-foreground',
-				secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+					'border border-border bg-background/60 text-foreground backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary',
+				secondary:
+					'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/70 hover:shadow-sm',
 				ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-				link: 'text-primary underline-offset-4 hover:underline',
-				brand: 'bg-primary text-primary-foreground hover:bg-primary/90',
-				flat: 'bg-card text-foreground border border-border hover:bg-muted'
+				link: 'text-primary underline-offset-4 hover:underline active:scale-100',
+				brand:
+					'bg-primary text-primary-foreground shadow-xs shadow-primary/20 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30',
+				flat: 'bg-card/60 text-foreground border border-border backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
 			},
 			size: {
 				default: 'h-10 px-5 py-2.5 has-[>svg]:px-4',
-				sm: 'h-9 gap-1.5 rounded-md px-4 has-[>svg]:px-3',
-				lg: 'h-11 rounded-md px-7 text-base has-[>svg]:px-5',
-				icon: 'size-10 rounded-md'
+				sm: 'h-9 gap-1.5 px-4 has-[>svg]:px-3',
+				lg: 'h-11 px-7 text-base has-[>svg]:px-5',
+				icon: 'size-10'
 			}
 		},
 		defaultVariants: {
