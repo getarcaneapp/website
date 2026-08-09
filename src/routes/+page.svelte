@@ -5,6 +5,7 @@
 	import { trackEvent } from '#lib/analytics.js';
 	import CommunityPreview from '#lib/components/community/community-preview.svelte';
 	import ContentWrapper from '#lib/components/content-wrapper.svelte';
+	import LogoFull from '#lib/components/logo-full.svelte';
 	import MobileBetaCallout from '#lib/components/mobile-beta-callout.svelte';
 	import Button from '#lib/components/ui/button/button.svelte';
 	import * as Code from '#lib/components/ui/code/index.js';
@@ -146,6 +147,8 @@ volumes:
 			<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
 
 			<div class="relative mx-auto flex max-w-4xl flex-col items-center text-center">
+				<LogoFull class="mb-10 h-16 w-auto sm:h-20" />
+
 				<!-- Announcement pill -->
 				<a
 					href="/changelog"
