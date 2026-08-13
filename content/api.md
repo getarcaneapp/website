@@ -82,6 +82,18 @@ Long-running operations — project deploy, redeploy, pull, and build, plus imag
 
 Treat `{"done": true}` as the completion signal instead of waiting for the connection to close; behind a reverse proxy the socket may stay open well past the end of the work.
 
+## Chunked uploads
+
+Large-file endpoints — image import, volume backup upload, and build workspace upload — accept files through resumable upload sessions instead of one giant multipart request:
+
+1. `POST /api/environments/{id}/uploads/{kind}` with the filename and size to create a session (`kind` is `image`, `volume-backup`, or `build-workspace`). The response includes the `uploadId` and chunk size.
+2. `PUT /api/environments/{id}/uploads/{kind}/{uploadId}/chunks/{index}` with each chunk as `application/octet-stream`. Chunks can be re-sent safely, and `GET` on the session reports which chunks have been received if you need to resume.
+3. Call the consuming endpoint with `{"uploadId": "..."}` — for example `POST /api/environments/{id}/images/upload`.
+
+Chunks default to 10 MB (configurable per session from 1 to 50 MB), so requests stay under common reverse-proxy body-size limits — you no longer need to raise `client_max_body_size` (or its equivalent) to import a large image tar. Sessions that sit idle for 24 hours are discarded.
+
+Sending `multipart/form-data` directly to the consuming endpoints still works but is deprecated. The web UI and `arcane-cli` already use chunked sessions.
+
 ## Inbound Webhooks
 
 Arcane also supports inbound webhooks for simple external triggers.
@@ -100,6 +112,8 @@ Webhook trigger requests use a tokenized public endpoint:
 ```bash
 curl -X POST "https://arcane.example.com/api/webhooks/trigger/arc_wh_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
+
+A valid trigger responds immediately with `202 Accepted` and `{"success": true, "data": {"status": "accepted"}}` — the deploy, sync, or update then runs in the background, and its outcome (success or failure) is recorded in the Event Log rather than the HTTP response. CI jobs no longer sit on an open connection waiting for the action to finish.
 
 Important details:
 

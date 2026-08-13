@@ -36,6 +36,35 @@ Open **Volumes** in the sidebar. The table shows name, driver, and current usage
 > [!NOTE]
 > A volume in use by a container can't be removed.
 
+## Volume Workspace
+
+Open a volume and switch to the **Workspace** tab to work with the files inside it — no need to stop the containers using it. The workspace shows a file tree next to a tabbed text editor, the same layout the project workspace uses.
+
+From the workspace you can:
+
+- **Browse and edit** — open any UTF-8 text file in a tab and change it.
+- **New File** / **New Folder** — create files and folders anywhere in the volume.
+- **Upload Files** — add one or more files from your computer; you're asked before existing files are replaced.
+- **Download** — stream any file, including binary files, to your computer.
+- **Rename**, **Move**, and **Delete** — reorganize the volume contents.
+- **Restore a file from a backup** — pull a single file out of an existing volume backup instead of restoring the whole volume.
+
+Edits are staged locally and applied together when you **Save**. If someone else changed the volume in the meantime, the save is rejected with _"Volume workspace changed; refresh it and try again"_ — refresh and reapply.
+
+A few limits to keep in mind:
+
+- Binary files, symlinks, and special files are read-only in the editor; binary files can still be uploaded, downloaded, and moved.
+- Files larger than the configured maximum (default 10 MiB) can't be edited in place.
+- Very deep or very large trees are truncated by the configured depth and entry limits, and the workspace tells you when that happens.
+- Volumes that use a custom mount configuration (bind-style driver options) can't be opened in the workspace.
+
+The size and tree limits are configurable with the `VOLUME_WORKSPACE_MAX_FILE_SIZE_MB` (default 10), `VOLUME_WORKSPACE_MAX_DEPTH` (default 50), and `VOLUME_WORKSPACE_MAX_ENTRIES` (default 10000) environment variables.
+
+Write access follows the volume permissions: creating and editing files needs `volumes:upload`, deleting needs `volumes:delete`, renaming or moving needs both, and restoring a file from a backup needs `volumes:backup`. Browsing and downloading only need `volumes:read`.
+
+> [!NOTE]
+> The Workspace tab replaces the old volume **Browser**. The legacy `volumes:browse` permission is migrated to `volumes:read` automatically for existing roles and API keys.
+
 ## Back up and restore
 
 Arcane runs a short-lived helper container to `tar` the volume contents into a backup, and reverses the process on restore.
@@ -68,4 +97,6 @@ Default: `arcane-backups`.
 
 ## Helper containers
 
-Arcane creates short-lived helper containers for backup and restore work. They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.
+Arcane creates helper containers for backup, restore, and workspace access. They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.
+
+Backup and restore helpers are short-lived. The workspace helper mounts the volume and stays around between operations so browsing feels instant; it is removed after sitting idle for the **Volume Helper Idle Timeout** (default 10 minutes, `0` disables the reaper).

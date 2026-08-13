@@ -115,7 +115,7 @@ You cannot grant a key more permissions than you have yourself.
 | `containers`       | `list`, `read`, `logs`, `create`, `start`, `stop`, `restart`, `redeploy`, `kill`, `pause`, `delete`, `exec`, `autoupdate` |
 | `projects`         | `list`, `read`, `logs`, `create`, `update`, `deploy`, `down`, `restart`, `delete`, `archive`                              |
 | `images`           | `list`, `read`, `pull`, `push`, `build`, `tag`, `commit`, `prune`, `delete`, `upload`                                     |
-| `volumes`          | `list`, `read`, `create`, `delete`, `prune`, `browse`, `upload`, `backup`                                                 |
+| `volumes`          | `list`, `read`, `create`, `delete`, `prune`, `upload`, `backup`                                                           |
 | `networks`         | `list`, `read`, `create`, `delete`, `prune`                                                                               |
 | `swarm`            | `read`, `init`, `join`, `leave`, `spec`, `nodes`, `services`, `services:logs`, `stacks`, `configs`, `secrets`, `unlock`   |
 | `gitops`           | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle`                                                         |
@@ -131,6 +131,8 @@ You cannot grant a key more permissions than you have yourself.
 > `notifications:manage` is a **global** permission. Granting it scoped to a single environment does not open **Settings → Notifications** — the assignment has to be Global.
 
 `gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
+
+The legacy `volumes:browse` permission was retired with the <Link href="/docs/features/volumes#volume-workspace">Volume Workspace</Link>; existing roles and API keys that held it are migrated to `volumes:read` automatically. Workspace writes map onto the remaining volume actions: creating and editing files needs `volumes:upload`, deleting needs `volumes:delete`, renaming or moving needs both, and restoring a file from a backup needs `volumes:backup`.
 
 ## Upgrade & migration
 

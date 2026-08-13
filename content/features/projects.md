@@ -50,6 +50,33 @@ Open **Projects** in the sidebar. The list shows project name, status (running, 
 
 When you open a project, Arcane updates the browser tab title to the project name — useful when you keep several open at once.
 
+## Tag projects
+
+Tags are colored labels for organizing projects — `database`, `media`, `critical`, whatever fits your setup. They show in the **Tags** column of the Projects table, in the project detail header, and can be set when creating a project.
+
+To add one, click the **+** next to a project's tags and type in the **Search or create a tag…** box. Pick an existing tag from the environment's catalog, or create a new one and choose one of the eight colors (gray, purple, blue, green, yellow, orange, red, pink). Clicking a listed tag toggles it on or off. Up to three tags render inline; the rest collapse into a **+N** badge.
+
+The **Tags** column has a filter built from the same catalog — a project matches if it has **any** of the selected tags — and the free-text search on the Projects page matches tag names too.
+
+Tags can also be declared in the compose file itself, under the `x-arcane` extension block:
+
+```yaml
+x-arcane:
+  tags:
+    - name: database
+      color: purple
+```
+
+Compose-defined tags are reconciled on deploy and sync, and are read-only in Arcane — they show a lock icon, and can only be changed by editing the compose file.
+
+A few rules:
+
+- Tag names are trimmed and lowercased, up to 64 characters, with no commas.
+- A tag name's color is shared everywhere it's used; attaching an existing name keeps its stored color.
+- Each project holds up to 50 UI tags and 50 Compose tags.
+- The tag catalog is per environment.
+- Editing tags requires the `projects:update` permission, and discovered (unmanaged) projects can't be tagged.
+
 ## Create a project
 
 1. Click **Create Project**.
@@ -77,6 +104,10 @@ The dropdown on the **Deploy** split button carries options that apply to that r
 - **Recreate changed volumes (data loss)** — allow Compose to recreate a volume whose configuration no longer matches the Compose file.
 
 Pull policy and force recreate are remembered. **Recreate changed volumes** is not: it applies to the next deploy only and clears itself afterwards, because it destroys data. A bulk **Up** takes one snapshot of the option for the whole batch.
+
+### Deploy wait timeout
+
+A deploy waits for `depends_on` conditions — `service_healthy` and `service_completed_successfully` — before it's considered done. How long it waits is the **Deploy Wait Timeout** in **Settings → Timeouts** (default 600 seconds, accepted range 30–14400). Raise it if services with slow healthchecks or long one-shot init containers make deploys fail with a timeout; note that `service_healthy` requires the dependency to actually define a healthcheck.
 
 > [!WARNING]
 > When a volume's configuration has diverged from what the Compose file declares, Compose has to destroy and rebuild it to apply the change — the data in it is lost. Compose asks before doing that. Arcane used to answer yes automatically for every operation; it now **declines** unless **Recreate changed volumes** is checked, and writes the question to the deploy log followed by `Declined; enable volume recreation on deploy to apply this change.` If a volume change is not taking effect, that log line is why.
@@ -140,12 +171,12 @@ For the manual Build Workspace, build history, and API details, see <Link href="
 
 ## Manage project files
 
-A project is more than its compose file. Flip the **Workspace** toggle on a project to switch from the classic editor to the **tree** layout — a **Project Files** panel alongside a tabbed editor that lets you work with every file in the project folder. The same panel is available on the **Create Project** page, so you can stage extra files before the project is first deployed.
+A project is more than its compose file. Flip the **Workspace** toggle on a project to switch from the classic editor to the **tree** layout — a **Project Workspace** panel alongside a tabbed editor that lets you work with every file in the project folder. The same panel is available on the **Create Project** page, so you can stage extra files before the project is first deployed.
 
-From the **Project Files** panel you can:
+From the workspace panel you can:
 
 - **New File** / **New Folder** — create files and folders anywhere in the project, including nested paths.
-- **Upload File** — add a text file from your computer (UTF-8, up to 1 MB).
+- **Upload File** — add a text file from your computer (UTF-8, up to the configured maximum, 10 MiB by default).
 - **Edit** — open any text file in its own tab and change the contents.
 - **Rename**, **Move**, and **Delete** — reorganize the folder; non-empty folders can be deleted recursively.
 
@@ -159,6 +190,11 @@ A few limits to keep in mind:
 - Only UTF-8 text files can be edited or uploaded; binary files are read-only.
 - Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden from the tree.
 - For **Git-synced projects**, the workspace is read-only — manage those files in the source repository.
+
+The workspace limits are configurable with the `PROJECT_WORKSPACE_MAX_FILE_SIZE_MB` (default 10), `PROJECT_WORKSPACE_MAX_DEPTH` (default 20), and `PROJECT_WORKSPACE_MAX_ENTRIES` (default 2000) environment variables.
+
+> [!IMPORTANT]
+> `PROJECT_WORKSPACE_MAX_DEPTH` replaces the old `PROJECT_FILE_TREE_MAX_DEPTH` variable, which is no longer read. If you had set the old name, switch to the new one.
 
 ## Where files are stored
 
@@ -175,7 +211,7 @@ For symlinked layouts (e.g. GNU Stow), Arcane can follow child-directory symlink
 
 A subdirectory Arcane can't read — a bind-mounted data folder owned by another user, for example — is listed but shown with no children, rather than blocking the rest of the file tree.
 
-Compose files that reference paths **outside** the projects mount with a relative path (such as `../../data:/app/data`) are resolved against the host projects directory, so they behave the same as running `docker compose up` yourself. Include files must stay inside the project directory; a path that resolves outside it, including through a symlink, is rejected.
+Compose files that reference paths **outside** the projects mount with a relative path (such as `../../data:/app/data`) are resolved against the host projects directory, so they behave the same as running `docker compose up` yourself. `include:` entries may also point outside the project directory — for example a shared fragment kept next to several projects (`include: [../shared.yaml]`).
 
 ## Sync from Git
 

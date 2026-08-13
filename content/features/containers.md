@@ -66,6 +66,8 @@ For Git-synced projects, this tab is read-only.
 
 The **Overview** tab has an **Auto Update** toggle for opting a single container in or out of Arcane's updater. If the container already has an explicit `com.getarcaneapp.arcane.updater` label, that label wins.
 
+When a newer image is available, the detail header shows an **Update available** badge and an **Update** action to apply it on the spot (requires the `containers:autoupdate` permission). If the container belongs to a project, the header links to that project too.
+
 ## View logs
 
 Open a container's detail view and switch to the **Logs** tab. The viewer:
