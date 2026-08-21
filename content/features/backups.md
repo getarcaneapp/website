@@ -55,6 +55,8 @@ The default is `arcane-backups`. This setting only changes the fallback local Do
 
 Open **Settings → S3 Destinations** to manage reusable storage configurations. Arcane supports AWS S3 and compatible services such as Backblaze B2, MinIO, Hetzner Object Storage, and similar providers.
 
+S3 destinations are managed on the manager instance and synced to remote environments, so the same saved destinations are available for volumes in every environment.
+
 Each destination contains:
 
 - A display name
@@ -66,6 +68,10 @@ Each destination contains:
 - SSL and path-style access options
 
 The region is required for AWS S3. It can be left empty when a custom endpoint does not require one.
+
+When editing a destination, changing any connection field (endpoint, bucket, region, access key, SSL, or path-style) requires re-entering the secret access key.
+
+A destination cannot be deleted while a backup schedule or a retained remote backup still references it.
 
 ### Test before saving
 
@@ -87,26 +93,32 @@ Click **Create Backup** for a local backup, or open its dropdown and choose:
 
 Choosing an option that includes S3 opens a dialog for selecting one of the saved S3 destinations.
 
-A completed row records the trigger, storage destination, destination name, size, creation time, and status. Failed runs remain visible with their error.
+A completed row records the trigger, storage destination and destination name, size, creation time, and status. Failed runs remain visible with their error and are never treated as usable restore points.
+
+Only one backup, upload, or delete operation runs per volume at a time; starting another while one is in progress is rejected.
+
+A successful backup can also be downloaded from its row actions: Arcane materializes the snapshot and streams it as a `tar.gz` archive.
 
 ### Schedule backups
 
-Click **Add Schedule** to create an independent backup policy for the volume. A volume can have multiple schedules, each with its own:
+Click **Add schedule** to create an independent backup policy for the volume. A volume can have multiple schedules, each with its own:
 
 - Enabled state
 - Six-field cron expression, including seconds
-- Retention count
+- **Backups to keep** retention count (0–3650)
 - Local, S3, or Local + S3 destination
 - S3 destination
 - **Stop containers during backup** option
 
-For example, `0 0 2 * * *` runs every day at 02:00. Set retention to `0` to keep every restore point.
+For example, `0 0 2 * * *` runs every day at 02:00 in Arcane's configured timezone. Set **Backups to keep** to `0` to keep every restore point. Retention is applied separately to local and remote backups.
 
 Scheduled runs and on-demand runs appear in the same backup table and Activity Center.
 
 ### Container consistency
 
-Enable **Stop containers during backup** when applications may write to the volume while it is being copied. Arcane stops running containers that use the volume, creates the snapshot, and starts the containers again afterward.
+Enable **Stop containers during backup** on a schedule when applications may write to the volume while it is being copied. Arcane stops running containers that use the volume, creates the snapshot, and starts the containers again afterward.
+
+This option belongs to backup schedules; a plain on-demand **Create Backup** does not stop containers.
 
 Leaving containers running avoids downtime, but applications with active writes may produce an inconsistent restore point.
 
@@ -128,7 +140,7 @@ Arcane derives the repository password from its internal `ENCRYPTION_KEY`. Keep 
 
 ### Upload an existing local backup
 
-A successful local backup can be uploaded later. Open its row actions, select **Upload to S3**, and choose a configured destination. The row then represents a Local + S3 backup.
+A successful local backup can be uploaded later. Open its row actions and select **Upload to S3** for one of the configured destinations. The row then represents a Local + S3 backup.
 
 ### Restore
 
@@ -150,24 +162,24 @@ Manual and bulk deletion also attempt to remove every stored copy:
 
 System backups protect Arcane's persistent application data and runtime configuration so a replacement instance can be restored as a clone.
 
-Open **Settings → System Backups**. This feature requires Arcane to run in Docker with `/app/data` mounted and access to its local Docker daemon.
+Open **Settings → Backups** (admin only). This feature requires Arcane to run in Docker with `/app/data` mounted and access to its local Docker daemon, and is currently available only with the SQLite database provider.
 
 ### Recovery key
 
 System backups use a separate recovery key rather than Arcane's internal volume-backup key:
 
-1. Click **Set up recovery key**.
-2. Enter at least 16 characters.
-3. Store the key somewhere outside Arcane.
+1. Click **Set up recovery key**. Arcane generates a key of 8 groups of 6 characters.
+2. Copy the generated key and store it somewhere outside Arcane.
+3. Confirm the key to save it.
 
 The saved copy lets scheduled jobs run unattended. You still need an external copy to recover a lost installation.
 
 > [!WARNING]
-> Losing the recovery key makes the snapshots unrecoverable. Replacing it does not re-encrypt older backups, so retain previous keys for their existing restore points.
+> Losing the recovery key makes the snapshots unrecoverable. Existing system backups can only be opened with the key that created them, so Arcane refuses to replace the recovery key until the existing system backups are deleted.
 
 ### Manual and scheduled backups
 
-System backups support Local, S3, and Local + S3 destinations. You can create multiple schedules with independent cron expressions, destinations, S3 targets, and retention counts.
+System backups support Local, S3, and Local + S3 destinations. Click **Create schedule** to add schedules with independent cron expressions, destinations, S3 targets, and retention counts.
 
 For an on-demand backup, use a saved schedule's configuration or choose a custom destination. Existing local backups can also be uploaded to S3 later.
 
