@@ -17,6 +17,20 @@ export const generatorConfig: GeneratorConfig = [
 				icon: 'settings',
 				fields: [
 					{
+						key: 'registry',
+						envName: '',
+						label: 'Image Registry',
+						description: 'Where to pull the Arcane manager image from',
+						type: 'select',
+						defaultValue: 'ghcr',
+						options: [
+							{ label: 'GitHub Container Registry', value: 'ghcr' },
+							{ label: 'Quay', value: 'quay' },
+							{ label: 'Docker Hub', value: 'docker' }
+						],
+						includeInCompose: false
+					},
+					{
 						key: 'appUrl',
 						envName: 'APP_URL',
 						label: 'App URL',

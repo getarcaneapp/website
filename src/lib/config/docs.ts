@@ -93,6 +93,7 @@ const FEATURES = group('Features', [
 	leaf('features/images'),
 	leaf('features/image-builds'),
 	leaf('features/volumes'),
+	leaf('features/backups'),
 	leaf('features/networks'),
 	leaf('features/vulnerability-scans'),
 	leaf('features/environments'),

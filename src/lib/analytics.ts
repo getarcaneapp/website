@@ -7,6 +7,7 @@ type AnalyticsEvents = {
 		authentication: 'local' | 'oidc';
 		project_storage: 'host_mount' | 'named_volume';
 		selinux: 'disabled' | 'enabled';
+		registry: 'ghcr' | 'quay' | 'docker';
 	};
 	'Compose Exported': {
 		method: 'copy' | 'download';
