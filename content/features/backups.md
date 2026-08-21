@@ -53,7 +53,7 @@ The default is `arcane-backups`. This setting only changes the fallback local Do
 
 ## S3 destinations
 
-Open **Settings → S3 Destinations** to manage reusable storage configurations. Arcane supports AWS S3 and compatible services such as Backblaze B2, MinIO, Hetzner Object Storage, and similar providers.
+Open **Settings → Backups** and click **S3 Destinations** to manage reusable storage configurations. Arcane supports AWS S3 and compatible services such as Backblaze B2, MinIO, Hetzner Object Storage, and similar providers.
 
 S3 destinations are managed on the manager instance and synced to remote environments, so the same saved destinations are available for volumes in every environment.
 
