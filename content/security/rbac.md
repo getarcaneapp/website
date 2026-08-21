@@ -103,6 +103,8 @@ You cannot grant a key more permissions than you have yourself.
 | `templates`        | `list`, `read`, `create`, `update`, `delete`                 |
 | `variables`        | `read`, `create`, `update`, `delete`, `sync`                 |
 | `git-repositories` | `list`, `read`, `create`, `update`, `delete`, `test`, `sync` |
+| `s3-destinations`  | `list`, `read`, `create`, `update`, `delete`, `test`, `sync` |
+| `system-backups`   | `read`, `manage`, `restore`, `recovery-key`                  |
 | `events`           | `read`, `delete`                                             |
 | `notifications`    | `manage`                                                     |
 | `customize`        | `manage`                                                     |
@@ -129,6 +131,8 @@ You cannot grant a key more permissions than you have yourself.
 
 > [!NOTE]
 > `notifications:manage` is a **global** permission. Granting it scoped to a single environment does not open **Settings → Notifications** — the assignment has to be Global.
+
+All `system-backups` routes additionally require the user to be a global admin, regardless of granted permissions.
 
 `gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
 
