@@ -10,13 +10,24 @@ overrides:
   rollup: '>=4.59.0'
   vite: 'catalog:'
   ws: '>=8.21.0'
-  typescript: '^7.0.2'
   sharp: '0.34.5'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.2.6
-  vite-plus: ^0.2.6
+  vite: npm:@voidzero-dev/vite-plus-core@0.2.9
+  vite-plus: 0.2.9
 peerDependencyRules:
   allowAny:
     - vite
   allowedVersions:
     vite: '*'
+minimumReleaseAgeExclude:
+  - '@voidzero-dev/vite-plus-core@0.2.9'
+  - '@voidzero-dev/vite-plus-darwin-arm64@0.2.9'
+  - '@voidzero-dev/vite-plus-darwin-x64@0.2.9'
+  - '@voidzero-dev/vite-plus-linux-arm64-gnu@0.2.9'
+  - '@voidzero-dev/vite-plus-linux-arm64-musl@0.2.9'
+  - '@voidzero-dev/vite-plus-linux-x64-gnu@0.2.9'
+  - '@voidzero-dev/vite-plus-linux-x64-musl@0.2.9'
+  - '@voidzero-dev/vite-plus-win32-arm64-msvc@0.2.9'
+  - '@voidzero-dev/vite-plus-win32-x64-msvc@0.2.9'
+  - vite-plus@0.2.9
+  - '@sveltejs/enhanced-img@1.0.0-next.5'

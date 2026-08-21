@@ -37,7 +37,7 @@
 
 	<section class="relative pb-20">
 		<div
-			class="flex flex-col items-center gap-3 rounded-md border border-border bg-background p-8 text-center"
+			class="flex flex-col items-center gap-3 rounded-xl border border-border bg-background p-8 text-center"
 		>
 			<h3 class="text-lg font-semibold tracking-tight text-foreground">
 				Made something about Arcane?

@@ -2,11 +2,10 @@
 	import ExternalLink from 'virtual:icons/lucide/external-link';
 	import ChevronRight from 'virtual:icons/lucide/chevron-right';
 	import type { ComponentProps } from 'svelte';
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
 	import { page } from '$app/state';
 	import * as Sidebar from '#lib/components/ui/sidebar/index.js';
 	import type { SidebarNavItem } from '#lib/config/docs.js';
+	import { resolveInternalPath } from '#lib/utils.js';
 
 	let {
 		navItems,
@@ -69,7 +68,7 @@
 															/>
 														</a>
 													{:else}
-														<a href={resolve(href as Pathname)} {...snippetProps.props}
+														<a href={resolveInternalPath(href)} {...snippetProps.props}
 															>{subItem.title}</a
 														>
 													{/if}
@@ -88,7 +87,7 @@
 											{#snippet child(snippetProps: { props: Record<string, unknown> })}
 												{@const href = subItem.href}
 												{#if href}
-													<a href={resolve(href as Pathname)} {...snippetProps.props}
+													<a href={resolveInternalPath(href)} {...snippetProps.props}
 														>{subItem.title}</a
 													>
 												{:else}
@@ -118,7 +117,7 @@
 															{#snippet child(snippetProps: { props: Record<string, unknown> })}
 																{@const href = childItem.href}
 																{#if href}
-																	<a href={resolve(href as Pathname)} {...snippetProps.props}
+																	<a href={resolveInternalPath(href)} {...snippetProps.props}
 																		>{childItem.title}</a
 																	>
 																{:else}

@@ -8,20 +8,17 @@
 		{
 			title: 'Product',
 			links: [
-				{ label: 'Documentation', href: '/docs' },
-				{ label: 'Try the Demo', href: 'https://demo.getarcane.app', external: true },
-				{ label: 'Compose Generator', href: '/generator' },
-				{ label: 'Changelog', href: '/changelog' }
+				{ label: 'DockerHub', href: 'https://hub.docker.com/u/getarcaneapp', external: true },
+				{ label: 'GitHub', href: 'https://github.com/getarcaneapp/arcane', external: true },
+				{ label: 'API Reference', href: '/api-reference' },
+				{ label: 'SBOM', href: '/sbom' }
 			]
 		},
 		{
 			title: 'Resources',
 			links: [
-				{ label: 'API Reference', href: '/api-reference' },
-				{ label: 'SBOM', href: '/sbom' },
 				{ label: 'Community', href: '/community' },
-				{ label: 'Discord', href: DISCORD_URL, external: true },
-				{ label: 'GitHub', href: 'https://github.com/getarcaneapp/arcane', external: true }
+				{ label: 'Discord', href: DISCORD_URL, external: true }
 			]
 		},
 		{

@@ -1,8 +1,14 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { resolve } from '$app/paths';
+import type { Path, ResolvedPathname } from '$app/types';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
+}
+
+export function resolveInternalPath(path: string): ResolvedPathname {
+	return resolve(path.replace(/^\/+/, '') as Path);
 }
 
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T;

@@ -2,15 +2,16 @@
 	import { onMount } from 'svelte';
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
-	import { resolve } from '$app/paths';
 	import { trackEvent } from '#lib/analytics.js';
 	import CommunityPreview from '#lib/components/community/community-preview.svelte';
 	import ContentWrapper from '#lib/components/content-wrapper.svelte';
+	import LogoFull from '#lib/components/logo-full.svelte';
 	import MobileBetaCallout from '#lib/components/mobile-beta-callout.svelte';
 	import Button from '#lib/components/ui/button/button.svelte';
 	import * as Code from '#lib/components/ui/code/index.js';
 	import { FeatureCard } from '#lib/components/ui/feature-card/index.js';
 	import { features } from '#lib/config/features.js';
+	import { resolveInternalPath } from '#lib/utils.js';
 
 	interface StatsHistoryEntry {
 		date: string;
@@ -141,7 +142,7 @@ volumes:
 
 	<ContentWrapper>
 		<!-- Hero -->
-		<section class="relative pt-20 pb-16 md:pt-28 md:pb-20">
+		<section class="relative pt-10 pb-16 md:pt-14 md:pb-20">
 			<!-- Dot grid background -->
 			<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
 
@@ -165,9 +166,11 @@ volumes:
 					/>
 				</a>
 
+				<LogoFull class="mb-10 h-16 w-auto sm:h-20 md:h-24" />
+
 				<!-- Main heading with gradient text -->
 				<h1
-					class="text-4xl font-semibold tracking-tighter text-balance sm:text-5xl md:text-6xl lg:text-7xl"
+					class="text-3xl font-semibold tracking-tighter text-balance sm:text-4xl md:text-5xl lg:text-6xl"
 				>
 					<span
 						class="bg-linear-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent"
@@ -284,7 +287,7 @@ volumes:
 						<p class="mt-1 text-sm leading-relaxed text-muted-foreground">
 							Live, anonymized check-ins from running Arcane servers.
 							<a
-								href={resolve('/docs/configuration/analytics')}
+								href={resolveInternalPath('/docs/configuration/analytics')}
 								class="font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
 							>
 								Learn more

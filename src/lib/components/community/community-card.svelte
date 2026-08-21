@@ -24,7 +24,7 @@
 
 {#if item.kind === 'video'}
 	<div
-		class="group relative flex h-full flex-col overflow-hidden rounded-md border border-border bg-background transition-all duration-300 hover:border-primary/30 hover:shadow-sm hover:shadow-primary/5"
+		class="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background transition-all duration-300 hover:border-primary/30 hover:shadow-sm hover:shadow-primary/5"
 	>
 		<div
 			class="absolute inset-x-0 top-0 z-10 h-0.5 scale-x-0 bg-linear-to-r from-transparent via-primary/40 to-transparent transition-transform duration-300 group-hover:scale-x-100"
@@ -53,7 +53,7 @@
 		href={item.url}
 		target="_blank"
 		rel="noopener noreferrer"
-		class="group relative flex h-full flex-col overflow-hidden rounded-md border border-border bg-background no-underline transition-all duration-300 hover:border-primary/30 hover:shadow-sm hover:shadow-primary/5"
+		class="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background no-underline transition-all duration-300 hover:border-primary/30 hover:shadow-sm hover:shadow-primary/5"
 	>
 		<div
 			class="absolute inset-x-0 top-0 z-10 h-0.5 scale-x-0 bg-linear-to-r from-transparent via-primary/40 to-transparent transition-transform duration-300 group-hover:scale-x-100"

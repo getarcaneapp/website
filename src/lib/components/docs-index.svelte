@@ -83,13 +83,13 @@
 		{@const Icon = card.icon}
 		<a
 			href={card.href}
-			class="group relative flex flex-col gap-3 overflow-hidden rounded-md border border-border bg-background p-5 no-underline! transition-all duration-300 hover:border-primary/30 hover:no-underline! hover:shadow-sm hover:shadow-primary/5 focus-visible:no-underline!"
+			class="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-border bg-background p-5 no-underline! transition-all duration-300 hover:border-primary/30 hover:no-underline! hover:shadow-sm hover:shadow-primary/5 focus-visible:no-underline!"
 		>
 			<div
 				class="absolute inset-x-0 top-0 h-0.5 scale-x-0 bg-linear-to-r from-transparent via-primary/40 to-transparent transition-transform duration-300 group-hover:scale-x-100"
 			></div>
 			<div
-				class="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary/15"
+				class="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary/15"
 			>
 				<Icon class="size-5" />
 			</div>

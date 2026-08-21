@@ -13,8 +13,6 @@ export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
 	{ href: '/api-reference', label: 'API' },
 	{ href: '/generator', label: 'Compose Generator' },
-	{ href: '/sbom', label: 'SBOM' },
-	{ href: '/changelog', label: 'Changelog' },
 	{ href: '/community', label: 'Community' }
 ];
 
@@ -118,6 +116,7 @@ const CONFIGURATION = group('Configuration', [
 
 const AUTH_ACCESS = group('Authentication & Access', [
 	leaf('configuration/sso'),
+	leaf('security/passkeys'),
 	leaf('security/rbac', 'Access Control'),
 	leaf('security/federated-credentials')
 ]);
@@ -130,6 +129,7 @@ const NETWORKING = group('Networking', [
 
 const SECURITY = group('Security & Hardening', [
 	leaf('setup/socket-proxy'),
+	leaf('security/account-recovery'),
 	leaf('security/edge-mtls'),
 	leaf('security/verify-artifacts')
 ]);

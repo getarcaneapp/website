@@ -117,7 +117,7 @@ You cannot grant a key more permissions than you have yourself.
 | `containers`       | `list`, `read`, `logs`, `create`, `start`, `stop`, `restart`, `redeploy`, `kill`, `pause`, `delete`, `exec`, `autoupdate` |
 | `projects`         | `list`, `read`, `logs`, `create`, `update`, `deploy`, `down`, `restart`, `delete`, `archive`                              |
 | `images`           | `list`, `read`, `pull`, `push`, `build`, `tag`, `commit`, `prune`, `delete`, `upload`                                     |
-| `volumes`          | `list`, `read`, `create`, `delete`, `prune`, `browse`, `upload`, `backup`                                                 |
+| `volumes`          | `list`, `read`, `create`, `delete`, `prune`, `upload`, `backup`                                                           |
 | `networks`         | `list`, `read`, `create`, `delete`, `prune`                                                                               |
 | `swarm`            | `read`, `init`, `join`, `leave`, `spec`, `nodes`, `services`, `services:logs`, `stacks`, `configs`, `secrets`, `unlock`   |
 | `gitops`           | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle`                                                         |
@@ -135,6 +135,8 @@ You cannot grant a key more permissions than you have yourself.
 All `system-backups` routes additionally require the user to be a global admin, regardless of granted permissions.
 
 `gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
+
+The legacy `volumes:browse` permission was retired with the <Link href="/docs/features/volumes#volume-workspace">Volume Workspace</Link>; existing roles and API keys that held it are migrated to `volumes:read` automatically. Workspace writes map onto the remaining volume actions: creating and editing files needs `volumes:upload`, deleting needs `volumes:delete`, renaming or moving needs both, and restoring a file from a backup needs `volumes:backup`.
 
 ## Upgrade & migration
 
@@ -167,3 +169,9 @@ See <Link href="/docs/setup/migrate-v2">Migrate to 2.0</Link> for the full upgra
 **OIDC user lost access on login.** Their group claim no longer matches a mapping. Check the IdP-side membership and the mapping table.
 
 **API key got permission denied after the owner changed roles.** Keys carry their own permissions, not the owner's. Re-issue the key with the desired scope.
+
+**An account named `arcane` is not an admin.** It is not supposed to be, unless you granted it the role. Arcane consults the `arcane` username only when it first bootstraps an instance, or when accounts exist but none of them resolves to a global admin — the zero-admin recovery case. It no longer re-grants the global Admin role to whatever account happens to carry that name on every restart, so renaming a user to `arcane` no longer promotes them. Grant the role explicitly from **Settings → Users**.
+
+For the same reason, `ADMIN_STATIC_API_KEY` reconciliation is skipped when the `arcane` account is not actually a global admin; the logs say _"User is not a global admin, skipping default admin API key reconciliation."_
+
+**Nobody can sign in as an admin.** See <Link href="/docs/security/account-recovery">Account Recovery</Link>.

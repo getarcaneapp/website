@@ -22,6 +22,8 @@ The easiest way to set up OIDC is through Arcane's web interface:
 
 OIDC users are created automatically the first time they sign in. You can disable local login if you want stricter security.
 
+Local login accepts either the username or the account's email address in the username field. For that reason, new usernames may not contain `@` — existing usernames that do keep working.
+
 Arcane finds the OIDC endpoints automatically from the issuer URL and its `.well-known/openid-configuration` page. Make sure the issuer URL does not end with a trailing slash.
 
 ## Alternative: Environment Variables

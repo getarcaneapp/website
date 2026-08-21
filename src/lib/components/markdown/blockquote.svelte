@@ -81,7 +81,7 @@
 {#if type && config}
 	{@const Icon = config.icon}
 	<div
-		class={cn('mt-6 rounded-md border border-border bg-surface p-4 not-italic', className)}
+		class={cn('mt-6 rounded-xl border border-border bg-surface p-4 not-italic', className)}
 		{...restProps}
 		use:handleMount
 	>

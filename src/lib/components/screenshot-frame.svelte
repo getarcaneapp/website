@@ -31,7 +31,7 @@
 		>
 			<span
 				class={cn(
-					'block overflow-hidden rounded-lg border border-border bg-surface p-2',
+					'block overflow-hidden rounded-xl border border-border bg-surface p-2',
 					frameClass
 				)}
 			>
@@ -39,7 +39,7 @@
 					{...restProps}
 					{src}
 					{alt}
-					class={cn('w-full rounded-md border border-border', className)}
+					class={cn('w-full rounded-lg border border-border', className)}
 				/>
 			</span>
 		</Dialog.Trigger>

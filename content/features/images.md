@@ -5,6 +5,7 @@ description: 'Manage Docker images in Arcane.'
 
 <script lang="ts">
 import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
+import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 The **Images** page lists every Docker image on the selected host and lets you search registries, pull, tag, inspect, prune, and remove images. Arcane also flags images that have a newer release available.
@@ -90,9 +91,23 @@ Arcane uses your saved registry credentials when pulling and when checking for u
 
 1. In the sidebar under **Customization**, open **Container Registries**.
 2. Add the registry host, username, and password or token.
-3. Save.
+3. Optional: fill in **Repository Names** — see below.
+4. Save.
 
 When an image reference includes a private hostname, Arcane matches it to the saved entry. You can store multiple credentials; Arcane picks the right one based on the image's host.
+
+### Repository names
+
+**Repository Names** lists the repositories you push to on this registry, one complete name per line:
+
+```text
+team/api
+team/platform/api
+```
+
+Each entry is validated against Docker's reference grammar, and duplicates are collapsed. These names populate the **Repository name** dropdown when you configure a pushing build, so the build form can only ever produce a reference you have declared — see <Link href="/docs/features/image-builds">Image Builds</Link>.
+
+A registry with no repository names still works for pulling and update checks; it just cannot be selected as a push target until you add some.
 
 ### Amazon ECR
 

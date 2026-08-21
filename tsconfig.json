@@ -1,5 +1,5 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
+	"extends": "$app/tsconfig",
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
@@ -14,7 +14,7 @@
 		"allowSyntheticDefaultImports": true,
 		"verbatimModuleSyntax": true,
 		"useDefineForClassFields": true,
-		"types": ["unplugin-icons/types/svelte"]
+		"types": ["$app/types", "unplugin-icons/types/svelte"]
 	},
 	"include": [
 		// SvelteKit defaults

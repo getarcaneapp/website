@@ -58,7 +58,7 @@
 	}
 </script>
 
-<div class="my-4 overflow-hidden rounded-lg border">
+<div class="my-4 overflow-hidden rounded-xl border">
 	<Tabs.Root bind:value={activeTab}>
 		<div class="flex items-center justify-between border-b bg-muted/40 px-4 py-2.5">
 			<span class="text-sm font-medium text-muted-foreground">Next Binaries</span>
