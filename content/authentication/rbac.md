@@ -72,7 +72,7 @@ Drive role assignment from your IdP. On every login Arcane reads the user's grou
 
 Users in multiple mapped groups get the **union** of their matching assignments. Demote a user in the IdP and they lose their OIDC assignments on next login — manual assignments stay.
 
-See <Link href="/docs/configuration/sso">SSO setup</Link> for the OIDC connection itself.
+See <Link href="/docs/authentication/sso">SSO setup</Link> for the OIDC connection itself.
 
 ## API keys
 
@@ -156,7 +156,7 @@ After upgrading:
 3. **Set up OIDC mappings** if you use SSO. Configure the **OIDC Groups Claim** and add mappings under **Settings → Authentication**.
 4. **Audit API keys** — the upgrade snapshot is the most permissive safe default. Tighten CI/CD keys to least privilege.
 
-See <Link href="/docs/setup/migrate-v2">Migrate to 2.0</Link> for the full upgrade walkthrough.
+See <Link href="/docs/upgrade/migrate-v2">Migrate to 2.0</Link> for the full upgrade walkthrough.
 
 ## Troubleshooting
 

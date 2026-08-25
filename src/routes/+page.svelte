@@ -11,6 +11,7 @@
 	import * as Code from '#lib/components/ui/code/index.js';
 	import { FeatureCard } from '#lib/components/ui/feature-card/index.js';
 	import { features } from '#lib/config/features.js';
+	import { MANAGER_IMAGES } from '#lib/utils/docker-compose-generator.js';
 	import { resolveInternalPath } from '#lib/utils.js';
 
 	interface StatsHistoryEntry {
@@ -27,10 +28,17 @@
 
 	const STATS_URL = 'https://checkin.getarcane.app/stats';
 	const HISTORY_WINDOW = 14;
+	const MANAGER_IMAGE_LINES = Object.values(MANAGER_IMAGES);
 
-	const composeFile = `services:
+	let imageIndex = $state(0);
+	let imageLineFading = $state(false);
+	let composeHovered = $state(false);
+	let imageFadeTimer: ReturnType<typeof setTimeout> | undefined;
+	let imageAutoplayTimer: ReturnType<typeof setInterval> | undefined;
+
+	const composeFile = $derived(`services:
   arcane:
-    image: ghcr.io/getarcaneapp/manager:latest
+    image: ${MANAGER_IMAGE_LINES[imageIndex]}
     container_name: arcane
     ports:
       - '3552:3552'
@@ -45,7 +53,7 @@
     restart: unless-stopped
 
 volumes:
-  arcane-data:`;
+  arcane-data:`);
 
 	let stats = $state<StatsResponse | null>(null);
 	let statusError = $state<string | null>(null);
@@ -103,6 +111,49 @@ volumes:
 		historyMax = Math.max(1, maxValue);
 		return windowed;
 	};
+
+	const pauseComposeCycle = () => {
+		composeHovered = true;
+		if (imageFadeTimer) {
+			clearTimeout(imageFadeTimer);
+			imageFadeTimer = undefined;
+		}
+		imageLineFading = false;
+	};
+
+	onMount(() => {
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const holdMs = reduceMotion ? 5000 : 3200;
+		const fadeMs = reduceMotion ? 0 : 280;
+
+		imageAutoplayTimer = setInterval(() => {
+			if (composeHovered) return;
+
+			if (fadeMs === 0) {
+				imageIndex = (imageIndex + 1) % MANAGER_IMAGE_LINES.length;
+				return;
+			}
+
+			imageLineFading = true;
+			imageFadeTimer = setTimeout(() => {
+				if (composeHovered) {
+					imageLineFading = false;
+					return;
+				}
+				imageIndex = (imageIndex + 1) % MANAGER_IMAGE_LINES.length;
+				requestAnimationFrame(() => {
+					requestAnimationFrame(() => {
+						imageLineFading = false;
+					});
+				});
+			}, fadeMs);
+		}, holdMs);
+
+		return () => {
+			if (imageAutoplayTimer) clearInterval(imageAutoplayTimer);
+			if (imageFadeTimer) clearTimeout(imageFadeTimer);
+		};
+	});
 
 	onMount(async () => {
 		try {
@@ -193,7 +244,7 @@ volumes:
 				<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
 					<Button
 						size="lg"
-						href="/docs/setup/installation"
+						href="/docs/get-started/installation"
 						onclick={() =>
 							trackEvent('CTA Clicked', { cta: 'get_started', placement: 'home_hero' })}
 						class="group px-8"
@@ -217,6 +268,10 @@ volumes:
 						/>
 					</Button>
 				</div>
+
+				<p class="mt-5 text-sm font-medium tracking-wide text-primary">
+					Always free. Forever. Never changing.
+				</p>
 			</div>
 
 			<div class="relative mx-auto mt-16 w-full max-w-2xl">
@@ -226,7 +281,12 @@ volumes:
 				></div>
 
 				<div
-					class="relative overflow-hidden rounded-xl border border-primary/20 bg-code shadow-lg shadow-primary/5"
+					class="compose-preview relative overflow-hidden rounded-xl border border-primary/20 bg-code shadow-lg shadow-primary/5"
+					class:compose-preview--swap={imageLineFading}
+					role="region"
+					aria-label="Docker Compose example"
+					onmouseenter={pauseComposeCycle}
+					onmouseleave={() => (composeHovered = false)}
 				>
 					<div class="flex items-center gap-3 border-b border-primary/10 bg-surface/80 px-5 py-3">
 						<div class="flex items-center gap-1.5">
@@ -239,6 +299,7 @@ volumes:
 					<Code.Root
 						lang="yaml"
 						code={composeFile}
+						highlight={[3]}
 						data-code-overflow
 						class="rounded-none border-0"
 					>
@@ -408,3 +469,23 @@ volumes:
 		</section>
 	</ContentWrapper>
 </div>
+
+<style>
+	.compose-preview :global(pre .line.line--highlighted) {
+		background-color: color-mix(in oklab, var(--primary) 14%, transparent);
+	}
+
+	.compose-preview :global(pre .line.line--highlighted span) {
+		transition: opacity 280ms ease;
+	}
+
+	.compose-preview--swap :global(pre .line.line--highlighted span) {
+		opacity: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.compose-preview :global(pre .line.line--highlighted span) {
+			transition: none;
+		}
+	}
+</style>

@@ -63,4 +63,4 @@ Secrets still land in `.env.global` in plaintext on the target environment, beca
 ## Related
 
 - <Link href="/docs/features/projects">Projects</Link> — how Compose files and per-project `.env` files are managed.
-- <Link href="/docs/templates">Templates</Link> — variables pair well with templates for parameterized deployments.
+- <Link href="/docs/customization/templates">Templates</Link> — variables pair well with templates for parameterized deployments.

@@ -5,7 +5,7 @@ type ComposeRecord = Record<string, unknown>;
 type ComposeSection = Record<string, ComposeRecord>;
 type ComposeField = ReturnType<typeof getAllFields>[number];
 
-const MANAGER_IMAGES = {
+export const MANAGER_IMAGES = {
 	ghcr: 'ghcr.io/getarcaneapp/manager:latest',
 	quay: 'quay.io/getarcaneapp/manager:latest',
 	docker: 'getarcaneapp/manager:latest'

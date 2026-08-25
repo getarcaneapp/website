@@ -32,7 +32,7 @@ Pick one when you create the environment:
 
 Connection mode is _who connects to whom_. Transport mode is _how the live channel behaves_:
 
-- **`EDGE_TRANSPORT=auto`** — keep a continuous tunnel open. Arcane uses gRPC where possible and falls back to WebSocket.
+- **`EDGE_TRANSPORT=auto`** — keep a continuous tunnel open. Arcane uses gRPC where possible and falls back to WebSocket. Behind Traefik, see <Link href="/docs/networking/traefik">Traefik</Link>.
 - **`EDGE_TRANSPORT=poll`** — check in periodically instead of holding a tunnel open. The first action on an idle environment can take a moment while the connection wakes up.
 
 Generated agent snippets default to `EDGE_TRANSPORT=poll`.

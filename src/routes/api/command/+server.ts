@@ -1,16 +1,19 @@
 import { json } from '@sveltejs/kit';
 import {
 	api,
+	authentication,
 	changelog,
 	cli,
 	configuration,
+	customization,
 	development,
 	features,
+	getStarted,
 	guides,
 	indexPage,
+	networking,
 	security,
-	setup,
-	templates
+	upgrade
 } from '#velite/index.js';
 
 export const prerender = true;
@@ -61,13 +64,16 @@ function pathToHref(pathOrSlug: string): string {
 
 const allDocs: CollectionDoc[] = [
 	...indexPage,
-	...setup,
-	...security,
-	...configuration,
+	...getStarted,
+	...upgrade,
 	...features,
+	...customization,
+	...configuration,
+	...authentication,
+	...networking,
+	...security,
 	...guides,
 	...development,
-	...templates,
 	...cli,
 	...api,
 	...changelog

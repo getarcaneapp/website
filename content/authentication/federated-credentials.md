@@ -13,7 +13,7 @@ Federated credentials let an external workload — a GitHub Actions job, a GitLa
 You register a **trust rule** once. From then on, any workload that matches the rule can exchange its OIDC token for a short-lived Arcane token automatically.
 
 > [!NOTE]
-> This is for machines, not people. For interactive sign-in by human users, see <Link href="/docs/configuration/sso">OIDC Single Sign-On</Link>.
+> This is for machines, not people. For interactive sign-in by human users, see <Link href="/docs/authentication/sso">OIDC Single Sign-On</Link>.
 
 ## How it works
 
@@ -134,4 +134,4 @@ Under the hood, Arcane exposes a standard <Link href="https://datatracker.ietf.o
 - Prefer **exact** subject matches; reserve wildcards for scopes you have deliberately chosen to trust.
 - **Disabling or deleting** a credential immediately blocks new exchanges and revokes any tokens it has already issued.
 
-For the roles you can assign and how environment scopes work, see <Link href="/docs/security/rbac">Access Control</Link>.
+For the roles you can assign and how environment scopes work, see <Link href="/docs/authentication/rbac">Access Control</Link>.

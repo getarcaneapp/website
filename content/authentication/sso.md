@@ -40,7 +40,7 @@ Role assignment is driven from your IdP. Arcane reads the user's group claim on 
 2. Set the **OIDC Groups Claim** on the same page if your IdP uses something other than `groups` (e.g. `realm_access.roles` for Keycloak, `memberOf` for Azure AD).
 3. Add mappings in the **OIDC Role Mappings** table, each binding a claim value to a role and an environment scope (Global or a specific environment). The groups claim and the mappings that read it are configured together on this page.
 
-See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the full role catalog and mapping details.
+See <Link href="/docs/authentication/rbac">Role-Based Access Control</Link> for the full role catalog and mapping details.
 
 ## Declarative role mappings (IaC)
 
@@ -54,7 +54,7 @@ Instead of the UI, you can declare OIDC group → role mappings with the `OIDC_R
 ```
 
 - `claimValue` — the value to match in the user's groups claim.
-- `roleId` — the role to grant (see <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the role catalog).
+- `roleId` — the role to grant (see <Link href="/docs/authentication/rbac">Role-Based Access Control</Link> for the role catalog).
 - `environmentId` — optional; scope the assignment to one environment. Omit for a global assignment.
 
 Arcane reconciles these mappings on every startup, so they are read-only in the UI (shown as environment-managed); update them by changing `OIDC_ROLE_MAPPINGS`. The variable also supports the `_FILE` suffix for Docker secrets.

@@ -1,12 +1,15 @@
 import {
+	authentication,
 	cli,
 	configuration,
+	customization,
 	development,
 	features,
+	getStarted,
 	guides,
+	networking,
 	security,
-	setup,
-	templates
+	upgrade
 } from '#velite/index.js';
 
 export const mainNavItems = [
@@ -39,14 +42,17 @@ function toHref(path: string) {
 }
 
 const ALL_DOCS: Doc[] = [
-	...setup,
-	...security,
-	...configuration,
+	...getStarted,
+	...upgrade,
 	...features,
+	...customization,
+	...configuration,
+	...authentication,
+	...networking,
+	...security,
 	...guides,
-	...templates,
-	...development,
-	...cli
+	...cli,
+	...development
 ] as Doc[];
 
 const docByPath = new Map<string, Doc>(ALL_DOCS.map((d) => [d.path, d]));
@@ -69,11 +75,10 @@ function group(title: string, children: Array<SidebarNavItem | null>): SidebarNa
 }
 
 // Sidebar layout — paths listed in display order.
-// Pages can appear under any group regardless of their on-disk folder.
 const GET_STARTED = group('Get Started', [
-	leaf('setup/installation'),
-	leaf('setup/podman'),
-	leaf('guides/lxc-container')
+	leaf('get-started/installation'),
+	leaf('get-started/podman'),
+	leaf('get-started/lxc-container')
 ]);
 
 const SWARM_PARENT: SidebarNavItem = {
@@ -102,9 +107,9 @@ const FEATURES = group('Features', [
 ]);
 
 const CUSTOMIZATION = group('Customization', [
-	leaf('templates', 'Using Templates'),
-	leaf('templates/registries'),
-	leaf('features/variables')
+	leaf('customization/templates', 'Using Templates'),
+	leaf('customization/registries'),
+	leaf('customization/variables')
 ]);
 
 const CONFIGURATION = group('Configuration', [
@@ -115,20 +120,21 @@ const CONFIGURATION = group('Configuration', [
 ]);
 
 const AUTH_ACCESS = group('Authentication & Access', [
-	leaf('configuration/sso'),
-	leaf('security/passkeys'),
-	leaf('security/rbac', 'Access Control'),
-	leaf('security/federated-credentials')
+	leaf('authentication/sso'),
+	leaf('authentication/passkeys'),
+	leaf('authentication/rbac', 'Access Control'),
+	leaf('authentication/federated-credentials')
 ]);
 
 const NETWORKING = group('Networking', [
-	leaf('configuration/proxy'),
-	leaf('configuration/websockets-reverse-proxies'),
-	leaf('configuration/tls')
+	leaf('networking/proxy'),
+	leaf('networking/websockets-reverse-proxies'),
+	leaf('networking/traefik'),
+	leaf('networking/tls')
 ]);
 
 const SECURITY = group('Security & Hardening', [
-	leaf('setup/socket-proxy'),
+	leaf('security/socket-proxy'),
 	leaf('security/account-recovery'),
 	leaf('security/edge-mtls'),
 	leaf('security/verify-artifacts')
@@ -144,11 +150,17 @@ const GUIDES = group('Guides', [
 	leaf('guides/gpu-setup')
 ]);
 
-const UPGRADE = group('Upgrade & Migration', [leaf('setup/migrate-v2'), leaf('setup/next-images')]);
+const UPGRADE = group('Upgrade & Migration', [
+	leaf('upgrade/migrate-v2'),
+	leaf('upgrade/next-images')
+]);
 
 const CLI = group('CLI', [leaf('cli/install'), leaf('cli/config'), leaf('cli/commands')]);
 
-const DEVELOPMENT = group('Development', [leaf('dev/contribute'), leaf('dev/translate')]);
+const DEVELOPMENT = group('Development', [
+	leaf('development/contribute'),
+	leaf('development/translate')
+]);
 
 const COMMUNITY: SidebarNavItem = {
 	title: 'Community',

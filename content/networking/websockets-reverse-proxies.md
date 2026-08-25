@@ -88,7 +88,7 @@ Apache's `mod_proxy` adds `X-Forwarded-For` automatically; set `TRUSTED_PROXIES`
 
 ## Traefik Configuration
 
-Traefik proxies WebSocket connections automatically, so no extra middleware is needed for live updates to work. When running Arcane and Traefik with Docker Compose, configure the router and service with labels on the Arcane container:
+Traefik proxies WebSockets without extra middleware. Add these labels to the Arcane service, set `APP_URL` to the public site (leave off `:3552` — Arcane builds `wss://` from that URL), and set `TRUSTED_PROXIES` to the Docker network Traefik and Arcane share.
 
 ```yaml
 services:
@@ -106,10 +106,7 @@ services:
       - traefik.http.services.arcane.loadbalancer.server.port=3552
 ```
 
-Notes:
-
-- Set `APP_URL` to the public URL only — do **not** append the internal port (`:3552`). Arcane derives the WebSocket (`wss://`) address from `APP_URL`; an internal port that isn't exposed publicly breaks the WebSocket connection.
-- Set `TRUSTED_PROXIES` to the subnet of the Docker network that Traefik and Arcane share. The example uses `172.16.0.0/12`, which covers Docker's entire default address range and works without further setup; to scope it down to your actual network, see [Trust the proxy with `TRUSTED_PROXIES`](#trust-the-proxy-with-trusted_proxies).
+If you run Edge Agents with `EDGE_TRANSPORT=auto`, continue with the <Link href="/docs/networking/traefik">Traefik</Link> page.
 
 ## Trust the proxy with `TRUSTED_PROXIES`
 

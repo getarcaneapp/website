@@ -2,16 +2,19 @@ import { error } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 import {
 	api,
+	authentication,
 	cli,
 	configuration,
+	customization,
 	development,
 	features,
+	getStarted,
 	guides,
 	indexPage,
+	networking,
 	privacy,
 	security,
-	setup,
-	templates
+	upgrade
 } from '#velite/index.js';
 
 type CollectionDoc = (typeof indexPage)[number];
@@ -20,14 +23,17 @@ const allDocs: CollectionDoc[] = [
 	...indexPage,
 	...api,
 	...privacy,
-	...setup,
-	...security,
-	...configuration,
+	...getStarted,
+	...upgrade,
 	...features,
+	...customization,
+	...configuration,
+	...authentication,
+	...networking,
+	...security,
 	...guides,
-	...development,
-	...templates,
-	...cli
+	...cli,
+	...development
 ];
 
 interface DocModule {

@@ -11,26 +11,30 @@ description: Thanks for helping make Arcane better! We've built a modern, stream
 
 Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
 
-> **Using AI tools?** Please read our <Link href="https://github.com/getarcaneapp/arcane/blob/main/AI_POLICY.md">AI Usage Policy</Link> before contributing.
+> [!IMPORTANT]
+> Using AI tools? Read the <Link href="https://github.com/getarcaneapp/arcane/blob/main/AI_POLICY.md">AI Usage Policy</Link> before contributing. For project conventions, see <Link href="https://github.com/getarcaneapp/arcane/blob/main/AGENTS.md">AGENTS.md</Link>.
 
-## 🌟 Ways to Contribute
+## Ways to Contribute
 
-- 🐛 **Report bugs** using our issue templates
-- 💡 **Suggest features** or improvements
-- 🔧 **Code contributions** (frontend, backend, DevOps)
-- 📚 **Documentation** improvements
-- 🌍 **Translations** via <Link href="https://crowdin.com/project/arcane-docker-management">Crowdin</Link>
-- 🧪 **Testing** and quality assurance
+- **Report bugs** using our issue templates
+- **Suggest features** or improvements
+- **Code contributions** (frontend, backend, DevOps)
+- **Documentation** improvements
+- **Translations** via <Link href="https://crowdin.com/project/arcane-docker-management">Crowdin</Link> — see <Link href="/docs/development/translate">Translating Arcane</Link>
+- **Testing** and quality assurance
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
-- **Docker & Docker Compose** (that's it! 🎉)
+- **Docker & Docker Compose**
 - **VS Code** based IDE (recommended for the best developer experience)
+- **<Link href="https://viteplus.dev">Vite+</Link>** — manages the Node toolchain, formatting, linting, and pre-commit hooks when working outside Docker:
+
+<Snippet text="curl -fsSL https://vite.plus | bash" class="mt-2 mb-4 w-full" />
 
 > [!IMPORTANT]
-> The Working Directory; Unless otherwise specified, all commands in this guide should be run from the project root directory (`arcane/`).
+> Unless otherwise specified, run every command in this guide from the project root (`arcane/`).
 
 ### 1. Fork and Clone
 
@@ -39,23 +43,23 @@ Thanks for helping make Arcane better! We've built a modern, streamlined develop
 
 ### 2. Start Development Environment
 
-From the project root directory:
+From the project root:
 
 <Snippet text="./scripts/development/dev.sh start" class="mt-2 mb-4 w-full" />
 
-That's it! The development environment will automatically:
+The development environment will:
 
-- 🔥 Start both frontend and backend with hot reload
-- 🐳 Handle all dependencies via Docker
-- 📊 Set up health checks and monitoring
-- 💾 Create persistent storage for your development data
+- Start both frontend and backend with hot reload
+- Handle all dependencies via Docker
+- Set up health checks and monitoring
+- Create persistent storage for your development data
 
 Access your development environment:
 
 - **Frontend**: <Link href="http://localhost:3000">http://localhost:3000</Link> (SvelteKit with HMR)
 - **Backend**: <Link href="http://localhost:3552">http://localhost:3552</Link> (Go with Air hot reload)
 
-## 🎯 VS Code Integration
+## VS Code Integration
 
 For the best development experience, we've included VS Code tasks and workspace configuration.
 
@@ -86,7 +90,7 @@ Use `Ctrl/Cmd+Shift+P` → "Tasks: Run Task" to access:
 
 Press `Ctrl/Cmd+Shift+B` to run the default build task (Start Environment).
 
-## 🔍 Development Workflow
+## Development Workflow
 
 ### Making Changes
 
@@ -118,13 +122,13 @@ Press `Ctrl/Cmd+Shift+B` to run the default build task (Start Environment).
    # Or use VS Code Task: "Logs"
    ```
 
-4. **Make your changes** - hot reload will automatically update:
+4. **Make your changes** — hot reload will automatically update:
    - **Frontend**: Instant HMR via Vite
    - **Backend**: Auto-rebuild and restart via Air
 
-## 🛠️ Development Commands
+## Development Commands
 
-**Note**: All commands should be run from the project root directory (`arcane/`).
+All commands should be run from the project root (`arcane/`).
 
 ### Justfile Shortcuts
 
@@ -148,9 +152,8 @@ just lint frontend
 just format frontend
 just format all --check
 
-# Dependencies and Go modules
+# Dependencies
 just deps install all
-just gomod tidy all
 ```
 
 ### Environment Management
@@ -181,9 +184,6 @@ just gomod tidy all
 # Interactive log selection
 ./scripts/development/dev.sh logs
 
-# All services
-./scripts/development/dev.sh logs
-
 # Frontend only (Vite/SvelteKit)
 ./scripts/development/dev.sh logs frontend
 
@@ -195,21 +195,33 @@ just gomod tidy all
 ./scripts/development/dev.sh shell backend
 ```
 
-## 🎨 Code Quality
+## Code Quality
 
 ### Automatic Formatting & Linting
 
 Both services include development-time linting and formatting:
 
-- **Frontend**: ESLint + Prettier (configured in VS Code)
+- **Frontend / TypeScript**: <Link href="https://viteplus.dev">Vite+</Link> (`vp fmt`, `vp check`) plus Svelte/TypeScript checks. Formatting and lint rules live in the root `vite.config.ts`.
 - **Backend**: Go fmt + Go vet (built into Air hot reload)
+
+### Pre-commit Hooks
+
+Format checks run automatically on staged files via the Vite+ git hook dispatcher. Enable it once after cloning:
+
+<Snippet text="vp hooks enable" class="mt-2 mb-4 w-full" />
 
 ### Manual Commands
 
-If you need to run checks manually:
-
 ```bash
-# Frontend checks
+# JS/TS formatting and lint (Vite+, run from project root)
+vp fmt --check
+vp check
+
+# Or via the Justfile
+just format all --check
+just lint js
+
+# Inside the Docker dev environment
 docker compose -f docker/compose.dev.yaml exec frontend pnpm check
 docker compose -f docker/compose.dev.yaml exec frontend pnpm format
 
@@ -218,7 +230,7 @@ docker compose -f docker/compose.dev.yaml exec backend go fmt ./...
 docker compose -f docker/compose.dev.yaml exec backend go vet ./...
 ```
 
-## 📝 Commit Guidelines
+## Commit Guidelines
 
 We use **Conventional Commits** for clear, semantic commit messages:
 
@@ -231,24 +243,62 @@ git commit -m "refactor: simplify API response handling"
 
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
-## 🔄 Pull Request Process
+## Pull Request Process
 
-1. **Keep changes focused** - One feature/fix per PR
-2. **Test your changes** - Ensure both frontend and backend work
-3. **Update documentation** - If you change APIs or add features
-4. **Link issues** - Reference issues with "Closes #123" or "Fixes #456"
-5. **Be responsive** - Address review feedback promptly
+1. **Keep changes focused** — one feature or fix per PR
+2. **Test your changes** — ensure both frontend and backend work
+3. **Update documentation** — if you change APIs or add features
+4. **Link issues** — reference issues with `Closes #123` or `Fixes #456`
+5. **Be responsive** — address review feedback promptly
 
 ### PR Checklist
 
-- [ ] Code builds successfully in development environment
+- [ ] Code builds successfully in the development environment
 - [ ] Frontend hot reload works correctly
 - [ ] Backend hot reload works correctly
 - [ ] No linting errors
 - [ ] Commit messages follow conventional format
 - [ ] PR description explains the change and why it's needed
 
-## 🐛 Troubleshooting
+## Troubleshooting
+
+### Development startup checklist
+
+When `./scripts/development/dev.sh start` fails or the app does not load, validate the environment in this order before changing code:
+
+1. Confirm Docker is installed and the daemon is reachable:
+
+   ```bash
+   docker info
+   docker compose version
+   ```
+
+2. Confirm the development compose file is valid from the project root:
+
+   ```bash
+   docker compose -f docker/compose.dev.yaml -p arcane-dev config
+   ```
+
+3. Start the stack and inspect container state:
+
+   ```bash
+   ./scripts/development/dev.sh start
+   ./scripts/development/dev.sh status
+   ```
+
+4. Check the expected development endpoints:
+
+   ```bash
+   curl -f http://localhost:3000
+   curl -f http://localhost:3552/api/health
+   ```
+
+5. If a service is unhealthy, read the targeted logs first:
+
+   ```bash
+   ./scripts/development/dev.sh logs frontend
+   ./scripts/development/dev.sh logs backend
+   ```
 
 ### Common Issues
 
@@ -285,6 +335,6 @@ docker system prune -f
 
 - **Bug Report**: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=bug.yml">Create an issue</Link>
 - **Feature Request**: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=feature.yml">Suggest a feature</Link>
-- **Development Question**: Open a discussion in the repository
+- **Development Question**: <Link href="https://github.com/getarcaneapp/arcane/discussions">Open a discussion</Link>
 
-Thank you for contributing to Arcane! Your help makes this project better for everyone. 🚀
+Thank you for contributing to Arcane.
