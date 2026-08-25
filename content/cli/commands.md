@@ -24,7 +24,7 @@ Check who you're signed in as, or sign out:
 
 <Snippet text="arcane-cli auth logout" class="mt-2" />
 
-For CI, use an API key or a federated credential instead of an interactive login — see <Link href="/docs/security/federated-credentials">Federated Credentials</Link>.
+For CI, use an API key or a federated credential instead of an interactive login — see <Link href="/docs/authentication/federated-credentials">Federated Credentials</Link>.
 
 ## Choose an environment
 

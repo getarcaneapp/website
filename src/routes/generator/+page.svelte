@@ -19,7 +19,7 @@
 					</p>
 				</div>
 				<div class="generator-hero__links">
-					<Button variant="outline" size="sm" href="/docs/setup/installation" class="group">
+					<Button variant="outline" size="sm" href="/docs/get-started/installation" class="group">
 						<BookOpen class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
 						Setup Guide
 					</Button>

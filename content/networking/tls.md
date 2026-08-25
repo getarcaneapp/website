@@ -11,7 +11,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 This guide explains how to run Arcane securely over HTTPS, either behind a reverse proxy or by letting Arcane handle TLS directly.
 
 > [!NOTE]
-> If you use a reverse proxy, make sure WebSockets are configured correctly. See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration</Link> guide.
+> If you use a reverse proxy, make sure WebSockets are configured correctly. See the <Link href="/docs/networking/websockets-reverse-proxies">WebSocket Configuration</Link> guide.
 
 ## Overview
 

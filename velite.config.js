@@ -27,21 +27,15 @@ const indexPage = defineCollection({
 	schema: docSchema
 });
 
-const setup = defineCollection({
-	name: 'setup',
-	pattern: './setup/**/*.md',
+const getStarted = defineCollection({
+	name: 'getStarted',
+	pattern: './get-started/**/*.md',
 	schema: docSchema
 });
 
-const configuration = defineCollection({
-	name: 'configuration',
-	pattern: './configuration/**/*.md',
-	schema: docSchema
-});
-
-const security = defineCollection({
-	name: 'security',
-	pattern: './security/**/*.md',
+const upgrade = defineCollection({
+	name: 'upgrade',
+	pattern: './upgrade/**/*.md',
 	schema: docSchema
 });
 
@@ -51,33 +45,57 @@ const features = defineCollection({
 	schema: docSchema
 });
 
+const customization = defineCollection({
+	name: 'customization',
+	pattern: './customization/**/*.md',
+	schema: docSchema
+});
+
+const configuration = defineCollection({
+	name: 'configuration',
+	pattern: './configuration/**/*.md',
+	schema: docSchema
+});
+
+const authentication = defineCollection({
+	name: 'authentication',
+	pattern: './authentication/**/*.md',
+	schema: docSchema
+});
+
+const networking = defineCollection({
+	name: 'networking',
+	pattern: './networking/**/*.md',
+	schema: docSchema
+});
+
+const security = defineCollection({
+	name: 'security',
+	pattern: './security/**/*.md',
+	schema: docSchema
+});
+
 const guides = defineCollection({
 	name: 'guides',
 	pattern: './guides/**/*.md',
 	schema: docSchema
 });
 
-const development = defineCollection({
-	name: 'development',
-	pattern: './dev/**/*.md',
+const cli = defineCollection({
+	name: 'cli',
+	pattern: './cli/**/*.md',
 	schema: docSchema
 });
 
-const templates = defineCollection({
-	name: 'templates',
-	pattern: ['./templates.md', './templates/**/*.md'],
+const development = defineCollection({
+	name: 'development',
+	pattern: './development/**/*.md',
 	schema: docSchema
 });
 
 const changelog = defineCollection({
 	name: 'changelog',
 	pattern: './changelog.md',
-	schema: docSchema
-});
-
-const cli = defineCollection({
-	name: 'cli',
-	pattern: './cli/**/*.md',
 	schema: docSchema
 });
 
@@ -97,15 +115,18 @@ export default defineConfig({
 	root: './content',
 	collections: {
 		indexPage,
-		setup,
-		configuration,
-		security,
+		getStarted,
+		upgrade,
 		features,
+		customization,
+		configuration,
+		authentication,
+		networking,
+		security,
 		guides,
-		development,
-		templates,
-		changelog,
 		cli,
+		development,
+		changelog,
 		api,
 		privacy
 	},

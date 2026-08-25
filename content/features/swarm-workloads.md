@@ -45,7 +45,7 @@ To do that, Arcane fetches the current Swarm services and groups them by the `co
 
 Useful shortcuts in the stack editor:
 
-- **Use Template** — load a saved Arcane template. See <Link href="/docs/templates">Templates</Link>.
+- **Use Template** — load a saved Arcane template. See <Link href="/docs/customization/templates">Templates</Link>.
 - **Convert from Docker Run** — paste a `docker run` and let Arcane generate Compose and env content as a starting point. For standalone prep, use the <Link href="/generator">Compose Generator</Link>.
 - **Save as Template** — save the editor content as a reusable template.
 - **Override file** — add a `compose.override.yaml` alongside the main Compose file. Arcane merges the two at deploy time, the same way the Docker CLI does.

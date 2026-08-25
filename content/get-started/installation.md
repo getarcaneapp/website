@@ -10,7 +10,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE] This guide walks you through a full Arcane installation.
-> If you want to use Arcane with a remote server, see <Link href="/docs/features/environments">the remote environments guide</Link>. If you want extra protection for Docker access, see the <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link> guide.
+> If you want to use Arcane with a remote server, see <Link href="/docs/features/environments">the remote environments guide</Link>. If you want extra protection for Docker access, see the <Link href="/docs/security/socket-proxy">Socket Proxy Setup</Link> guide.
 
 ## Docker Compose (Recommended)
 
@@ -96,7 +96,7 @@ If you're running on SELinux-enabled systems, use one of these options:
 
 ### A) Use socket proxy (recommended)
 
-Use the socket proxy page for full examples at <Link href="/docs/setup/socket-proxy">Socket Proxy Setup</Link>. This is the recommended layout for SELinux and hardened hosts.
+Use the socket proxy page for full examples at <Link href="/docs/security/socket-proxy">Socket Proxy Setup</Link>. This is the recommended layout for SELinux and hardened hosts.
 
 ```yaml
 services:
@@ -205,11 +205,11 @@ Password:
 > [!NOTE]
 > Arcane uses WebSockets to stay connected in real time. If you're putting Arcane behind a reverse proxy or custom domain, make sure WebSocket support is enabled.
 >
-> See the <Link href="/docs/configuration/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for setup steps for Nginx, Apache, and other reverse proxies.
+> See the <Link href="/docs/networking/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for setup steps for Nginx, Apache, and other reverse proxies.
 
 ## 8. Behind an outbound HTTP proxy?
 
-If Arcane needs to reach the internet through a proxy, for example to download templates or check for updates, see the <Link href="/docs/configuration/proxy">HTTP Proxy Configuration Guide</Link>.
+If Arcane needs to reach the internet through a proxy, for example to download templates or check for updates, see the <Link href="/docs/networking/proxy">HTTP Proxy Configuration Guide</Link>.
 
 ## Supported architectures
 
@@ -267,4 +267,4 @@ This version asks before removing Arcane data, the Arcane user/group, or Docker.
 
 ## Next (Preview) Builds
 
-Want to try the latest features before they are officially released? See the <Link href="/docs/setup/next-images">Next Builds</Link> guide for the `:next` images.
+Want to try the latest features before they are officially released? See the <Link href="/docs/upgrade/next-images">Next Builds</Link> guide for the `:next` images.

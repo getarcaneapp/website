@@ -67,7 +67,7 @@ Arcane Mobile also supports Home Screen and Lock Screen widgets, plus Siri and S
 - Long-press a bottom tab to replace it with another frequently used area.
 - If you manage more than one environment, check the active environment before running actions.
 - Some tabs only appear for admins, users with the right role, or servers that support newer Arcane features.
-- For role and permission details, see [Role-Based Access](/docs/security/rbac).
+- For role and permission details, see [Role-Based Access](/docs/authentication/rbac).
 
 ## Troubleshooting
 
@@ -87,4 +87,4 @@ If you run into trouble, you can:
 
 - ask in the [Arcane Discord](https://discord.gg/WyXYpdyV3Z)
 - report iOS app issues on [GitHub](https://github.com/getarcaneapp/ios/issues)
-- check the [Arcane installation guide](/docs/setup/installation) if you are still setting up your server
+- check the [Arcane installation guide](/docs/get-started/installation) if you are still setting up your server

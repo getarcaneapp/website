@@ -18,7 +18,7 @@ Registering a passkey does not turn on MFA. Enabling MFA is a separate switch.
 > [!IMPORTANT]
 > Passkeys are bound to the hostname you serve Arcane from. Arcane derives the WebAuthn relying party ID from the hostname of `APP_URL`, and the origin from `APP_URL` itself. If `APP_URL` has no hostname the passkey service fails to start, and a passkey registered at one hostname will not work at another. Set `APP_URL` to the URL your users actually browse to, over HTTPS, before anyone registers a passkey. See <Link href="/docs/configuration/environment">Environment Variables</Link>.
 
-Browsers only expose the WebAuthn API in a secure context, so passkeys need HTTPS (or `localhost`). On a plain-HTTP deployment Arcane shows _"Passkeys require a supported browser and a secure HTTPS connection."_ and hides the controls. See <Link href="/docs/configuration/tls">TLS</Link> or put Arcane behind a terminating <Link href="/docs/configuration/proxy">proxy</Link>.
+Browsers only expose the WebAuthn API in a secure context, so passkeys need HTTPS (or `localhost`). On a plain-HTTP deployment Arcane shows _"Passkeys require a supported browser and a secure HTTPS connection."_ and hides the controls. See <Link href="/docs/networking/tls">TLS</Link> or put Arcane behind a terminating <Link href="/docs/networking/proxy">proxy</Link>.
 
 ## Register a passkey
 
@@ -71,5 +71,5 @@ If you have lost both your passkeys and your recovery codes, an operator with sh
 
 ## Related
 
-- <Link href="/docs/configuration/sso">OIDC Single Sign-On</Link> — passkey MFA layers on top of OIDC sign-in.
-- <Link href="/docs/security/rbac">Access Control</Link> — what an account can do once it is in.
+- <Link href="/docs/authentication/sso">OIDC Single Sign-On</Link> — passkey MFA layers on top of OIDC sign-in.
+- <Link href="/docs/authentication/rbac">Access Control</Link> — what an account can do once it is in.

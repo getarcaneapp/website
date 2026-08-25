@@ -84,7 +84,8 @@
 				typeof config.projectsHostPath === 'string' && config.projectsHostPath.trim()
 					? 'host_mount'
 					: 'named_volume',
-			selinux: config.enableSelinux === true ? 'enabled' : 'disabled'
+			selinux: config.enableSelinux === true ? 'enabled' : 'disabled',
+			registry: getRegistryAnalyticsValue(config.registry)
 		});
 		dialogOpen = true;
 	}
@@ -120,9 +121,20 @@
 		return false;
 	}
 
+	function getSelectLabel(field: GeneratorField, value: string | boolean): string {
+		if (typeof value !== 'string') return String(value);
+		return field.options?.find((option) => option.value === value)?.label ?? value;
+	}
+
+	function getRegistryAnalyticsValue(value: string | boolean): 'ghcr' | 'quay' | 'docker' {
+		if (value === 'quay' || value === 'docker') return value;
+		return 'ghcr';
+	}
+
 	function formatFieldValue(field: GeneratorField): string {
 		const value = config[field.key];
 		if (field.type === 'checkbox') return value === true ? 'Enabled' : 'Off';
+		if (field.type === 'select') return getSelectLabel(field, value);
 		if (!value) return field.canGenerate ? 'Auto' : '—';
 		if (field.type === 'password') return '••••••••';
 		return String(value);
@@ -237,7 +249,9 @@
 																		<Select.Trigger
 																			class="w-full border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
 																		>
-																			{config[field.key] || field.placeholder || 'Select...'}
+																			{getSelectLabel(field, config[field.key]) ||
+																				field.placeholder ||
+																				'Select...'}
 																		</Select.Trigger>
 																		<Select.Content>
 																			{#each field.options || [] as option (option.value)}

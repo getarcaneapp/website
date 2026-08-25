@@ -5,6 +5,14 @@ type ComposeRecord = Record<string, unknown>;
 type ComposeSection = Record<string, ComposeRecord>;
 type ComposeField = ReturnType<typeof getAllFields>[number];
 
+export const MANAGER_IMAGES = {
+	ghcr: 'ghcr.io/getarcaneapp/manager:latest',
+	quay: 'quay.io/getarcaneapp/manager:latest',
+	docker: 'getarcaneapp/manager:latest'
+} as const;
+
+type ImageRegistry = keyof typeof MANAGER_IMAGES;
+
 interface GeneratorOptions {
 	port: string;
 	dataPath: string;
@@ -12,6 +20,7 @@ interface GeneratorOptions {
 	useSocketProxy: boolean;
 	enableSelinux: boolean;
 	projectsHostPath: string;
+	image: string;
 }
 
 interface ComposeDocument {
@@ -34,6 +43,11 @@ function getString(config: GeneratorConfig, key: string, fallback: string): stri
 	return typeof value === 'string' && value ? value : fallback;
 }
 
+function getManagerImage(config: GeneratorConfig): string {
+	const registry = getString(config, 'registry', 'ghcr');
+	return MANAGER_IMAGES[registry as ImageRegistry] ?? MANAGER_IMAGES.ghcr;
+}
+
 function getGeneratorOptions(config: GeneratorConfig): GeneratorOptions {
 	return {
 		port: getString(config, 'port', '3552'),
@@ -41,7 +55,8 @@ function getGeneratorOptions(config: GeneratorConfig): GeneratorOptions {
 		dockerSocket: getString(config, 'dockerSocket', '/var/run/docker.sock'),
 		useSocketProxy: config.useSocketProxy === true,
 		enableSelinux: config.enableSelinux === true,
-		projectsHostPath: getString(config, 'projectsHostPath', '').trim()
+		projectsHostPath: getString(config, 'projectsHostPath', '').trim(),
+		image: getManagerImage(config)
 	};
 }
 
@@ -88,7 +103,7 @@ function buildArcaneVolumes(options: GeneratorOptions, environment: string[]): s
 
 function buildArcaneService(options: GeneratorOptions, environment: string[]): ComposeRecord {
 	const service: ComposeRecord = {
-		image: 'ghcr.io/getarcaneapp/manager:latest',
+		image: options.image,
 		container_name: 'arcane',
 		restart: 'unless-stopped',
 		ports: [`${options.port}:3552`],

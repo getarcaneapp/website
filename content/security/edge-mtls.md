@@ -54,7 +54,7 @@ Then enable edge mTLS:
 `EDGE_MTLS_ASSETS_DIR` is where Arcane stores the CA and issued certs. With no `EDGE_MTLS_CA_FILE` set, Arcane generates the edge CA into `EDGE_MTLS_ASSETS_DIR/ca.crt` and `ca.key` - the private key is encrypted at rest with your `ENCRYPTION_KEY`.
 
 > [!NOTE]
-> See <Link href="/docs/configuration/tls">TLS and HTTP/2</Link> if you want Arcane itself to terminate HTTPS, or terminate at a reverse proxy in front of it.
+> See <Link href="/docs/networking/tls">TLS and HTTP/2</Link> if you want Arcane itself to terminate HTTPS, or terminate at a reverse proxy in front of it.
 
 ### Agent
 

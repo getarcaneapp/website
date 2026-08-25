@@ -50,7 +50,7 @@ If you use SQLite with the default `arcane-data` volume, stop Arcane before copy
 - After upgrade, verify at least one global Admin exists and assign any environment-scoped roles you need.
 - The last-global-admin guard is enforced at runtime — you cannot remove the final global Admin through the UI or API. A missing-admin state at startup is logged but does not halt Arcane, so confirm a global Admin exists after upgrading.
 
-See <Link href="/docs/security/rbac">Role-Based Access Control</Link> for the role catalog.
+See <Link href="/docs/authentication/rbac">Role-Based Access Control</Link> for the role catalog.
 
 ## 2. Replace OIDC admin claims
 
@@ -116,7 +116,7 @@ secrets:
     file: ./oidc-role-mappings.json
 ```
 
-See <Link href="/docs/security/rbac#oidc-group-mappings">OIDC group mappings</Link> and <Link href="/docs/configuration/sso">SSO setup</Link>.
+See <Link href="/docs/authentication/rbac#oidc-group-mappings">OIDC group mappings</Link> and <Link href="/docs/authentication/sso">SSO setup</Link>.
 
 ## 3. Review API keys and automation
 
@@ -143,7 +143,7 @@ New API key create/update payloads need explicit permission grants:
 
 Use environment-scoped grants for automation that only touches one Docker environment. Omit `environmentId` only for permissions that should apply globally.
 
-For CI/CD, consider short-lived credentials from <Link href="/docs/security/federated-credentials">Federated Credentials</Link> instead of long-lived API keys.
+For CI/CD, consider short-lived credentials from <Link href="/docs/authentication/federated-credentials">Federated Credentials</Link> instead of long-lived API keys.
 
 ## 4. Remove deleted settings and integrations
 
@@ -177,7 +177,7 @@ See <Link href="/docs/guides/custom-metadata">Custom Metadata</Link>.
 ## 7. Update the container image and runtime
 
 - Change the image to `ghcr.io/getarcaneapp/manager:v2`.
-- Set `APP_URL` to the exact URL your browser uses to reach Arcane (scheme, host, and port). v2 blocks cookie-authenticated cross-origin writes, so a missing or mismatched `APP_URL` causes `403 Cross-origin request blocked` errors in the UI. Behind a reverse proxy, also configure <Link href="/docs/configuration/websockets-reverse-proxies#trust-the-proxy-with-trusted_proxies">trusted proxies</Link>.
+- Set `APP_URL` to the exact URL your browser uses to reach Arcane (scheme, host, and port). v2 blocks cookie-authenticated cross-origin writes, so a missing or mismatched `APP_URL` causes `403 Cross-origin request blocked` errors in the UI. Behind a reverse proxy, also configure <Link href="/docs/networking/websockets-reverse-proxies#trust-the-proxy-with-trusted_proxies">trusted proxies</Link>.
 - Stop relying on root-owned writes from the Arcane container.
 - Check write permissions for `/app/data`, your projects directory, `/builds`, and `/backups`.
 - Use `PUID` and `PGID` only if bind-mounted host files need a specific host owner.

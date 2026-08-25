@@ -56,7 +56,7 @@ Use this when an account has MFA enabled but has lost its passkey and its recove
 
 Unlike the password reset, this one is not restricted to administrators — `--username` accepts any account, and defaults to `arcane`.
 
-It disables passkey MFA, deletes the account's recovery codes, cancels any pending MFA transaction, and revokes the user's sessions. Registered passkeys are left in place, so the user can sign in with their password or OIDC provider and re-enable MFA afterwards. See <Link href="/docs/security/passkeys">Passkeys & MFA</Link>.
+It disables passkey MFA, deletes the account's recovery codes, cancels any pending MFA transaction, and revokes the user's sessions. Registered passkeys are left in place, so the user can sign in with their password or OIDC provider and re-enable MFA afterwards. See <Link href="/docs/authentication/passkeys">Passkeys & MFA</Link>.
 
 ## Sessions end immediately
 

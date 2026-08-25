@@ -72,7 +72,7 @@ Drive role assignment from your IdP. On every login Arcane reads the user's grou
 
 Users in multiple mapped groups get the **union** of their matching assignments. Demote a user in the IdP and they lose their OIDC assignments on next login — manual assignments stay.
 
-See <Link href="/docs/configuration/sso">SSO setup</Link> for the OIDC connection itself.
+See <Link href="/docs/authentication/sso">SSO setup</Link> for the OIDC connection itself.
 
 ## API keys
 
@@ -103,6 +103,8 @@ You cannot grant a key more permissions than you have yourself.
 | `templates`        | `list`, `read`, `create`, `update`, `delete`                 |
 | `variables`        | `read`, `create`, `update`, `delete`, `sync`                 |
 | `git-repositories` | `list`, `read`, `create`, `update`, `delete`, `test`, `sync` |
+| `s3-destinations`  | `list`, `read`, `create`, `update`, `delete`, `test`, `sync` |
+| `system-backups`   | `read`, `manage`, `restore`, `recovery-key`                  |
 | `events`           | `read`, `delete`                                             |
 | `notifications`    | `manage`                                                     |
 | `customize`        | `manage`                                                     |
@@ -130,6 +132,8 @@ You cannot grant a key more permissions than you have yourself.
 > [!NOTE]
 > `notifications:manage` is a **global** permission. Granting it scoped to a single environment does not open **Settings → Notifications** — the assignment has to be Global.
 
+All `system-backups` routes additionally require the user to be a global admin, regardless of granted permissions.
+
 `gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
 
 The legacy `volumes:browse` permission was retired with the <Link href="/docs/features/volumes#volume-workspace">Volume Workspace</Link>; existing roles and API keys that held it are migrated to `volumes:read` automatically. Workspace writes map onto the remaining volume actions: creating and editing files needs `volumes:upload`, deleting needs `volumes:delete`, renaming or moving needs both, and restoring a file from a backup needs `volumes:backup`.
@@ -152,7 +156,7 @@ After upgrading:
 3. **Set up OIDC mappings** if you use SSO. Configure the **OIDC Groups Claim** and add mappings under **Settings → Authentication**.
 4. **Audit API keys** — the upgrade snapshot is the most permissive safe default. Tighten CI/CD keys to least privilege.
 
-See <Link href="/docs/setup/migrate-v2">Migrate to 2.0</Link> for the full upgrade walkthrough.
+See <Link href="/docs/upgrade/migrate-v2">Migrate to 2.0</Link> for the full upgrade walkthrough.
 
 ## Troubleshooting
 

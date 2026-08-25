@@ -10,7 +10,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE] This guide is for using Arcane with Podman.
-> It assumes you have followed the normal <Link href="/docs/setup/installation">Installation</Link> already.
+> It assumes you have followed the normal <Link href="/docs/get-started/installation">Installation</Link> already.
 
 ## 1. Start **_podman.socket_**:
 

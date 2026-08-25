@@ -53,6 +53,43 @@ function getLegacyRedirect(request, url) {
 	return Response.redirect(redirectUrl.toString(), 301);
 }
 
+/** Old content paths that moved when docs folders were aligned with sidebar groups. */
+const DOC_REDIRECTS = {
+	'/docs/setup/installation': '/docs/get-started/installation',
+	'/docs/setup/podman': '/docs/get-started/podman',
+	'/docs/guides/lxc-container': '/docs/get-started/lxc-container',
+	'/docs/setup/migrate-v2': '/docs/upgrade/migrate-v2',
+	'/docs/setup/next-images': '/docs/upgrade/next-images',
+	'/docs/setup/socket-proxy': '/docs/security/socket-proxy',
+	'/docs/templates': '/docs/customization/templates',
+	'/docs/templates/registries': '/docs/customization/registries',
+	'/docs/features/variables': '/docs/customization/variables',
+	'/docs/configuration/sso': '/docs/authentication/sso',
+	'/docs/security/passkeys': '/docs/authentication/passkeys',
+	'/docs/security/rbac': '/docs/authentication/rbac',
+	'/docs/security/federated-credentials': '/docs/authentication/federated-credentials',
+	'/docs/configuration/proxy': '/docs/networking/proxy',
+	'/docs/configuration/websockets-reverse-proxies': '/docs/networking/websockets-reverse-proxies',
+	'/docs/configuration/traefik': '/docs/networking/traefik',
+	'/docs/configuration/tls': '/docs/networking/tls',
+	'/docs/dev/contribute': '/docs/development/contribute',
+	'/docs/dev/translate': '/docs/development/translate'
+};
+
+/**
+ * @param {URL} url
+ * @returns {Response | null}
+ */
+function getDocRedirect(url) {
+	const pathname = url.pathname.replace(/\/+$/, '') || '/';
+	const destination = DOC_REDIRECTS[pathname];
+	if (!destination) return null;
+
+	const redirectUrl = new URL(destination, url.origin);
+	redirectUrl.search = url.search;
+	return Response.redirect(redirectUrl.toString(), 301);
+}
+
 /**
  * @param {unknown} data
  * @returns {number | null}
@@ -207,7 +244,7 @@ export default {
 	 */
 	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
-		const redirect = getLegacyRedirect(request, url);
+		const redirect = getLegacyRedirect(request, url) ?? getDocRedirect(url);
 		if (redirect) return redirect;
 
 		switch (url.pathname) {

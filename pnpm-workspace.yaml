@@ -8,12 +8,12 @@ overrides:
   devalue: ^5.6.2
   undici: ^7.18.2
   rollup: '>=4.59.0'
-  vite: 'catalog:'
   ws: '>=8.21.0'
   sharp: '0.34.5'
+  vite@*: 'catalog:'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.2.9
-  vite-plus: 0.2.9
+  vite: npm:@voidzero-dev/vite-plus-core@0.3.0
+  vite-plus: 0.3.0
 peerDependencyRules:
   allowAny:
     - vite
