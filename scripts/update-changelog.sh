@@ -148,7 +148,8 @@ append_generated_section() {
 		echo "[Release]($url)"
 		echo
 		if [[ -n "$body" ]]; then
-			printf "%s\n" "$body"
+			# AI release notes use ## for categories; nest them under the version heading.
+			printf "%s\n" "$body" | sed -E 's/^##[[:space:]]+/### /'
 		fi
 		echo
 	} >> "$OUT_DIR/$year.md"

@@ -14,13 +14,6 @@
 		items: TocEntry[];
 	};
 
-	type VersionEntry = {
-		title: string;
-		url: string;
-		version: string;
-		date?: string;
-	};
-
 	type ReleaseSection = {
 		id: string;
 		title: string;
@@ -33,25 +26,27 @@
 		defaultExpanded: boolean;
 	};
 
+	const REPO_URL = 'https://github.com/getarcaneapp/arcane';
+
 	let { data }: { data: PageData } = $props();
 
 	const Markdowns = $derived(data.components);
 	const doc = $derived(data.metadata);
 
-	const flattenToc = (items: TocEntry[] = [], depth = 0) => {
-		const out: Array<{ title: string; url: string; depth: number }> = [];
-		for (const item of items) {
-			out.push({ title: item.title, url: item.url, depth });
-			if (item.items?.length) {
-				out.push(...flattenToc(item.items, depth + 1));
-			}
-		}
-		return out;
+	const headingLabel = (heading: HTMLElement) => {
+		const clone = heading.cloneNode(true) as HTMLElement;
+		clone.querySelectorAll('a[href^="#"]').forEach((el) => el.remove());
+		return clone.textContent?.trim() ?? '';
 	};
+
+	const isVersionHeading = (title: string) => /^v?\d+\.\d+/i.test(title);
 
 	const parseVersionTitle = (title: string) => {
 		const match = title.match(/^(v?\d[\w.-]*)\s*-\s*(\d{4}-\d{2}-\d{2})/i);
-		if (!match) return { version: title, date: undefined };
+		if (!match) {
+			const versionOnly = title.match(/^(v?\d[\w.-]*)/i);
+			return { version: versionOnly?.[1] ?? title, date: undefined };
+		}
 		return { version: match[1], date: match[2] };
 	};
 
@@ -76,21 +71,6 @@
 		}))
 	);
 
-	const versionEntries = $derived(
-		sidebarToc.map((item) => {
-			const parsed = parseVersionTitle(item.title);
-			return {
-				title: item.title,
-				url: item.url,
-				version: parsed.version,
-				date: parsed.date
-			} satisfies VersionEntry;
-		})
-	);
-
-	const latestEntry = $derived(versionEntries[0]);
-	const latestDateLabel = $derived(sections[0]?.dateLabel ?? null);
-
 	const searchTerm = $derived(query.trim().toLowerCase());
 	const filteredSections = $derived(
 		searchTerm ? sections.filter((section) => section.searchText.includes(searchTerm)) : sections
@@ -112,32 +92,106 @@
 	};
 
 	const classifySectionHeading = (heading: HTMLHeadingElement) => {
-		const label = heading.textContent?.toLowerCase() ?? '';
-		if (label.includes('new feature')) return 'features';
-		if (label.includes('bug fix')) return 'fixes';
-		if (label.includes('dependencies')) return 'deps';
+		const label = headingLabel(heading).toLowerCase();
+		if (label.includes('feature')) return 'features';
+		if (label.includes('fix') || label.includes('bug')) return 'fixes';
+		if (label.includes('dependenc')) return 'deps';
 		if (label.includes('security')) return 'security';
-		if (label.includes('other')) return 'other';
+		if (label.includes('refactor')) return 'refactor';
+		if (label.includes('other') || label.includes('performance')) return 'other';
 		return 'general';
+	};
+
+	const markCategoryHeading = (heading: HTMLHeadingElement, tocItems: TocEntry[]) => {
+		heading.dataset.kind = classifySectionHeading(heading);
+		if (!heading.id) return;
+		tocItems.push({
+			title: headingLabel(heading),
+			url: `#${heading.id}`,
+			items: []
+		});
+	};
+
+	const createExternalLink = (href: string, text: string) => {
+		const link = document.createElement('a');
+		link.href = href;
+		link.target = '_blank';
+		link.rel = 'noopener noreferrer';
+		link.textContent = text;
+		return link;
+	};
+
+	const enhanceReleaseContent = (nodes: Node[]) => {
+		const wrap = document.createElement('div');
+		for (const node of nodes) wrap.appendChild(node);
+
+		wrap.querySelectorAll('code').forEach((code) => {
+			if (code.closest('a')) return;
+			const hash = code.textContent?.trim() ?? '';
+			if (!/^[a-f0-9]{7,40}$/i.test(hash)) return;
+			const link = createExternalLink(`${REPO_URL}/commit/${hash}`, '');
+			code.parentNode?.insertBefore(link, code);
+			link.appendChild(code);
+		});
+
+		const texts: Text[] = [];
+		const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
+		while (walker.nextNode()) {
+			const node = walker.currentNode as Text;
+			if (node.parentElement?.closest('a, code, pre')) continue;
+			if (!node.textContent || !/\(#\d+\)|\(@/.test(node.textContent)) continue;
+			texts.push(node);
+		}
+
+		for (const node of texts) {
+			const value = node.textContent ?? '';
+			const mentionRe = /\(#(\d+)\)|\(@([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\[bot\])?)\)/g;
+			const frag = document.createDocumentFragment();
+			let last = 0;
+			for (const match of value.matchAll(mentionRe)) {
+				const index = match.index ?? 0;
+				if (index > last) frag.appendChild(document.createTextNode(value.slice(last, index)));
+				frag.appendChild(document.createTextNode('('));
+				if (match[1]) {
+					frag.appendChild(createExternalLink(`${REPO_URL}/pull/${match[1]}`, `#${match[1]}`));
+				} else {
+					const handle = match[2];
+					const user = handle.replace(/\[bot]$/, '');
+					frag.appendChild(createExternalLink(`https://github.com/${user}`, `@${handle}`));
+				}
+				frag.appendChild(document.createTextNode(')'));
+				last = index + match[0].length;
+			}
+			if (last < value.length) frag.appendChild(document.createTextNode(value.slice(last)));
+			node.parentNode?.replaceChild(frag, node);
+		}
+
+		return Array.from(wrap.childNodes);
 	};
 
 	const buildSections = (container: HTMLElement): ReleaseSection[] => {
 		const results: ReleaseSection[] = [];
-		const headings = Array.from(container.querySelectorAll('h2'));
+		const headings = Array.from(container.querySelectorAll('h2')).filter((heading) =>
+			isVersionHeading(headingLabel(heading))
+		);
 
 		headings.forEach((heading, index) => {
 			const nodes: Node[] = [];
 			let cursor = heading.nextSibling;
-			while (
-				cursor &&
-				!(cursor instanceof HTMLHeadingElement && cursor.tagName.toLowerCase() === 'h2')
-			) {
+			while (cursor) {
+				if (
+					cursor instanceof HTMLHeadingElement &&
+					cursor.tagName.toLowerCase() === 'h2' &&
+					isVersionHeading(headingLabel(cursor))
+				) {
+					break;
+				}
 				const next = cursor.nextSibling;
 				nodes.push(cursor);
 				cursor = next;
 			}
 
-			const titleText = heading.textContent?.trim() ?? '';
+			const titleText = headingLabel(heading);
 			const parsed = parseVersionTitle(titleText);
 			const headingId = heading.id || `release-${index + 1}`;
 
@@ -149,39 +203,27 @@
 
 			const releaseUrl = releaseParagraph?.querySelector('a')?.getAttribute('href') ?? undefined;
 
-			const contentNodes = nodes.filter(
-				(node) =>
-					node !== releaseParagraph &&
-					!(node.nodeType === Node.TEXT_NODE && !node.textContent?.trim())
+			const contentNodes = enhanceReleaseContent(
+				nodes.filter(
+					(node) =>
+						node !== releaseParagraph &&
+						!(node.nodeType === Node.TEXT_NODE && !node.textContent?.trim())
+				)
 			);
 			const tocItems: TocEntry[] = [];
 			for (const node of contentNodes) {
-				if (node instanceof HTMLHeadingElement && node.tagName.toLowerCase() === 'h3') {
-					node.dataset.kind = classifySectionHeading(node);
-					if (node.id) {
-						tocItems.push({
-							title: node.textContent?.trim() ?? '',
-							url: `#${node.id}`,
-							items: []
-						});
-					}
+				if (
+					node instanceof HTMLHeadingElement &&
+					(node.tagName.toLowerCase() === 'h2' || node.tagName.toLowerCase() === 'h3')
+				) {
+					markCategoryHeading(node, tocItems);
 				}
 				if (node instanceof HTMLElement) {
-					node.querySelectorAll('h3').forEach((subheading) => {
+					node.querySelectorAll('h2, h3').forEach((subheading) => {
 						if (subheading instanceof HTMLHeadingElement) {
-							subheading.dataset.kind = classifySectionHeading(subheading);
-							if (subheading.id) {
-								tocItems.push({
-									title: subheading.textContent?.trim() ?? '',
-									url: `#${subheading.id}`,
-									items: []
-								});
-							}
+							markCategoryHeading(subheading, tocItems);
 						}
 					});
-				}
-				if (node.parentNode === container) {
-					node.parentNode.removeChild(node);
 				}
 			}
 
@@ -227,13 +269,6 @@
 					{#if doc.description}
 						<p class="changelog-subtitle">{doc.description}</p>
 					{/if}
-				</div>
-				<div class="changelog-hero__meta">
-					<div class="changelog-meta-card">
-						<p class="changelog-meta-label">Latest release</p>
-						<p class="changelog-meta-value">{latestEntry?.version ?? '—'}</p>
-						<p class="changelog-meta-detail">{latestDateLabel ?? 'No date available'}</p>
-					</div>
 				</div>
 			</section>
 
@@ -340,7 +375,6 @@
 	.changelog-hero {
 		display: flex;
 		flex-direction: column;
-		gap: 2rem;
 		align-items: flex-start;
 	}
 
@@ -361,37 +395,6 @@
 		font-size: 1.1rem;
 		color: var(--muted-foreground);
 		max-width: 36rem;
-	}
-
-	.changelog-hero__meta {
-		display: grid;
-		gap: 1rem;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-	}
-
-	.changelog-meta-card {
-		padding: 1rem 1.25rem;
-		border-radius: var(--radius);
-		background: var(--background);
-		border: 1px solid var(--border);
-		display: flex;
-		flex-direction: column;
-		gap: 0.4rem;
-	}
-
-	.changelog-meta-label {
-		font-size: 0.75rem;
-		color: var(--muted-foreground);
-	}
-
-	.changelog-meta-value {
-		font-size: 1.25rem;
-		font-weight: 600;
-	}
-
-	.changelog-meta-detail {
-		font-size: 0.85rem;
-		color: var(--muted-foreground);
 	}
 
 	.changelog-layout {
@@ -596,7 +599,7 @@
 		overflow-x: auto;
 	}
 
-	:global(.changelog-entry__body h3) {
+	:global(.changelog-entry__body :is(h2, h3)) {
 		margin-top: 0.5rem;
 		margin-bottom: 0;
 		font-size: 0.8rem;
@@ -611,27 +614,35 @@
 		width: fit-content;
 	}
 
-	:global(.changelog-entry__body h3:first-child) {
+	:global(.changelog-entry__body :is(h2, h3):first-child) {
 		margin-top: 0;
 	}
 
-	:global(.changelog-entry__body h3[data-kind='features']) {
+	:global(.changelog-entry__body :is(h2, h3) a[href^='#']) {
+		display: none;
+	}
+
+	:global(.changelog-entry__body :is(h2, h3)[data-kind='features']) {
 		background: color-mix(in oklab, var(--primary) 8%, transparent);
 	}
 
-	:global(.changelog-entry__body h3[data-kind='fixes']) {
+	:global(.changelog-entry__body :is(h2, h3)[data-kind='fixes']) {
 		background: color-mix(in oklab, var(--chart-2) 8%, transparent);
 	}
 
-	:global(.changelog-entry__body h3[data-kind='deps']) {
+	:global(.changelog-entry__body :is(h2, h3)[data-kind='deps']) {
 		background: color-mix(in oklab, var(--chart-4) 8%, transparent);
 	}
 
-	:global(.changelog-entry__body h3[data-kind='security']) {
+	:global(.changelog-entry__body :is(h2, h3)[data-kind='security']) {
 		background: color-mix(in oklab, var(--destructive) 8%, transparent);
 	}
 
-	:global(.changelog-entry__body h3[data-kind='other']) {
+	:global(.changelog-entry__body :is(h2, h3)[data-kind='refactor']) {
+		background: color-mix(in oklab, var(--chart-5, var(--chart-3)) 8%, transparent);
+	}
+
+	:global(.changelog-entry__body :is(h2, h3)[data-kind='other']) {
 		background: color-mix(in oklab, var(--chart-3) 8%, transparent);
 	}
 
@@ -650,23 +661,6 @@
 	}
 
 	@media (min-width: 1024px) {
-		.changelog-hero {
-			display: grid;
-			grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
-			grid-template-areas: 'content meta';
-			align-items: start;
-			gap: 2.5rem;
-		}
-
-		.changelog-hero__content {
-			grid-area: content;
-		}
-
-		.changelog-hero__meta {
-			grid-area: meta;
-			align-content: start;
-		}
-
 		.changelog-layout {
 			grid-template-columns: minmax(220px, 0.35fr) minmax(0, 1fr);
 			align-items: start;
