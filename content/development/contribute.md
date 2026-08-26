@@ -4,7 +4,7 @@ description: Thanks for helping make Arcane better! We've built a modern, stream
 ---
 
 <script lang="ts">
-  import { GitCommand } from '#lib/components/ui/git-command';
+  import { GitCommand } from '#lib/components/ui/git-command/index.js';
   import { Snippet } from '#lib/components/ui/snippet/index.js';
   import { Link } from '#lib/components/ui/link/index.js';
 </script>

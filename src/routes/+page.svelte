@@ -11,8 +11,11 @@
 	import * as Code from '#lib/components/ui/code/index.js';
 	import { FeatureCard } from '#lib/components/ui/feature-card/index.js';
 	import { features } from '#lib/config/features.js';
+	import { getLatestPost } from '#lib/blog.js';
 	import { MANAGER_IMAGES } from '#lib/utils/docker-compose-generator.js';
 	import { resolveInternalPath } from '#lib/utils.js';
+
+	const latestPost = getLatestPost();
 
 	interface StatsHistoryEntry {
 		date: string;
@@ -200,10 +203,13 @@ volumes:
 			<div class="relative mx-auto flex max-w-4xl flex-col items-center text-center">
 				<!-- Announcement pill -->
 				<a
-					href="/changelog"
+					href={latestPost?.href ?? '/changelog'}
 					onclick={() =>
-						trackEvent('CTA Clicked', { cta: 'changelog', placement: 'home_announcement' })}
-					class="group mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary transition-all duration-300 hover:border-primary/40 hover:bg-primary/10"
+						trackEvent('CTA Clicked', {
+							cta: latestPost ? 'blog' : 'changelog',
+							placement: 'home_announcement'
+						})}
+					class="group mb-8 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary transition-all duration-300 hover:border-primary/40 hover:bg-primary/10"
 				>
 					<span class="relative flex size-2">
 						<span
@@ -211,9 +217,9 @@ volumes:
 						></span>
 						<span class="relative inline-flex size-2 rounded-full bg-primary"></span>
 					</span>
-					See what's new in the changelog
+					<span class="truncate">{latestPost?.title ?? "See what's new in the changelog"}</span>
 					<ArrowRight
-						class="size-3 transition-transform duration-200 group-hover:translate-x-0.5"
+						class="size-3 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
 					/>
 				</a>
 

@@ -3,12 +3,14 @@
 	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
 	import ArrowRight from 'virtual:icons/lucide/arrow-right';
 	import { ModeWatcher } from 'mode-watcher';
+	import { page } from '$app/state';
 	import Footer from '#lib/components/footer.svelte';
 	import Header from '#lib/components/header.svelte';
 
 	let { children } = $props();
 
 	let isDeprecatedDomain = $state(false);
+	const isBlogDetail = $derived(/^\/blog\/[^/]+\/?$/.test(page.url.pathname));
 
 	const PROD_HOSTS = ['arcane.ofkm.dev', 'getarcane.app'];
 
@@ -57,5 +59,7 @@
 	<main class="flex-1">
 		{@render children()}
 	</main>
-	<Footer />
+	{#if !isBlogDetail}
+		<Footer />
+	{/if}
 </div>

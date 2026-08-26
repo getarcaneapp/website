@@ -17,6 +17,8 @@
 		{
 			title: 'Resources',
 			links: [
+				{ label: 'Blog', href: '/blog' },
+				{ label: 'Changelog', href: '/changelog' },
 				{ label: 'Community', href: '/community' },
 				{ label: 'Discord', href: DISCORD_URL, external: true }
 			]

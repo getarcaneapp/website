@@ -25,7 +25,8 @@
 - If adding a new group, also add it to `sectionNavItems` in the same file and add a matching key to `SECTION_META` in `src/lib/components/docs-index.svelte`. The `SECTION_META` key must match the group title exactly or the card silently disappears from `/docs`.
 - If adding a new top-level directory, define the collection in `velite.config.js` and register it in `ALL_DOCS` in `src/lib/config/docs.ts`.
 - Cross-link with `<Link href="/docs/...">` (root-relative, no `.md`). Callouts are GitHub-style blockquote markers: `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`.
-- Do not hand-edit `static/config.json`, `content/changelog/*`, or `static/sbom/` — CI regenerates them from the latest Arcane release.
+- Blog posts live in `content/blog/<slug>.md` and show up at `/blog/<slug>` automatically — no sidebar `leaf()` is required. Required frontmatter: `title`, `description`, `date` (`YYYY-MM-DD`). Optional: `kind` (`news` | `deprecation` | `release`, default `news`), `featured` (site-wide banner; newest featured post wins), `banner` (short banner copy; falls back to `title`), `published`. Do not write an `# H1`. Set `featured: false` on older posts when a newer one should take the banner.
+- Do not hand-edit `static/config.json`, `content/changelog/*`, `static/sbom/`, or `static/blog/` — CI regenerates changelog/SBOM from the latest Arcane release, and Velite regenerates the blog RSS feed.
 - If you rename or move a content file, add a 301 from the old `/docs/...` path in `src/_worker.js` (`DOC_REDIRECTS`). The static adapter has no redirect layer of its own.
 
 ## Svelte Guidelines
@@ -41,13 +42,10 @@
 - `pnpm check`
 - `pnpm lint`
 - `pnpm format`
-- `pnpm fallow`
 
 **Never start, stop, restart, or curl the local dev server.** A `pnpm dev` is already running at all times. Do not run `pnpm dev`, `vp dev`, `vite`, or `velite --watch`. Do not kill processes on ports 3001/3002. Edit files and let the existing server hot-reload.
 
 `pnpm build` is the real gate for content changes: every doc is prerendered and `getDoc` throws a 404 on an unknown slug, so a broken internal `/docs/...` link or a missing `#anchor` fails the build. Run it after any content edit.
-
-`pnpm fallow` reports components imported only from Markdown as dead code — add any new one to `dynamicallyLoaded` in `.fallowrc.jsonc` first.
 
 ## Build/Runtime Notes
 

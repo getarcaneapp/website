@@ -14,6 +14,7 @@ import {
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
+	{ href: '/blog', label: 'Blog' },
 	{ href: '/api-reference', label: 'API' },
 	{ href: '/generator', label: 'Compose Generator' },
 	{ href: '/community', label: 'Community' }

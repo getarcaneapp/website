@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
 import {
 	api,
 	authentication,
+	blog,
 	changelog,
 	cli,
 	configuration,
@@ -18,7 +18,16 @@ import {
 
 export const prerender = true;
 
-type CollectionDoc = (typeof indexPage)[number];
+type SearchableDoc = {
+	title: string;
+	description: string;
+	path: string;
+	published?: boolean;
+	slug?: string;
+	section?: string;
+	href?: string;
+	toc?: unknown;
+};
 
 const rawDocs = import.meta.glob('/content/**/*.md', {
 	query: '?raw',
@@ -54,7 +63,8 @@ function headingsFromToc(toc: any): string[] {
 	walk((toc as any)?.items || toc); // Velite s.toc() can be an array or { items: [] } depending on version/config
 	return out;
 }
-function pathToHref(pathOrSlug: string): string {
+function pathToHref(pathOrSlug: string, href?: string): string {
+	if (href) return href;
 	const cleaned = pathOrSlug
 		.replace(/^\/+/, '')
 		.replace(/\/index$/, '')
@@ -62,7 +72,7 @@ function pathToHref(pathOrSlug: string): string {
 	return cleaned === '' || cleaned === 'index' ? '/docs' : `/docs/${cleaned}`;
 }
 
-const allDocs: CollectionDoc[] = [
+const allDocs: SearchableDoc[] = [
 	...indexPage,
 	...getStarted,
 	...upgrade,
@@ -76,7 +86,8 @@ const allDocs: CollectionDoc[] = [
 	...development,
 	...cli,
 	...api,
-	...changelog
+	...changelog,
+	...blog
 ];
 
 export function GET() {
@@ -88,7 +99,7 @@ export function GET() {
 			const text = mdToText(stripCodeBlocks(stripFrontmatter(raw)));
 			const toc = (d as any).toc;
 			const slugish = (d as any).slug ?? d.path;
-			const pageHref = pathToHref(slugish);
+			const pageHref = pathToHref(slugish, (d as { href?: string }).href);
 
 			const results: any[] = [];
 
@@ -129,5 +140,5 @@ export function GET() {
 			return results;
 		});
 
-	return json({ docs });
+	return Response.json({ docs });
 }

@@ -4,6 +4,7 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { mainNavItems } from '#lib/config/docs.js';
+	import AnnouncementBanner from './announcement-banner.svelte';
 	import GithubLink from './github-link.svelte';
 	import Logo from './logo.svelte';
 	import MainNav from './mainnav.svelte';
@@ -42,6 +43,7 @@
 <header
 	class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-lg supports-backdrop-filter:bg-background/60"
 >
+	<AnnouncementBanner />
 	<div class="h-0.5 w-full bg-linear-to-r from-transparent via-primary/50 to-transparent"></div>
 	<div class="flex h-14 w-full items-center gap-4 px-4 lg:px-6">
 		<a href="/" class="hidden items-center gap-2.5 transition-opacity hover:opacity-80 lg:flex">

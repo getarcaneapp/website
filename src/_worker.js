@@ -31,6 +31,7 @@ const ALLOWED_PREFIXES = ['bin/arcane-next/', 'bin/cli-next/'];
 const DISCORD_INVITE_URL =
 	'https://discord.com/api/v10/invites/WyXYpdyV3Z?with_counts=true&with_expiration=true';
 const DISCORD_PRESENCE_PATH = '/api/discord/presence';
+const BLOG_RSS_PATH = '/blog/rss.xml';
 
 /**
  * @param {string} key
@@ -53,28 +54,27 @@ function getLegacyRedirect(request, url) {
 	return Response.redirect(redirectUrl.toString(), 301);
 }
 
-/** Old content paths that moved when docs folders were aligned with sidebar groups. */
-const DOC_REDIRECTS = {
-	'/docs/setup/installation': '/docs/get-started/installation',
-	'/docs/setup/podman': '/docs/get-started/podman',
-	'/docs/guides/lxc-container': '/docs/get-started/lxc-container',
-	'/docs/setup/migrate-v2': '/docs/upgrade/migrate-v2',
-	'/docs/setup/next-images': '/docs/upgrade/next-images',
-	'/docs/setup/socket-proxy': '/docs/security/socket-proxy',
-	'/docs/templates': '/docs/customization/templates',
-	'/docs/templates/registries': '/docs/customization/registries',
-	'/docs/features/variables': '/docs/customization/variables',
-	'/docs/configuration/sso': '/docs/authentication/sso',
-	'/docs/security/passkeys': '/docs/authentication/passkeys',
-	'/docs/security/rbac': '/docs/authentication/rbac',
-	'/docs/security/federated-credentials': '/docs/authentication/federated-credentials',
-	'/docs/configuration/proxy': '/docs/networking/proxy',
-	'/docs/configuration/websockets-reverse-proxies': '/docs/networking/websockets-reverse-proxies',
-	'/docs/configuration/traefik': '/docs/networking/traefik',
-	'/docs/configuration/tls': '/docs/networking/tls',
-	'/docs/dev/contribute': '/docs/development/contribute',
-	'/docs/dev/translate': '/docs/development/translate'
-};
+const DOC_REDIRECTS = new Map([
+	['/docs/setup/installation', '/docs/get-started/installation'],
+	['/docs/setup/podman', '/docs/get-started/podman'],
+	['/docs/guides/lxc-container', '/docs/get-started/lxc-container'],
+	['/docs/setup/migrate-v2', '/docs/upgrade/migrate-v2'],
+	['/docs/setup/next-images', '/docs/upgrade/next-images'],
+	['/docs/setup/socket-proxy', '/docs/security/socket-proxy'],
+	['/docs/templates', '/docs/customization/templates'],
+	['/docs/templates/registries', '/docs/customization/registries'],
+	['/docs/features/variables', '/docs/customization/variables'],
+	['/docs/configuration/sso', '/docs/authentication/sso'],
+	['/docs/security/passkeys', '/docs/authentication/passkeys'],
+	['/docs/security/rbac', '/docs/authentication/rbac'],
+	['/docs/security/federated-credentials', '/docs/authentication/federated-credentials'],
+	['/docs/configuration/proxy', '/docs/networking/proxy'],
+	['/docs/configuration/websockets-reverse-proxies', '/docs/networking/websockets-reverse-proxies'],
+	['/docs/configuration/traefik', '/docs/networking/traefik'],
+	['/docs/configuration/tls', '/docs/networking/tls'],
+	['/docs/dev/contribute', '/docs/development/contribute'],
+	['/docs/dev/translate', '/docs/development/translate']
+]);
 
 /**
  * @param {URL} url
@@ -82,7 +82,7 @@ const DOC_REDIRECTS = {
  */
 function getDocRedirect(url) {
 	const pathname = url.pathname.replace(/\/+$/, '') || '/';
-	const destination = DOC_REDIRECTS[pathname];
+	const destination = DOC_REDIRECTS.get(pathname);
 	if (!destination) return null;
 
 	const redirectUrl = new URL(destination, url.origin);
@@ -163,6 +163,20 @@ async function getDiscordPresenceResponse(request, url, ctx) {
 			{ status: 503, headers: { 'Cache-Control': 'no-store' } }
 		);
 	}
+}
+
+async function getBlogRssResponse(url, env) {
+	const asset = await env.ASSETS.fetch(new Request(new URL(BLOG_RSS_PATH, url.origin)));
+	if (!asset.ok) {
+		return new Response('Blog feed is currently unavailable', { status: 503 });
+	}
+
+	return new Response(asset.body, {
+		headers: {
+			'Content-Type': 'application/rss+xml; charset=utf-8',
+			'Cache-Control': 'public, max-age=3600'
+		}
+	});
 }
 
 /**
@@ -250,6 +264,8 @@ export default {
 		switch (url.pathname) {
 			case DISCORD_PRESENCE_PATH:
 				return getDiscordPresenceResponse(request, url, ctx);
+			case BLOG_RSS_PATH:
+				return getBlogRssResponse(url, env);
 			case '/api/r2/list':
 				return getR2ListResponse(url, env);
 			case '/api/r2/get':
