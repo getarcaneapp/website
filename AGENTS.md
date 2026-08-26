@@ -26,7 +26,7 @@
 - If adding a new top-level directory, define the collection in `velite.config.js` and register it in `ALL_DOCS` in `src/lib/config/docs.ts`.
 - Cross-link with `<Link href="/docs/...">` (root-relative, no `.md`). Callouts are GitHub-style blockquote markers: `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`.
 - Blog posts live in `content/blog/<slug>.md` and show up at `/blog/<slug>` automatically — no sidebar `leaf()` is required. Required frontmatter: `title`, `description`, `date` (`YYYY-MM-DD`). Optional: `kind` (`news` | `deprecation` | `release`, default `news`), `featured` (site-wide banner; newest featured post wins), `banner` (short banner copy; falls back to `title`), `published`. Do not write an `# H1`. Set `featured: false` on older posts when a newer one should take the banner.
-- Do not hand-edit `static/config.json`, `content/changelog/*`, `static/sbom/`, or `static/blog/` — CI regenerates changelog/SBOM from the latest Arcane release, and Velite regenerates the blog RSS feed.
+- Do not hand-edit `static/config.json`, `content/changelog/*`, `static/sbom/`, or `static/rss.xml` — CI regenerates changelog/SBOM from the latest Arcane release, and Velite regenerates the blog RSS feed.
 - If you rename or move a content file, add a 301 from the old `/docs/...` path in `src/_worker.js` (`DOC_REDIRECTS`). The static adapter has no redirect layer of its own.
 
 ## Svelte Guidelines
@@ -56,7 +56,7 @@
 
 # Using Vite+, the Unified Toolchain for the Web
 
-This project is using Vite+, a unified toolchain built on top of Vite, Rolldown, Vitest, tsdown, Oxlint, Oxfmt, and Vite Task. Vite+ wraps runtime management, package management, and frontend tooling in a single global CLI called `vp`. Vite+ is distinct from Vite, and it invokes Vite through `vp dev` and `vp build`. Run `vp help` to print a list of commands and `vp <command> --help` for information about a specific command.
+This project is using Vite+, a unified toolchain built on top of Vite, Rolldown, Vitest, tsdown, Oxlint, Oxfmt, and Vite Task. Vite+ wraps runtime management, package management, and frontend tooling in a single global CLI called `vp`. Vite+ is distinct from Vite, and it invokes Vite through `vp dev` and `vpr build`. Run `vp help` to print a list of commands and `vp <command> --help` for information about a specific command.
 
 Docs are local at `node_modules/vite-plus/docs` or online at https://viteplus.dev/guide/.
 

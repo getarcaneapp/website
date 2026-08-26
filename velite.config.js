@@ -193,7 +193,7 @@ export default defineConfig({
 			})
 			.join('\n');
 
-		const dir = resolve('static/blog');
+		const dir = resolve('static');
 		await mkdir(dir, { recursive: true });
 		await writeFile(
 			resolve(dir, 'rss.xml'),

@@ -7,7 +7,7 @@ This documentation site is built with SvelteKit and uses Vite+ for local develop
 Once you've created a project and installed dependencies with `vp install`, start a development server:
 
 ```bash
-vp dev
+vpr dev
 ```
 
 ## PR Previews

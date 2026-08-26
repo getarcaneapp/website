@@ -13,7 +13,7 @@
 		name="description"
 		content="A home for deprecations, migrations, and other notable changes."
 	/>
-	<link rel="alternate" type="application/rss+xml" title="Arcane Blog" href="/blog/rss.xml" />
+	<link rel="alternate" type="application/rss+xml" title="Arcane Blog" href="/rss.xml" />
 </svelte:head>
 
 <ContentWrapper>

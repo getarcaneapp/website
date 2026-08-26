@@ -21,4 +21,4 @@ Release summaries and commit logs are great for seeing what shipped in each vers
 - **Migrations** — Practical guides and step-by-step instructions for navigating major releases and architectural updates.
 - **Notable updates** — Walk-throughs of major features, tooling improvements, and new capabilities across Arcane.
 
-If you prefer reading via a feed reader, you can subscribe using our <Link href="/blog/rss.xml">RSS feed</Link>. For critical notices, we'll also pin an announcement banner across the documentation.
+If you prefer reading via a feed reader, you can subscribe using our <Link href="/rss.xml" data-sveltekit-reload>RSS feed</Link>. For critical notices, we'll also pin an announcement banner across the documentation.

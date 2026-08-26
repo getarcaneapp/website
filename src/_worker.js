@@ -31,7 +31,7 @@ const ALLOWED_PREFIXES = ['bin/arcane-next/', 'bin/cli-next/'];
 const DISCORD_INVITE_URL =
 	'https://discord.com/api/v10/invites/WyXYpdyV3Z?with_counts=true&with_expiration=true';
 const DISCORD_PRESENCE_PATH = '/api/discord/presence';
-const BLOG_RSS_PATH = '/blog/rss.xml';
+const BLOG_RSS_PATH = '/rss.xml';
 
 /**
  * @param {string} key

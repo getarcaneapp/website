@@ -40,7 +40,7 @@ jobs:
         run: vp run velite
 
       - name: Build site
-        run: vp build
+        run: vpr build
 
       - name: Deploy to Cloudflare Workers
         env:

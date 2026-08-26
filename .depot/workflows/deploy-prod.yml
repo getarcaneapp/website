@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout arcane website repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -27,20 +27,20 @@ jobs:
         with:
           node-version: latest
           cache: true
-          run-install: false
+          run-install: true
 
-      - name: Install dependencies
-        shell: bash
-        run: |
-          [[ -f ~/.profile ]] && source ~/.profile
-          [[ -f ~/.bashrc ]] && source ~/.bashrc
-          vp install
+      # - name: Install dependencies
+      #   shell: bash
+      #   run: |
+      #     [[ -f ~/.profile ]] && source ~/.profile
+      #     [[ -f ~/.bashrc ]] && source ~/.bashrc
+      #     vp install
 
       - name: Generate content data
         run: vp run velite
 
       - name: Build site
-        run: vp build
+        run: vpr build
 
       - name: Deploy to Cloudflare Workers
         env:

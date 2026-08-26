@@ -17,7 +17,7 @@
 <svelte:head>
 	<title>{post.title} — Arcane</title>
 	<meta name="description" content={post.description} />
-	<link rel="alternate" type="application/rss+xml" title="Arcane Blog" href="/blog/rss.xml" />
+	<link rel="alternate" type="application/rss+xml" title="Arcane Blog" href="/rss.xml" />
 </svelte:head>
 
 <div class="relative isolate">
