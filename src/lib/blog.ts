@@ -4,27 +4,29 @@ import { blog } from '#velite/index.js';
 
 export type BlogPost = (typeof blog)[number] & { dateLabel: string };
 
-function toPlainDate(value: string): Temporal.PlainDate {
-	return Temporal.PlainDate.from(value.slice(0, 10));
+// Note: intentionally avoids the `Temporal` API. It is not available in Safari/iOS,
+// and this module runs on every page (via the header announcement banner), so a
+// missing global would blank the whole site on those browsers.
+
+/** Normalises an ISO date/datetime string to `YYYY-MM-DD`. */
+function toYmd(value: string): string {
+	return value.slice(0, 10);
 }
 
-function toYmd(value: string): string {
-	return toPlainDate(value).toString();
-}
+const postDateFormatter = new Intl.DateTimeFormat('en-US', {
+	month: 'long',
+	day: 'numeric',
+	year: 'numeric',
+	timeZone: 'UTC'
+});
 
 function formatPostDate(value: string): string {
-	return toPlainDate(value).toLocaleString('en-US', {
-		month: 'long',
-		day: 'numeric',
-		year: 'numeric'
-	});
+	return postDateFormatter.format(new Date(`${toYmd(value)}T00:00:00Z`));
 }
 
 function byDateDesc(a: BlogPost, b: BlogPost) {
-	return (
-		Temporal.PlainDate.compare(toPlainDate(b.date), toPlainDate(a.date)) ||
-		b.title.localeCompare(a.title)
-	);
+	// `YYYY-MM-DD` strings sort correctly lexicographically.
+	return b.date.localeCompare(a.date) || b.title.localeCompare(a.title);
 }
 
 interface DocModule {
