@@ -31,6 +31,8 @@ Each passkey is listed with its name and when it was last used. You can rename o
 
 Register more than one. A passkey lives on a single device; if that device is your only way in and you lose it, you are relying on recovery codes.
 
+When registering, Arcane offers post-quantum ML-DSA algorithms first. Authenticators that support them create ML-DSA credentials; everything else falls back to the classical algorithms (EdDSA, ES256, RS256), and existing passkeys keep working unchanged.
+
 ## Turn on passkey MFA
 
 You need at least one registered passkey first — it becomes the second step.

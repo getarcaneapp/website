@@ -196,7 +196,6 @@ services:
     environment:
       APP_URL: http://localhost:3552
       ENCRYPTION_KEY: your-existing-encryption-key
-      JWT_SECRET: your-existing-jwt-secret
       PUID: '1000'
       PGID: '1000'
 ```

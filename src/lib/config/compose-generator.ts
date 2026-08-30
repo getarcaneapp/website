@@ -217,17 +217,6 @@ export const generatorConfig: GeneratorConfig = [
 						placeholder: 'Auto-generated if empty',
 						canGenerate: true,
 						includeInCompose: true
-					},
-					{
-						key: 'jwtSecret',
-						envName: 'JWT_SECRET',
-						label: 'JWT Secret',
-						description: 'Session secret (auto-generated if empty)',
-						type: 'password',
-						defaultValue: '',
-						placeholder: 'Auto-generated if empty',
-						canGenerate: true,
-						includeInCompose: true
 					}
 				]
 			}

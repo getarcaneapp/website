@@ -66,7 +66,6 @@ services:
     environment:
       - APP_URL=http://localhost:3552
       - ENCRYPTION_KEY=your-encryption-key
-      - JWT_SECRET=your-jwt-secret
     restart: unless-stopped
 
 volumes:

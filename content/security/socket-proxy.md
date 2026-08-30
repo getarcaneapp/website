@@ -80,7 +80,6 @@ services:
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
     networks:
       - arcane-internal

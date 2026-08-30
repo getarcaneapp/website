@@ -38,6 +38,27 @@ Each container row has action buttons:
 - **Kill** — send a signal to the container's main process. Requires `containers:kill`.
 - **Redeploy** — pull the latest image and recreate the container with the same name, mounts, labels, networks, and restart policy. Use this to update a single container in place.
 
+## Edit a container
+
+Open a container's detail page (or its row menu) and choose **Edit** to change the container's configuration — image, ports, volumes and bind mounts, environment variables, restart policy, network settings (including static IPv4 addresses and aliases), resource limits (memory, CPU shares), and Linux capabilities. Editing requires the `containers:edit` permission; connecting or disconnecting networks also needs `networks:connect` / `networks:disconnect`.
+
+Applying changes **recreates** the container: it is stopped, recreated with the new configuration, and restarted, and it comes back with a new container ID. Arcane asks you to confirm before doing this. If recreation fails, Arcane restores the original container — unless the container uses auto-remove, in which case the original can't be brought back.
+
+A couple of details:
+
+- Options of existing mounts are preserved.
+- The new image is only pulled if it is not already present locally.
+
+## Convert a container to a Compose project
+
+With **Experimental Features** enabled (toggle in the version dialog, opened from the sidebar — requires `settings:write`), containers that aren't already part of a Compose project get a **Convert to Compose** action on the detail page and in the row menu. The containers table also has a bulk version for converting several containers at once.
+
+The action takes you to the new-project page with a generated compose file pre-filled in the editor. Review and edit the YAML — generated output often needs a look over for bind mounts, networks, and environment values — then click **Create Project**.
+
+The original containers keep running by default. If you have the `containers:delete` permission, the create dialog offers a **Remove original container(s) after creation** checkbox; removal happens right after the project is created, before it is deployed, and can't be undone. If you leave the originals running, deploy the new project only after stopping them, or names and ports may collide.
+
+Seeing the action requires the `projects:create` permission.
+
 ## Commit a container to an image
 
 Open a container detail page and click **Commit** to create a new image from the container's current filesystem. You can set:

@@ -35,7 +35,6 @@ services:
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
     # Use the host cgroup namespace so Arcane can detect its own container ID
     # more reliably — this matters for self-upgrades.
     cgroup: host
@@ -49,10 +48,11 @@ volumes:
 > The `ENCRYPTION_KEY` must be 32 bytes long (raw, base64, or hex).
 >
 > ```bash
-> # You can use OpenSSL in your terminal to generate the secrets
+> # You can use OpenSSL in your terminal to generate the secret
 > echo "      - ENCRYPTION_KEY=$(openssl rand -hex 32)"
-> echo "      - JWT_SECRET=$(openssl rand -hex 32)"
 > ```
+>
+> `JWT_SECRET` is no longer used — session tokens are now signed with an ML-DSA-87 key that Arcane generates and stores itself. If it's still set, Arcane logs a warning at startup; remove it from your environment.
 
 > [!TIP]
 > You can also add extra folders in your `compose.yaml` if you want Arcane to keep build files or backups in a specific place:
@@ -143,7 +143,6 @@ services:
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
 
 volumes:

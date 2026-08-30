@@ -3,4 +3,5 @@ export type EnvConfig = {
 	description: string;
 	defaultValue: string;
 	exampleValue?: string;
+	deprecated?: boolean;
 };

@@ -44,6 +44,21 @@ When a folder has more than one YAML file, Arcane chooses in this order:
 
 If two or more custom files are equally plausible, Arcane stops and reports the directory as ambiguous instead of guessing.
 
+### Compose pre-defined environment variables
+
+Arcane honors Docker Compose's [pre-defined environment variables](https://docs.docker.com/compose/how-tos/environment-variables/envvars/) when they are set in the project's `.env` file:
+
+- `COMPOSE_FILE` — deploy a specific compose file, or several files merged in order. Separate entries with `:` (or whatever `COMPOSE_PATH_SEPARATOR` is set to). The first entry is the base file.
+- `COMPOSE_PROFILES` — comma-separated list of profiles to activate.
+- `COMPOSE_PROJECT_NAME` — override the project name Compose uses.
+- `COMPOSE_ENV_FILES` — additional env files to load, in order.
+- `COMPOSE_REMOVE_ORPHANS` / `COMPOSE_IGNORE_ORPHANS` — control how containers left over from removed services are handled.
+- `COMPOSE_PARALLEL_LIMIT` — cap how many operations Compose runs at once.
+
+File paths in `COMPOSE_FILE` and `COMPOSE_ENV_FILES` resolve relative to the project folder and must stay inside it — an entry that points outside the project is rejected.
+
+When `COMPOSE_FILE` selects more than one file, the project detail view shows a **Multiple compose files** card listing the selection. The base file opens in the compose editor; the other files are edited in the **Workspace** view.
+
 ## Browse projects
 
 Open **Projects** in the sidebar. The list shows project name, status (running, partially running, stopped), service count, and the project directory.
@@ -241,7 +256,8 @@ Arcane can pull projects directly from a Git repository.
 3. Pick the **Repository** and **Branch**.
 4. Set the **Compose File Path** relative to the repo root, or click the folder icon to browse interactively. Only `.yaml` / `.yml` files are selectable.
 5. Optional: enable **Auto Sync** for periodic checks.
-6. Click **Create Sync**.
+6. Optional: enable **Pull Image After Sync** or **Redeploy After Sync** to act on stopped projects too — see the note below.
+7. Click **Create Sync**.
 
 Arcane clones the repo, reads the compose file, and creates the project. With Auto Sync on, it polls for changes and updates the project automatically.
 
@@ -285,7 +301,10 @@ To create several syncs at once, paste or upload a JSON array:
 ```
 
 > [!IMPORTANT]
-> Redeployment only happens if the project is already running.
+> By default, a sync only redeploys a project that is already running. Two per-sync options change that:
+>
+> - **Pull Image After Sync** pulls each service's image after a sync changes the compose file, even while the project is stopped, so the images are ready when it starts again.
+> - **Redeploy After Sync** goes further: it recreates the project's containers with freshly pulled images right after a sync changes the compose file — even if the project is stopped, which starts it. This is similar to Portainer's "Re-pull image" option.
 
 ### Edit a Git-synced project
 

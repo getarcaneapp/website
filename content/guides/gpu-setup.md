@@ -27,7 +27,6 @@ services:
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
       - NVIDIA_VISIBLE_DEVICES=all
       - GPU_MONITORING_ENABLED=true
       - GPU_TYPE=nvidia
@@ -63,7 +62,6 @@ services:
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
       - GPU_MONITORING_ENABLED=true
       - GPU_TYPE=amd
     devices:
