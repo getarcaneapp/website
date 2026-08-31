@@ -36,6 +36,12 @@ No cert/key files need to exist on disk up front. Arcane will:
 - Issue an agent certificate automatically the first time an agent enrolls.
 - Re-use existing certificates on subsequent starts until they are expired or near expiry.
 
+### Certificate key type
+
+Newly generated edge CAs and client certificates use **ML-DSA-87** keys. Existing ECDSA P-384 CAs keep working: the Manager continues issuing P-384 client certificates that match the existing CA's key type, so already-enrolled agents don't need re-enrollment — only a freshly generated CA is ML-DSA-87.
+
+When the agent's client certificate is ML-DSA, the edge connection requires **TLS 1.3** end to end. Keep that in mind if a proxy in the path still limits connections to TLS 1.2.
+
 ### Manager
 
 If Arcane terminates HTTPS directly, serve HTTPS using any valid cert (self-signed, Let's Encrypt, etc.):

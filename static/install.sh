@@ -709,15 +709,13 @@ create_arcane_config() {
     
     # Generate secure random keys using arcane's built-in generator
     log_info "Generating cryptographic secrets using arcane..."
-    SECRETS=$("$ARCANE_INSTALL_DIR/arcane" generate secret --format env 2>/dev/null | grep -E '^(ENCRYPTION_KEY|JWT_SECRET)=')
+    SECRETS=$("$ARCANE_INSTALL_DIR/arcane" generate secret --format env 2>/dev/null | grep -E '^ENCRYPTION_KEY=')
     ENCRYPTION_KEY=$(echo "$SECRETS" | grep '^ENCRYPTION_KEY=' | cut -d= -f2)
-    JWT_SECRET=$(echo "$SECRETS" | grep '^JWT_SECRET=' | cut -d= -f2)
-    
+
     # Fallback to openssl if arcane generate fails
-    if [[ -z "$ENCRYPTION_KEY" || -z "$JWT_SECRET" ]]; then
+    if [[ -z "$ENCRYPTION_KEY" ]]; then
         log_warn "arcane generate failed, falling back to openssl..."
         ENCRYPTION_KEY=$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)
-        JWT_SECRET=$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)
     fi
     
     cat > "$ENV_FILE" << EOF
@@ -736,7 +734,6 @@ DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(
 
 # Security Settings (auto-generated, keep these secret!)
 ENCRYPTION_KEY=${ENCRYPTION_KEY}
-JWT_SECRET=${JWT_SECRET}
 
 # Docker Configuration
 DOCKER_HOST=unix:///var/run/docker.sock

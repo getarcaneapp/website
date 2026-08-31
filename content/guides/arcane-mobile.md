@@ -61,6 +61,18 @@ Arcane Mobile is designed for the tasks you are most likely to check from a phon
 
 Arcane Mobile also supports Home Screen and Lock Screen widgets, plus Siri and Shortcuts actions for opening tabs, opening containers and projects, restarting containers, and starting or stopping projects with confirmation.
 
+## Push notifications
+
+Arcane Mobile can receive native push notifications for the same events Arcane's other notification providers send — image updates, container updates, vulnerabilities, and more.
+
+1. An admin turns on **Mobile push notifications** on the server under **Settings → Notifications → Mobile Push**.
+2. In the app, open **Settings** and enable push notifications to pair your device.
+3. Choose which events and environments the device should be notified about.
+
+Paired devices show up on the server's **Mobile Push** tab, where an admin can send a test notification or remove a device.
+
+Notification titles and messages travel through Arcane's hosted push relay (`apns.getarcane.app`) and Apple's push servers. Your server address, users, and credentials are never sent.
+
 ## Tips
 
 - Use **Settings** to reach tools that are not pinned to the bottom tab bar.

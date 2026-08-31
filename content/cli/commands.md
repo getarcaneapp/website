@@ -10,6 +10,8 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 A tour of the commands you'll reach for most often. This is not an exhaustive reference — run `arcane-cli <command> --help` for the full flag list on any command, and `arcane-cli --help` for the complete command tree.
 
+Command names never contain hyphens — multi-word actions are flags or nested subcommands instead (`self-update` is the one exception). Old hyphenated spellings keep working as hidden aliases.
+
 Before anything else, make sure the CLI knows where your server is and who you are. See <Link href="/docs/cli/config">Configuration</Link>.
 
 ## Sign in
@@ -116,13 +118,57 @@ Free up space across the environment:
 
 Check whether an Arcane upgrade is available, and apply it:
 
-<Snippet text="arcane-cli system upgrade-check" class="mt-2" />
+<Snippet text="arcane-cli system upgrade --check" class="mt-2" />
 
 <Snippet text="arcane-cli system upgrade" class="mt-2" />
 
 Turn a `docker run` command into Compose:
 
 <Snippet text={'arcane-cli system convert "docker run -d -p 8080:80 nginx"'} class="mt-2" />
+
+## Vulnerabilities
+
+Get an overview of scan results, or the full findings list:
+
+<Snippet text="arcane-cli vulnerabilities summary" class="mt-2" />
+
+<Snippet text="arcane-cli vulnerabilities list" class="mt-2" />
+
+Scan an image now, or show one image's findings:
+
+<Snippet text="arcane-cli vulnerabilities scan nginx:latest" class="mt-2" />
+
+<Snippet text="arcane-cli vulnerabilities image nginx:latest" class="mt-2" />
+
+Silence a CVE you've reviewed (and list or undo ignores with `ignored` / `unignore`):
+
+<Snippet text="arcane-cli vulnerabilities ignore CVE-2026-1234" class="mt-2" />
+
+## System backups
+
+Manage <Link href="/docs/features/backups">Arcane system backups</Link> from the terminal:
+
+<Snippet text="arcane-cli backups list" class="mt-2" />
+
+<Snippet text="arcane-cli backups create" class="mt-2" />
+
+<Snippet text="arcane-cli backups restore <backup-id>" class="mt-2" />
+
+There are also subcommands for retention policies (`policies`), the recovery key (`recovery`), uploading a local backup to S3 (`upload`), and finding S3 restore points not in the database (`discover`).
+
+## Activities and webhooks
+
+Follow what the server is doing:
+
+<Snippet text="arcane-cli activities list" class="mt-2" />
+
+<Snippet text="arcane-cli activities get <activity-id>" class="mt-2" />
+
+Manage webhooks, or fire one by its token:
+
+<Snippet text="arcane-cli webhooks list" class="mt-2" />
+
+<Snippet text="arcane-cli webhooks trigger <token>" class="mt-2" />
 
 ## Updater
 

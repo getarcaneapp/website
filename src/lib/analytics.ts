@@ -3,6 +3,7 @@ type PlausibleProperty = string | number | boolean;
 type AnalyticsEvents = {
 	'Compose Generated': {
 		access_method: 'direct_socket' | 'socket_proxy';
+		socket_proxy_provider: 'none' | 'wollomatic' | 'tecnativa';
 		database: 'postgresql' | 'sqlite';
 		authentication: 'local' | 'oidc';
 		project_storage: 'host_mount' | 'named_volume';

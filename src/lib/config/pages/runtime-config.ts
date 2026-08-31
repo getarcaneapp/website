@@ -8,6 +8,7 @@ type RuntimeEnvConfig = {
 	description?: string;
 	defaultValue?: string;
 	field?: string;
+	deprecated?: boolean;
 };
 
 type RuntimeEnvSettingOverride = Partial<EnvSettingOverride> &
@@ -48,7 +49,8 @@ function mapEnvConfig(config: RuntimeDocsConfig): EnvConfig[] {
 	return (config.envConfig ?? []).map((item) => ({
 		name: item.env,
 		description: item.description ?? `Maps to the ${item.field ?? item.env} config field.`,
-		defaultValue: item.defaultValue ?? ''
+		defaultValue: item.defaultValue ?? '',
+		deprecated: item.deprecated
 	}));
 }
 

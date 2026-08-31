@@ -9,6 +9,8 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 Arcane uses WebSockets to keep the app updated in real time. If you place Arcane behind a reverse proxy or custom domain, make sure the proxy allows WebSocket connections and forwards the real client IP — Arcane's per-IP login rate limit relies on it to tell clients apart (see [Trust the proxy with `TRUSTED_PROXIES`](#trust-the-proxy-with-trusted_proxies)).
 
+Arcane's session cookies are larger than most: session tokens are signed with ML-DSA-87 and split across up to four cookie chunks, so the `Cookie` and `Set-Cookie` headers can carry roughly 5–6 KB. If your proxy enforces a small header-size limit, raise it (for example `large_client_header_buffers` in Nginx) — otherwise sign-in fails with oversized-header errors.
+
 ## Nginx Configuration
 
 Here is a sample Nginx configuration with WebSocket support enabled. If you are not familiar with every line, you can usually copy it as-is and just change the domain name and paths:

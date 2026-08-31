@@ -12,7 +12,6 @@
       - arcane-data:/app/data
     environment:
       - ENCRYPTION_KEY=your-32-char-encryption-key
-      - JWT_SECRET=your-jwt-secret
       - TZ=UTC
     cgroup: host
     restart: unless-stopped

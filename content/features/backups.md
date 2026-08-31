@@ -158,6 +158,20 @@ Manual and bulk deletion also attempt to remove every stored copy:
 - If a local copy is deleted but S3 deletion fails, the row remains as S3-only and Arcane reports the error.
 - If a remaining remote copy cannot be deleted, Arcane keeps the row so the backup is not incorrectly reported as gone.
 
+## System-managed volume backups
+
+Per-volume schedules cover one volume at a time. To back up many volumes with one policy, open **Settings → Backups** (admin only) and create a schedule with the **Docker volumes** type.
+
+A volume schedule has the same options as other backup schedules — cron expression, retention count, Local, S3, or Local + S3 destination, and **Stop containers during backup** — plus a volume selection:
+
+- **All volumes** — every current and future non-internal volume.
+- **Allowlist** — only the selected volume names. New volumes are excluded until you select them.
+- **Blocklist** — every volume except the selected names. New volumes are included automatically.
+
+The selection is evaluated against Docker's current volume list at the start of every run, so a schedule picks up volumes created after it was saved. **Ignore anonymous volumes** keeps anonymous Docker volumes out of runs. **Run now** triggers a schedule immediately and reports how many volumes matched, succeeded, failed, and were skipped.
+
+Backups created this way show up in each volume's **Backups** tab marked **System-managed**, next to the volume's own **Volume-managed** backups. Retention is applied per schedule. These schedules run against the local Docker environment.
+
 ## Arcane system backups
 
 System backups protect Arcane's persistent application data and runtime configuration so a replacement instance can be restored as a clone.
@@ -185,6 +199,8 @@ For an on-demand backup, use a saved schedule's configuration or choose a custom
 
 The backup table shows each run's status, trigger, destination, size, and creation time. Schedule cards show the latest run's status and time. Use **Find S3 backups** with a destination and recovery key to discover restore points that are not present in the current database.
 
+When a backup exists both locally and on S3, restores and file browsing automatically fall back to the other copy if one can't be read.
+
 ### Restore Arcane
 
 Restoring replaces the running Arcane installation:
@@ -199,3 +215,16 @@ The page disconnects while Arcane restarts. Reload it after the container is ava
 
 > [!CAUTION]
 > A system restore replaces Arcane's current database, users, settings, destinations, secrets, and other persistent application data with the selected restore point.
+
+### Restore selected project files
+
+Instead of a full restore, the row menu of a successful system backup also offers **Restore files**. It opens a file browser over the backup's projects directory: search, expand folders, and pick individual files or folders, or use **Select all**.
+
+- The dialog needs the recovery key. When a key is stored, the file tree loads right away; otherwise enter the key and click **Load files**.
+- Before writing anything, Arcane creates a complete local safety backup. Arcane and project containers keep running throughout — no restart.
+- Selected files overwrite the existing files at those paths. Restoring a folder also removes files inside it that are not in the snapshot.
+- If any file fails to restore, the files already restored are rolled back from the safety backup.
+
+Only project files can be restored this way. The database, settings, secrets, and other application data are excluded — recovering those requires a full system restore.
+
+Browsing a backup's files needs the `system-backups:read` permission and restoring needs `system-backups:restore`; both are admin-only.

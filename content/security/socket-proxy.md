@@ -28,6 +28,10 @@ By default, Arcane connects directly to the Docker socket (`/var/run/docker.sock
 > - Add `:z` to bind mounts where Arcane should manage files on the host (projects folder, build folder, backups, etc.).
 > - `label:disable` is still used in direct-socket mode to relax Docker socket access labels.
 
+The <Link href="/generator">compose generator</Link> uses **wollomatic/socket-proxy**. The Tecnativa example below still works if you already run that image.
+
+### Tecnativa docker-socket-proxy
+
 ```yaml
 services:
   # Docker Socket Proxy - see https://github.com/Tecnativa/docker-socket-proxy
@@ -80,7 +84,114 @@ services:
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
+      - DOCKER_HOST=tcp://docker-socket-proxy:2375
+    networks:
+      - arcane-internal
+    depends_on:
+      - docker-socket-proxy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fsS http://localhost:3552/api/health >/dev/null || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+networks:
+  arcane-internal:
+    driver: bridge
+    name: arcane-internal
+
+volumes:
+  arcane-data:
+    name: arcane-data
+```
+
+### wollomatic/socket-proxy (recommended)
+
+This is the layout the compose generator produces. The allowlist is the minimum Docker API surface Arcane needs, including Swarm, image builds, commits, and image update checks.
+
+```yaml
+services:
+  # Docker Socket Proxy - see https://github.com/wollomatic/socket-proxy
+  docker-socket-proxy:
+    image: wollomatic/socket-proxy:1.13.1
+    container_name: arcane-docker-proxy
+    user: '0:0'
+    command:
+      - '-listenip=0.0.0.0'
+      - '-allowfrom=arcane'
+      - '-allowhealthcheck'
+      - '-allowGET=(/v[\d.]+)?/_ping'
+      - '-allowGET=(/v[\d.]+)?/events(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/version'
+      - '-allowGET=(/v[\d.]+)?/info(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/containers(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/exec(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/images(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/networks(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/volumes(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/distribution(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/swarm(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/nodes(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/services(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/tasks(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/secrets(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/configs(/.*)?'
+      - '-allowHEAD=(/v[\d.]+)?/_ping'
+      - '-allowHEAD=(/v[\d.]+)?/version'
+      - '-allowPOST=(/v[\d.]+)?/containers(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/exec(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/images(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/networks(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/volumes(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/commit'
+      - '-allowPOST=(/v[\d.]+)?/build(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/session'
+      - '-allowPOST=(/v[\d.]+)?/grpc'
+      - '-allowPOST=(/v[\d.]+)?/auth'
+      - '-allowPOST=(/v[\d.]+)?/swarm(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/nodes(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/services(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/secrets(/.*)?'
+      - '-allowPOST=(/v[\d.]+)?/configs(/.*)?'
+      - '-allowPUT=(/v[\d.]+)?/containers(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/containers(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/images(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/networks(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/volumes(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/nodes(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/services(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/secrets(/.*)?'
+      - '-allowDELETE=(/v[\d.]+)?/configs(/.*)?'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ['CMD', './healthcheck']
+      interval: 2s
+      timeout: 5s
+      retries: 15
+    networks:
+      - arcane-internal
+    restart: unless-stopped
+
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - arcane-data:/app/data
+      - /path/to/projects:/app/data/projects:z
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
     networks:
       - arcane-internal
@@ -106,7 +217,7 @@ volumes:
 
 ## 2. Key Configuration Details:
 
-### Socket Proxy Environment Variables
+### Tecnativa environment variables
 
 The socket proxy uses environment variables as simple switches. Use `1` to allow something and `0` to block it:
 
@@ -144,6 +255,21 @@ The socket proxy uses environment variables as simple switches. Use `1` to allow
 - `SWARM=0` - blocks Docker Swarm features
 - `SYSTEM=0` - blocks system-wide operations
 - `TASKS=0` - blocks Swarm tasks
+
+> [!NOTE]
+> The Tecnativa example above is a narrower allowlist. Enable `BUILD`, `COMMIT`, `DISTRIBUTION`, `SWARM`, `NODES`, `SERVICES`, `TASKS`, `SECRETS`, and `CONFIGS` if you want Swarm, image builds, commits, and image-update checks through that proxy.
+
+### wollomatic command flags
+
+wollomatic/socket-proxy denies every request unless you allow the HTTP method and path. The compose generator allowlist is the minimum Arcane needs:
+
+- `GET` — ping, events, version, info, containers, exec, images, networks, volumes, distribution, swarm, nodes, services, tasks, secrets, configs
+- `HEAD` — ping and version
+- `POST` — containers, exec, images, networks, volumes, commit, build, BuildKit (`/session`, `/grpc`), registry auth, swarm, nodes, services, secrets, configs
+- `PUT` — container archives
+- `DELETE` — containers, images, networks, volumes, nodes, services, secrets, configs
+
+`-allowfrom=arcane` only accepts connections from the Arcane container. `-allowhealthcheck` is required for the proxy healthcheck.
 
 ### Arcane Configuration
 

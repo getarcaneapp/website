@@ -25,6 +25,8 @@ Google Chat asks only for the incoming webhook URL of the space you want to post
 
 If your destination is not one of the named providers, use **Generic** — a plain HTTP webhook whose body you shape yourself. See [Custom webhook payloads](#custom-webhook-payloads).
 
+The email (SMTP) provider's **From Address** accepts a bare address or one with a display name, such as `Arcane <notifications@example.com>`.
+
 ## How setup works
 
 1. Go to **Settings → Notifications** in the Arcane UI
@@ -42,6 +44,18 @@ You can turn events on or off for each provider separately. That makes it easy t
 - Send quick alerts to chat apps
 - Send record-keeping updates by email
 - Use different providers for different kinds of alerts
+
+## Mobile push notifications
+
+The **Mobile Push** tab in **Settings → Notifications** delivers native push notifications to the [Arcane Mobile](/docs/guides/arcane-mobile) iOS app.
+
+1. Turn on **Mobile push notifications** (requires the `settings:write` permission).
+2. In the Arcane mobile app, open its settings and enable push notifications to pair your device.
+3. Paired devices appear under **Your mobile devices**, where you can send a test notification to a device or remove it.
+
+Each device picks its own events and environments from the app, so two phones connected to the same server can subscribe to different alerts.
+
+Notification titles and messages are delivered through Arcane's hosted push relay (`apns.getarcane.app`) and Apple's push servers. Your server address, users, and credentials are never sent.
 
 ## Custom webhook payloads
 

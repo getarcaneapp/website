@@ -34,6 +34,14 @@
 						<div class="space-y-2.5">
 							<p class="max-w-xl text-sm leading-5 wrap-break-word">{env.description}</p>
 
+							{#if env.deprecated}
+								<span
+									class="inline-block rounded-full bg-red-500/12 px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400"
+								>
+									Deprecated
+								</span>
+							{/if}
+
 							<div class="grid gap-2 sm:grid-cols-[minmax(5rem,auto)_1fr] sm:items-center">
 								<span
 									class="self-center text-xs font-medium tracking-wide text-muted-foreground uppercase"

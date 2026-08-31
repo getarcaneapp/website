@@ -37,6 +37,13 @@ Open **Volumes** in the sidebar. The table shows name, driver, and current usage
 > [!NOTE]
 > A volume in use by a container can't be removed.
 
+## Rename a volume
+
+A volume that is not in use by any container can be renamed from its row dropdown. Arcane copies the volume data to a volume with the new name, then removes the original.
+
+> [!NOTE]
+> Renaming a deployment-managed volume doesn't update the project that references it — the project may recreate the original volume on its next deploy unless you update its configuration to the new name.
+
 ## Volume Workspace
 
 Open a volume and switch to the **Workspace** tab to work with the files inside it — no need to stop the containers using it. The workspace shows a file tree next to a tabbed text editor, the same layout the project workspace uses.
@@ -49,6 +56,8 @@ From the workspace you can:
 - **Download** — stream any file, including binary files, to your computer.
 - **Rename**, **Move**, and **Delete** — reorganize the volume contents.
 - **Restore a file from a backup** — pull a single file out of an existing volume backup instead of restoring the whole volume.
+
+Files you create or change through the workspace are written with the user and group of the container that uses the volume (when that container sets a numeric `user:`), instead of as root — so the application keeps permission over its own files.
 
 Edits are staged locally and applied together when you **Save**. If someone else changed the volume in the meantime, the save is rejected with _"Volume workspace changed; refresh it and try again"_ — refresh and reapply.
 
@@ -71,6 +80,8 @@ Write access follows the volume permissions: creating and editing files needs `v
 Open a volume and select **Backups** to create or schedule encrypted Rustic snapshots. Backups can use local storage, an S3-compatible destination, or both.
 
 Arcane supports multiple schedules per volume, retention policies, optional container shutdown for consistent snapshots, whole-volume restores, selected-file restores, and local safety backups before a restore.
+
+Volumes can also be backed up centrally with one schedule covering many volumes — see <Link href="/docs/features/backups#system-managed-volume-backups">System-managed volume backups</Link>.
 
 See <Link href="/docs/features/backups">Backups</Link> for storage setup, S3 destinations, encryption, scheduling, retention, and recovery instructions.
 
