@@ -1,7 +1,7 @@
 ---
 title: 'Post-quantum signatures in Arcane 2.10.0'
 description: 'Arcane 2.10.0 adds support for ML-DSA-87, the post-quantum signature algorithm standardized in NIST FIPS 204.'
-date: 2026-08-30
+date: 2026-08-31
 kind: update
 featured: true
 banner: 'Arcane 2.10.0 adds post-quantum ML-DSA-87 signatures.'

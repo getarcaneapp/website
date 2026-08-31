@@ -5,10 +5,10 @@
 	import { trackEvent } from '#lib/analytics.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import * as Card from '#lib/components/ui/card/index.js';
-	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Label } from '#lib/components/ui/label/index.js';
 	import * as Select from '#lib/components/ui/select/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
 	import * as Tabs from '#lib/components/ui/tabs/index.js';
 	import { generatorConfig, getDefaultConfigValues } from '#lib/config/compose-generator.js';
 	import type { GeneratorField } from '#lib/types/compose-generator.type.js';
@@ -78,6 +78,10 @@
 		generatedCompose = generateDockerCompose(config);
 		trackEvent('Compose Generated', {
 			access_method: config.useSocketProxy === true ? 'socket_proxy' : 'direct_socket',
+			socket_proxy_provider: getSocketProxyProviderAnalyticsValue(
+				config.useSocketProxy,
+				config.socketProxyProvider
+			),
 			database: config.enableDatabase === true ? 'postgresql' : 'sqlite',
 			authentication: config.enableOIDC === true ? 'oidc' : 'local',
 			project_storage:
@@ -104,7 +108,7 @@
 		return config[field.dependsOn] === true;
 	}
 
-	function handleCheckboxChange(key: string, checked: boolean) {
+	function handleSwitchChange(key: string, checked: boolean) {
 		config[key] = checked;
 	}
 
@@ -124,6 +128,14 @@
 	function getSelectLabel(field: GeneratorField, value: string | boolean): string {
 		if (typeof value !== 'string') return String(value);
 		return field.options?.find((option) => option.value === value)?.label ?? value;
+	}
+
+	function getSocketProxyProviderAnalyticsValue(
+		enabled: string | boolean,
+		provider: string | boolean
+	): 'none' | 'wollomatic' | 'tecnativa' {
+		if (enabled !== true) return 'none';
+		return provider === 'tecnativa' ? 'tecnativa' : 'wollomatic';
 	}
 
 	function getRegistryAnalyticsValue(value: string | boolean): 'ghcr' | 'quay' | 'docker' {
@@ -222,11 +234,11 @@
 																		<p class="wizard-field__hint">{field.description}</p>
 																	{/if}
 																</div>
-																<Checkbox
+																<Switch
 																	id={field.key}
 																	checked={config[field.key] === true}
-																	onCheckedChange={(checked: boolean | 'indeterminate') =>
-																		handleCheckboxChange(field.key, checked === true)}
+																	onCheckedChange={(checked) =>
+																		handleSwitchChange(field.key, checked === true)}
 																/>
 															</div>
 														{:else if field.type === 'select'}

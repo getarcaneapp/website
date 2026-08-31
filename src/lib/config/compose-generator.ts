@@ -116,6 +116,21 @@ export const generatorConfig: GeneratorConfig = [
 						includeInCompose: false
 					},
 					{
+						key: 'socketProxyProvider',
+						envName: '',
+						label: 'Socket Proxy',
+						description:
+							'wollomatic is recommended. Tecnativa is still available if you already use it.',
+						type: 'select',
+						defaultValue: 'wollomatic',
+						options: [
+							{ label: 'wollomatic/socket-proxy', value: 'wollomatic' },
+							{ label: 'tecnativa/docker-socket-proxy', value: 'tecnativa' }
+						],
+						dependsOn: 'useSocketProxy',
+						includeInCompose: false
+					},
+					{
 						key: 'enableSelinux',
 						envName: '',
 						label: 'Enable SELinux compatibility',
