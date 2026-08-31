@@ -211,14 +211,26 @@ jobs:
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Request App Token
+        if: steps.changes.outputs.has_changes == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.ARCANE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.ARCANE_APP_PRIVATE_KEY }}
+          owner: getarcaneapp
+          repositories: website
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Create pull request
         if: steps.changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.ARCANE_BOT_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
-          committer: 'getarcaneappbot <info@getarcane.app>'
-          author: 'getarcaneappbot <info@getarcane.app>'
+          committer: 'arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>'
+          author: 'arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>'
           signoff: true
           title: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
           body: |
