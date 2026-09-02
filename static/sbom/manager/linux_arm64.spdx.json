@@ -3,14 +3,14 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "sbom",
-  "documentNamespace": "https://anchore.com/syft/dir/sbom-83e38ac7-61e2-4883-b642-fc8d632849ba",
+  "documentNamespace": "https://anchore.com/syft/dir/sbom-7feeca76-becf-4fee-b4e4-b9f31495bc5e",
   "creationInfo": {
     "licenseListVersion": "3.28",
     "creators": [
       "Organization: Anchore, Inc",
       "Tool: syft-v1.51.0"
     ],
-    "created": "2026-08-31T22:44:12Z"
+    "created": "2026-09-02T01:03:14Z"
   },
   "packages": [
     {
@@ -7013,15 +7013,15 @@
     },
     {
       "name": "github.com/shirou/gopsutil/v4",
-      "SPDXID": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-962e7fbefc104f73",
-      "versionInfo": "v4.26.7",
+      "SPDXID": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4d4e0fd0aed05303",
+      "versionInfo": "v4.26.8",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "217ce91f3fdd90c4580212a4397af51c1e92bb3594ddea32c9e59eee0ddb3597"
+          "checksumValue": "61031317fd49e74079f98d2f968d5e0d17f90e847b1a4ebd858fbcc2362441ea"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane",
@@ -7032,12 +7032,12 @@
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:shirou:gopsutil\\/v4:v4.26.7:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:shirou:gopsutil\\/v4:v4.26.8:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/github.com/shirou/gopsutil/v4@v4.26.7"
+          "referenceLocator": "pkg:golang/github.com/shirou/gopsutil/v4@v4.26.8"
         }
       ]
     },
@@ -9804,7 +9804,7 @@
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "ea5a5558b192fb176190635c235f5382e79d38e88cc494154cdc710b920d5ebb"
+          "checksumValue": "d47c0303674a22c7440a94edfb4e40f32ca329fd0cc9f2b749714bcae64189c2"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -31843,6 +31843,11 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4d4e0fd0aed05303",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-a93a329aaee0d1f1",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-spf13-cobra-4e602eb74c167076",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-a93a329aaee0d1f1",
       "relationshipType": "DEPENDENCY_OF"
@@ -32214,11 +32219,6 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-go.opentelemetry.io-otel-sdk-96082c72bd8e32b2",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-a93a329aaee0d1f1",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-962e7fbefc104f73",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-a93a329aaee0d1f1",
       "relationshipType": "DEPENDENCY_OF"
     },
@@ -33455,6 +33455,12 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4d4e0fd0aed05303",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-spf13-cobra-4e602eb74c167076",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
@@ -33930,12 +33936,6 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-go.opentelemetry.io-otel-sdk-96082c72bd8e32b2",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-962e7fbefc104f73",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -35761,7 +35761,7 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-962e7fbefc104f73",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4d4e0fd0aed05303",
       "relationshipType": "CONTAINS"
     },
     {

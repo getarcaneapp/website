@@ -3,14 +3,14 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "sbom",
-  "documentNamespace": "https://anchore.com/syft/dir/sbom-f5bdb34e-0beb-4e56-9b9a-af747a6ee85d",
+  "documentNamespace": "https://anchore.com/syft/dir/sbom-cf21b793-1ae0-4f6c-9c42-c70beca16817",
   "creationInfo": {
     "licenseListVersion": "3.28",
     "creators": [
       "Organization: Anchore, Inc",
       "Tool: syft-v1.51.0"
     ],
-    "created": "2026-08-31T22:44:27Z"
+    "created": "2026-09-02T01:03:51Z"
   },
   "packages": [
     {
@@ -7013,15 +7013,15 @@
     },
     {
       "name": "github.com/shirou/gopsutil/v4",
-      "SPDXID": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-9be634b857d731b5",
-      "versionInfo": "v4.26.7",
+      "SPDXID": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4aef3a8f779b9ee6",
+      "versionInfo": "v4.26.8",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "217ce91f3fdd90c4580212a4397af51c1e92bb3594ddea32c9e59eee0ddb3597"
+          "checksumValue": "61031317fd49e74079f98d2f968d5e0d17f90e847b1a4ebd858fbcc2362441ea"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane-agent",
@@ -7032,12 +7032,12 @@
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:shirou:gopsutil\\/v4:v4.26.7:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:shirou:gopsutil\\/v4:v4.26.8:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/github.com/shirou/gopsutil/v4@v4.26.7"
+          "referenceLocator": "pkg:golang/github.com/shirou/gopsutil/v4@v4.26.8"
         }
       ]
     },
@@ -9804,7 +9804,7 @@
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "cb94126d82a872cc1d82e6dee391fb9d7cb82b180eb7822f72e542ec6367e488"
+          "checksumValue": "986d16c5c7cd796b72f945a07353bb98b6cb27c3e5cd753b754e2c7f4de3e1e4"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -31823,6 +31823,11 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4aef3a8f779b9ee6",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-ac16d05a78809b7f",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-aws-sdk-go-v2-service-s3-4b12f40ef318ce34",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-ac16d05a78809b7f",
       "relationshipType": "DEPENDENCY_OF"
@@ -32299,11 +32304,6 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-tonistiigi-dchapes-mode-9ac2ac0bd0d237b5",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-ac16d05a78809b7f",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-9be634b857d731b5",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-ac16d05a78809b7f",
       "relationshipType": "DEPENDENCY_OF"
     },
@@ -33431,6 +33431,12 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4aef3a8f779b9ee6",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-aws-sdk-go-v2-service-s3-4b12f40ef318ce34",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
       "relationshipType": "OTHER",
@@ -34032,12 +34038,6 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-tonistiigi-dchapes-mode-9ac2ac0bd0d237b5",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-9be634b857d731b5",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -35761,7 +35761,7 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-9be634b857d731b5",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-shirou-gopsutil-v4-4aef3a8f779b9ee6",
       "relationshipType": "CONTAINS"
     },
     {
