@@ -47,7 +47,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token || github.token }}
 
       - name: Run typos check
-        uses: crate-ci/typos@v1.50.0
+        uses: crate-ci/typos@v1.50.1
         with:
           config: ./.github/workflows/typos.toml
           write_changes: ${{ steps.check_label.outputs.should_fix }}
