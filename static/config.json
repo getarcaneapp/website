@@ -1946,6 +1946,34 @@
       "public": false
     },
     {
+      "env": "TOOLS_IMAGE_REGISTRY",
+      "settingKey": "toolsImageRegistry",
+      "description": "Container registry used to pull the Arcane tools helper image",
+      "defaultValue": "ghcr.io",
+      "type": "select",
+      "category": "internal",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.ToolsImageRegistry",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "UPDATE_CHECK_REGISTRY",
+      "settingKey": "updateCheckRegistry",
+      "description": "Registry queried when checking whether the Arcane image has a newer digest",
+      "defaultValue": "auto",
+      "type": "select",
+      "category": "internal",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.UpdateCheckRegistry",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
       "env": "VOLUME_HELPER_IDLE_TIMEOUT",
       "settingKey": "volumeHelperIdleTimeout",
       "description": "Minutes a volume helper container may sit idle before automatic removal (default: 10",
@@ -2134,6 +2162,20 @@
       "public": false
     },
     {
+      "env": "TRIVY_DB_REGISTRY",
+      "settingKey": "trivyDbRegistry",
+      "description": "Container registry used to pull the Trivy vulnerability database artifacts",
+      "defaultValue": "ghcr.io",
+      "type": "select",
+      "category": "security",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.TrivyDbRegistry",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
       "env": "TRIVY_IGNORE",
       "settingKey": "trivyIgnore",
       "description": "Trivy ignore file content - one vulnerability ID per line",
@@ -2157,21 +2199,6 @@
       "source": "settings.Settings + settings.DefaultSettingsConfig",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.TrivyIgnoreUnfixed",
-      "sensitive": false,
-      "deprecated": false,
-      "public": false
-    },
-    {
-      "env": "TRIVY_IMAGE",
-      "settingKey": "trivyImage",
-      "description": "Override the Arcane tools image used to run Trivy vulnerability scans",
-      "defaultValue": "ghcr.io/getarcaneapp/tools:latest",
-      "type": "text",
-      "category": "security",
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
-      "source": "settings.Settings + settings.DefaultSettingsConfig",
-      "sourceFile": "backend/internal/settings/model.go",
-      "sourceSymbol": "settings.Settings.TrivyImage",
       "sensitive": false,
       "deprecated": false,
       "public": false
