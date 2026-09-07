@@ -7,7 +7,7 @@ description: 'Manage Docker networks in Arcane, including topology and ports vie
 import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
-The **Networks** page lists every Docker network on the selected host and lets you create, inspect, and remove them. Two extra views — **Ports** and **Topology** — give you a host-wide picture of what's published and how containers are wired up.
+The **Networks** page lists every Docker network on the selected host. Use it to create, inspect, and remove networks. Open **Ports** to check published ports across the host, or **Topology** to see how containers connect.
 
 <ScreenshotFrame
 	src="/img/screenshots/networks-page.jpeg"

@@ -10,7 +10,32 @@ import EnvOverridesTable from '#lib/components/env-overrides-table.svelte';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Most settings in Arcane can be changed via the Settings UI. Below are the settings that can be set via environment variables.
+You can change most Arcane settings in the Settings UI. Use the reference below when you need to configure them through environment variables.
+
+- <Link href="/docs/configuration/environment#environment-variables">Find a variable</Link> or <Link href="/docs/configuration/environment#settings-overrides-via-environment">override a UI setting</Link>.
+- <Link href="/docs/configuration/environment#use-external-postgres-database">Use PostgreSQL</Link>.
+- <Link href="/docs/configuration/environment#container-runtime-user">Set file ownership</Link> with `PUID` and `PGID`.
+- <Link href="/docs/configuration/environment#timezone-and-scheduled-jobs">Set the timezone</Link> for scheduled jobs.
+
+<div id="environment-variables" class="scroll-m-28">
+
+<EnvTable />
+
+</div>
+
+> [!NOTE]
+> For proxy configuration, Arcane also supports lowercase aliases for the standard proxy variables (`http_proxy`, `https_proxy`, `no_proxy`).
+
+## Settings Overrides via Environment
+
+The overrides below take effect only when at least one of these variables is set:
+
+- `UI_CONFIGURATION_DISABLED=true` or
+- `AGENT_MODE=true`
+
+If neither is set, Arcane ignores these overrides.
+
+<EnvOverridesTable />
 
 ## Use External Postgres Database
 
@@ -46,18 +71,11 @@ Set `TZ` to an [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_dat
 
 If `TZ` is unset, Arcane uses the container's local time (`Local`), which is UTC on the official images. Individual job intervals and cron expressions are configured in the Settings UI, or via the environment when `UI_CONFIGURATION_DISABLED=true` or `AGENT_MODE=true` (see [Settings Overrides via Environment](#settings-overrides-via-environment)).
 
-## Environment Variables
-
-<EnvTable />
-
-> [!NOTE]
-> For proxy configuration, Arcane also supports lowercase aliases for the standard proxy variables (`http_proxy`, `https_proxy`, `no_proxy`).
-
 ## Bootstrapping an Admin API Key
 
 If you want a predictable API key for automation, set `ADMIN_STATIC_API_KEY`.
 
-Arcane will reconcile a protected admin API key at startup so your deployment can depend on a known key value without a manual UI step. See the <Link href="/api-reference">API Reference</Link> page for usage details and webhook examples.
+At startup, Arcane creates or updates a protected admin API key to match this value. Your automation can then use the key without creating it in the UI. See the <Link href="/api-reference">API Reference</Link> page for usage details and webhook examples.
 
 ## Downgrading Arcane
 
@@ -81,14 +99,3 @@ To allow a downgrade:
 <Snippet text="ALLOW_DOWNGRADE=false" class="mt-2 mb-2 w-full" />
 
 again.
-
-## Settings Overrides via Environment
-
-If you prefer to configure Arcane via environment variables, below is a list of all configurable variables that can be set if one of the following variables is set:
-
-- `UI_CONFIGURATION_DISABLED=true` or
-- `AGENT_MODE=true`
-
-If neither of the above are set, these values are ignored.
-
-<EnvOverridesTable />

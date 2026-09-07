@@ -3,7 +3,7 @@ title: 'HTTP Proxy'
 description: 'Configure Arcane to use an outbound HTTP/HTTPS proxy.'
 ---
 
-Starting with version `1.13.2`, Arcane respects the usual proxy environment variables for outbound HTTP(S) traffic. That includes registry checks, image lookups, update checks, template downloads, and other internet requests.
+Arcane supports standard proxy environment variables for outbound HTTP(S) requests in version `1.13.2` and later. These apply to registry checks, image lookups, update checks, template downloads, and other internet requests.
 
 ## Environment variables
 

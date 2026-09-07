@@ -7,8 +7,6 @@ description: 'Keep containers and Compose projects up to date automatically.'
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Arcane can watch your registries and update containers (or whole Compose projects) when a new image is published.
-
 ## Before you turn it on
 
 - The images you want updated must be hosted in registries Arcane can reach.
@@ -31,48 +29,84 @@ Arcane can watch your registries and update containers (or whole Compose project
 
 ## When Arcane checks for updates
 
-Update checks are driven by **Docker image events**. When an image changes locally, Arcane queues a check and waits a couple of seconds before running it, so a burst of events results in one scan rather than many.
+Arcane checks after local Docker image events and on the **Image Polling** schedule, hourly by default. Nearby events share a scan, and checks don't overlap. Leave polling enabled: registry releases don't trigger local Docker events.
 
-Because a new tag published to a registry produces no local Docker event, Arcane also runs a **scheduled poll** as a safety net. That is what **Image Polling** and its schedule control — the default is hourly. Both paths queue the same scan, so a poll that lands while an event-driven check is already running won't start a second one.
-
-Leave polling enabled. Turning it off limits Arcane to noticing images that change on the host, which will miss most registry-side releases.
-
-If a check is interrupted, Arcane no longer leaves it stuck: a background sweep fails any check abandoned for more than two minutes, and starting a manual check while one is running tells you _an image update check is already in progress_ instead of queueing a duplicate.
+Checks abandoned for more than two minutes are marked failed. Starting a manual check during another returns _an image update check is already in progress_.
 
 ## Applying updates from the Updates page
 
-The **Updates** page lists everything with a pending update, split into **Containers** and **Projects** tabs. Beyond waiting for the schedule, you can apply updates from here directly:
+The **Updates** page shows pending updates in **Containers** and **Projects** tabs. You can apply them here without waiting for the schedule:
 
-- **Row action** — the kebab menu on a row offers **Update Container** (containers) or **Update** (projects), applying just that one after a confirmation.
-- **Bulk update** — tick the checkboxes on several rows and use the **Update** button, which shows how many you selected. Arcane confirms before pulling the images and applying every selected update.
-- **Ignore** — the container row menu also has **Ignore** / **Unignore**, which excludes that container from automatic updates. The row stays listed and picks up an **Ignored** badge. If the exclusion comes from a Docker label instead of this toggle, the item is disabled and the badge reads _Controlled by Docker label_ — change the label to alter it.
+- **Update Container** / **Update** — update one row after confirmation.
+- **Bulk update** — select rows, click **Update**, and confirm.
+- **Ignore** / **Unignore** — toggle automatic updates for a container. Ignored rows stay listed. If the badge says _Controlled by Docker label_, change that label instead.
 - **Update All** — applies every pending update on the selected environment, including ones not visible on the current page.
 
-Updating a project from this page is a **scoped** run: only the services whose images actually changed are recreated. That differs from a manual **Redeploy** on the Projects page, which pulls and recreates the whole project.
-
 > [!IMPORTANT]
-> **Update All** on the Updates page and **Update All** on the Environments page do different things.
 >
-> - **Updates → Update All** updates your **workloads** — the containers and projects running on the selected environment.
-> - **Environments → Update All** upgrades **Arcane itself** across your fleet. See <Link href="/docs/features/environments">Remote Environments</Link>.
+> - **Updates → Update All** updates containers and projects in the selected environment.
+> - **Environments → Update All** upgrades Arcane managers and agents. See <Link href="/docs/features/environments">Remote Environments</Link>.
 >
 > If Arcane's own container has a pending update, **Updates → Update All** will pick it up too and restart Arcane after the other updates finish. The confirmation tells you when that applies.
 
 ## How Arcane decides what to update
 
-Arcane compares image **digests**, not tags. Tags like `latest` and `next` move over time, so digest comparison is the only reliable way to spot a change.
+Arcane uses the `auto` strategy by default:
 
-The model is similar to Watchtower's, with adjustments to fit Arcane's update flow — so it should feel familiar if you've used Watchtower.
+- Complete stable version tags, such as `3.1.2` or `v3.1.2`, follow newer version tags. Without a constraint, updates stay within the current major version. For `0.x`, they stay within the current minor version.
+- Moving tags, such as `latest`, `next`, and `alpine`, keep their tag and follow changes to its image digest. Partial version tags, such as `16` or `3.1`, and ambiguous variant or prerelease tags also use digest checks unless you provide an explicit policy.
+
+A constraint or tag pattern supplied with `auto` requests version-based selection. Invalid constraints, patterns, or incompatible current tags report an error rather than silently switching to digest checks.
+
+Set `strategy: digest` to keep a version tag fixed while still receiving new images published under that tag. Set `strategy: tag` to require version-based selection. Arcane checks the current tag's digest when no newer eligible version is available. Digest-pinned references and image IDs aren't eligible for updates.
+
+### Tag-based updates
+
+For Compose projects, put defaults in `x-arcane.updater` and override individual fields on a service:
+
+```yaml
+x-arcane:
+  updater:
+    strategy: auto
+
+services:
+  app:
+    image: ghcr.io/acme/app:3.1.2-alpine
+    x-arcane:
+      updater:
+        strategy: tag
+        constraint: '3.x'
+        tag-pattern: '(?P<version>\d+\.\d+\.\d+)-alpine'
+  worker:
+    image: ghcr.io/acme/worker:3.1.2
+```
+
+The app follows newer `3.x` Alpine tags. The worker follows newer stable `3.x` tags through `auto`. Prerelease updates require an explicit constraint that admits them, such as `>=3.1.2-0 <4.0.0`. Arcane never selects an equal or older version as a tag upgrade.
+
+For standalone containers, set the equivalent Docker labels:
+
+```yaml
+labels:
+  com.getarcaneapp.arcane.updater.strategy: tag
+  com.getarcaneapp.arcane.updater.constraint: '3.x'
+  com.getarcaneapp.arcane.updater.tag-pattern: '(?P<version>\d+\.\d+\.\d+)-alpine'
+```
+
+This keeps a service on tags such as `3.1.2-alpine`. The named `version` capture supplies the version to compare; Arcane pulls the original tag, including its suffix. Without a named capture, the entire matched tag must be a semantic version. Invalid patterns, constraints, or current versions produce a check error.
+
+Each explicit updater label takes precedence over the matching service metadata field, which takes precedence over the project default. See <Link href="/docs/guides/custom-metadata#updater-behavior">Updater behavior</Link> for all fields.
+
+Checks use saved registry credentials. Containers using the same image can follow different version ranges. Forced updates still exclude image IDs and digest-pinned references.
+
+To check a Compose project, open its update indicator and select **Re-check Updates**. Arcane reads the saved service policies, including while the project is stopped, and shows a separate result for each service. Changing an image or policy makes its previous check stale.
 
 ## Compose-aware updates
 
-When a container belongs to a Compose project, Arcane uses Compose-aware logic instead of treating each service as a standalone container. That means Arcane can:
+Arcane groups updates by project, pulling and recreating only changed services. Manual **Redeploy** pulls and recreates the whole project with `pull` and `up -d`.
 
-- group pending updates by project
-- pull only the images of services that actually changed
-- recreate only those services, leaving the rest running
+Tag updates write the selected image reference to Compose before deployment, even if both tags resolve to the same image. Interpolated values become explicit references; shared `.env` variables stay unchanged. The saved reference remains if deployment fails.
 
-Manual project redeploys still use the project-level Compose flow (a deliberate `pull` + `up -d` across the whole project).
+Automatic edits to Compose image references require a single Compose file with explicit service image fields. GitOps-managed projects, multi-file configurations, includes, extends, YAML anchors or aliases, and symlinked source files must be updated at their source. These restrictions apply to editing image references, not to ordinary digest-based updates.
 
 ## Per-container labels
 
@@ -89,7 +123,7 @@ Accepted truthy values: `true`, `1`, `yes`, `on`. Falsy: `false`, `0`, `no`, `of
 
 You can also flip this from the container's detail page, or from the **Ignore** action on the Updates page. If the container already has an explicit updater label, the label wins and the UI reflects that.
 
-Opting out also excludes the image from update **scanning**, not just from being updated — but only when _every_ container using that image is opted out. If any other container still uses the image without the label, Arcane keeps scanning it. Images with no running container are always scanned.
+Arcane skips scanning an image only when every container using it has opted out. Images with no running container are always scanned.
 
 ### Restart order
 

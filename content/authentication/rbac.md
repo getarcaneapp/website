@@ -1,28 +1,29 @@
 ---
 title: 'Role-Based Access'
-description: 'Govern what users and API keys can do with fine-grained roles and permissions.'
+description: 'Set what users and API keys can do in each environment.'
 ---
 
 <script lang="ts">
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Every action in Arcane is gated by a permission. Permissions are bundled into roles, and roles are assigned to users — globally, or scoped to a single environment.
+- <Link href="/docs/authentication/rbac#built-in-roles">Choose a role</Link> and <Link href="/docs/authentication/rbac#assigning-roles">assign it to a user</Link>.
+- <Link href="/docs/authentication/rbac#oidc-group-mappings">Map SSO groups to roles</Link>.
+- <Link href="/docs/authentication/rbac#api-keys">Set permissions for an API key</Link>.
+- <Link href="/docs/authentication/rbac#troubleshooting">Troubleshoot denied access</Link>.
 
 Upgrading from a pre-2.0 release? Jump to [Upgrade & migration](#upgrade--migration).
 
 ## How it works
 
-- **Permissions** look like `<resource>:<action>` (e.g. `containers:start`). You don't pick these one at a time — you assign roles.
-- **Roles** are named permission sets. Six built-in, plus your own.
-- **Assignments** bind a user to a role, either **Global** (org-wide) or scoped to one environment. A user can hold several — e.g. _Editor on prod, Viewer on staging_.
+- **Permissions** allow specific actions, such as `containers:start`.
+- **Roles** group permissions. Use a built-in role or create your own.
+- **Assignments** give a user a role globally or in one environment. Users can have several.
 - **OIDC mappings** turn SSO group claims into assignments on every login.
 
-Permissions are either org-level (settings, users, registries — need a Global assignment) or env-scoped (containers, projects, images — per environment).
+Org-level permissions, such as settings, users, and registries, need a Global assignment. Env-scoped permissions, such as containers, projects, and images, apply per environment.
 
 ## Built-in roles
-
-These six are immutable. Clone one if you need a starting point for a custom role.
 
 | Role                | For                         | Grants                                                                                                                   |
 | ------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -36,17 +37,6 @@ These six are immutable. Clone one if you need a starting point for a custom rol
 > [!IMPORTANT]
 > At least one user must always hold **Admin** globally. Arcane refuses any change that would leave the instance with zero global admins.
 
-## Custom roles
-
-For narrower job functions — "Database Operator", "Security Reviewer", etc.
-
-1. **Settings → Roles → Create role**.
-2. Name it, optionally describe it.
-3. Check the permissions to grant. Each resource group has a "select all" checkbox.
-4. Save.
-
-Built-in roles are read-only — use **Clone as custom role** to start from one. Deleting a custom role removes every assignment of it (subject to the last-admin guard).
-
 ## Assigning roles
 
 Open a user under **Settings → Users**. The **Role assignments** section lists every role they hold and its scope.
@@ -58,6 +48,15 @@ Open a user under **Settings → Users**. The **Role assignments** section lists
 ### OIDC users
 
 If a user matches an OIDC mapping, their assignments are managed there and the user editor shows them read-only with a link to **Settings → Authentication**. Manual assignments on OIDC users (for unmapped groups) still work and survive logins.
+
+## Custom roles
+
+1. **Settings → Roles → Create role**.
+2. Name it, optionally describe it.
+3. Check the permissions to grant. Each resource group has a "select all" checkbox.
+4. Save.
+
+Built-in roles are read-only — use **Clone as custom role** to start from one. Deleting a custom role removes every assignment of it (subject to the last-admin guard).
 
 ## OIDC group mappings
 
@@ -85,9 +84,45 @@ Every API key carries its own permission set, independent of the owning user. Is
 
 You cannot grant a key more permissions than you have yourself.
 
-## Permission catalog
+## Troubleshooting
 
-`<resource>:<action>`. The role editor groups these by resource so you rarely pick them by hand.
+**`permission denied: ...`** — look up the permission in the catalog and check whether the caller's role grants it on the right environment. Audit a user from **Settings → Users**.
+
+**User has no access at all.** No assignments. Open them in **Settings → Users** and add at least one (usually `Viewer` on every environment they should see).
+
+**`at least one user must retain a global Admin role assignment`.** You tried to remove the last Global Admin. Add another one first.
+
+**OIDC user lost access on login.** Their group claim no longer matches a mapping. Check the IdP-side membership and the mapping table.
+
+**API key got permission denied after the owner changed roles.** Keys carry their own permissions, not the owner's. Re-issue the key with the desired scope.
+
+**An account named `arcane` is not an admin.** The username only matters during initial setup or recovery when no global admin exists. Renaming a user to `arcane` doesn't grant access. Assign the role under **Settings → Users**.
+
+For the same reason, `ADMIN_STATIC_API_KEY` reconciliation is skipped when the `arcane` account is not actually a global admin; the logs say _"User is not a global admin, skipping default admin API key reconciliation."_
+
+**Nobody can sign in as an admin.** See <Link href="/docs/security/account-recovery">Account Recovery</Link>.
+
+## Upgrade & migration
+
+The migration runs automatically on first start of the new server:
+
+- Users with the legacy `admin` role → **Global Admin**.
+- Everyone else → **Global Viewer** (read-only, no logs).
+- Existing API keys → snapshot of their owner's effective permissions.
+
+> [!CAUTION]
+> If the migration would leave zero global admins, Arcane refuses to start. Restore from backup and investigate.
+
+After upgrading:
+
+1. **Check your admins** in **Settings → Users**.
+2. **Promote non-admins** off Viewer to Editor / No-Shell Editor / Deployer / Monitor on the environments they use.
+3. **Set up OIDC mappings** if you use SSO. Configure the **OIDC Groups Claim** and add mappings under **Settings → Authentication**.
+4. **Audit API keys** and remove permissions your automation doesn't need.
+
+See <Link href="/docs/upgrade/migrate-v2">Migrate to 2.0</Link> for the full upgrade walkthrough.
+
+## Permission catalog
 
 ### Org-level (Global scope)
 
@@ -136,42 +171,4 @@ All `system-backups` routes additionally require the user to be a global admin, 
 
 `gitops:lifecycle` is seeded only into the built-in Admin role by default. It allows configuring GitOps pre-deploy hooks, which run repo-trusted code in a container before deployment.
 
-The legacy `volumes:browse` permission was retired with the <Link href="/docs/features/volumes#volume-workspace">Volume Workspace</Link>; existing roles and API keys that held it are migrated to `volumes:read` automatically. Workspace writes map onto the remaining volume actions: creating and editing files needs `volumes:upload`, deleting needs `volumes:delete`, renaming or moving needs both, and restoring a file from a backup needs `volumes:backup`.
-
-## Upgrade & migration
-
-The migration runs automatically on first start of the new server:
-
-- Users with the legacy `admin` role → **Global Admin**.
-- Everyone else → **Global Viewer** (read-only, no logs).
-- Existing API keys → snapshot of their owner's effective permissions.
-
-> [!CAUTION]
-> If the migration would leave zero global admins, Arcane refuses to start. Restore from backup and investigate.
-
-After upgrading:
-
-1. **Check your admins** in **Settings → Users**.
-2. **Promote non-admins** off Viewer to Editor / No-Shell Editor / Deployer / Monitor on the environments they use.
-3. **Set up OIDC mappings** if you use SSO. Configure the **OIDC Groups Claim** and add mappings under **Settings → Authentication**.
-4. **Audit API keys** — the upgrade snapshot is the most permissive safe default. Tighten CI/CD keys to least privilege.
-
-See <Link href="/docs/upgrade/migrate-v2">Migrate to 2.0</Link> for the full upgrade walkthrough.
-
-## Troubleshooting
-
-**`permission denied: ...`** — look up the permission in the catalog and check whether the caller's role grants it on the right environment. Audit a user from **Settings → Users**.
-
-**User has no access at all.** No assignments. Open them in **Settings → Users** and add at least one (usually `Viewer` on every environment they should see).
-
-**`at least one user must retain a global Admin role assignment`.** You tried to remove the last Global Admin. Add another one first.
-
-**OIDC user lost access on login.** Their group claim no longer matches a mapping. Check the IdP-side membership and the mapping table.
-
-**API key got permission denied after the owner changed roles.** Keys carry their own permissions, not the owner's. Re-issue the key with the desired scope.
-
-**An account named `arcane` is not an admin.** It is not supposed to be, unless you granted it the role. Arcane consults the `arcane` username only when it first bootstraps an instance, or when accounts exist but none of them resolves to a global admin — the zero-admin recovery case. It no longer re-grants the global Admin role to whatever account happens to carry that name on every restart, so renaming a user to `arcane` no longer promotes them. Grant the role explicitly from **Settings → Users**.
-
-For the same reason, `ADMIN_STATIC_API_KEY` reconciliation is skipped when the `arcane` account is not actually a global admin; the logs say _"User is not a global admin, skipping default admin API key reconciliation."_
-
-**Nobody can sign in as an admin.** See <Link href="/docs/security/account-recovery">Account Recovery</Link>.
+Existing `volumes:browse` grants migrate to `volumes:read`. For <Link href="/docs/features/volumes#volume-workspace">Volume Workspace</Link> writes, `volumes:upload` allows creating and editing files, `volumes:delete` allows deletion, both allow moves and renames, and `volumes:backup` allows file restores.

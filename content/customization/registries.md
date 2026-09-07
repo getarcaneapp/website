@@ -1,15 +1,15 @@
 ---
 title: 'Template Registries'
-description: 'Want to share templates with your team or the community? Create your own template registry!'
+description: 'Create a template registry to share Compose templates with your team or the community.'
 ---
 
-A template registry is a JSON file on the internet that tells Arcane which templates are available and where to download them.
+A template registry is a hosted JSON file listing templates and their download URLs.
 
 ## Quick Setup
 
 ### 1. Create the registry file
 
-Create a JSON file that lists your templates. If you use a code editor, include the `$schema` field so it can help you spot mistakes:
+Create `registry.json`. Include `$schema` for editor validation:
 
 ```json
 {
@@ -37,16 +37,7 @@ Create a JSON file that lists your templates. If you use a code editor, include 
 
 ### 2. Host your files
 
-- **Option A: GitHub (recommended)**
-  1. Create a GitHub repository
-  2. Add your `registry.json` file
-  3. Add template directories with `docker-compose.yml` files
-  4. Use raw GitHub URLs for file access
-
-- **Option B: Web server**
-  - Host `registry.json` on any web server
-  - Make sure it uses HTTPS
-  - Turn on CORS if your setup needs it
+Upload `registry.json` and your template directories to GitHub or an HTTPS web server. Use raw GitHub URLs for downloads. Enable CORS if your hosting setup requires it.
 
 ### 3. Template file structure
 
@@ -118,70 +109,22 @@ docker-templates/
 2. Test URLs: ensure all file URLs are accessible (HTTPS)
 3. Add to Arcane: Customization → Templates → Add Registry
 4. Verify: templates appear and download correctly
-5. Ensure no extra properties exist beyond the schema
 
 ## Best Practices
 
-### Template quality
-
-- Use specific image tags (not `latest`)
-- Include health checks
-- Add restart policies
-- Document required environment variables
-- Test templates before publishing
-
-### Registry management
-
-- Version your templates and registry (semantic versioning)
-- Keep documentation current
-- Regular updates and maintenance
-- Monitor for security updates
-
-### Security
-
-- Use HTTPS for all URLs
-- Validate environment variable examples
-- Don't include sensitive data in examples
-- Consider image security scanning
+- Pin image versions, include health checks and restart policies, and test before publishing.
+- Document required environment variables using working examples without secrets.
+- Use semantic versioning and review image security updates when maintaining templates.
 
 ## GitHub Example
 
-Here is a minimal GitHub setup:
+For a repository named `my-docker-templates`, add the registry to Arcane using its raw URL:
 
-1. **Create repository:** `my-docker-templates`
-2. **Add registry.json:**
-   ```json
-   {
-   	"$schema": "https://github.com/getarcaneapp/arcane-templates/schema.json",
-   	"name": "My Templates",
-   	"description": "Custom Docker templates",
-   	"version": "1.0.0",
-   	"author": "Acme Corp",
-   	"url": "https://github.com/username/my-docker-templates",
-   	"templates": [
-   		{
-   			"id": "wordpress",
-   			"name": "WordPress",
-   			"description": "Production-ready WordPress with MariaDB and health checks.",
-   			"version": "1.2.3",
-   			"author": "Acme Corp",
-   			"compose_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/docker-compose.yml",
-   			"env_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/.env.example",
-   			"documentation_url": "https://raw.githubusercontent.com/username/my-docker-templates/main/wordpress/README.md",
-   			"tags": ["cms", "php", "wordpress"]
-   		}
-   	]
-   }
-   ```
-3. **Registry URL:** `https://raw.githubusercontent.com/username/my-docker-templates/main/registry.json`
+`https://raw.githubusercontent.com/username/my-docker-templates/main/registry.json`
 
 ## Community registry
 
-Don't want to maintain your own? Contribute to our community registry:
-
-**GitHub:** [https://github.com/getarcaneapp/templates](https://github.com/getarcaneapp/templates)
-
-Submit pull requests to add your templates to the community collection!
+Submit templates through a pull request to [getarcaneapp/templates](https://github.com/getarcaneapp/templates).
 
 ## Troubleshooting
 
@@ -194,7 +137,6 @@ Submit pull requests to add your templates to the community collection!
 
 **Templates not downloading?**
 
-- Check that all download links point to real files
-- Make sure the files exist at the URLs you listed
+- Check that each download URL points directly to an accessible file
 - Check file permissions
 - Look for errors in your browser

@@ -8,7 +8,7 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-The **autologin** buildable allows Arcane to automatically sign in using credentials you provide at runtime. This is useful for local development, CI, or demo environments where you want to skip the login screen.
+The **autologin** buildable signs in with credentials you provide at runtime. Use it in local development, CI, or demo environments where you need to skip the login screen.
 
 > [!CAUTION]
 > Autologin is intended for controlled environments only. **Do not use this in production** or any public-facing deployment.
@@ -30,4 +30,4 @@ Set the following environment variables at runtime:
 
 ## Behavior
 
-When enabled, Arcane will attempt to authenticate using the provided credentials during startup and skip the login screen when successful.
+At startup, Arcane tries the credentials you provided. If authentication succeeds, it skips the login screen.

@@ -13,24 +13,18 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 ## Configure OIDC in the UI
 
-The easiest way to set up OIDC is through Arcane's web interface:
+To connect your OIDC provider through Arcane's web interface:
 
 1. Go to **Settings → Authentication** in Arcane
 2. Enter your OIDC provider details
 3. Save and test the connection
 4. The UI will guide you through any missing or invalid fields
 
-OIDC users are created automatically the first time they sign in. You can disable local login if you want stricter security.
+Arcane creates OIDC users automatically the first time they sign in. You can disable local login if you want users to sign in through your OIDC provider only.
 
-Local login accepts either the username or the account's email address in the username field. For that reason, new usernames may not contain `@` — existing usernames that do keep working.
+For local login, users can enter either their username or email address in the username field. New usernames can't contain `@`, but existing usernames that contain it still work.
 
 Arcane finds the OIDC endpoints automatically from the issuer URL and its `.well-known/openid-configuration` page. Make sure the issuer URL does not end with a trailing slash.
-
-## Alternative: Environment Variables
-
-You can also configure OIDC using environment variables:
-
-<OidcTable />
 
 ## Mapping OIDC Groups to Roles
 
@@ -74,3 +68,9 @@ services:
       - OIDC_SCOPES=openid email profile groups
       - OIDC_GROUPS_CLAIM=groups
 ```
+
+## Alternative: Environment Variables
+
+You can also configure OIDC using environment variables:
+
+<OidcTable />

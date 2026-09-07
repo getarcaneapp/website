@@ -105,7 +105,7 @@ team/api
 team/platform/api
 ```
 
-Each entry is validated against Docker's reference grammar, and duplicates are collapsed. These names populate the **Repository name** dropdown when you configure a pushing build, so the build form can only ever produce a reference you have declared — see <Link href="/docs/features/image-builds">Image Builds</Link>.
+Arcane checks each entry against Docker's reference format and removes duplicates. These names appear in the **Repository name** dropdown for builds that push images. Add a repository here before using it as a build destination. See <Link href="/docs/features/image-builds">Image Builds</Link>.
 
 A registry with no repository names still works for pulling and update checks; it just cannot be selected as a push target until you add some.
 
@@ -117,7 +117,7 @@ ECR is a first-class registry type. When adding an ECR registry, provide:
 - AWS secret access key
 - AWS region
 
-Arcane exchanges those for a temporary ECR authorization token, caches it, and refreshes it as needed — no manual long-lived Docker token required.
+Arcane exchanges those credentials for a temporary ECR authorization token, caches it, and refreshes it when needed. You don't need to manage a Docker token yourself.
 
 > [!NOTE]
 > Changing a registry's URL requires you to re-enter its stored credentials in the same save — for ECR, both the access key ID and the secret access key. Arcane rejects the change otherwise rather than silently pointing your existing credentials at a new host. The same rule applies elsewhere secrets are tied to a target: an environment's API URL and its access token, the OIDC issuer URL and client secret, the Trivy server URL and its token, and a notification provider's host and its credentials.

@@ -9,9 +9,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
-A **Remote Environment** is a Docker host outside the Arcane Manager that you want to manage from the same UI. You create the environment in Arcane, copy the generated agent settings, and run the **Arcane Agent** on the remote host. The Agent needs Docker access — typically via `/var/run/docker.sock`.
-
-If that host is also a Docker Swarm node, the same Agent can remain a visible Remote Environment and provide verified node coverage in **Swarm → Nodes**. Arcane reuses the environment's existing token; attaching it to a node does not rotate or replace the token.
+Run an **Arcane Agent** on each Docker host you want to manage as a **Remote Environment**. The same agent can also serve its host's Swarm node without changing its token.
 
 <ScreenshotFrame
   src="/img/screenshots/environments-page.jpeg"
@@ -21,47 +19,6 @@ If that host is also a Docker Swarm node, the same Agent can remain a visible Re
   decoding="async"
 />
 
-## Connection mode
-
-Pick one when you create the environment:
-
-- **Direct** — the Manager connects to the Agent on TCP `3553`. Requires the Agent host to accept that inbound port.
-- **Edge** — the Agent connects outbound to the Manager. No inbound port required on the remote host. Use this when the remote is behind NAT or a firewall.
-
-## Transport mode
-
-Connection mode is _who connects to whom_. Transport mode is _how the live channel behaves_:
-
-- **`EDGE_TRANSPORT=auto`** — keep a continuous tunnel open. Arcane uses gRPC where possible and falls back to WebSocket. Behind Traefik, see <Link href="/docs/networking/traefik">Traefik</Link>.
-- **`EDGE_TRANSPORT=poll`** — check in periodically instead of holding a tunnel open. The first action on an idle environment can take a moment while the connection wakes up.
-
-Generated agent snippets default to `EDGE_TRANSPORT=poll`.
-
-The canonical container image is `ghcr.io/getarcaneapp/agent`. The older `ghcr.io/getarcaneapp/arcane-headless` name remains a supported release alias for existing installations.
-
-## Use an environment with Swarm
-
-With an active Swarm manager selected, you can start the same **Easy Join** workflow from:
-
-- **Swarm → Cluster** to join one or more Remote Environments.
-- An eligible environment's detail page to join that environment.
-- An eligible environment's row menu on the **Environments** page.
-
-Select a worker or manager role, an availability mode, and any optional per-environment listen, advertise, or data-path address. Arcane discovers a reachable manager address and retrieves the correct join token internally; neither needs to be copied into the Easy Join dialog or returned in its result.
-
-The single-environment actions appear only when the Remote Environment is enabled, online, not already bound to a Swarm node, and you have the required permissions. The selected environment is always the Swarm manager, so it cannot also be an Easy Join target.
-
-After a verified join, the environment is bound to its Swarm node. From the node's Agent dialog you can switch to the environment's Containers, Images, Volumes, or Networks pages when permitted.
-
-## Status meanings
-
-In poll mode, you'll see:
-
-- **Online** — a tunnel is active right now.
-- **Standby** — the Agent is checking in successfully and waiting for demand. This is healthy.
-- **Pending** — the environment is created but not paired or fully connected yet.
-- **Offline / Error** — the Manager can't currently use this environment.
-
 ## Requirements
 
 - Arcane Manager running and reachable from the Agent host.
@@ -69,6 +26,13 @@ In poll mode, you'll see:
 - The environment must be created in Arcane _before_ you start the Agent.
 - For **Direct** mode: the Manager must reach the Agent on port `3553`.
 - For **Edge** mode: the Agent must reach the Manager from inside its network.
+
+## Connection mode
+
+- <Link href="/docs/features/environments#add-a-direct-environment">Direct setup</Link> — the Manager connects to the Agent on TCP `3553`. Use this when the remote host can accept connections from the Manager.
+- <Link href="/docs/features/environments#add-an-edge-environment">Edge setup</Link> — the Agent connects outbound to the Manager. Use this behind NAT or a firewall; the remote host needs no inbound port.
+
+To run without a container, use the <Link href="/docs/features/environments#standalone-binary">standalone binary</Link> instructions.
 
 ## Add a Direct environment
 
@@ -138,12 +102,7 @@ volumes:
 
 ## Edit an environment
 
-1. Open **Environments**.
-2. Select the environment.
-3. Change the settings you need.
-4. Save.
-
-The environment's **name** and **API URL** are edited directly in the page header — click either to edit it inline, and use the copy button next to the API URL to copy it. Both are read-only for the built-in local environment. The header also has a **Test Connection** button, and **Regenerate API Key** for non-edge environments.
+Select an environment under **Environments**. Click its **name** or **API URL** in the header to edit; both are read-only for the local environment. The header also offers **Test Connection**, API URL copying, and **Regenerate API Key** for non-edge environments.
 
 ### Environment tabs
 
@@ -158,13 +117,9 @@ An offline or disabled environment shows only **Git Syncs**, and stays on the pa
 
 ## Update all environments
 
-Arcane can upgrade **itself** across your whole fleet in one action. On the **Environments** page, click **Update All** to open the **Update all environments** dialog and confirm.
+To upgrade the manager and connected agents together, open **Environments**, click **Update All**, and confirm in the **Update all environments** dialog.
 
-Arcane upgrades the connected **agents first**, while the manager is still up to orchestrate the run and report live progress, then upgrades the **manager last**. The manager only restarts if the pull actually brought down a new image — if it is already running the latest, it skips the recreate and there is no downtime. Offline environments are skipped.
-
-Each row shows the version it is moving `from → to`, and the local environment is marked with a **Manager** badge.
-
-The dialog tracks each environment as it goes:
+Agents update first, then the manager. The manager restarts only if its image changed. Offline environments are skipped. Each row shows the old and new versions and a status:
 
 - **Pending** — waiting in the queue.
 - **Updating** — upgrade in progress.
@@ -173,7 +128,41 @@ The dialog tracks each environment as it goes:
 - **Failed** — the upgrade didn't complete; the error is shown inline.
 
 > [!NOTE]
-> This upgrades the Arcane manager and agents themselves — not the containers or projects they run. To keep your _workloads_ current, use **Update All** on the <Link href="/docs/guides/updates">Updates</Link> page instead. The two buttons share a label but do different things. **Update All** here requires the `system:upgrade` permission.
+> This updates Arcane itself and requires `system:upgrade`. To update containers and projects, use the <Link href="/docs/guides/updates">Updates</Link> page.
+
+## Status meanings
+
+In poll mode, you'll see:
+
+- **Online** — a tunnel is active right now.
+- **Standby** — the Agent is checking in successfully and waiting for demand. This is healthy.
+- **Pending** — the environment is created but not paired or fully connected yet.
+- **Offline / Error** — the Manager can't currently use this environment.
+
+## Transport mode
+
+Choose how the Agent maintains its connection:
+
+- **`EDGE_TRANSPORT=auto`** — keep a continuous tunnel open. Arcane uses gRPC where possible and falls back to WebSocket. Behind Traefik, see <Link href="/docs/networking/traefik">Traefik</Link>.
+- **`EDGE_TRANSPORT=poll`** — check in periodically instead of holding a tunnel open. The first action on an idle environment can take a moment while the connection wakes up.
+
+Generated agent snippets default to `EDGE_TRANSPORT=poll`.
+
+The canonical container image is `ghcr.io/getarcaneapp/agent`. The older `ghcr.io/getarcaneapp/arcane-headless` name remains a supported release alias for existing installations.
+
+## Use an environment with Swarm
+
+With an active Swarm manager selected, you can start the same **Easy Join** workflow from:
+
+- **Swarm → Cluster** to join one or more Remote Environments.
+- An eligible environment's detail page to join that environment.
+- An eligible environment's row menu on the **Environments** page.
+
+Choose a worker or manager role, availability, and optional listen, advertise, or data-path addresses. Arcane handles the manager address and join token.
+
+Targets must be enabled, online, and unbound to a Swarm node. You need the required permissions, and you can't target the selected Swarm manager itself.
+
+After a verified join, the environment is bound to its Swarm node. From the node's Agent dialog you can switch to the environment's Containers, Images, Volumes, or Networks pages when permitted.
 
 ## Standalone binary
 

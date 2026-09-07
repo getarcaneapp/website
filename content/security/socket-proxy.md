@@ -13,7 +13,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 ## Why Use a Socket Proxy?
 
-By default, Arcane connects directly to the Docker socket (`/var/run/docker.sock`). That is simple, but it gives Arcane full access to Docker. A socket proxy adds a middle layer so you can:
+By default, Arcane connects directly to the Docker socket (`/var/run/docker.sock`), which gives it full access to Docker. A socket proxy filters requests between Arcane and Docker so you can:
 
 - **Limit access** to only the Docker actions Arcane needs
 - **Keep the Docker socket read-only** inside the proxy
@@ -109,7 +109,7 @@ volumes:
 
 ### wollomatic/socket-proxy (recommended)
 
-This is the layout the compose generator produces. The allowlist is the minimum Docker API surface Arcane needs, including Swarm, image builds, commits, and image update checks.
+This is the layout the compose generator produces. Its allowlist covers the Docker API calls Arcane needs, including Swarm, image builds, commits, and image update checks.
 
 ```yaml
 services:

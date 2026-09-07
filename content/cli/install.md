@@ -13,13 +13,13 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 The Arcane CLI is the official tool for interacting with your Arcane server from the terminal. It allows you to manage containers, images, environments, and more.
 
-## Installation
+<div id="installation" class="scroll-m-28"></div>
 
-### Manual Download
+## Manual Download
 
 You can download the latest binary for your platform from our <Link href="https://github.com/getarcaneapp/arcane/releases/latest">GitHub Releases</Link>
 
-### Curl Install Script
+## Curl Install Script
 
 You can also install the CLI with our helper script. Pick the command that matches the release channel you want:
 
@@ -45,7 +45,7 @@ export ARCANE_INSTALL_DIR="$HOME/.arcane/bin"
 export PATH="$ARCANE_INSTALL_DIR:$PATH"
 ```
 
-### APT (Debian / Ubuntu)
+## APT (Debian / Ubuntu)
 
 Add the signing key:
 
@@ -67,7 +67,7 @@ Install:
 
 <Snippet text="sudo apt update && sudo apt install arcane-cli" class="mt-2" />
 
-### YUM / DNF (RHEL, Fedora, CentOS)
+## YUM / DNF (RHEL, Fedora, CentOS)
 
 Add the repository:
 
@@ -85,11 +85,11 @@ Install:
 
 <Snippet text="sudo dnf install arcane-cli" class="mt-2" />
 
-### Homebrew
+## Homebrew
 
 <Snippet text="brew install getarcaneapp/tap/arcane-cli" class="mt-2" />
 
-### Go Install
+## Go Install
 
 <Snippet text="go install github.com/getarcaneapp/arcane/cli/v2@latest" class="mt-2" />
 

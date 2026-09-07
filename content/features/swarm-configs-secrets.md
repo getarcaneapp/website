@@ -3,7 +3,7 @@ title: 'Swarm Configs and Secrets'
 description: 'Manage Docker Swarm configs and secrets in Arcane.'
 ---
 
-Swarm **configs** and **secrets** let you ship runtime data to services and stacks without baking it into your images. Both are versioned: treat them as inputs to a workload, not as mutable live files.
+Swarm **configs** and **secrets** pass runtime data to services and stacks without including it in your images. Both are versioned, so plan to replace them when their contents change.
 
 ## Configs vs. secrets
 

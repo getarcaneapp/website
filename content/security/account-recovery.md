@@ -8,12 +8,12 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-When every administrator is locked out — a forgotten password, a lost passkey with no recovery codes left — Arcane ships two recovery commands that run inside its own container, against the database directly, without starting the HTTP server.
+These commands recover locked-out accounts by updating the database inside the Arcane container. They don't start the HTTP server.
 
 > [!NOTE]
-> These are subcommands of the `arcane` binary **inside the Arcane container**, not the standalone <Link href="/docs/cli/commands">`arcane-cli`</Link> you install on your workstation. `arcane-cli` talks to the API over the network and cannot help you when you cannot sign in.
+> Run these with the container's `arcane` binary. The standalone <Link href="/docs/cli/commands">`arcane-cli`</Link> requires API access and can't recover a locked-out account.
 
-Both commands are disabled by default. Anyone who can run them can take over an administrator account, so you turn the gate on deliberately, recover, and turn it back off.
+Both commands are disabled by default because they allow access to an administrator account. Enable recovery before running them, then disable it again when you're done.
 
 | Command                       | Enabled by                      |
 | ----------------------------- | ------------------------------- |
@@ -38,7 +38,7 @@ The command targets the user `arcane` unless you pass `--username`:
 
 <Snippet text="docker exec -it arcane arcane admin reset-password --username alice" class="mt-2 mb-4 w-full" />
 
-It refuses any account that does not resolve to **effective global administrator** permissions — you cannot use it to take over a regular user. An unknown name reports `global administrator "<name>" not found`.
+Only accounts with effective global administrator permissions can be reset. An unknown name returns `global administrator "<name>" not found`.
 
 On success it prints `Password reset successfully for global administrator "<username>"` and revokes every session that user had. The new password must satisfy the configured [password policy](#password-policy).
 
@@ -60,11 +60,11 @@ It disables passkey MFA, deletes the account's recovery codes, cancels any pendi
 
 ## Sessions end immediately
 
-Both commands revoke the target user's sessions, and that revocation takes effect at once — Arcane revalidates cached access tokens against persisted session state, so an already-signed-in browser or a horizontally-scaled second instance is cut off right away rather than at the end of a cache interval.
+Both commands end the user's sessions immediately, including cached sessions on other Arcane instances.
 
 ## Password policy
 
-Every path that sets a password enforces the tier configured under **Settings → Authentication → Password Policy**: an administrator creating a user, an administrator changing another user's password, a user changing their own password, and `arcane admin reset-password`.
+**Settings → Authentication → Password Policy** applies to all password creation and changes, including `arcane admin reset-password`.
 
 | Policy     | Requirement                                                                                        |
 | ---------- | -------------------------------------------------------------------------------------------------- |
@@ -72,11 +72,11 @@ Every path that sets a password enforces the tier configured under **Settings �
 | `standard` | At least 10 characters, including an uppercase letter, a lowercase letter, and a number.           |
 | `strong`   | At least 12 characters, including an uppercase letter, a lowercase letter, a number, and a symbol. |
 
-A password that falls short is rejected with the requirement as the error message. If the setting cannot be read or holds an unrecognized value, Arcane falls back to `strong` — the policy fails closed.
+Rejected passwords show the unmet requirement. If the policy is unreadable or invalid, Arcane uses `strong`.
 
 ## Accounts with legacy bcrypt hashes
 
 > [!WARNING]
 > Arcane no longer accepts bcrypt password hashes. Any account still storing a `$2a$`, `$2b$`, or `$2y$` hash fails to sign in with `invalid hash format` and must have its password reset.
 
-Arcane used to transparently re-hash a bcrypt password to Argon2 the next time that user signed in. That upgrade-on-login path is gone, so an account that never signed in during the window when it existed still holds the old hash. Reset it with `arcane admin reset-password` (for an administrator) or from **Settings → Users** with an account that can still sign in.
+Bcrypt hashes no longer upgrade on login. Reset an administrator's password with `arcane admin reset-password`, or use **Settings → Users** from an account that can still sign in.

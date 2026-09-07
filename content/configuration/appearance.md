@@ -7,9 +7,9 @@ description: 'Personalize themes, navigation, and display options for your Arcan
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Appearance in Arcane is **per user**. Every option below is saved to your own account and follows you to any browser you sign in from — changing your theme does not change anyone else's.
+Appearance settings belong to your account and follow you to any browser where you sign in. Changing your theme doesn't affect other users.
 
-Open **Account → Preferences** to find all of them.
+Open **Account → Preferences** to change the options below.
 
 > [!NOTE]
 > Earlier versions configured appearance server-wide under Settings → Appearance. That page has been removed. When you upgrade, your existing settings are copied to every user account automatically, so Arcane looks exactly the same as it did before.

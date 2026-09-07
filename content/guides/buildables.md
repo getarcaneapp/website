@@ -8,9 +8,9 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import BuildablesTable from '#lib/components/buildables-table.svelte';
 </script>
 
-Buildables are optional features that you add to Arcane when you build it. Most users do not need them.
+Buildables are optional features you add when building Arcane. Most installations don't need them.
 
-These are usually niche features or ones that could add extra risk in standard builds, which is why they are opt-in.
+They're opt-in because they serve specific use cases or carry risks that aren't appropriate for standard builds.
 
 ## Overview
 

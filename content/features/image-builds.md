@@ -7,12 +7,17 @@ description: 'Build container images in Arcane.'
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Arcane has two ways to build images:
+Choose the starting point that matches your files:
 
-- **Manual builds** in the **Build Workspace** — for one-off or repeatable builds with full control.
-- **Project builds** — for Compose services that have a `build:` directive.
+- <Link href="/docs/features/image-builds#building-from-a-project">Compose project</Link> with a `build:` section.
+- <Link href="/docs/features/image-builds#manual-builds-build-workspace">Dockerfile and build folder</Link> in the Build Workspace.
 
-This page covers both, plus the provider options (Local Docker vs. Depot).
+## Building from a project
+
+For Compose services with `build:`, use **Build** or **Build & Deploy** on the project page.
+
+> [!NOTE]
+> **Depot** and **Push** require explicit `image:` names in Compose. Generated local-only tags can't be pushed.
 
 ## Manual builds (Build Workspace)
 
@@ -26,37 +31,6 @@ Mount a host folder or named Docker volume to `/builds` in your `compose.yaml`:
 - Named volume: `arcane-builds:/builds`
 
 If you use a named volume, declare it under the top-level `volumes:` section too.
-
-The workspace gives you a file browser for the context, a build form (required + advanced options), a live build output panel, and build history with **Rebuild** support.
-
-## Project builds (Compose)
-
-Open a project page in **Projects**. When Arcane detects services with `build:` in the compose file, you'll see:
-
-- **Build** — build images without deploying.
-- **Build & Deploy** — build as part of deployment.
-
-## Build providers
-
-Arcane supports two:
-
-- **Local Docker** — builds on the same machine running Arcane.
-- **Depot** — builds remotely via Depot's service.
-
-### How Arcane picks a provider
-
-- The default comes from **Settings → Builds**.
-- The manual build UI lets you override it per build.
-- If Depot credentials aren't configured, Arcane falls back to Local Docker.
-
-### Provider behavior differences
-
-When **Depot** is selected:
-
-- **Push** is forced **on**.
-- **Load** is forced **off**.
-
-When **Local Docker** is selected, you control both **Push** and **Load**.
 
 ## Configure build settings first
 
@@ -84,11 +58,9 @@ Open **Settings → Builds** (`/settings/builds`) and configure:
 
 ### Naming the image
 
-How you name the image depends on whether the build pushes.
-
 A build that only stays local keeps the free-form **Image Tags** field: one or more full references, separated by commas or newlines.
 
-A build that pushes — **Push** toggled on, or the Depot provider, which always pushes — replaces that field with three, so the reference can only ever point at a registry you have configured:
+With **Push** enabled, including all Depot builds, choose:
 
 - **Registry** — one of your enabled container registries.
 - **Repository name** — one of the repository names configured on that registry.
@@ -96,29 +68,42 @@ A build that pushes — **Push** toggled on, or the Depot provider, which always
 
 Arcane shows the resulting `host/repository:tag` as a read-only **Image reference** above the build button. Changing the registry clears the repository selection, and a repository name that is not in the selected registry's list is rejected.
 
-If the dropdown says _"No repository names configured for this registry"_, add them to the registry first — see <Link href="/docs/features/images">private registries</Link>. If it says _"No enabled registries"_, you have none configured or enabled; _"No permission to list registries"_ means your role is missing the registry read permission.
+| Message                                          | What to do                                                                                                   |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| No repository names configured for this registry | Add repository names in your <Link href="/docs/features/images#private-registries">registry settings</Link>. |
+| No enabled registries                            | Add or enable a container registry.                                                                          |
+| No permission to list registries                 | Ask an admin for registry read access.                                                                       |
+
+## Build history
+
+The **Build History** tab tracks every build with status, provider, creation time, and duration. Open a row to see the full context, tags, Dockerfile/target, options, and output. Use **Rebuild** to load a previous configuration into the form as a starting point.
+
+## Build providers
+
+- **Local Docker** — builds on the same machine running Arcane.
+- **Depot** — builds remotely via Depot's service.
+
+### How Arcane picks a provider
+
+- The default comes from **Settings → Builds**.
+- The manual build UI lets you override it per build.
+- If Depot credentials aren't configured, Arcane falls back to Local Docker.
+
+### Provider behavior differences
+
+When **Depot** is selected:
+
+- **Push** is forced **on**.
+- **Load** is forced **off**.
+
+When **Local Docker** is selected, you control both **Push** and **Load**.
 
 ## Advanced options by provider
 
-Arcane validates advanced options against the selected provider so you don't send unsupported combinations.
+Arcane checks advanced options against the selected provider and rejects combinations it doesn't support.
 
 **Local Docker supports:** Network, Isolation, SHM size, Ulimits, Extra hosts, single-platform builds.
 Not supported: `cacheTo`, `entitlements`, `privileged`, multi-platform lists.
 
 **Depot supports:** multi-platform builds, `cacheTo`, `entitlements`, `privileged`.
 Not supported: Network, Isolation, SHM size, Ulimits, Extra hosts.
-
-## Build history
-
-The **Build History** tab tracks every build with status, provider, creation time, and duration. Open a row to see the full context, tags, Dockerfile/target, options, and output. Use **Rebuild** to load a previous configuration into the form as a starting point.
-
-## Building from a project
-
-On a project page, Arcane detects services with `build:` and shows build actions:
-
-1. Open the project.
-2. Click **Build** to build only.
-3. Click **Build & Deploy** to build as part of deployment.
-
-> [!NOTE]
-> When you build with **Depot** or with **Push** enabled, each service should set an explicit `image:` name in Compose. Otherwise Arcane would generate local-only tags that aren't valid for pushed or remote workflows.

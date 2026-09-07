@@ -7,42 +7,20 @@ description: 'Manage Swarm nodes and Arcane node-agent coverage.'
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-The **Nodes** page shows every member of the Swarm cluster and the current Arcane node-agent status for each one.
-
-For each node you see: hostname, role, status, availability, engine version, and Arcane node-agent status.
+The **Nodes** page lists each node's hostname, role, status, availability, Docker version, and agent status.
 
 ## Node operations
 
-Arcane supports the standard Swarm availability modes for managing scheduling during maintenance, evacuation, or normal operation:
-
-- **active**
-- **pause**
-- **drain**
-
-You can also:
-
-- promote a worker to a manager
-- demote a manager to a worker
-- remove a node from the Swarm
+Set availability to **active**, **pause**, or **drain** to accept tasks, keep current tasks only, or move tasks elsewhere. You can also promote, demote, or remove nodes.
 
 > [!WARNING]
 > Only make manager changes if you understand your quorum and cluster topology.
 
 ## Why node agents exist
 
-A Swarm manager exposes cluster-level resources, but it doesn't act as the local Docker engine for every node. Arcane's node agents handle:
-
-- Arcane coverage verification per node
-- generating a node-specific deploy command
-- confirming the connected agent is running on the expected Swarm node
-
-The same direct or edge Agent can serve two roles at once: it remains a visible <Link href="/docs/features/environments">Remote Environment</Link> and provides verified coverage for the Swarm node where it runs. Arcane automatically covers the Manager's own local Docker node, so that node does not need a second Agent.
-
-Legacy dedicated hidden node Agents remain supported for compatibility. New node-agent deployments create visible Remote Environments so the same Agent can provide both environment management and Swarm-node coverage.
+Node agents access each node's local Docker engine and verify its Swarm identity. New deployments use a visible <Link href="/docs/features/environments">Remote Environment</Link> for both jobs. The manager's local node needs no extra agent. Legacy hidden agents remain supported.
 
 ## Agent statuses
-
-Each node shows one of:
 
 - **none** — no agent has been prepared for this node.
 - **pending** — the agent record exists but the agent hasn't connected yet.
@@ -72,7 +50,7 @@ When a visible environment covers the node, the dialog links to its **Containers
 5. Run one of those on the target node.
 6. Click **Refresh Status** in Arcane.
 
-When the Agent connects and reports the expected node identity, the environment is verified, bound to the node, and shown as **connected**. Its token is the Remote Environment's normal Agent token; the binding does not replace or rotate it.
+When the agent reports the expected node identity, Arcane binds it to the node and shows **connected**. Its token stays unchanged.
 
 If you already created and connected a Remote Environment for the host, use **Easy Join** to add it to the cluster. Reconciliation attaches a unique identity match automatically. When multiple environments report the same node, open the Agent dialog and choose the intended verified candidate.
 
@@ -84,7 +62,7 @@ Removing a legacy registration deletes its hidden environment and API key. Repla
 
 ### Change a visible binding
 
-Detaching a visible Remote Environment removes only its Swarm-node binding. It does not delete the environment or change its Agent token. Rebinding to another verified environment requires explicit confirmation; Arcane never moves conflicting bindings as a side effect of refreshing the Nodes page.
+Detaching removes the node binding but keeps the environment and token. Rebinding requires confirmation; refreshing the page never moves conflicting bindings.
 
 ## Troubleshooting
 

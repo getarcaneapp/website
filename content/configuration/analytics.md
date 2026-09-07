@@ -1,14 +1,12 @@
 ---
 title: 'Analytics'
-description: 'Analytics Notice for Arcane'
+description: 'See what Arcane sends in its analytics heartbeat and how to turn it off.'
 ---
 
-The analytics heartbeat is a lightweight check-in used to understand _which servers are running_ and _which build/version they are on_. It does **not** collect personal data, user data, or project data.
+Arcane's analytics heartbeat reports running instances and their build versions.
 
 > [!NOTE]
-> The heartbeat endpoint is commonly blocked by ad blockers or privacy tools. If you do not see check-ins, try disabling those tools or allowlisting `checkin.getarcane.app`.
->
-> If you wish to send these analytics and are having an issue, try these steps:
+> If you want to send analytics but check-ins are blocked:
 >
 > - Temporarily disable ad blockers or privacy extensions.
 > - Allowlist `checkin.getarcane.app` (and your Arcane domain if you use a proxy).
@@ -17,7 +15,7 @@ The analytics heartbeat is a lightweight check-in used to understand _which serv
 
 ## What is sent
 
-The heartbeat sends a small JSON payload with **only** the following fields:
+The payload contains only:
 
 ```json
 {
@@ -26,8 +24,6 @@ The heartbeat sends a small JSON payload with **only** the following fields:
 	"server_type": "manager"
 }
 ```
-
-Field meanings:
 
 - `version`: The Arcane build version (e.g., `1.2.3`).
 - `instance_id`: A randomly generated UUID stored in settings. It is not tied to a user identity.

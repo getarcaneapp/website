@@ -10,7 +10,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 > [!CAUTION]
 > Arcane 2.0 is a breaking release. Back up your data before changing the image tag.
 
-# Before you start
+## Before you start
 
 Back up anything needed to restore Arcane 1.x:
 
@@ -22,7 +22,7 @@ Back up anything needed to restore Arcane 1.x:
 
 If you use SQLite with the default `arcane-data` volume, stop Arcane before copying the volume so the database is not changing while you back it up.
 
-# Breaking changes at a glance
+## Breaking changes at a glance
 
 - RBAC replaces the legacy user `admin` flag.
 - OIDC admin claims are removed. OIDC group mappings replace them.
@@ -34,14 +34,14 @@ If you use SQLite with the default `arcane-data` volume, stop Arcane before copy
 - Legacy remote bootstrap-token pairing is removed.
 - Plaintext Edge mTLS CA key migration is removed.
 - Official images now run as a hardened non-root user by default.
-- Some API and CLI automation surfaces changed or were removed:
+- Some API and CLI features changed or were removed:
   - user role create/update payloads
   - dashboard action-items endpoint
   - `arcane alerts`
   - public API-key-backed event creation
   - cookie-authenticated cross-origin writes
 
-# Migration steps
+## Migration steps
 
 ## 1. Prepare auth and permissions
 
@@ -69,7 +69,7 @@ services:
       OIDC_ADMIN_VALUE: arcane-admins
 ```
 
-Change it to request the same group claim and declare the replacement role mapping in env:
+Keep the same group claim and replace the admin settings with an environment-based role mapping:
 
 ```yaml
 services:
@@ -248,6 +248,6 @@ docker compose logs -f arcane
 - remote environments connect
 - Arcane can write to mounted data, projects, builds, and backup paths
 
-# Roll back
+## Roll back
 
 Stop Arcane, restore the database and `/app/data` backup from before the upgrade, then start the previous v1 image tag again. Do not start a v1 container against a database that has already been migrated by v2.
