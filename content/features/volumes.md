@@ -8,8 +8,6 @@ import { Link } from '#lib/components/ui/link/index.js';
 import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
-The **Volumes** page lists every Docker volume on the selected host and lets you create, remove, and back up volumes.
-
 <ScreenshotFrame
 	src="/img/screenshots/volumes-page.jpeg"
 	alt="Volumes page in Arcane"
@@ -46,9 +44,7 @@ A volume that is not in use by any container can be renamed from its row dropdow
 
 ## Volume Workspace
 
-Open a volume and switch to the **Workspace** tab to work with the files inside it — no need to stop the containers using it. The workspace shows a file tree next to a tabbed text editor, the same layout the project workspace uses.
-
-From the workspace you can:
+Open **Workspace** to work with files while containers keep running:
 
 - **Browse and edit** — open any UTF-8 text file in a tab and change it.
 - **New File** / **New Folder** — create files and folders anywhere in the volume.
@@ -57,11 +53,9 @@ From the workspace you can:
 - **Rename**, **Move**, and **Delete** — reorganize the volume contents.
 - **Restore a file from a backup** — pull a single file out of an existing volume backup instead of restoring the whole volume.
 
-Files you create or change through the workspace are written with the user and group of the container that uses the volume (when that container sets a numeric `user:`), instead of as root — so the application keeps permission over its own files.
+If the container sets a numeric `user:`, workspace writes use that user and group instead of root.
 
 Edits are staged locally and applied together when you **Save**. If someone else changed the volume in the meantime, the save is rejected with _"Volume workspace changed; refresh it and try again"_ — refresh and reapply.
-
-A few limits to keep in mind:
 
 - Binary files, symlinks, and special files are read-only in the editor; binary files can still be uploaded, downloaded, and moved.
 - Files larger than the configured maximum (default 10 MiB) can't be edited in place.
@@ -77,16 +71,10 @@ Write access follows the volume permissions: creating and editing files needs `v
 
 ## Back up and restore
 
-Open a volume and select **Backups** to create or schedule encrypted Rustic snapshots. Backups can use local storage, an S3-compatible destination, or both.
-
-Arcane supports multiple schedules per volume, retention policies, optional container shutdown for consistent snapshots, whole-volume restores, selected-file restores, and local safety backups before a restore.
-
-Volumes can also be backed up centrally with one schedule covering many volumes — see <Link href="/docs/features/backups#system-managed-volume-backups">System-managed volume backups</Link>.
-
-See <Link href="/docs/features/backups">Backups</Link> for storage setup, S3 destinations, encryption, scheduling, retention, and recovery instructions.
+Open **Backups** to create or schedule local and S3 snapshots, or restore data. See <Link href="/docs/features/backups">Backups</Link> for setup and recovery, or <Link href="/docs/features/backups#system-managed-volume-backups">System-managed volume backups</Link> to schedule multiple volumes together.
 
 ## Helper containers
 
 Arcane creates helper containers for backup, restore, and workspace access. They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default. Toggle **Show Internal Containers** in the Containers view to see them.
 
-Backup and restore work runs in short-lived Rustic containers. The workspace helper mounts the volume and stays around between operations so browsing feels instant; it is removed after sitting idle for the **Volume Helper Idle Timeout** (default 10 minutes, `0` disables the reaper).
+Backups and restores run in short-lived Rustic containers. The workspace helper keeps the volume mounted between operations so it doesn't need to start again each time you browse. Arcane removes it after the **Volume Helper Idle Timeout**, which defaults to 10 minutes. Set it to `0` to disable idle cleanup.

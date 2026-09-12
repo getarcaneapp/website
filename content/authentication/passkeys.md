@@ -8,15 +8,15 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-A passkey is a credential stored on your device — a phone, a laptop's secure enclave, a hardware key — that proves who you are without sending a secret to Arcane. Arcane uses passkeys two ways, and they are independent of each other:
+A passkey authenticates you through your phone, computer, or hardware key. Arcane supports:
 
-- **Passwordless sign-in** — select **Passkey** on the login page and you are in. No password typed.
-- **Passkey MFA** — you still sign in with your password or OIDC provider, then Arcane asks for a passkey before letting you through.
+- **Passwordless sign-in** — select **Passkey** on the login page and follow your device's prompt to sign in without a password.
+- **Passkey MFA** — sign in with your password or OIDC provider, then confirm with a passkey.
 
 Registering a passkey does not turn on MFA. Enabling MFA is a separate switch.
 
 > [!IMPORTANT]
-> Passkeys are bound to the hostname you serve Arcane from. Arcane derives the WebAuthn relying party ID from the hostname of `APP_URL`, and the origin from `APP_URL` itself. If `APP_URL` has no hostname the passkey service fails to start, and a passkey registered at one hostname will not work at another. Set `APP_URL` to the URL your users actually browse to, over HTTPS, before anyone registers a passkey. See <Link href="/docs/configuration/environment">Environment Variables</Link>.
+> Set `APP_URL` to your public HTTPS URL before registering passkeys. Its hostname becomes the WebAuthn relying party ID; the full URL supplies the origin. A missing hostname prevents startup, and passkeys won't work at a different hostname. See <Link href="/docs/configuration/environment">Environment Variables</Link>.
 
 Browsers only expose the WebAuthn API in a secure context, so passkeys need HTTPS (or `localhost`). On a plain-HTTP deployment Arcane shows _"Passkeys require a supported browser and a secure HTTPS connection."_ and hides the controls. See <Link href="/docs/networking/tls">TLS</Link> or put Arcane behind a terminating <Link href="/docs/networking/proxy">proxy</Link>.
 
@@ -49,11 +49,9 @@ Disabling MFA deletes your remaining recovery codes and leaves your passkeys reg
 
 ## Confirming your identity before changes
 
-Changing anything in this section — adding, renaming, or deleting a passkey, enabling or disabling MFA, regenerating recovery codes — first asks you to authenticate again, with a passkey or your current password. The dialog is titled **Confirm your identity**.
+Changes to passkeys, MFA, or recovery codes require **Confirm your identity** with a passkey or current password. Confirmation and individual passkey prompts expire after 5 minutes.
 
-That confirmation is good for 5 minutes, as is any individual passkey prompt. If you sit on the page longer than that, expect to be asked again.
-
-An OIDC-only account with no password, on a browser holding none of its passkeys, has no way to complete this step. Arcane says so explicitly and points at `arcane admin reset-mfa` — see <Link href="/docs/security/account-recovery">Account Recovery</Link>.
+OIDC-only accounts need an accessible passkey for this step. Without one, use `arcane admin reset-mfa` as described in <Link href="/docs/security/account-recovery">Account Recovery</Link>.
 
 ## The CLI and MFA-enabled accounts
 

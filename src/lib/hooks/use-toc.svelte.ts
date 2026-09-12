@@ -49,7 +49,12 @@ export class UseToc {
 			this.#toc = getToc(this.#ref);
 		});
 
-		mutationObserver.observe(this.#ref, { childList: true, subtree: true });
+		mutationObserver.observe(this.#ref, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			attributeFilter: ['hidden']
+		});
 
 		const resetActiveHeading = (headings: Heading[]) => {
 			for (let i = 0; i < headings.length; i++) {
@@ -173,9 +178,9 @@ const createHeading = (element: HTMLHeadingElement, index: number): Heading => {
  * @returns
  */
 const getToc = (el: HTMLElement): Heading[] => {
-	const headings = Array.from(el.querySelectorAll('h1, h2, h3, h4, h5, h6')).map((h, i) =>
-		createHeading(h as HTMLHeadingElement, i)
-	);
+	const headings = Array.from(el.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+		.filter((heading) => !heading.closest('[hidden]'))
+		.map((heading, index) => createHeading(heading as HTMLHeadingElement, index));
 
 	if (headings.length === 0) return [];
 

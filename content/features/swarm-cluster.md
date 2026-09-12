@@ -7,7 +7,7 @@ description: 'Initialize, join, unlock, and update a Docker Swarm cluster.'
 import { Snippet } from '#lib/components/ui/snippet/index.js';
 </script>
 
-The **Cluster** page covers the Swarm lifecycle and security settings for the selected environment — initialize, join, leave, unlock, rotate join tokens, and update the live Swarm spec.
+Use the **Cluster** page to initialize, join, or leave a Swarm in the selected environment. You can also unlock the cluster, rotate join tokens, and update its live Swarm spec.
 
 ## Initialize a Swarm
 
@@ -22,7 +22,7 @@ Use this when the selected environment isn't part of a Swarm yet.
 4. Optional: provide an advanced Swarm spec (JSON).
 5. Confirm.
 
-After initialization, Arcane refreshes cluster state and exposes the rest of the Swarm workspace for that environment.
+After initialization, Arcane refreshes the cluster state and shows the rest of the Swarm workspace for that environment.
 
 ## Join an existing Swarm
 

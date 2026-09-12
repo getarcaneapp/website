@@ -1,12 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
 	import * as Table from '#lib/components/ui/table/index.js';
 	import {
 		envSettingsOverrides,
 		getRuntimeEnvSettingsOverrides
 	} from '#lib/config/pages/runtime-config.js';
 
+	const searchId = $props.id();
+	let query = $state('');
 	let tableOverrides = $state(envSettingsOverrides);
+	const search = $derived(query.trim().toLowerCase());
+	const filteredOverrides = $derived(
+		tableOverrides.filter((item) =>
+			`${item.env} ${item.settingKey} ${item.description}`.toLowerCase().includes(search)
+		)
+	);
 
 	onMount(() => {
 		void (async () => {
@@ -16,6 +26,18 @@
 </script>
 
 <div class="env-var-table mt-4">
+	<div class="mb-3 flex flex-col gap-2">
+		<Label for={searchId}>Search setting overrides</Label>
+		<Input
+			id={searchId}
+			type="search"
+			bind:value={query}
+			placeholder="Name or description, e.g. backup"
+		/>
+	</div>
+	<p class="mb-3 text-sm text-muted-foreground" role="status">
+		{filteredOverrides.length} of {tableOverrides.length} setting overrides
+	</p>
 	<Table.Root class="mb-6 table-fixed">
 		<Table.Header>
 			<Table.Row>
@@ -24,7 +46,7 @@
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
-			{#each tableOverrides as item (item.env)}
+			{#each filteredOverrides as item (item.env)}
 				<Table.Row>
 					<Table.Cell class="align-top font-medium whitespace-nowrap">
 						<code
@@ -83,6 +105,12 @@
 							{/if}
 						</div>
 					</Table.Cell>
+				</Table.Row>
+			{:else}
+				<Table.Row>
+					<Table.Cell colspan={2}
+						>No setting overrides match. Try a shorter name or clear the search.</Table.Cell
+					>
 				</Table.Row>
 			{/each}
 		</Table.Body>

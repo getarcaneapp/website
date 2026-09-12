@@ -8,8 +8,6 @@ import { Link } from '#lib/components/ui/link/index.js';
 import { Snippet } from '#lib/components/ui/snippet/index.js';
 </script>
 
-The Swarm workspace has two views for deploying workloads — **Stacks** for whole applications and **Services** for direct service-level control — plus **Tasks** to see what Swarm is actually scheduling.
-
 ## When to use which
 
 - **Stacks** — normal application deployment, grouped service management. Recommended.
@@ -18,21 +16,11 @@ The Swarm workspace has two views for deploying workloads — **Stacks** for who
 
 ## Stacks
 
-A stack groups related services together as one application-level deployment. Arcane supports:
-
-- deploying a stack from Compose content
-- supplying `.env` content for variable substitution
-- editing and redeploying an existing stack
-- removing a stack
-- viewing the services and tasks that belong to a stack
-- starting from a saved template
-- converting a `docker run` command to Compose
+A stack deploys related services together from a Compose file.
 
 ### How Arcane finds stacks
 
-The **Stacks** page answers a single question: **what stacks does the Swarm manager see right now?**
-
-To do that, Arcane fetches the current Swarm services and groups them by the `com.docker.stack.namespace` label. The list is live — not from a database, not reconstructed from saved Compose files. A stack deployed outside Arcane shows up as soon as the manager can see its services.
+Arcane groups the manager's current services by `com.docker.stack.namespace`. This includes stacks deployed outside Arcane, even without saved Compose files.
 
 ### Deploy a stack
 
@@ -57,7 +45,7 @@ Deploy options:
 - **Resolve images** — how aggressively to pin image digests: **Always** (default), **When changed**, or **Never**.
 
 > [!NOTE]
-> Arcane namespaces the networks, volumes, configs, and secrets a stack declares, so the deployed resource names are prefixed with the stack name rather than matching the raw names in your Compose file. Configs and secrets are additionally content-addressed, which lets a changed config deploy as a new object instead of failing against Docker's immutability rule.
+> Arcane prefixes declared resource names with the stack name. Config and secret names also depend on their content, so changes create new objects without modifying Docker's immutable originals.
 
 ### Update or remove a stack
 
@@ -65,12 +53,7 @@ Open the stack from **Swarm → Stacks**, click **Edit**, change the Compose or 
 
 ### View Source vs. the live stack list
 
-These answer different questions:
-
-- **Stacks** page → what Docker Swarm reports right now.
-- **View Source** → the Compose and `.env` files Arcane saved on disk during deploy.
-
-Arcane writes saved sources under the Swarm stack sources directory, by default:
+**View Source** shows the Compose and `.env` files Arcane saved during deployment. The default source directory is:
 
 <Snippet text="/app/data/swarm/sources" class="mt-2 mb-2 w-full" />
 
@@ -85,16 +68,7 @@ The `.env` is optional. A stack deployed outside Arcane appears in the live list
 
 ## Services
 
-Use the Services view when you want to work with individual Swarm services instead of full stacks. Arcane supports:
-
-- creating a service
-- inspecting service details
-- updating the raw service spec
-- scaling replicated services
-- rolling back to the previous version
-- streaming service logs
-- inspecting service tasks
-- removing a service
+Manage individual services here, including raw spec updates and removal.
 
 ### Create a service
 
@@ -102,8 +76,6 @@ Use the Services view when you want to work with individual Swarm services inste
 2. Click **Create Service**.
 3. Fill in the service definition.
 4. Submit.
-
-Arcane sends the resulting Swarm service spec straight to the selected environment.
 
 ### Inspect, scale, roll back
 
@@ -114,11 +86,4 @@ The service detail page shows overview data, live logs, tasks, environment and l
 
 ## Tasks
 
-The **Tasks** view shows what Swarm is actually scheduling. Use it to:
-
-- confirm where a service is running
-- inspect task state and placement
-- troubleshoot failed or restarting tasks
-- filter by node, service, or stack
-
-Opening **Tasks** from the Nodes page scopes the view to a single node.
+Inspect task state and placement to troubleshoot failed or restarting services. Filter by node, service, or stack. Opening **Tasks** from the Nodes page selects that node's tasks.

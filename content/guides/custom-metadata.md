@@ -1,9 +1,13 @@
 ---
 title: 'Custom Metadata'
-description: 'Add theme-aware icons and external links to projects and services.'
+description: 'Configure project and service icons, links, and updater policies with x-arcane metadata.'
 ---
 
-You can give projects and services theme-aware icons and a list of external links — for example a docs URL, a homepage, or a repo. Project-level metadata goes in the compose file's `x-arcane` block; service-level icons go on the service via labels.
+<script lang="ts">
+import { Link } from '#lib/components/ui/link/index.js';
+</script>
+
+Use the Compose file's `x-arcane` block for project icons, external links, and updater defaults. Services can override updater settings in their own `x-arcane` block. Service icon labels are documented below.
 
 Icon values can be either absolute `http://` or `https://` URLs, or catalog slugs from the selected icon catalog. Data URIs and embedded base64 icons are not supported.
 
@@ -80,3 +84,83 @@ x-arcane:
   icon-light: https://example.com/nginx-light.svg
   icon-dark: https://example.com/nginx-dark.svg
 ```
+
+## Updater behavior
+
+Set project defaults under `x-arcane.updater`, then override individual fields on a service:
+
+```yaml
+x-arcane:
+  updater:
+    enabled: true
+    strategy: auto
+    constraint: '3.x'
+
+services:
+  first:
+    image: alpine:3.20.0
+    command: ['sleep', 'infinity']
+    x-arcane:
+      updater:
+        constraint: '=3.20.1'
+  second:
+    image: alpine:3.20.0
+    command: ['sleep', 'infinity']
+    x-arcane:
+      updater:
+        constraint: '=3.20.2'
+```
+
+These services start from the same image but select different target tags. See <Link href="/docs/guides/updates#tag-based-updates">Tag-based updates</Link> for version selection, checking, and applying updates.
+
+| Field         | Meaning                                                                                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`     | Boolean controlling updater participation. Set `false` to opt out. This doesn't enable the environment's auto-update schedule.                                                 |
+| `strategy`    | `auto` is the default: complete stable version tags use tag checks; other tags use digest checks. `digest` keeps the configured tag. `tag` requires version-based selection.   |
+| `constraint`  | Optional semantic version range, such as `3.x`, `3.20.x`, or `=3.20.1`. In tag mode, an omitted constraint keeps updates within the current major, or current minor for `0.x`. |
+| `tag-pattern` | Optional full-tag regex. A named `version` capture extracts the comparable version from variant tags.                                                                          |
+
+Settings are resolved per field, in this order:
+
+1. Explicit `com.getarcaneapp.arcane.updater` labels on the service.
+2. The service's `x-arcane.updater` fields.
+3. The project's top-level `x-arcane.updater` defaults.
+
+When `auto` has an explicit constraint or tag pattern, Arcane validates it and uses version-based selection. Invalid policies produce a check error. Prereleases require an explicit constraint that admits them.
+
+An omitted service field inherits its project default. An empty `constraint` or `tag-pattern` string clears an inherited value. For variant tags such as `3.1.2-alpine`, use:
+
+```yaml
+x-arcane:
+  updater:
+    strategy: tag
+    constraint: '3.x'
+    tag-pattern: '(?P<version>\d+\.\d+\.\d+)-alpine'
+```
+
+Arcane turns these settings into updater labels when it loads the Compose model. It can check project metadata before you create any containers. After changing the metadata, deploy or recreate existing containers through Arcane to apply the new policy to their labels.
+
+Docker Compose launched outside Arcane ignores `x-arcane`. Use <Link href="/docs/guides/updates#per-container-labels">explicit updater labels</Link> for that workflow and for standalone containers. Arcane's Compose editor offers completions and hover help for the updater fields.
+
+## Hide containers
+
+Set `hidden: true` to hide a service's containers from the default container list and dashboard counts:
+
+```yaml
+services:
+  worker:
+    image: ghcr.io/acme/worker:latest
+    x-arcane:
+      hidden: true
+```
+
+A top-level `x-arcane.hidden: true` applies to every service. Set `hidden: false` on an individual service to keep its containers visible. An explicit `com.getarcaneapp.arcane.hidden` Docker label overrides both values.
+
+Deploy or recreate the containers through Arcane to apply metadata changes. If you deploy with Docker Compose outside Arcane, use the Docker label directly:
+
+```yaml
+labels:
+  com.getarcaneapp.arcane.hidden: 'true'
+```
+
+Turn on **Show hidden containers** in the container table's view options to reveal hidden containers.

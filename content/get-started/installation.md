@@ -1,20 +1,24 @@
 ---
 title: 'Installation'
-description: 'Get Arcane running fast with Docker Compose.'
+description: 'Install Arcane with Docker Compose and sign in for the first time.'
 ---
 
 <script lang="ts">
-import SetupCode from '#lib/components/setup-code.svelte';
+import { h2 as Heading } from '#lib/components/markdown/index.js';
+import InstallationTabs from '#lib/components/installation-tabs.svelte';
+import * as Tabs from '#lib/components/ui/tabs/index.js';
 import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-> [!NOTE] This guide walks you through a full Arcane installation.
-> If you want to use Arcane with a remote server, see <Link href="/docs/features/environments">the remote environments guide</Link>. If you want extra protection for Docker access, see the <Link href="/docs/security/socket-proxy">Socket Proxy Setup</Link> guide.
+> [!NOTE]
+> For remote Docker hosts, see <Link href="/docs/features/environments">Remote Environments</Link>. To restrict Docker access, see <Link href="/docs/security/socket-proxy">Socket Proxy Setup</Link>.
+
+<InstallationTabs>
+
+<Tabs.Content value="docker" data-install-method="docker">
 
 ## Docker Compose (Recommended)
-
-Docker Compose is the recommended way to run Arcane. Follow the steps below to get up and running in a few minutes:
 
 ## 1. Create `compose.yaml`:
 
@@ -73,7 +77,7 @@ volumes:
 
 **_/var/run/docker.sock_**: Gives Arcane access to Docker.
 
-**_arcane-data_**: Arcane's data folder, which stores things like the database and project data.
+**_arcane-data_**: Stores Arcane's database and project data.
 
 **_/builds_**: Optional folder for build files used by the Build Workspace. You can map a host folder or a Docker volume here.
 
@@ -88,7 +92,7 @@ volumes:
 > - Mount: `/opt/docker:/opt/docker` (not `/opt/docker:/app/data/projects`)
 > - Set `PROJECTS_DIRECTORY=/opt/docker` in the environment (or the Arcane setting) so path resolution works immediately on startup.
 >
-> This helps Arcane and Docker agree on where your files live, so paths like `./config` work the way you expect.
+> Matching paths let Arcane and Docker resolve relative mounts such as `./config`.
 
 ## 3. SELinux hosts and socket access mode
 
@@ -189,30 +193,7 @@ If you already have the Arcane CLI installed:
 docker compose up -d
 ```
 
-## 6. Open Arcane
-
-Open <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup steps. The first time you sign in, you'll be asked to change the default admin password. Use these default credentials:
-
-Username:
-<Snippet text="arcane" class="mt-2 max-w-75" />
-
-Password:
-<Snippet text="arcane-admin" class="mt-2 max-w-75" />
-
-## 7. Using a custom domain or reverse proxy?
-
-> [!NOTE]
-> Arcane uses WebSockets to stay connected in real time. If you're putting Arcane behind a reverse proxy or custom domain, make sure WebSocket support is enabled.
->
-> See the <Link href="/docs/networking/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for setup steps for Nginx, Apache, and other reverse proxies.
-
-## 8. Behind an outbound HTTP proxy?
-
-If Arcane needs to reach the internet through a proxy, for example to download templates or check for updates, see the <Link href="/docs/networking/proxy">HTTP Proxy Configuration Guide</Link>.
-
 ## Supported architectures
-
-Arcane's container images and release binaries are built for several CPU architectures, so the same setup works on x86 servers, ARM boards (including the Raspberry Pi), and RISC-V hardware.
 
 The `manager` and `agent` images are published for:
 
@@ -221,7 +202,7 @@ The `manager` and `agent` images are published for:
 - `linux/arm/v7`
 - `linux/riscv64`
 
-Docker automatically pulls the variant that matches your host, so no extra configuration is needed. The CLI and agent binaries on the <Link href="https://github.com/getarcaneapp/arcane/releases/latest">GitHub Releases</Link> page additionally cover Linux `386` and macOS (`amd64`, `arm64`).
+Docker selects your host's architecture automatically. CLI and agent binaries on <Link href="https://github.com/getarcaneapp/arcane/releases/latest">GitHub Releases</Link> also cover Linux `386` and macOS (`amd64`, `arm64`).
 
 ## Container health check
 
@@ -241,6 +222,10 @@ services:
 ```
 
 The `start_period` gives Arcane time to run migrations on first boot before failed checks count against `retries`.
+
+</Tabs.Content>
+
+<Tabs.Content value="script" data-install-method="script">
 
 ## Convenience Script
 
@@ -264,6 +249,31 @@ This version asks before removing Arcane data, the Arcane user/group, or Docker.
 
 <Snippet class="mt-4" text="curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove-all" />
 
+</Tabs.Content>
+
+</InstallationTabs>
+
+<Heading id="6-open-arcane">Open Arcane</Heading>
+
+Open <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup steps. The first time you sign in, you'll be asked to change the default admin password. Use these default credentials:
+
+Username:
+<Snippet text="arcane" class="mt-2 max-w-75" />
+
+Password:
+<Snippet text="arcane-admin" class="mt-2 max-w-75" />
+
+<Heading id="7-using-a-custom-domain-or-reverse-proxy">Reverse proxy</Heading>
+
+> [!NOTE]
+> Arcane uses WebSockets to stay connected in real time. If you're putting Arcane behind a reverse proxy or custom domain, make sure WebSocket support is enabled.
+>
+> See the <Link href="/docs/networking/websockets-reverse-proxies">WebSocket Configuration Guide</Link> for setup steps for Nginx, Apache, and other reverse proxies.
+
+<Heading id="8-behind-an-outbound-http-proxy">Outbound HTTP proxy</Heading>
+
+If Arcane needs to reach the internet through a proxy, for example to download templates or check for updates, see the <Link href="/docs/networking/proxy">HTTP Proxy Configuration Guide</Link>.
+
 ## Next (Preview) Builds
 
-Want to try the latest features before they are officially released? See the <Link href="/docs/upgrade/next-images">Next Builds</Link> guide for the `:next` images.
+To test features that are still in development, see the <Link href="/docs/upgrade/next-images">Next Builds</Link> guide for the `:next` images.

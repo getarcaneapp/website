@@ -13,17 +13,17 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 >
 > Starting with releases after `v2.4.0`, only the checksums file carries a Sigstore bundle — individual binaries and archives are verified through it. Releases `v2.4.0` and earlier also shipped a `.sigstore.json` bundle per file.
 
-If you want to double-check that the Arcane binary or image you downloaded is really the one we published, you can verify it with Cosign.
+Use Cosign to verify that an Arcane binary or container image matches what we published.
 
 This includes binaries published to S3, binaries attached to GitHub Releases, and container images.
 
 If you do not have Cosign installed yet, follow the <Link href="https://docs.sigstore.dev/cosign/system_config/installation/">official Cosign installation guide</Link>.
 
-The Arcane public key lives at <Link href="https://getarcane.app/cosign.pub">getarcane.app/cosign.pub</Link> or in the root of the arcane github repo.
+The Arcane public key is available at <Link href="https://getarcane.app/cosign.pub">getarcane.app/cosign.pub</Link> and in the root of the Arcane GitHub repository.
 
 ## Verify checksums
 
-The verification flow is: verify the checksum file's signature first, then use `sha256sum` to confirm the individual files you downloaded against it.
+First verify the checksum file's signature. Then use `sha256sum` to check your downloaded files against those checksums.
 
 The checksum file and its Sigstore bundle sit next to each other wherever you got your artifacts:
 

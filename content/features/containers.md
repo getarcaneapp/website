@@ -4,10 +4,11 @@ description: 'Manage Docker containers from Arcane.'
 ---
 
 <script lang="ts">
+import { Link } from '#lib/components/ui/link/index.js';
 import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
-The **Containers** page lists every container on your Docker host and lets you start, stop, pause, kill, inspect, commit, and remove them. Use it for one-off containers; for grouped services, see [Projects](/docs/features/projects).
+Use **Containers** for individual Docker containers and [Projects](/docs/features/projects) for Compose services.
 
 <ScreenshotFrame
 	src="/img/screenshots/containers-page.jpeg"
@@ -19,9 +20,19 @@ The **Containers** page lists every container on your Docker host and lets you s
 
 ## Browse containers
 
-Open **Containers** in the sidebar. The table shows name, ID, image, and status for every container on the host.
+Open **Containers** in the sidebar. The table shows name, ID, image, and status for containers on the host.
 
 If you have a lot of published ports, the table collapses long port lists behind a `+N` expander. The view options menu can also hide exposed-only ports so you only see published host mappings.
+
+### Filter by Docker label
+
+Use the **Labels** filter to enter a label key, such as `com.example.team`, or an exact key and value, such as `com.example.team=media`. A key on its own matches containers that have that label, regardless of its value.
+
+### Hide containers from the list
+
+Set the Docker label `com.getarcaneapp.arcane.hidden=true` to hide a container from the default list and dashboard counts. Turn on **Show hidden containers** in the table's view options to see it again.
+
+For Compose services, you can set `x-arcane.hidden` instead. See <Link href="/docs/guides/custom-metadata#hide-containers">Hide containers</Link> for an example and project-wide defaults.
 
 ## Create a container
 
@@ -31,8 +42,6 @@ If you have a lot of published ports, the table collapses long port lists behind
 
 ## Start, stop, restart, pause, kill
 
-Each container row has action buttons:
-
 - **Start** / **Stop** / **Restart** — change the running state.
 - **Pause** / **Unpause** — suspend and resume all processes in the container. Requires `containers:pause`.
 - **Kill** — send a signal to the container's main process. Requires `containers:kill`.
@@ -40,24 +49,20 @@ Each container row has action buttons:
 
 ## Edit a container
 
-Open a container's detail page (or its row menu) and choose **Edit** to change the container's configuration — image, ports, volumes and bind mounts, environment variables, restart policy, network settings (including static IPv4 addresses and aliases), resource limits (memory, CPU shares), and Linux capabilities. Editing requires the `containers:edit` permission; connecting or disconnecting networks also needs `networks:connect` / `networks:disconnect`.
+Choose **Edit** from a container's detail page or row menu to change its image, ports, mounts, variables, restart policy, networks, resource limits, or Linux capabilities. Network options include static IPv4 addresses and aliases. Editing requires `containers:edit`; network connections also require `networks:connect` / `networks:disconnect`.
 
-Applying changes **recreates** the container: it is stopped, recreated with the new configuration, and restarted, and it comes back with a new container ID. Arcane asks you to confirm before doing this. If recreation fails, Arcane restores the original container — unless the container uses auto-remove, in which case the original can't be brought back.
-
-A couple of details:
+Applying changes **recreates** the container. Arcane asks you to confirm, then stops it, recreates it with the new configuration, and starts it with a new container ID. If recreation fails, Arcane restores the original container. Containers that use auto-remove can't be restored this way.
 
 - Options of existing mounts are preserved.
 - The new image is only pulled if it is not already present locally.
 
 ## Convert a container to a Compose project
 
-With **Experimental Features** enabled (toggle in the version dialog, opened from the sidebar — requires `settings:write`), containers that aren't already part of a Compose project get a **Convert to Compose** action on the detail page and in the row menu. The containers table also has a bulk version for converting several containers at once.
+Enable **Experimental Features** in the sidebar's version dialog with `settings:write`. Standalone containers then offer **Convert to Compose** on their detail page, row menu, or in bulk from the table. This requires `projects:create`.
 
-The action takes you to the new-project page with a generated compose file pre-filled in the editor. Review and edit the YAML — generated output often needs a look over for bind mounts, networks, and environment values — then click **Create Project**.
+The action opens the new-project page with a generated Compose file in the editor. Check the bind mounts, networks, and environment values, make any changes you need, then click **Create Project**.
 
-The original containers keep running by default. If you have the `containers:delete` permission, the create dialog offers a **Remove original container(s) after creation** checkbox; removal happens right after the project is created, before it is deployed, and can't be undone. If you leave the originals running, deploy the new project only after stopping them, or names and ports may collide.
-
-Seeing the action requires the `projects:create` permission.
+Original containers keep running by default. Stop them before deploying to avoid name and port conflicts. With `containers:delete`, select **Remove original container(s) after creation** to delete them at project creation, before deployment. Deletion can't be undone.
 
 ## Commit a container to an image
 

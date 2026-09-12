@@ -7,7 +7,7 @@ description: 'Put Arcane behind Traefik, including the Edge Agent gRPC tunnel.'
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-This is the Edge Agent setup. Traefik already handles the web UI and WebSockets — see <Link href="/docs/networking/websockets-reverse-proxies">WebSocket Configuration</Link> if that's all you need.
+Follow this guide to route Edge Agent connections through Traefik. For the web UI and WebSockets alone, see <Link href="/docs/networking/websockets-reverse-proxies">WebSocket Configuration</Link>.
 
 Edge Agents with `EDGE_TRANSPORT=auto` open a gRPC tunnel to `/api/tunnel/connect`. Traefik has to forward that as unencrypted HTTP/2 (`h2c`) and must not time the stream out.
 
@@ -80,4 +80,4 @@ Restart Traefik and the Edge Agent:
 docker logs arcane-edge-agent
 ```
 
-You want a gRPC connection. If Traefik is dropping the stream, you'll see it fall back to WebSocket after about 60 seconds.
+Check that the agent connects over gRPC. If Traefik drops the stream, the agent falls back to WebSocket after about 60 seconds.

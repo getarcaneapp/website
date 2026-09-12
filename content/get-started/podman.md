@@ -10,7 +10,7 @@ import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE] This guide is for using Arcane with Podman.
-> It assumes you have followed the normal <Link href="/docs/get-started/installation">Installation</Link> already.
+> Follow the <Link href="/docs/get-started/installation">Installation</Link> guide first, then make the changes below.
 
 ## 1. Start **_podman.socket_**:
 
@@ -34,7 +34,7 @@ services:
 +     - /run/user/USER/podman/podman.sock:/var/run/docker.sock
 ```
 
-where USER is the id of your user.
+Replace USER with your numeric user ID.
 
 If you are on Windows 11 with Podman Desktop, the socket is exposed inside the VM and this mount has been used successfully:
 
@@ -57,4 +57,4 @@ services:
 
 ## 3. Limitations:
 
-Podman exposes a Docker-compliant API through the socket allowing Arcane to manage containers as though it were using Docker. However, podman native features, e.g. Quadlets, Pods, are not exposed through the API. Additional development is needed to support native Podman features.
+Arcane manages Podman containers through the socket's Docker-compatible API. Podman-specific features such as Quadlets and Pods aren't exposed through that API, so Arcane doesn't support them yet.

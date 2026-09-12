@@ -3,7 +3,7 @@ title: 'GitOps Lifecycle Hooks'
 description: 'Run a pre-deploy script before a GitOps project sync redeploys.'
 ---
 
-GitOps lifecycle hooks let Arcane run a script from a synced repository before deploying the project. Use them for repo-owned preparation steps such as decrypting secrets, generating config files, or validating the workspace before Compose runs.
+GitOps lifecycle hooks run a script from your synced repository before Arcane deploys the project. Use a hook to prepare the workspace for Compose, for example by decrypting secrets, generating config files, or checking the workspace.
 
 > [!CAUTION]
 > A lifecycle hook is repo-trusted code. Anyone who can push to the configured repository can change what the hook does on the next sync. Only enable hooks for repositories you control.
@@ -94,4 +94,4 @@ Arcane records the last hook run on the GitOps sync:
 - status: `success`, `failed`, or `timeout`
 - truncated combined stdout and stderr
 
-Use this output to diagnose why a sync did not deploy. Full hook output should not be treated as long-term log storage.
+Check this output when a sync doesn't deploy. If you need to keep hook logs long term, store them separately.

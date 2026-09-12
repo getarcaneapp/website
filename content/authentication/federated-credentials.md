@@ -8,26 +8,16 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Federated credentials let an external workload — a GitHub Actions job, a GitLab CI pipeline, or any OIDC provider — sign in to Arcane using the short-lived token its platform already issues. Nothing long-lived is stored in your pipeline: there is no API key or password to create, leak, or rotate.
-
-You register a **trust rule** once. From then on, any workload that matches the rule can exchange its OIDC token for a short-lived Arcane token automatically.
+Federated credentials let CI jobs exchange an OIDC token for a short-lived Arcane token. Create a **trust rule** for the jobs you want to allow; no Arcane password or API key is needed in the pipeline.
 
 > [!NOTE]
 > This is for machines, not people. For interactive sign-in by human users, see <Link href="/docs/authentication/sso">OIDC Single Sign-On</Link>.
 
 ## How it works
 
-1. An admin registers a federated credential — a rule that says _"tokens from this issuer, for this audience, with this subject, get this role."_
-2. In CI, the workload (or the Arcane CLI) fetches its OIDC token from the platform.
-3. The CLI sends that token to Arcane.
-4. Arcane verifies the token's signature against the issuer's published keys, checks the audience and subject against your rule, then returns a short-lived Arcane token.
-5. The CLI uses that token for the rest of the job.
-
-Because the match is made on the token's cryptographically signed claims, one workload can never impersonate another, and there is no shared secret to manage.
+The CLI fetches an OIDC token from the CI platform and sends it to Arcane. Arcane verifies its signature against the issuer's keys and checks the audience and subject against your rule. Matching jobs receive an Arcane token with the mapped role.
 
 ## Create a federated credential
-
-There is no global switch to flip — federated credentials become active as soon as you create an enabled trust rule, and stop working the moment you disable or delete it.
 
 1. Go to **Settings → Authentication → Federated Credentials** and select **Create**.
 2. Fill in the fields below.
@@ -49,7 +39,7 @@ There is no global switch to flip — federated credentials become active as soo
 
 ## Subject formats by provider
 
-The **subject match** is the heart of the rule: it decides exactly which workflow is trusted. The format comes from your provider.
+Use your provider's subject format:
 
 ### GitHub Actions
 
@@ -68,7 +58,7 @@ The **subject match** is the heart of the rule: it decides exactly which workflo
 
 ## Authenticate from a pipeline
 
-Use `arcane-cli auth federated`. It auto-detects GitHub Actions and GitLab CI, fetches the OIDC token for you, and exchanges it for an Arcane token. The `--export` flag prints the token as a shell variable so the rest of the job can use it — it is never written to disk.
+`arcane-cli auth federated` detects GitHub Actions or GitLab CI and exchanges the platform token. `--export` prints the Arcane token as a shell variable without saving it to disk.
 
 ### GitHub Actions
 
@@ -125,7 +115,7 @@ You can also use `--token-file <path>` or `--token-stdin`.
 | `--json`                                   | Output the result as JSON.                                                         |
 | `--persist`                                | Save the issued token to the CLI config file (off by default).                     |
 
-Under the hood, Arcane exposes a standard <Link href="https://datatracker.ietf.org/doc/html/rfc8693">OAuth 2.0 Token Exchange (RFC 8693)</Link> endpoint at `/api/auth/federated/token`. The CLI calls it for you, but any compliant client can use it too.
+Other clients can call `/api/auth/federated/token` using <Link href="https://datatracker.ietf.org/doc/html/rfc8693">OAuth 2.0 Token Exchange (RFC 8693)</Link>.
 
 ## Security notes
 

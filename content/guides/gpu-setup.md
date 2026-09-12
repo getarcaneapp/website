@@ -1,10 +1,10 @@
 ---
 title: 'GPU Monitoring Setup'
-description: 'Setup GPU monitoring for NVIDIA GPUs'
+description: 'Configure Arcane to monitor NVIDIA or AMD GPUs.'
 ---
 
 > [!IMPORTANT]
-> This guide assumes GPU drivers are already installed and configured on your host system. Refer to the respective vendor documentation for driver installation.
+> Install and configure GPU drivers on your host before following this guide. Use your GPU vendor's instructions for driver installation.
 >
 > Official Arcane images use a minimal hardened runtime base and do not bundle vendor GPU utilities. NVIDIA monitoring relies on `nvidia-smi` being injected by the NVIDIA container runtime. AMD monitoring reads `/sys/class/drm` directly. Intel monitoring requires an image/runtime that provides `intel_gpu_top`.
 

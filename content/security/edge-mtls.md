@@ -8,37 +8,24 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Edge agents connect outbound to the Arcane Manager over HTTPS. By default they authenticate with an agent token. Enabling mTLS adds a second factor: the Manager issues each agent a client certificate, and the TLS handshake proves the agent holds the matching private key. Certificates are much harder to leak than tokens - they never appear in logs, environment variables, or API responses.
+Edge mTLS adds client-certificate authentication to an agent's HTTPS connection. Start with <Link href="/docs/security/edge-mtls#quick-start">automatic certificate enrollment</Link>, or <Link href="/docs/security/edge-mtls#using-your-own-certificates">use your own certificates</Link>. For connection errors, see <Link href="/docs/security/edge-mtls#troubleshooting">Troubleshooting</Link>.
 
 > [!NOTE]
 > See <Link href="/docs/features/environments">Remote Environments</Link> for how edge agents are created and connected. mTLS is a layer on top of that flow.
 
-## What it does
-
-With mTLS enabled:
-
-- The agent token still bootstraps the first enrollment.
-- When Arcane terminates mTLS directly, the client certificate authenticates every request after that, and the Manager checks its SPIFFE URI SAN against the environment resolved from the agent token.
-- When mTLS is terminated by a reverse proxy, the proxy enforces client certificate authentication before forwarding edge tunnel traffic to Arcane. Arcane still uses the agent token to resolve the environment.
-- Traffic is rejected if the certificate is missing, invalid, or belongs to a different environment at the layer responsible for terminating mTLS.
-
 ## Quick start
 
-Arcane can generate all required agent certificates for you. You only need to:
+For automatic enrollment:
 
 1. Serve the Manager behind HTTPS so agents can verify the Manager.
 2. Set `EDGE_MTLS_MODE=required` on both sides.
 3. Provide the agent with an `AGENT_TOKEN` from the environment you want to manage.
 
-No cert/key files need to exist on disk up front. Arcane will:
-
-- Generate its own edge CA on first Manager start.
-- Issue an agent certificate automatically the first time an agent enrolls.
-- Re-use existing certificates on subsequent starts until they are expired or near expiry.
+Arcane generates the edge CA and agent certificates, then renews agent certificates when needed. You don't need to create them beforehand.
 
 ### Certificate key type
 
-Newly generated edge CAs and client certificates use **ML-DSA-87** keys. Existing ECDSA P-384 CAs keep working: the Manager continues issuing P-384 client certificates that match the existing CA's key type, so already-enrolled agents don't need re-enrollment — only a freshly generated CA is ML-DSA-87.
+New edge CAs and their client certificates use **ML-DSA-87** keys. Existing ECDSA P-384 CAs keep working, and the Manager continues issuing P-384 client certificates for them. Already-enrolled agents don't need to enroll again. Only a newly generated CA uses ML-DSA-87.
 
 When the agent's client certificate is ML-DSA, the edge connection requires **TLS 1.3** end to end. Keep that in mind if a proxy in the path still limits connections to TLS 1.2.
 
@@ -94,9 +81,28 @@ On subsequent starts, the agent reuses valid assets on disk. If the local certif
 > [!TIP]
 > Use `optional` while rolling mTLS out across existing agents, then switch to `required` once all agents are enrolled.
 
+## Troubleshooting
+
+**Agent enrollment fails when `EDGE_MTLS_MODE=required` is set.**
+If `EDGE_MTLS_CERT_FILE` and `EDGE_MTLS_KEY_FILE` are unset, the agent enrolls
+with the manager automatically. Check that `MANAGER_API_URL` is `https://`, the
+agent token is valid, and the manager has mTLS enabled.
+
+**Agent fails with `EDGE_MTLS_MODE requires MANAGER_API_URL to use https`.**
+The agent refuses to enroll or connect over plain HTTP. Put the Manager behind HTTPS.
+
+**Agent fails with `x509: certificate signed by unknown authority` when talking to the Manager.**
+`EDGE_MTLS_CA_FILE` on the agent is the trust root for the Manager's HTTPS certificate. If you're using a self-signed Manager cert, point `EDGE_MTLS_CA_FILE` at it. If you're using a public CA (Let's Encrypt, etc.), you can leave `EDGE_MTLS_CA_FILE` unset and Arcane will fall back to the system trust store.
+
+**Manager logs `tunnel request failed: unsupported edge command ...`.**
+The route the UI is calling doesn't have a command mapping registered on the edge tunnel. File a bug including the HTTP method and path from the error.
+
+**Agent repeatedly re-enrolls on every restart.**
+`EDGE_MTLS_ASSETS_DIR` isn't persistent. Mount it on a volume so `agent.crt` and `agent.key` survive restarts.
+
 ## Using your own certificates
 
-If you already have a PKI and want Arcane to use it instead of generating one, set the explicit paths - they always take precedence over auto-generation.
+To use your existing PKI, set the certificate paths explicitly. Arcane uses those paths instead of generating the assets.
 
 Manager:
 
@@ -116,7 +122,7 @@ When `EDGE_MTLS_CERT_FILE` and `EDGE_MTLS_KEY_FILE` are both set, the agent skip
 
 ## Downloading certificates from the UI
 
-After you create an edge environment, the **New environment** sheet and the environment detail page expose the generated assets:
+After you create an edge environment, you can download the generated assets from the **New environment** sheet or the environment detail page:
 
 - `ca.crt` (public) - inline in the deployment snippet and downloadable by any authenticated user.
 - `agent.crt` (public) - same.
@@ -125,6 +131,21 @@ After you create an edge environment, the **New environment** sheet and the envi
 Bulk download (`.zip` of all three files) is also admin-only.
 
 Every download emits an `environment.mtls.download` audit event with the admin's username, filename, and whether the file is sensitive.
+
+## Rotation and revocation
+
+- Agent certificates are valid for ~1 year.
+- Agents re-enroll automatically when the local certificate is expired or close to expiry. Manually delete `agent.crt` and `agent.key` on the agent and restart to force re-enrollment immediately.
+- There is no CRL / OCSP. To disable an agent, delete or regenerate its environment API key in the UI.
+
+## What it does
+
+With mTLS enabled:
+
+- The agent token still bootstraps the first enrollment.
+- When Arcane terminates mTLS directly, the client certificate authenticates every request after that, and the Manager checks its SPIFFE URI SAN against the environment resolved from the agent token.
+- When mTLS is terminated by a reverse proxy, the proxy enforces client certificate authentication before forwarding edge tunnel traffic to Arcane. Arcane still uses the agent token to resolve the environment.
+- Traffic is rejected if the certificate is missing, invalid, or belongs to a different environment at the layer responsible for terminating mTLS.
 
 ## Local development
 
@@ -146,28 +167,3 @@ Start a local edge agent. It auto-enrolls against the Manager and pins `./backen
 <Snippet text="AGENT_TOKEN=<edge-environment-token> just dev agent" class="mt-2 mb-2 w-full" />
 
 Agent state (issued cert, key, CA) lives in `.tmp/edge-test-agent/edge-mtls-agent/`. Delete that directory to force a re-enrollment.
-
-## Troubleshooting
-
-**Agent enrollment fails when `EDGE_MTLS_MODE=required` is set.**
-If `EDGE_MTLS_CERT_FILE` and `EDGE_MTLS_KEY_FILE` are unset, the agent enrolls
-with the manager automatically. Check that `MANAGER_API_URL` is `https://`, the
-agent token is valid, and the manager has mTLS enabled.
-
-**Agent fails with `EDGE_MTLS_MODE requires MANAGER_API_URL to use https`.**
-The agent refuses to enroll or connect over plain HTTP. Put the Manager behind HTTPS.
-
-**Agent fails with `x509: certificate signed by unknown authority` when talking to the Manager.**
-`EDGE_MTLS_CA_FILE` on the agent is the trust root for the Manager's HTTPS certificate. If you're using a self-signed Manager cert, point `EDGE_MTLS_CA_FILE` at it. If you're using a public CA (Let's Encrypt, etc.), you can leave `EDGE_MTLS_CA_FILE` unset and Arcane will fall back to the system trust store.
-
-**Manager logs `tunnel request failed: unsupported edge command ...`.**
-The route the UI is calling doesn't have a command mapping registered on the edge tunnel. File a bug including the HTTP method and path from the error.
-
-**Agent repeatedly re-enrolls on every restart.**
-`EDGE_MTLS_ASSETS_DIR` isn't persistent. Mount it on a volume so `agent.crt` and `agent.key` survive restarts.
-
-## Rotation and revocation
-
-- Agent certificates are valid for ~1 year.
-- Agents re-enroll automatically when the local certificate is expired or close to expiry. Manually delete `agent.crt` and `agent.key` on the agent and restart to force re-enrollment immediately.
-- There is no CRL / OCSP. To disable an agent, delete or regenerate its environment API key in the UI.

@@ -1,6 +1,6 @@
 ---
 title: 'Documentation'
-description: 'Welcome to the Arcane documentation! Here you will find everything you need to get started with Docker container management using Arcane.'
+description: 'Install Arcane, manage your Docker containers, and configure your setup.'
 ---
 
 <script lang="ts">
@@ -12,4 +12,4 @@ description: 'Welcome to the Arcane documentation! Here you will find everything
 
 ## Need Help?
 
-If you can't find what you're looking for, check out our <Link href="https://github.com/getarcaneapp/arcane">community resources</Link> or open an issue on GitHub. If you're just getting started, try the Installation guide first.
+Start with the Installation guide if you're new to Arcane. If you get stuck or find something missing from the docs, visit the <Link href="https://github.com/getarcaneapp/arcane">Arcane repository</Link> or open an issue on GitHub.

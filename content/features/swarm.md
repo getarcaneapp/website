@@ -7,21 +7,14 @@ description: 'Manage a Docker Swarm cluster, services, stacks, configs, secrets,
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-The **Swarm** workspace manages Docker Swarm for the currently selected environment — cluster lifecycle, application deployments, node management, and Swarm-native configs and secrets.
-
 > [!NOTE]
-> If you're connecting Arcane to another Docker host for the first time, set that up via <Link href="/docs/features/environments">Remote Environments</Link> first. Swarm features in Arcane are environment-specific: every action applies to whichever environment is selected.
+> Connect other Docker hosts through <Link href="/docs/features/environments">Remote Environments</Link> first. All Swarm actions apply to the selected environment.
 
 ## Where the data comes from
 
-Arcane reads cluster data directly from the Swarm manager:
+Arcane reads cluster resources from the Swarm manager. Stacks are grouped by the `com.docker.stack.namespace` service label, including stacks created outside Arcane.
 
-- Nodes, services, tasks, configs, and secrets come from Docker's Swarm APIs.
-- Stacks are reconstructed from the current services, grouped by the `com.docker.stack.namespace` label.
-
-That means the Stacks list is **live** — not built from a database, and not reconstructed from saved Compose files. A stack created outside Arcane shows up as long as the manager can see its services.
-
-For node-level coverage, Arcane verifies the same Agents used by visible Remote Environments. The Manager's local Docker node is covered automatically, and dedicated hidden Agents remain available as a fallback.
+Remote Environment agents provide access to individual nodes. The manager's local node is covered automatically; legacy hidden agents remain supported.
 
 ## Permissions and modes
 
@@ -40,14 +33,10 @@ For node-level coverage, Arcane verifies the same Agents used by visible Remote 
 
 ## Suggested workflow
 
-1. Pick the environment.
-2. Open **Swarm → Cluster** and confirm the environment is in the expected Swarm.
-3. Check **Nodes** — managers, workers, and availability.
-4. Use **Easy Join** from the Cluster page, an environment detail page, or an environment row menu. Arcane handles manager addressing and join tokens, then binds unique verified Agent identities automatically.
-5. Create the **Configs** and **Secrets** your app needs.
-6. Deploy from **Stacks**.
-7. Use **Services** and **Tasks** to inspect rollout health and logs.
-8. Scale, roll back, redeploy, or remove as needed.
+1. Select the environment and check **Swarm → Cluster** and **Nodes**.
+2. To add hosts, use **Easy Join** from Cluster or an environment's detail page or row menu. Arcane handles addressing, join tokens, and verified agent bindings.
+3. Create the app's **Configs** and **Secrets**, then deploy from **Stacks**.
+4. Check rollout health and logs under **Services** and **Tasks**.
 
 ## Troubleshooting
 

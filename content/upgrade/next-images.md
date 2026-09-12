@@ -1,6 +1,6 @@
 ---
 title: 'Next Builds'
-description: 'Information about the latest beta and next builds of Arcane.'
+description: 'Try development builds of Arcane with the next image tags.'
 ---
 
 <script lang="ts">
@@ -10,11 +10,11 @@ import BinaryDownloads from '#lib/components/binary-downloads.svelte';
 </script>
 
 > [!CAUTION]
-> These builds are intended for users who like to have a "rolling release" or that are interested in testing new features early. They may contain bugs, incomplete features, or breaking changes. **Do not use these builds in production environments.**
+> Use these builds to test new features before release. They may contain bugs, incomplete features, or breaking changes. **Do not use these builds in production environments.**
 
 ## Overview
 
-Arcane provides "next" builds that contain the latest features and improvements currently under development. These builds are automatically generated from the `main` branch and are available as Docker images.
+Next builds are Docker images built automatically from the `main` branch. They include changes that haven't reached a stable release yet.
 
 ## Docker Images
 
@@ -28,19 +28,13 @@ Every build is published under three tags:
 
 ## Versioning
 
-Next builds are versioned after the upcoming Arcane release. For example, if the latest release is `v2.3.2` and new features have landed since, next builds are versioned `v2.4.0-next.1`, `v2.4.0-next.2`, and so on — the counter increases with each build until `v2.4.0` is released.
-
-This is also the version Arcane shows in the dashboard, so you can always tell exactly which build you are running.
+Versions follow the upcoming release: `v2.4.0-next.1`, `v2.4.0-next.2`, and so on until `v2.4.0` ships. The dashboard shows the build you're running.
 
 ### Arcane Manager (Next)
-
-The main Arcane container image.
 
 <Snippet class="m-2" text="ghcr.io/getarcaneapp/manager:next" />
 
 ### Arcane Agent (Next)
-
-The agent used for remote environment management.
 
 <Snippet class="m-2" text="ghcr.io/getarcaneapp/agent:next" />
 
@@ -72,20 +66,10 @@ volumes:
   arcane-data:
 ```
 
-## What's Included?
-
-The next builds typically include:
-
-- **Experimental Features**: New functionality that is still being refined.
-- **Bug Fixes**: Early access to fixes before they are officially released.
-- **Performance Improvements**: Optimizations that are being tested for stability.
-
 ## Binary Downloads
-
-Direct binary downloads from the latest next builds.
 
 <BinaryDownloads />
 
 ## Feedback
 
-If you encounter any issues while using the beta builds, please report them on our [GitHub Issues](https://github.com/getarcaneapp/arcane/issues) page. Your feedback helps us make Arcane better for everyone!
+Report problems with next builds on [GitHub Issues](https://github.com/getarcaneapp/arcane/issues). Include the version shown in your dashboard so we can identify the build you tested.
