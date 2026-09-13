@@ -90,7 +90,7 @@ services:
     depends_on:
       - docker-socket-proxy
     healthcheck:
-      test: ['CMD', 'curl', '-fsS', 'http://localhost:3552/api/health']
+      test: ['CMD', './arcane', 'health', '--timeout', '2s']
       interval: 10s
       timeout: 3s
       retries: 5
@@ -198,7 +198,7 @@ services:
     depends_on:
       - docker-socket-proxy
     healthcheck:
-      test: ['CMD', 'curl', '-fsS', 'http://localhost:3552/api/health']
+      test: ['CMD', './arcane', 'health', '--timeout', '2s']
       interval: 10s
       timeout: 3s
       retries: 5
