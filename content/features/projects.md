@@ -17,8 +17,8 @@ A **Project** is a folder containing a Compose file and its related files.
 
 <ScreenshotFrame
   src="/img/screenshots/projects-page.jpeg"
-  alt="Projects page in Arcane"
-  caption="Projects page in Arcane."
+  alt="A running Compose project with three services."
+  caption="Manage related services together as a Compose project."
   loading="lazy"
   decoding="async"
 />
@@ -107,6 +107,14 @@ The workspace limits are configurable with the `PROJECT_WORKSPACE_MAX_FILE_SIZE_
 
 > [!IMPORTANT]
 > `PROJECT_WORKSPACE_MAX_DEPTH` replaces the old `PROJECT_FILE_TREE_MAX_DEPTH` variable, which is no longer read. If you had set the old name, switch to the new one.
+
+<ScreenshotFrame
+  src="/img/screenshots/project-workspace.jpeg"
+  alt="The Compose editor for a running project with web, cache, and worker services."
+  caption="Review and edit the Compose configuration alongside its environment file."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## Sync from Git
 

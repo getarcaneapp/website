@@ -15,8 +15,8 @@ import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 
 <ScreenshotFrame
   src="/img/screenshots/templates-registry-page.jpeg"
-  alt="Templates page in Arcane"
-  caption="The templates gallery in Arcane."
+  alt="Community Compose templates with application descriptions and categories."
+  caption="Browse community templates before creating a Compose project."
   loading="lazy"
   decoding="async"
 />

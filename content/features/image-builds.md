@@ -4,6 +4,7 @@ description: 'Build container images in Arcane.'
 ---
 
 <script lang="ts">
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
@@ -31,6 +32,14 @@ Mount a host folder or named Docker volume to `/builds` in your `compose.yaml`:
 - Named volume: `arcane-builds:/builds`
 
 If you use a named volume, declare it under the top-level `volumes:` section too.
+
+<ScreenshotFrame
+  src="/img/screenshots/image-builds.jpeg"
+  alt="A completed local Docker image build with its context files and output."
+  caption="Build an image from a workspace and follow the build output in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## Configure build settings first
 

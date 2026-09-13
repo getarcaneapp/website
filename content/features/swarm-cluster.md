@@ -4,10 +4,19 @@ description: 'Initialize, join, unlock, and update a Docker Swarm cluster.'
 ---
 
 <script lang="ts">
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 import { Snippet } from '#lib/components/ui/snippet/index.js';
 </script>
 
 Use the **Cluster** page to initialize, join, or leave a Swarm in the selected environment. You can also unlock the cluster, rotate join tokens, and update its live Swarm spec.
+
+<ScreenshotFrame
+  src="/img/screenshots/swarm-setup.jpeg"
+  alt="The Swarm setup page before a cluster has been initialized."
+  caption="An engine outside a Swarm offers initialization and join options."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## Initialize a Swarm
 

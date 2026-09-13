@@ -4,6 +4,7 @@ description: 'Install Arcane with Docker Compose and sign in for the first time.
 ---
 
 <script lang="ts">
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 import { h2 as Heading } from '#lib/components/markdown/index.js';
 import InstallationTabs from '#lib/components/installation-tabs.svelte';
 import * as Tabs from '#lib/components/ui/tabs/index.js';
@@ -262,6 +263,14 @@ Username:
 
 Password:
 <Snippet text="arcane-admin" class="mt-2 max-w-75" />
+
+<ScreenshotFrame
+  src="/img/screenshots/dashboard.jpeg"
+  alt="Arcane dashboard showing running containers, images, volumes, and host resource usage."
+  caption="After signing in, the dashboard summarizes your environment and its resource usage."
+  loading="lazy"
+  decoding="async"
+/>
 
 <Heading id="7-using-a-custom-domain-or-reverse-proxy">Reverse proxy</Heading>
 

@@ -13,8 +13,8 @@ Run an **Arcane Agent** on each Docker host you want to manage as a **Remote Env
 
 <ScreenshotFrame
   src="/img/screenshots/environments-page.jpeg"
-  alt="Remote environments page in Arcane"
-  caption="Remote environments page in Arcane."
+  alt="The remote environment setup dialog with Direct and Edge connection options."
+  caption="Choose Direct or Edge mode and configure an agent for another Docker host."
   loading="lazy"
   decoding="async"
 />

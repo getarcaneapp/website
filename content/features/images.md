@@ -12,8 +12,8 @@ The **Images** page lists every Docker image on the selected host and lets you s
 
 <ScreenshotFrame
   src="/img/screenshots/images-page.png"
-  alt="Images page in Arcane"
-  caption="Images page in Arcane."
+  alt="Nginx image tags, usage, sizes, and scan status in Arcane."
+  caption="Compare image tags and see which images your containers use."
   loading="lazy"
   decoding="async"
 />
