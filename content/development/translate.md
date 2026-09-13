@@ -12,7 +12,7 @@ Help the community by translating Arcane into your language.
 <ScreenshotFrame
   src="/img/screenshots/locale-switcher.jpeg"
   alt="Language switcher in Arcane"
-  caption="Switching languages in Arcane."
+  caption="Choose your interface language in Account → Preferences."
   loading="lazy"
   decoding="async"
 />

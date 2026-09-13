@@ -12,8 +12,8 @@ Use **Containers** for individual Docker containers and [Projects](/docs/feature
 
 <ScreenshotFrame
 	src="/img/screenshots/containers-page.jpeg"
-	alt="Containers page in Arcane"
-	caption="Containers page in Arcane."
+	alt="Running demo containers with image names, status, CPU usage, and memory usage."
+	caption="Filter containers and compare their status and resource use."
 	loading="lazy"
 	decoding="async"
 />
@@ -101,6 +101,14 @@ Open a container's detail view and switch to the **Logs** tab. The viewer:
 - detects JSON and logfmt logs and renders them as structured rows
 - groups multiline messages so a stack trace stays together
 - shows small CPU and memory monitors alongside the log stream
+
+<ScreenshotFrame
+  src="/img/screenshots/container-logs.jpeg"
+  alt="Live logs from a running worker container."
+  caption="Read container output alongside live resource usage."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## Remove a container
 

@@ -4,6 +4,7 @@ description: 'Protect Docker volumes and Arcane itself with encrypted local and 
 ---
 
 <script lang="ts">
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
@@ -116,6 +117,14 @@ Click **Add schedule** to create an independent backup policy for the volume. A 
 For example, `0 0 2 * * *` runs every day at 02:00 in Arcane's configured timezone. Set **Backups to keep** to `0` to keep every restore point. Retention is applied separately to local and remote backups.
 
 Scheduled runs and on-demand runs appear in the same backup table and Activity Center.
+
+<ScreenshotFrame
+  src="/img/screenshots/backup-schedule.jpeg"
+  alt="A volume backup schedule set for 2 AM with seven backups retained."
+  caption="Choose when to back up a volume, how many snapshots to keep, and where to store them."
+  loading="lazy"
+  decoding="async"
+/>
 
 ### Container consistency
 

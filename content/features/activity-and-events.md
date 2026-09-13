@@ -14,6 +14,14 @@ Open the Activity Center from the sidebar or mobile navigation bar to follow bac
 
 </div>
 
+<ScreenshotFrame
+  src="/img/screenshots/activity-center.jpeg"
+  alt="A completed image build in the Activity Center."
+  caption="Find an operation in the Activity Center and open it to inspect its output."
+  loading="lazy"
+  decoding="async"
+/>
+
 ## Activity types
 
 Arcane tracks activities for image pulls, builds, and update checks; project pull, build, deploy, redeploy, down, restart, and destroy; container start, stop, restart, redeploy, and delete; vulnerability scans; and system prunes.
@@ -59,8 +67,8 @@ Open **Events** to view the audit trail. Event records remain available after th
 
 <ScreenshotFrame
   src="/img/screenshots/event-log-page.jpeg"
-  alt="Event Log in Arcane"
-  caption="The Event Log in Arcane."
+  alt="Arcane Event Log showing recorded actions and their timestamps."
+  caption="Use the Event Log to review actions taken in an environment."
   loading="lazy"
   decoding="async"
 />

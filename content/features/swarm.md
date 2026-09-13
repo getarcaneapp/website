@@ -4,11 +4,20 @@ description: 'Manage a Docker Swarm cluster, services, stacks, configs, secrets,
 ---
 
 <script lang="ts">
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
 > [!NOTE]
 > Connect other Docker hosts through <Link href="/docs/features/environments">Remote Environments</Link> first. All Swarm actions apply to the selected environment.
+
+<ScreenshotFrame
+  src="/img/screenshots/swarm-setup.jpeg"
+  alt="Options to initialize a Docker Swarm or join an existing cluster."
+  caption="Start a new Swarm or join an existing cluster from the selected environment."
+  loading="lazy"
+  decoding="async"
+/>
 
 ## Where the data comes from
 

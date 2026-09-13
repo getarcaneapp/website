@@ -11,8 +11,8 @@ The **Networks** page lists every Docker network on the selected host. Use it to
 
 <ScreenshotFrame
 	src="/img/screenshots/networks-page.jpeg"
-	alt="Networks page in Arcane"
-	caption="Networks page in Arcane."
+	alt="Docker networks with driver, scope, and usage status."
+	caption="Distinguish application networks from Docker’s predefined networks."
 	loading="lazy"
 	decoding="async"
 />
@@ -50,6 +50,14 @@ Open the **Ports** view from the Networks area to answer questions like:
 
 The table supports search, sorting, and pagination across the whole environment.
 
+<ScreenshotFrame
+  src="/img/screenshots/network-ports.jpeg"
+  alt="Published and exposed container ports in Arcane."
+  caption="See which container ports are published to the host."
+  loading="lazy"
+  decoding="async"
+/>
+
 ## Topology view
 
 The **Topology** view renders an interactive graph of:
@@ -57,6 +65,14 @@ The **Topology** view renders an interactive graph of:
 - Docker networks
 - containers attached to them
 - the relationships between them
+
+<ScreenshotFrame
+  src="/img/screenshots/network-topology.jpeg"
+  alt="A topology graph linking web, cache, and worker containers to their networks."
+  caption="Follow the connections between application containers and Docker networks."
+  loading="lazy"
+  decoding="async"
+/>
 
 Useful when you want a quick visual overview of bridge, overlay, or shared application networks.
 

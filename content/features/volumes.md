@@ -10,8 +10,8 @@ import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 
 <ScreenshotFrame
 	src="/img/screenshots/volumes-page.jpeg"
-	alt="Volumes page in Arcane"
-	caption="Volumes page in Arcane."
+	alt="Persistent volumes used by the demo web server and cache."
+	caption="See which volumes are in use and how much data they hold."
 	loading="lazy"
 	decoding="async"
 />
@@ -52,6 +52,14 @@ Open **Workspace** to work with files while containers keep running:
 - **Download** — stream any file, including binary files, to your computer.
 - **Rename**, **Move**, and **Delete** — reorganize the volume contents.
 - **Restore a file from a backup** — pull a single file out of an existing volume backup instead of restoring the whole volume.
+
+<ScreenshotFrame
+  src="/img/screenshots/volume-workspace.jpeg"
+  alt="An HTML file open in the volume workspace editor."
+  caption="Browse and edit files in a volume while its container keeps running."
+  loading="lazy"
+  decoding="async"
+/>
 
 If the container sets a numeric `user:`, workspace writes use that user and group instead of root.
 
