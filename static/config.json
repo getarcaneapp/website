@@ -1465,6 +1465,21 @@
       "public": false
     },
     {
+      "env": "FEATURE_VULNERABILITY_MANAGEMENT_ENABLED",
+      "settingKey": "featureVulnerabilityManagementEnabled",
+      "description": "Enable vulnerability management for this environment. Disabling retains reports and configuration and leaves standalone image patching available",
+      "defaultValue": "true",
+      "type": "boolean",
+      "category": "general",
+      "note": "Disabling retains existing reports and scanner settings, allows active work to finish, and leaves standalone image patching available.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.FeatureVulnerabilityManagementEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
+    },
+    {
       "env": "FOLLOW_PROJECT_SYMLINKS",
       "settingKey": "followProjectSymlinks",
       "description": "Treat symlinked child directories inside the projects directory as Docker Compose projects",
@@ -2333,7 +2348,7 @@
       "defaultValue": "0 0 0 * * *",
       "type": "cron",
       "category": "security",
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. VULNERABILITY_SCAN_ENABLED=true to have effect at runtime.",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. FEATURE_VULNERABILITY_MANAGEMENT_ENABLED=true and VULNERABILITY_SCAN_ENABLED=true to have effect at runtime.",
       "source": "settings.Settings + settings.DefaultSettingsConfig",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.VulnerabilityScanInterval",
