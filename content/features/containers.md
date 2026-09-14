@@ -24,6 +24,8 @@ Open **Containers** in the sidebar. The table shows name, ID, image, and status 
 
 If you have a lot of published ports, the table collapses long port lists behind a `+N` expander. The view options menu can also hide exposed-only ports so you only see published host mappings.
 
+Select a row checkbox, then hold **Shift** and select another to select the rows between them on the current page.
+
 ### Filter by Docker label
 
 Use the **Labels** filter to enter a label key, such as `com.example.team`, or an exact key and value, such as `com.example.team=media`. A key on its own matches containers that have that label, regardless of its value.
@@ -79,6 +81,8 @@ The new image appears on the **Images** page after the commit finishes. Committi
 
 Click a container's name or its **Inspect** button to open the detail view. Tabs cover configuration, network settings, mounts, and logs.
 
+The **Overview** tab's volume and network counts open their respective tabs. Network details show both IPv4 and IPv6 addresses when assigned.
+
 ### Compose tab
 
 If the container belongs to an Arcane-managed Compose project, the detail view also shows a **Compose** tab with the source compose file:
@@ -109,6 +113,10 @@ Open a container's detail view and switch to the **Logs** tab. The viewer:
   loading="lazy"
   decoding="async"
 />
+
+### Download logs
+
+Click **Download** in the log viewer to save a plain-text `.log` file. The download includes timestamps and all stdout and stderr output Docker still retains for the container, regardless of the viewer's current filters or line limit. Logs already removed by Docker's rotation policy aren't included.
 
 ## Remove a container
 

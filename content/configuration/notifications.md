@@ -25,6 +25,10 @@ If **Test** fails, check:
 
 Supported providers include Discord, email (SMTP), Slack, Telegram, Matrix, Gotify, Pushover, Ntfy, Microsoft Teams, and Google Chat.
 
+For Ntfy token authentication, leave **Username** empty and enter the access token in **Password or token**. For password authentication, fill in both fields.
+
+Matrix requires **Password or token**. Leave **Username** empty when using a token.
+
 For Google Chat, copy the space's webhook URL from **Apps & integrations → Webhooks**. Messages are plain text, with the title included in the body.
 
 If your destination is not one of the named providers, use **Generic** — a plain HTTP webhook whose body you shape yourself. See [Custom webhook payloads](#custom-webhook-payloads).

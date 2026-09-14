@@ -19,18 +19,18 @@ The **Networks** page lists every Docker network on the selected host. Use it to
 
 ## Browse networks
 
-Open **Networks** in the sidebar. The table shows name, driver, and subnet for each network.
+Open **Networks** in the sidebar. The table shows name, driver, subnet, and gateway for each network.
 
 ## Create a network
 
 1. Click **Create Network**.
 2. Enter a name.
-3. Optional: pick a driver (`bridge`, `overlay`, etc.) and configure subnet, gateway, and other advanced options.
+3. Optional: pick a driver (`bridge`, `overlay`, etc.) and configure subnet, gateway, and other advanced options. Use **IP Range** to set an optional CIDR range for container address allocation, such as `172.20.0.128/25` within a `172.20.0.0/24` subnet.
 4. Click **Create**.
 
 ## Inspect a network
 
-Click a network's name to see its ID, driver, subnet, gateway, and the containers attached to it.
+Click a network's name to see its ID, driver, subnet, gateway, and the containers attached to it. Attached containers show their IPv4 and IPv6 addresses when assigned.
 
 ## Remove a network
 
