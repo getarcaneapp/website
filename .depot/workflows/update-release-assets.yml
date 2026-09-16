@@ -1,8 +1,8 @@
 name: Update Arcane Release Assets
 
 on:
-  schedule:
-    - cron: '*/30 * * * *'
+  repository_dispatch:
+    types: [arcane-release-published]
   workflow_dispatch:
 
 permissions:

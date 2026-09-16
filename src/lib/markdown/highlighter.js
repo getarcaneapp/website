@@ -94,5 +94,7 @@ export async function highlighter(code, lang) {
 	});
 
 	const langAttr = useLang === 'text' ? '' : ` data-lang="${useLang}"`;
-	return `<div class="code-block"${langAttr}>{@html \`${escapeSvelte(html)}\`}</div>`;
+	// Preserve literal backslashes when JavaScript evaluates the template literal.
+	const escapedHtml = escapeSvelte(html.replaceAll('\\', '\\\\'));
+	return `<div class="code-block"${langAttr}>{@html \`${escapedHtml}\`}</div>`;
 }
