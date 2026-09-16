@@ -11,7 +11,7 @@ GitOps lifecycle hooks run a script from your synced repository before Arcane de
 ## Requirements
 
 - Lifecycle hooks must be enabled by an admin.
-- The sync target must be a project sync. Swarm stack syncs do not run pre-deploy hooks.
+- The sync must use **Pull** and target a project. Push syncs and Swarm stack syncs do not run pre-deploy hooks.
 - The sync must include the whole project directory so the script is present when the hook runs.
 - The user configuring the hook needs `gitops:lifecycle`.
 - The script path must point to a file inside the synced project directory.

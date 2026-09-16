@@ -17,7 +17,7 @@ Arcane uses short-lived [Rustic](https://rustic.cli.rs/) containers to create en
 | Back up Arcane's database and settings | <Link href="/docs/features/backups#arcane-system-backups">Arcane system backups</Link>                                                                                                                                                            |
 | Recover data                           | <Link href="/docs/features/backups#restore">Restore a volume</Link>, <Link href="/docs/features/backups#restore-arcane">restore Arcane</Link>, or <Link href="/docs/features/backups#restore-selected-project-files">restore project files</Link> |
 
-For a new backup setup, configure <Link href="/docs/features/backups#local-backup-storage">local storage</Link> or an <Link href="/docs/features/backups#s3-destinations">S3 destination</Link> first. Volume backups need the original `ENCRYPTION_KEY` for recovery; system backups use a separate recovery key.
+For a new backup setup, configure <Link href="/docs/features/backups#local-backup-storage">local storage</Link> or an <Link href="/docs/features/backups#s3-destinations">S3 destination</Link> first. Configure a recovery key under **Settings → Backups** and keep a copy outside Arcane. System backups and volume backups use this key for recovery. See <Link href="/docs/features/backups#encryption">Encryption</Link> if you already have volume backups from an older installation.
 
 ## Local backup storage
 
@@ -136,10 +136,24 @@ Leaving containers running avoids downtime, but applications with active writes 
 
 ### Encryption
 
-Volume backups use a password derived from `ENCRYPTION_KEY`; no separate recovery key is needed. Keep that key to open the repository from another installation.
+Volume backups use the recovery key configured under **Settings → Backups**. Import the same key on another Arcane installation to open those backups there.
+
+If no recovery key is configured, volume backups still use the older password derived from `ENCRYPTION_KEY`. Once you configure a recovery key, Arcane attempts to change its existing volume-backup repositories to use it. Repositories that belong to another instance must be migrated by that instance.
 
 > [!WARNING]
-> A fresh Arcane instance with a different `ENCRYPTION_KEY` cannot decrypt existing volume-backup repositories.
+> Keep the original `ENCRYPTION_KEY` until you've confirmed that your older backups open with the recovery key. Importing a recovery key on a fresh installation cannot unlock a repository that still uses the old password.
+
+### Find existing S3 backups
+
+To recover backups on another installation:
+
+1. Import the original recovery key under **Settings → Backups → Recovery key → Import recovery key**.
+2. Add the S3 destination with the same bucket and object prefix.
+3. Open **Settings → Backups** to see the discovered restore points.
+
+With a recovery key stored, Arcane checks for existing system and volume backups when you save an S3 destination or open the Backups page. It searches the destination's instance directories and adds snapshots it can decrypt to the backup list. A failure in one directory doesn't prevent discovery in the others.
+
+Restoring a discovered volume backup creates the volume if it doesn't exist. In that case, there is no existing volume data to save in a safety backup.
 
 ### Upload an existing local backup
 
@@ -147,7 +161,7 @@ A successful local backup can be uploaded later. Open its row actions and select
 
 ### Restore
 
-Restore the whole volume or selected files. Arcane stops containers using the volume and creates a local safety backup before writing. If that backup fails, the restore is cancelled.
+Restore the whole volume or selected files. For an existing volume, Arcane stops containers using it and creates a local safety backup before writing. If that backup fails, the restore is cancelled.
 
 Rustic writes directly to the volume. Whole-volume restores delete files absent from the snapshot. If a restore fails, the volume may be partially changed; use the safety backup to roll back. Arcane attempts to restart every container it stopped.
 
@@ -179,7 +193,7 @@ System backups save Arcane's application data and runtime configuration. Open **
 
 ### Recovery key
 
-System backups use a separate recovery key rather than Arcane's internal volume-backup key:
+System backups use the same configured recovery key as volume backups:
 
 1. Open **Recovery key** and choose **Create recovery key**. Arcane generates a key of 8 groups of 6 characters.
 2. Copy the generated key and store it somewhere outside Arcane.

@@ -55,7 +55,7 @@ If an activity is interrupted, for example by an Arcane restart, a background ch
 
 ## Automation run history
 
-Open an environment's **Automations** tab and open **Run history** for a job to inspect its past runs. The history shows attempts, errors, and results for individual targets. When a run has an activity, open its operation output for more detail.
+With the `jobs:manage` permission, open an environment's **Automations** tab and open **Run history** for a job to inspect its past runs. The history shows attempts, errors, and results for individual targets. When a run has an activity, open its operation output for more detail.
 
 A queued remote run may show **Waiting for environment** until the agent is reachable. Older agents need an upgrade to support this job history.
 

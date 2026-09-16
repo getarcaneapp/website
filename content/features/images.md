@@ -22,6 +22,8 @@ The **Images** page lists every Docker image on the selected host and lets you s
 
 Open **Images** in the sidebar. The table shows tag, ID, size, and creation date for each image.
 
+When scan results are available, sort the **Vulnerabilities** column to order images by vulnerability count.
+
 ## Pull an image
 
 1. Click **Pull Image**.
