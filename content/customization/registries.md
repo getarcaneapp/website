@@ -37,7 +37,7 @@ Create `registry.json`. Include `$schema` for editor validation:
 
 ### 2. Host your files
 
-Upload `registry.json` and your template directories to GitHub or an HTTPS web server. Use raw GitHub URLs for downloads. Enable CORS if your hosting setup requires it.
+Upload `registry.json` and your template directories to GitHub or an HTTPS web server. Download URLs must point directly to accessible files, not repository pages. Use raw GitHub URLs for downloads and enable CORS on custom-domain hosting.
 
 ### 3. Template file structure
 
@@ -103,12 +103,14 @@ docker-templates/
     └── README.md
 ```
 
+<span id="troubleshooting"></span>
+
 ## Testing Your Registry
 
-1. Validate JSON syntax and schema (Draft 07) against `https://github.com/getarcaneapp/arcane-templates/schema.json`
-2. Test URLs: ensure all file URLs are accessible (HTTPS)
-3. Add to Arcane: Customization → Templates → Add Registry
-4. Verify: templates appear and download correctly
+1. Check JSON syntax and validate the registry against the Draft 07 schema at `https://github.com/getarcaneapp/arcane-templates/schema.json`. Remove fields not allowed by the schema.
+2. Open each file URL to check that it downloads the expected file.
+3. Add the registry in **Customization → Templates → Add Registry**.
+4. Check that templates appear and download correctly.
 
 ## Best Practices
 
@@ -125,18 +127,3 @@ For a repository named `my-docker-templates`, add the registry to Arcane using i
 ## Community registry
 
 Submit templates through a pull request to [getarcaneapp/templates](https://github.com/getarcaneapp/templates).
-
-## Troubleshooting
-
-**Registry not loading?**
-
-- Check the JSON for mistakes and validate it against the schema
-- Make sure the URL works and uses HTTPS
-- Turn on CORS if you are using a custom domain
-- Confirm there are no extra fields in the file
-
-**Templates not downloading?**
-
-- Check that each download URL points directly to an accessible file
-- Check file permissions
-- Look for errors in your browser

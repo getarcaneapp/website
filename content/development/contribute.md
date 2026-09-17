@@ -1,6 +1,6 @@
 ---
 title: Contributing to Arcane
-description: Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
+description: How to set up the Arcane development environment and submit contributions.
 ---
 
 <script lang="ts">
@@ -9,92 +9,86 @@ description: Thanks for helping make Arcane better! We've built a modern, stream
   import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Thanks for helping make Arcane better! We've built a modern, streamlined development experience that gets you up and running in minutes.
-
 > [!IMPORTANT]
 > Using AI tools? Read the <Link href="https://github.com/getarcaneapp/arcane/blob/main/AI_POLICY.md">AI Usage Policy</Link> before contributing. For project conventions, see <Link href="https://github.com/getarcaneapp/arcane/blob/main/AGENTS.md">AGENTS.md</Link>.
 
+<span id="need-help"></span>
+
 ## Ways to Contribute
 
-- **Report bugs** using our issue templates
-- **Suggest features** or improvements
+- **Report bugs** using our <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=bug.yml">issue template</Link>
+- **Suggest features** in <Link href="https://github.com/getarcaneapp/arcane/discussions/new?category=feature-requests">Discussions</Link>. Proposals and voting belong there. Maintainers can create linked implementation issues when work is ready.
+- **Development questions**: <Link href="https://github.com/getarcaneapp/arcane/discussions">open a discussion</Link>
 - **Code contributions** (frontend, backend, DevOps)
 - **Documentation** improvements
 - **Translations** via <Link href="https://crowdin.com/project/arcane-docker-management">Crowdin</Link> — see <Link href="/docs/development/translate">Translating Arcane</Link>
 - **Testing** and quality assurance
 
-## Quick Start
+<span id="quick-start"></span>
 
-### Prerequisites
+## Setup
+
+<span id="prerequisites"></span>
+
+Prerequisites:
 
 - **Docker & Docker Compose**
-- **VS Code** based IDE (recommended for the best developer experience)
-- **<Link href="https://viteplus.dev">Vite+</Link>** — manages the Node toolchain, formatting, linting, and pre-commit hooks when working outside Docker:
+- **<Link href="https://viteplus.dev">Vite+</Link>** manages the Node toolchain, formatting, linting, and pre-commit hooks when working outside Docker.
+- <span id="vs-code-integration"></span><span id="recommended-extensions"></span>**VS Code** is optional. Open the project root folder (`arcane/`) and install the recommended Docker, Go, and Svelte/TypeScript extensions.
 
 <Snippet text="curl -fsSL https://vite.plus | bash" class="mt-2 mb-4 w-full" />
 
-> [!IMPORTANT]
-> Unless otherwise specified, run every command in this guide from the project root (`arcane/`).
+<span id="one-click-development-commands"></span>
+<span id="quick-build-shortcut"></span>
 
-### 1. Fork and Clone
+In VS Code, use `Ctrl/Cmd+Shift+P` → "Tasks: Run Task" for Start, Stop, Restart, Rebuild, Logs, and Open Frontend. `Ctrl/Cmd+Shift+B` starts the environment. The **Clean** task removes development containers and volumes, including their stored data.
+
+Unless otherwise specified, run every command from the project root (`arcane/`).
+
+<span id="1-fork-and-clone"></span>
+
+1. Fork and clone, then enter the project:
 
 <GitCommand class="mt-2 mb-2 w-full" />
 <Snippet text="cd arcane" class="mt-2 mb-4 w-full" />
 
-### 2. Start Development Environment
+<span id="troubleshooting"></span>
+<span id="development-startup-checklist"></span>
+<span id="common-issues"></span>
 
-From the project root:
+2. Verify Docker and the compose config before starting:
+
+```bash
+docker info
+docker compose version
+docker compose -f docker/compose.dev.yaml -p arcane-dev config
+```
+
+<span id="2-start-development-environment"></span>
+
+3. Start the development environment:
 
 <Snippet text="./scripts/development/dev.sh start" class="mt-2 mb-4 w-full" />
 
-The development environment will:
+This starts frontend and backend with hot reload, handles dependencies via Docker, sets up health checks, and creates persistent storage for development data.
 
-- Start both frontend and backend with hot reload
-- Handle all dependencies via Docker
-- Set up health checks and monitoring
-- Create persistent storage for your development data
+4. Confirm the stack is up:
 
-Access your development environment:
+```bash
+./scripts/development/dev.sh status
+curl -f http://localhost:3000
+curl -f http://localhost:3552/api/health
+```
 
 - **Frontend**: <Link href="http://localhost:3000">http://localhost:3000</Link> (SvelteKit with HMR)
 - **Backend**: <Link href="http://localhost:3552">http://localhost:3552</Link> (Go with Air hot reload)
 
-## VS Code Integration
+<span id="development-workflow"></span>
+<span id="making-changes"></span>
 
-For the best development experience, we've included VS Code tasks and workspace configuration.
+## Workflow
 
-### Recommended Extensions
-
-When you open the project in VS Code, you'll be prompted to install our recommended extensions. These provide:
-
-- Docker integration and management
-- Go language support with debugging
-- Svelte/TypeScript support
-- Integrated terminal management
-
-### One-Click Development Commands
-
-Use `Ctrl/Cmd+Shift+P` → "Tasks: Run Task" to access:
-
-| Task              | Description                                   |
-| ----------------- | --------------------------------------------- |
-| **Start**         | Start the development environment             |
-| **Stop**          | Stop all services                             |
-| **Restart**       | Restart all services                          |
-| **Rebuild**       | Rebuild containers (after dependency changes) |
-| **Clean**         | Remove all containers and volumes             |
-| **Logs**          | Interactive log viewer with service selection |
-| **Open Frontend** | Launch frontend in browser                    |
-
-### Quick Build Shortcut
-
-Press `Ctrl/Cmd+Shift+B` to run the default build task (Start Environment).
-
-## Development Workflow
-
-### Making Changes
-
-1. **Create a feature branch**:
+1. Create a branch:
 
    ```bash
    git switch -c feat/my-awesome-feature
@@ -102,37 +96,15 @@ Press `Ctrl/Cmd+Shift+B` to run the default build task (Start Environment).
    git switch -c fix/issue-123
    ```
 
-2. **Start development** (from project root):
+2. Make changes — hot reload updates the frontend via Vite and rebuilds/restarts the backend via Air. Watch logs with `./scripts/development/dev.sh logs`, or target a service with `logs frontend` / `logs backend`.
 
-   ```bash
-   ./scripts/development/dev.sh start
-   # or use VS Code Task: "Start"
-   ```
+<span id="development-commands"></span>
 
-3. **Monitor logs** (choose your preferred method):
+## Command Reference
 
-   ```bash
-   # Interactive selector
-   ./scripts/development/dev.sh logs
+<span id="justfile-shortcuts"></span>
 
-   # Specific service
-   ./scripts/development/dev.sh logs frontend
-   ./scripts/development/dev.sh logs backend
-
-   # Or use VS Code Task: "Logs"
-   ```
-
-4. **Make your changes** — hot reload will automatically update:
-   - **Frontend**: Instant HMR via Vite
-   - **Backend**: Auto-rebuild and restart via Air
-
-## Development Commands
-
-All commands should be run from the project root (`arcane/`).
-
-### Justfile Shortcuts
-
-We provide a categorized `Justfile` for common workflows. Run `just --list` to see every category and target.
+`just --list` shows every Justfile category and target.
 
 ```bash
 # Development
@@ -156,61 +128,41 @@ just format all --check
 just deps install all
 ```
 
-### Environment Management
+<span id="environment-management"></span>
+<span id="debugging--logs"></span>
 
 ```bash
-# Start development environment
+# Environment management
 ./scripts/development/dev.sh start
-
-# View service status
 ./scripts/development/dev.sh status
-
-# Stop all services
 ./scripts/development/dev.sh stop
+./scripts/development/dev.sh restart   # for config changes
+./scripts/development/dev.sh rebuild   # for dependency changes
 
-# Restart services (for config changes)
-./scripts/development/dev.sh restart
-
-# Rebuild containers (for dependency changes)
-./scripts/development/dev.sh rebuild
-
-# Clean up everything (nuclear option)
-./scripts/development/dev.sh clean
-```
-
-### Debugging & Logs
-
-```bash
-# Interactive log selection
+# Logs and shell access
 ./scripts/development/dev.sh logs
-
-# Frontend only (Vite/SvelteKit)
 ./scripts/development/dev.sh logs frontend
-
-# Backend only (Go/Air)
 ./scripts/development/dev.sh logs backend
-
-# Shell access
 ./scripts/development/dev.sh shell frontend
 ./scripts/development/dev.sh shell backend
 ```
 
 ## Code Quality
 
-### Automatic Formatting & Linting
-
-Both services include development-time linting and formatting:
+<span id="automatic-formatting--linting"></span>
 
 - **Frontend / TypeScript**: <Link href="https://viteplus.dev">Vite+</Link> (`vp fmt`, `vp check`) plus Svelte/TypeScript checks. Formatting and lint rules live in the root `vite.config.ts`.
-- **Backend**: Go fmt + Go vet (built into Air hot reload)
+- **Backend**: Go fmt + Go vet (built into Air hot reload).
 
-### Pre-commit Hooks
+<span id="pre-commit-hooks"></span>
 
 Format checks run automatically on staged files via the Vite+ git hook dispatcher. Enable it once after cloning:
 
 <Snippet text="vp hooks enable" class="mt-2 mb-4 w-full" />
 
-### Manual Commands
+<span id="manual-commands"></span>
+
+Manual checks:
 
 ```bash
 # JS/TS formatting and lint (Vite+, run from project root)
@@ -232,13 +184,11 @@ docker compose -f docker/compose.dev.yaml exec backend go vet ./...
 
 ## Commit Guidelines
 
-We use **Conventional Commits** for clear, semantic commit messages:
+We use **Conventional Commits**:
 
 ```bash
 git commit -m "feat: add user authentication"
 git commit -m "fix: resolve Docker volume mounting issue"
-git commit -m "docs: update development setup guide"
-git commit -m "refactor: simplify API response handling"
 ```
 
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
@@ -254,87 +204,7 @@ git commit -m "refactor: simplify API response handling"
 ### PR Checklist
 
 - [ ] Code builds successfully in the development environment
-- [ ] Frontend hot reload works correctly
-- [ ] Backend hot reload works correctly
+- [ ] Hot reload works correctly for frontend and backend
 - [ ] No linting errors
 - [ ] Commit messages follow conventional format
 - [ ] PR description explains the change and why it's needed
-
-## Troubleshooting
-
-### Development startup checklist
-
-When `./scripts/development/dev.sh start` fails or the app does not load, validate the environment in this order before changing code:
-
-1. Confirm Docker is installed and the daemon is reachable:
-
-   ```bash
-   docker info
-   docker compose version
-   ```
-
-2. Confirm the development compose file is valid from the project root:
-
-   ```bash
-   docker compose -f docker/compose.dev.yaml -p arcane-dev config
-   ```
-
-3. Start the stack and inspect container state:
-
-   ```bash
-   ./scripts/development/dev.sh start
-   ./scripts/development/dev.sh status
-   ```
-
-4. Check the expected development endpoints:
-
-   ```bash
-   curl -f http://localhost:3000
-   curl -f http://localhost:3552/api/health
-   ```
-
-5. If a service is unhealthy, read the targeted logs first:
-
-   ```bash
-   ./scripts/development/dev.sh logs frontend
-   ./scripts/development/dev.sh logs backend
-   ```
-
-### Common Issues
-
-**Port conflicts:**
-
-```bash
-# Stop and clean everything (from project root)
-./scripts/development/dev.sh clean
-
-# Check for conflicting processes
-lsof -i :3000  # Frontend port
-lsof -i :3552  # Backend port
-```
-
-**Docker issues:**
-
-```bash
-# Reset Docker environment (from project root)
-./scripts/development/dev.sh clean
-docker system prune -f
-
-# Restart development
-./scripts/development/dev.sh start
-```
-
-**VS Code tasks not working:**
-
-- Ensure you've opened the project root folder (`arcane/`) in VS Code, not a subfolder or parent directory
-- Install recommended extensions when prompted
-- Restart VS Code if tasks don't appear
-- Verify you're in the correct working directory when running terminal commands
-
-### Need Help?
-
-- **Bug Report**: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=bug.yml">Create an issue</Link>
-- **Feature Request**: <Link href="https://github.com/getarcaneapp/arcane/issues/new?template=feature.yml">Suggest a feature</Link>
-- **Development Question**: <Link href="https://github.com/getarcaneapp/arcane/discussions">Open a discussion</Link>
-
-Thank you for contributing to Arcane.

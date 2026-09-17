@@ -10,13 +10,6 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 Arcane uses short-lived [Rustic](https://rustic.cli.rs/) containers to create encrypted snapshots. Backups can stay local, be written directly to S3-compatible storage, or use both destinations.
 
-| What you need                          | Start here                                                                                                                                                                                                                                        |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Back up one Docker volume              | <Link href="/docs/features/backups#volume-backups">Volume backups</Link>                                                                                                                                                                          |
-| Schedule backups for several volumes   | <Link href="/docs/features/backups#system-managed-volume-backups">System-managed volume backups</Link>                                                                                                                                            |
-| Back up Arcane's database and settings | <Link href="/docs/features/backups#arcane-system-backups">Arcane system backups</Link>                                                                                                                                                            |
-| Recover data                           | <Link href="/docs/features/backups#restore">Restore a volume</Link>, <Link href="/docs/features/backups#restore-arcane">restore Arcane</Link>, or <Link href="/docs/features/backups#restore-selected-project-files">restore project files</Link> |
-
 For a new backup setup, configure <Link href="/docs/features/backups#local-backup-storage">local storage</Link> or an <Link href="/docs/features/backups#s3-destinations">S3 destination</Link> first. Configure a recovery key under **Settings → Backups** and keep a copy outside Arcane. System backups and volume backups use this key for recovery. See <Link href="/docs/features/backups#encryption">Encryption</Link> if you already have volume backups from an older installation.
 
 ## Local backup storage

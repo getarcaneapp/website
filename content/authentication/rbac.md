@@ -7,11 +7,6 @@ description: 'Set what users and API keys can do in each environment.'
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-- <Link href="/docs/authentication/rbac#built-in-roles">Choose a role</Link> and <Link href="/docs/authentication/rbac#assigning-roles">assign it to a user</Link>.
-- <Link href="/docs/authentication/rbac#oidc-group-mappings">Map SSO groups to roles</Link>.
-- <Link href="/docs/authentication/rbac#api-keys">Set permissions for an API key</Link>.
-- <Link href="/docs/authentication/rbac#troubleshooting">Troubleshoot denied access</Link>.
-
 Upgrading from a pre-2.0 release? Jump to [Upgrade & migration](#upgrade--migration).
 
 ## How it works
@@ -35,7 +30,9 @@ Org-level permissions, such as settings, users, and registries, need a Global as
 | **Viewer**          | Auditors                    | Read-only across Docker resources and most org pages. No logs, no actions.                                               |
 
 > [!IMPORTANT]
-> At least one user must always hold **Admin** globally. Arcane refuses any change that would leave the instance with zero global admins.
+> At least one user must always hold **Admin** globally. Arcane refuses any change that would leave the instance with zero global admins. If you see `at least one user must retain a global Admin role assignment`, add another Global Admin before removing the current one.
+
+If nobody can sign in as an admin, see <Link href="/docs/security/account-recovery">Account Recovery</Link>.
 
 ## Assigning roles
 
@@ -43,7 +40,13 @@ Open a user under **Settings → Users**. The **Role assignments** section lists
 
 - Add a row to grant a role on an environment (or Global).
 - Remove a row to revoke it.
-- A user with no assignments can sign in but lands on a "no access" screen.
+- A user with no assignments can sign in but lands on a "no access" screen. Add at least one assignment, usually `Viewer` on each environment they should see.
+
+<span id="troubleshooting"></span>
+
+For `permission denied: ...`, look up the permission in the <Link href="/docs/authentication/rbac#permission-catalog">permission catalog</Link> and check whether the caller's role grants it on the right environment. Audit a user from **Settings → Users**.
+
+The username `arcane` only matters during initial setup or recovery when no global admin exists. Renaming a user to `arcane` doesn't grant access. Assign the role under **Settings → Users**.
 
 ### OIDC users
 
@@ -69,7 +72,7 @@ Drive role assignment from your IdP. On every login Arcane reads the user's grou
    - **Environment scope** — Global or a specific environment
 3. Save.
 
-Users in multiple mapped groups get the **union** of their matching assignments. Demote a user in the IdP and they lose their OIDC assignments on next login — manual assignments stay.
+Users in multiple mapped groups get the **union** of their matching assignments. Demote a user in the IdP and they lose their OIDC assignments on next login — manual assignments stay. If an OIDC user loses access on login, check their IdP-side group membership and the mapping table for a claim that no longer matches.
 
 See <Link href="/docs/authentication/sso">SSO setup</Link> for the OIDC connection itself.
 
@@ -84,23 +87,9 @@ Every API key carries its own permission set, independent of the owning user. Is
 
 You cannot grant a key more permissions than you have yourself.
 
-## Troubleshooting
+Changing the owner's roles does not update a key's permissions. If a key gets permission denied, re-issue it with the desired scope.
 
-**`permission denied: ...`** — look up the permission in the catalog and check whether the caller's role grants it on the right environment. Audit a user from **Settings → Users**.
-
-**User has no access at all.** No assignments. Open them in **Settings → Users** and add at least one (usually `Viewer` on every environment they should see).
-
-**`at least one user must retain a global Admin role assignment`.** You tried to remove the last Global Admin. Add another one first.
-
-**OIDC user lost access on login.** Their group claim no longer matches a mapping. Check the IdP-side membership and the mapping table.
-
-**API key got permission denied after the owner changed roles.** Keys carry their own permissions, not the owner's. Re-issue the key with the desired scope.
-
-**An account named `arcane` is not an admin.** The username only matters during initial setup or recovery when no global admin exists. Renaming a user to `arcane` doesn't grant access. Assign the role under **Settings → Users**.
-
-For the same reason, `ADMIN_STATIC_API_KEY` reconciliation is skipped when the `arcane` account is not actually a global admin; the logs say _"User is not a global admin, skipping default admin API key reconciliation."_
-
-**Nobody can sign in as an admin.** See <Link href="/docs/security/account-recovery">Account Recovery</Link>.
+`ADMIN_STATIC_API_KEY` reconciliation is skipped when the `arcane` account is not actually a global admin. The logs say _"User is not a global admin, skipping default admin API key reconciliation."_
 
 ## Upgrade & migration
 

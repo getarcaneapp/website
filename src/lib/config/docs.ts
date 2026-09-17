@@ -93,8 +93,14 @@ const SWARM_PARENT: SidebarNavItem = {
 	].filter((c): c is SidebarNavItem => c !== null)
 };
 
+const PROJECTS_PARENT: SidebarNavItem = {
+	title: 'Projects',
+	href: toHref('features/projects'),
+	items: [leaf('features/git-sync', 'Git Sync')].filter((c): c is SidebarNavItem => c !== null)
+};
+
 const FEATURES = group('Features', [
-	leaf('features/projects'),
+	PROJECTS_PARENT,
 	leaf('features/containers'),
 	leaf('features/images'),
 	leaf('features/image-builds'),

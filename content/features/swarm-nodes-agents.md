@@ -52,29 +52,21 @@ When a visible environment covers the node, the dialog links to its **Containers
 
 When the agent reports the expected node identity, Arcane binds it to the node and shows **connected**. Its token stays unchanged.
 
+<span id="troubleshooting"></span>
+
+If the agent stays `pending`, confirm the command ran on the intended node, the manager URL is reachable from that node, and the token is still current.
+
 If you already created and connected a Remote Environment for the host, use **Easy Join** to add it to the cluster. Reconciliation attaches a unique identity match automatically. When multiple environments report the same node, open the Agent dialog and choose the intended verified candidate.
 
 ### Legacy dedicated registrations
 
-Existing hidden dedicated node Agents continue to provide coverage. Their Agent dialog labels them as a **Legacy dedicated registration** and lets you show the deployment, regenerate its API key, or remove the registration.
+Existing hidden dedicated node Agents continue to provide coverage. Their Agent dialog labels them as a **Legacy dedicated registration** and lets you show the deployment, regenerate its API key, or remove the registration. If a dedicated agent shows `mismatched`, regenerate its API key and redeploy on the intended node.
 
 Removing a legacy registration deletes its hidden environment and API key. Replacing one with a verified visible Remote Environment requires explicit confirmation and removes the obsolete hidden registration. `ghcr.io/getarcaneapp/arcane-headless` remains a supported release alias for existing deployments.
 
 ### Change a visible binding
 
-Detaching removes the node binding but keeps the environment and token. Rebinding requires confirmation; refreshing the page never moves conflicting bindings.
-
-## Troubleshooting
-
-**Stuck in `pending`.** Verify that:
-
-- the install command was run on the intended node
-- the manager URL is reachable from that node
-- the token is still current
-
-**Showing `mismatched`.** The bound environment reports a different node ID. Detach it or explicitly rebind the correct environment; Arcane will not silently move a conflicting binding.
-
-**Showing `ambiguous`.** Open the Agent dialog and select the intended verified Remote Environment.
+Detaching removes the node binding but keeps the environment and token. If a visible binding shows `mismatched`, detach it or explicitly rebind the correct environment. Rebinding requires confirmation; refreshing the page never moves conflicting bindings.
 
 ## Current limitations
 

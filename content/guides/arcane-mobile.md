@@ -16,6 +16,10 @@ description: 'Use Arcane from your iPhone or iPad.'
 3. Join the beta and install Arcane Mobile.
 4. Open **Arcane** from your Home Screen.
 
+<span id="get-help"></span>
+
+Report beta app bugs in the [iOS issue tracker](https://github.com/getarcaneapp/ios/issues) or discuss the beta in [Arcane Discord](https://discord.gg/WyXYpdyV3Z).
+
 ## Connect to your server
 
 Enter your full Arcane URL, including `https://` or `http://` and any port:
@@ -23,13 +27,19 @@ Enter your full Arcane URL, including `https://` or `http://` and any port:
 - `https://arcane.example.com` for a server behind a domain or reverse proxy
 - `http://192.168.1.50:3552` for a local server on your home network
 
-For a home-network server, your device needs local access or a VPN. Use HTTPS with a secure reverse proxy for public access.
+For a home-network server, your device needs local access or a VPN. Include the protocol, IP address, and port as shown above. For public access, use HTTPS with a secure reverse proxy that forwards WebSocket traffic to Arcane.
+
+<span id="troubleshooting"></span>
+
+If the app cannot connect, open the same Arcane URL in Safari on your device. If Safari cannot reach it, the app cannot either. If you are still setting up the server, follow the [Arcane installation guide](/docs/get-started/installation).
 
 ## Sign in
 
 Sign in with your Arcane account or the server's OIDC provider. The username and password form is available if local sign-in is enabled.
 
 To try the app without an account, tap **Try the demo** for a temporary instance lasting about 10 minutes.
+
+If you changed servers and still see old data, sign out from **Settings** and sign in to the server again.
 
 ## What you can do
 
@@ -53,28 +63,12 @@ Paired devices show up on the server's **Mobile Push** tab, where an admin can s
 
 Notification titles and messages travel through Arcane's hosted push relay (`apns.getarcane.app`) and Apple's push servers. Your server address, users, and credentials are never sent.
 
-## Tips
+<span id="tips"></span>
+
+## Navigation
 
 - Use **Settings** to reach tools that are not pinned to the bottom tab bar.
 - Long-press a bottom tab to replace it with another frequently used area.
 - If you manage more than one environment, check the active environment before running actions.
-- Some tabs only appear for admins, users with the right role, or servers that support newer Arcane features.
-- For role and permission details, see [Role-Based Access](/docs/authentication/rbac).
 
-## Troubleshooting
-
-**The app cannot reach my server.** Check that your device can open the same Arcane URL in Safari. If it cannot, the app cannot reach it either.
-
-**A local server does not connect.** Make sure the address includes `http://`, the IP address, and the port. For example: `http://192.168.1.50:3552`.
-
-**A public server does not connect.** Check that the URL uses HTTPS and that your reverse proxy forwards WebSocket traffic to Arcane.
-
-**I signed in, but tabs are missing.** Your account may not have permission for those areas, or the server may not support that feature yet. Ask an Arcane admin to check your role assignments.
-
-**I changed servers and still see old data.** Open **Settings**, sign out, and sign in to the server again.
-
-## Get help
-
-- ask in the [Arcane Discord](https://discord.gg/WyXYpdyV3Z)
-- report iOS app issues on [GitHub](https://github.com/getarcaneapp/ios/issues)
-- check the [Arcane installation guide](/docs/get-started/installation) if you are still setting up your server
+Tab visibility depends on your role and the features your server supports. If a tab is missing, ask an Arcane admin to check your role assignments. See [Role-Based Access](/docs/authentication/rbac) for permission details.

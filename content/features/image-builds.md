@@ -8,11 +8,6 @@ import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Choose the starting point that matches your files:
-
-- <Link href="/docs/features/image-builds#building-from-a-project">Compose project</Link> with a `build:` section.
-- <Link href="/docs/features/image-builds#manual-builds-build-workspace">Dockerfile and build folder</Link> in the Build Workspace.
-
 ## Building from a project
 
 For Compose services with `build:`, use **Build** or **Build & Deploy** on the project page.

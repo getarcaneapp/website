@@ -8,7 +8,7 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-Edge mTLS adds client-certificate authentication to an agent's HTTPS connection. Start with <Link href="/docs/security/edge-mtls#quick-start">automatic certificate enrollment</Link>, or <Link href="/docs/security/edge-mtls#using-your-own-certificates">use your own certificates</Link>. For connection errors, see <Link href="/docs/security/edge-mtls#troubleshooting">Troubleshooting</Link>.
+Edge mTLS adds client-certificate authentication to an agent's HTTPS connection.
 
 > [!NOTE]
 > See <Link href="/docs/features/environments">Remote Environments</Link> for how edge agents are created and connected. mTLS is a layer on top of that flow.
@@ -58,7 +58,13 @@ Then enable edge mTLS:
 <Snippet text="EDGE_MTLS_ASSETS_DIR=/app/data/edge-mtls-agent" class="mt-2 mb-2 w-full" />
 <Snippet text="EDGE_MTLS_CA_FILE=/etc/ssl/manager-ca.crt" class="mt-2 mb-2 w-full" />
 
-`MANAGER_API_URL` must use `https://`. `EDGE_MTLS_CA_FILE` is the trust root for the Manager's HTTPS certificate.
+<span id="troubleshooting"></span>
+
+`MANAGER_API_URL` must use `https://`. The agent refuses to enroll or connect over plain HTTP with `EDGE_MTLS_MODE requires MANAGER_API_URL to use https`. Put the Manager behind HTTPS.
+
+`EDGE_MTLS_CA_FILE` is the trust root for the Manager's HTTPS certificate. For a self-signed Manager certificate, point it at that certificate to avoid `x509: certificate signed by unknown authority`. For a public CA such as Let's Encrypt, leave it unset to use the system trust store.
+
+Automatic enrollment requires `EDGE_MTLS_CERT_FILE` and `EDGE_MTLS_KEY_FILE` to be unset, a valid agent token, and mTLS enabled on the Manager. Check these settings if enrollment fails.
 
 On first start:
 
@@ -66,7 +72,9 @@ On first start:
 2. The Manager issues a client certificate (valid ~1 year) and returns it along with the edge CA.
 3. The agent writes them atomically into `EDGE_MTLS_ASSETS_DIR` as `agent.crt`, `agent.key`, and `ca.crt`, records enrollment completion, and reconnects using them.
 
-On subsequent starts, the agent reuses valid assets on disk. If the local certificate is expired or inside the renewal window, it enrolls again.
+On subsequent starts, the agent reuses valid assets on disk. If the local certificate is expired or inside the renewal window, it enrolls again. Mount `EDGE_MTLS_ASSETS_DIR` on a persistent volume so `agent.crt` and `agent.key` survive restarts. Without persistent assets, the agent re-enrolls on every restart.
+
+If the Manager logs `tunnel request failed: unsupported edge command ...` when you use the UI, that route has no command mapping registered on the edge tunnel. File a bug including the HTTP method and path from the error.
 
 ## Modes
 
@@ -80,25 +88,6 @@ On subsequent starts, the agent reuses valid assets on disk. If the local certif
 
 > [!TIP]
 > Use `optional` while rolling mTLS out across existing agents, then switch to `required` once all agents are enrolled.
-
-## Troubleshooting
-
-**Agent enrollment fails when `EDGE_MTLS_MODE=required` is set.**
-If `EDGE_MTLS_CERT_FILE` and `EDGE_MTLS_KEY_FILE` are unset, the agent enrolls
-with the manager automatically. Check that `MANAGER_API_URL` is `https://`, the
-agent token is valid, and the manager has mTLS enabled.
-
-**Agent fails with `EDGE_MTLS_MODE requires MANAGER_API_URL to use https`.**
-The agent refuses to enroll or connect over plain HTTP. Put the Manager behind HTTPS.
-
-**Agent fails with `x509: certificate signed by unknown authority` when talking to the Manager.**
-`EDGE_MTLS_CA_FILE` on the agent is the trust root for the Manager's HTTPS certificate. If you're using a self-signed Manager cert, point `EDGE_MTLS_CA_FILE` at it. If you're using a public CA (Let's Encrypt, etc.), you can leave `EDGE_MTLS_CA_FILE` unset and Arcane will fall back to the system trust store.
-
-**Manager logs `tunnel request failed: unsupported edge command ...`.**
-The route the UI is calling doesn't have a command mapping registered on the edge tunnel. File a bug including the HTTP method and path from the error.
-
-**Agent repeatedly re-enrolls on every restart.**
-`EDGE_MTLS_ASSETS_DIR` isn't persistent. Mount it on a volume so `agent.crt` and `agent.key` survive restarts.
 
 ## Using your own certificates
 

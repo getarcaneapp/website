@@ -12,11 +12,6 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 You can change most Arcane settings in the Settings UI. Use the reference below when you need to configure them through environment variables.
 
-- <Link href="/docs/configuration/environment#environment-variables">Find a variable</Link> or <Link href="/docs/configuration/environment#settings-overrides-via-environment">override a UI setting</Link>.
-- <Link href="/docs/configuration/environment#use-external-postgres-database">Use PostgreSQL</Link>.
-- <Link href="/docs/configuration/environment#container-runtime-user">Set file ownership</Link> with `PUID` and `PGID`.
-- <Link href="/docs/configuration/environment#timezone-and-scheduled-jobs">Set the timezone</Link> for scheduled jobs.
-
 <div id="environment-variables" class="scroll-m-28">
 
 <EnvTable />
