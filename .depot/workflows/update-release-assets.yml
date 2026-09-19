@@ -15,7 +15,12 @@ jobs:
     runs-on: depot-ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+        with:
+          # Depot CI swaps a bare `actions/checkout` (no inputs) for its own
+          # shallow-pack clone, which leaves no `origin` remote and breaks
+          # create-pull-request. Any explicit input keeps the official action.
+          fetch-depth: 1
 
       - name: Fetch releases list
         id: releases
