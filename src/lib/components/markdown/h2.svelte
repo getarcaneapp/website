@@ -13,7 +13,7 @@
 <h2
 	{id}
 	class={cn(
-		'group mt-5 scroll-m-28 border-b border-border pb-2 font-heading text-2xl font-semibold tracking-tight first:mt-0 lg:mt-10 [&+p]:!mt-4',
+		'group mt-14 scroll-m-28 border-b border-border pb-3 font-heading text-3xl font-bold tracking-tight first:mt-0 lg:mt-16 [&+p]:!mt-5',
 		className
 	)}
 	{...restProps}

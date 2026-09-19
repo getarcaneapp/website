@@ -42,8 +42,11 @@
 </svelte:head>
 
 <div class="flex min-w-0 flex-1">
-	<div use:attachToc class="mx-auto flex w-full min-w-0 flex-1 justify-center gap-12 py-8 lg:pl-8">
-		<article class="w-full max-w-3xl min-w-0">
+	<div
+		use:attachToc
+		class="grid w-full min-w-0 flex-1 grid-cols-[minmax(0,48rem)] justify-center py-8 lg:pl-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,48rem)_minmax(19rem,1fr)] xl:justify-normal"
+	>
+		<article class="w-full min-w-0 xl:col-start-2">
 			<!-- Breadcrumb -->
 			<nav
 				class="mb-5 flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground"
@@ -126,7 +129,7 @@
 		</article>
 
 		{#if toc.current.length > 0}
-			<aside class="hidden w-56 shrink-0 xl:block">
+			<aside class="hidden w-[19rem] pl-12 xl:col-start-3 xl:block xl:justify-self-end">
 				<div class="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
 					<p class="mb-3 text-sm font-medium text-foreground">On this page</p>
 					<div class="border-l border-border pl-4">

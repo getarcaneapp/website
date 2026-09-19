@@ -26,27 +26,32 @@
 		note: {
 			icon: Info,
 			label: 'Note',
-			iconClass: 'text-blue-600 dark:text-blue-400'
+			borderClass: 'border-l-[#0969da] dark:border-l-[#4493f8]',
+			titleClass: 'text-[#0969da] dark:text-[#4493f8]'
 		},
 		tip: {
 			icon: Lightbulb,
 			label: 'Tip',
-			iconClass: 'text-green-600 dark:text-green-400'
+			borderClass: 'border-l-[#1a7f37] dark:border-l-[#3fb950]',
+			titleClass: 'text-[#1a7f37] dark:text-[#3fb950]'
 		},
 		important: {
 			icon: AlertCircle,
 			label: 'Important',
-			iconClass: 'text-primary'
+			borderClass: 'border-l-[#8250df] dark:border-l-[#ab7df8]',
+			titleClass: 'text-[#8250df] dark:text-[#ab7df8]'
 		},
 		warning: {
 			icon: AlertTriangle,
 			label: 'Warning',
-			iconClass: 'text-amber-600 dark:text-amber-400'
+			borderClass: 'border-l-[#9a6700] dark:border-l-[#d29922]',
+			titleClass: 'text-[#9a6700] dark:text-[#d29922]'
 		},
 		caution: {
 			icon: OctagonAlert,
 			label: 'Caution',
-			iconClass: 'text-red-600 dark:text-red-400'
+			borderClass: 'border-l-[#cf222e] dark:border-l-[#f85149]',
+			titleClass: 'text-[#cf222e] dark:text-[#f85149]'
 		}
 	};
 
@@ -81,22 +86,20 @@
 {#if type && config}
 	{@const Icon = config.icon}
 	<div
-		class={cn('mt-6 rounded-xl border border-border bg-surface p-4 not-italic', className)}
+		class={cn(
+			'mt-6 border-l-4 py-2 pr-2 pl-4 text-foreground not-italic',
+			config.borderClass,
+			className
+		)}
 		{...restProps}
 		use:handleMount
 	>
-		<div class="flex min-w-0 items-start gap-3">
-			<Icon class={cn('mt-0.5 size-4 shrink-0', config.iconClass)} />
-			<div class="min-w-0 flex-1">
-				<div class="mb-1 text-sm font-medium text-foreground">
-					{config.label}
-				</div>
-				<div
-					class="min-w-0 text-sm [&_.snippet]:w-full [&_.snippet]:max-w-full [&>p]:mb-2 last:[&>p]:mb-0"
-				>
-					{@render children?.()}
-				</div>
-			</div>
+		<div class={cn('mb-2 flex items-center gap-2 leading-none font-medium', config.titleClass)}>
+			<Icon class="size-4 shrink-0" />
+			<span>{config.label}</span>
+		</div>
+		<div class="min-w-0 [&_.snippet]:w-full [&_.snippet]:max-w-full [&>p]:mb-3 last:[&>p]:mb-0">
+			{@render children?.()}
 		</div>
 	</div>
 {:else}

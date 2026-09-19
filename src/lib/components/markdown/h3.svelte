@@ -12,7 +12,10 @@
 
 <h3
 	{id}
-	class={cn('group mt-8 scroll-m-20 font-heading text-xl font-semibold tracking-tight', className)}
+	class={cn(
+		'group mt-12 scroll-m-20 font-heading text-2xl font-bold tracking-tight [&+p]:!mt-4',
+		className
+	)}
 	{...restProps}
 >
 	{@render children?.()}

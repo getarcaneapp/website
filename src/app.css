@@ -306,9 +306,9 @@
 
 /* ===== Markdown / docs typography ===== */
 .markdown {
-	font-size: 0.9375rem;
-	line-height: 1.7;
-	color: color-mix(in oklab, var(--foreground) 88%, transparent);
+	font-size: 1rem;
+	line-height: 1.75;
+	color: color-mix(in oklab, var(--foreground) 92%, transparent);
 }
 
 .markdown a {
@@ -323,8 +323,9 @@
 	text-decoration-color: var(--primary);
 }
 
-.markdown :is(h1, h2, h3, h4) {
+.markdown :is(h1, h2, h3, h4, h5) {
 	letter-spacing: -0.018em;
+	color: var(--foreground);
 }
 
 .markdown code:not(pre code) {
