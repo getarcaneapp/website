@@ -3,14 +3,14 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "sbom",
-  "documentNamespace": "https://anchore.com/syft/dir/sbom-b1411cb9-2f8d-44bc-a4fb-b1d27b828b63",
+  "documentNamespace": "https://anchore.com/syft/dir/sbom-79d8fd9c-d159-4546-8a97-91b08d0ca349",
   "creationInfo": {
     "licenseListVersion": "3.28",
     "creators": [
       "Organization: Anchore, Inc",
       "Tool: syft-v1.51.0"
     ],
-    "created": "2026-09-19T20:54:46Z"
+    "created": "2026-09-22T00:12:32Z"
   },
   "packages": [
     {
@@ -1279,15 +1279,15 @@
     },
     {
       "name": "github.com/aws/smithy-go",
-      "SPDXID": "SPDXRef-Package-go-module-github.com-aws-smithy-go-c8354cb3696c283d",
-      "versionInfo": "v1.28.1",
+      "SPDXID": "SPDXRef-Package-go-module-github.com-aws-smithy-go-0af0b8e375fb4bab",
+      "versionInfo": "v1.28.2",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "47f9d71f4d1cf2a71f0b341510bb51c3e78b416b73bfe540204149d7fc715e54"
+          "checksumValue": "9b285cca441c6ad4ee97607fcc84e30e4db4dc6eedd1ac1402cd6156bcb906f8"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane",
@@ -1298,17 +1298,17 @@
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:aws:smithy-go:v1.28.1:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:aws:smithy-go:v1.28.2:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:aws:smithy_go:v1.28.1:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:aws:smithy_go:v1.28.2:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/github.com/aws/smithy-go@v1.28.1"
+          "referenceLocator": "pkg:golang/github.com/aws/smithy-go@v1.28.2"
         }
       ]
     },
@@ -2829,15 +2829,15 @@
     },
     {
       "name": "github.com/fxamacker/cbor/v2",
-      "SPDXID": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-cad2155053939ab3",
-      "versionInfo": "v2.9.3",
+      "SPDXID": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-ce4dea34f77bf9f5",
+      "versionInfo": "v2.9.4",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "a100671404e935d63c8091d39dd0c3bf95e5e10a8d6b3e751b92cb10f8678374"
+          "checksumValue": "c708d597110c4774bad39a1496006328b4d378615c8983c6602b45ff7e4b286a"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane",
@@ -2848,12 +2848,12 @@
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:fxamacker:cbor\\/v2:v2.9.3:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:fxamacker:cbor\\/v2:v2.9.4:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/github.com/fxamacker/cbor/v2@v2.9.3"
+          "referenceLocator": "pkg:golang/github.com/fxamacker/cbor/v2@v2.9.4"
         }
       ]
     },
@@ -3256,15 +3256,15 @@
     },
     {
       "name": "github.com/go-webauthn/webauthn",
-      "SPDXID": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-6105505a316879bb",
-      "versionInfo": "v0.18.1",
+      "SPDXID": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-7cd28dbd00cf9ca4",
+      "versionInfo": "v0.18.2",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "29a430e8cf8e0cbbf11f075dc9ea3acc58619a271f2eea7f0429618a007a03ed"
+          "checksumValue": "d0179fb6610753b8b70efd1517006d89dcbf6dadfb55c763beab2df4462ef129"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane",
@@ -3275,22 +3275,22 @@
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:go-webauthn:webauthn:v0.18.1:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:go-webauthn:webauthn:v0.18.2:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:go_webauthn:webauthn:v0.18.1:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:go_webauthn:webauthn:v0.18.2:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:go:webauthn:v0.18.1:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:go:webauthn:v0.18.2:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/github.com/go-webauthn/webauthn@v0.18.1"
+          "referenceLocator": "pkg:golang/github.com/go-webauthn/webauthn@v0.18.2"
         }
       ]
     },
@@ -7956,15 +7956,15 @@
     },
     {
       "name": "go.getarcane.app/updater",
-      "SPDXID": "SPDXRef-Package-go-module-go.getarcane.app-updater-bf123d552d2f621c",
-      "versionInfo": "v0.9.3",
+      "SPDXID": "SPDXRef-Package-go-module-go.getarcane.app-updater-e57b4276524a581c",
+      "versionInfo": "v0.10.0",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "fde4ef5f273d8ddef94516c0ed21fdf57951a17e902e00c44687cda8a5597e02"
+          "checksumValue": "e8d8799a8f50ba98990184292486525067ed0e66e334166a25f2f3701da902f7"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane",
@@ -7975,7 +7975,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/go.getarcane.app/updater@v0.9.3"
+          "referenceLocator": "pkg:golang/go.getarcane.app/updater@v0.10.0"
         }
       ]
     },
@@ -8961,15 +8961,15 @@
     },
     {
       "name": "google.golang.org/grpc",
-      "SPDXID": "SPDXRef-Package-go-module-google.golang.org-grpc-f03cddeffeffb9ca",
-      "versionInfo": "v1.83.2",
+      "SPDXID": "SPDXRef-Package-go-module-google.golang.org-grpc-1e15c822b5efac8f",
+      "versionInfo": "v1.84.0",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "10c6a7791a264ce6c0d0153b23cbd7820ffbf2e139309f4cf01dfd117d96b1c5"
+          "checksumValue": "b2833268f27ca406a4e4f210d03181522af45d1a367d1a0caa135630b94bc4ed"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane",
@@ -8980,12 +8980,12 @@
         {
           "referenceCategory": "SECURITY",
           "referenceType": "cpe23Type",
-          "referenceLocator": "cpe:2.3:a:google:grpc:v1.83.2:*:*:*:*:*:*:*"
+          "referenceLocator": "cpe:2.3:a:google:grpc:v1.84.0:*:*:*:*:*:*:*"
         },
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/google.golang.org/grpc@v1.83.2"
+          "referenceLocator": "pkg:golang/google.golang.org/grpc@v1.84.0"
         }
       ]
     },
@@ -9707,7 +9707,7 @@
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "b12ab04cbd6a863c358e811db520bbc159e728dd6bcb35ee8101b76ab2a69b23"
+          "checksumValue": "bdeda0a166b45295cc0b7f15c9c0365879d32317e9950bb523db09b8ea9d426e"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -31567,6 +31567,11 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-smithy-go-0af0b8e375fb4bab",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-opencontainers-go-digest-0b3e44bf7c75c93c",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
@@ -31673,6 +31678,11 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-aws-sdk-go-v2-internal-configsources-1cce8d7aa1676f1b",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-google.golang.org-grpc-1e15c822b5efac8f",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
     },
@@ -31942,11 +31952,6 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-6105505a316879bb",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-depot-depot-go-613893c5b3775ade",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
@@ -32153,6 +32158,11 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-rivo-uniseg-7c62af303664b728",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-7cd28dbd00cf9ca4",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
     },
@@ -32527,11 +32537,6 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-go.getarcane.app-updater-bf123d552d2f621c",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-go.opentelemetry.io-otel-exporters-otlp-otlptrace-otlptracegrpc-bff1da1bc9e14354",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
@@ -32587,11 +32592,6 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-smithy-go-c8354cb3696c283d",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-cenkalti-backoff-v5-c8524a1b0206042b",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
@@ -32622,11 +32622,6 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-cad2155053939ab3",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-felixge-httpsnoop-cb81abaa5028da5a",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
@@ -32653,6 +32648,11 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-zeebo-xxh3-cde506d477e610f8",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-ce4dea34f77bf9f5",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
     },
@@ -32812,6 +32812,11 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-go.getarcane.app-updater-e57b4276524a581c",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-compose-spec-compose-go-v2-e7269bd0ba702914",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
@@ -32853,11 +32858,6 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-labstack-echo-v4-f002f1224f49f6d2",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-go-module-google.golang.org-grpc-f03cddeffeffb9ca",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-c38a8ac86e3789eb",
       "relationshipType": "DEPENDENCY_OF"
     },
@@ -33023,6 +33023,12 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-smithy-go-0af0b8e375fb4bab",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-opencontainers-go-digest-0b3e44bf7c75c93c",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
@@ -33150,6 +33156,12 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-aws-sdk-go-v2-internal-configsources-1cce8d7aa1676f1b",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-google.golang.org-grpc-1e15c822b5efac8f",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -33509,12 +33521,6 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-6105505a316879bb",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-depot-depot-go-613893c5b3775ade",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
@@ -33792,6 +33798,12 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-rivo-uniseg-7c62af303664b728",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-7cd28dbd00cf9ca4",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -34277,12 +34289,6 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-go.getarcane.app-updater-bf123d552d2f621c",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-go.opentelemetry.io-otel-exporters-otlp-otlptrace-otlptracegrpc-bff1da1bc9e14354",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
@@ -34355,12 +34361,6 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-aws-smithy-go-c8354cb3696c283d",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-cenkalti-backoff-v5-c8524a1b0206042b",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
@@ -34397,12 +34397,6 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-cad2155053939ab3",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-felixge-httpsnoop-cb81abaa5028da5a",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
@@ -34434,6 +34428,12 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-zeebo-xxh3-cde506d477e610f8",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-ce4dea34f77bf9f5",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -34643,6 +34643,12 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-go.getarcane.app-updater-e57b4276524a581c",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-compose-spec-compose-go-v2-e7269bd0ba702914",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
@@ -34698,12 +34704,6 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-labstack-echo-v4-f002f1224f49f6d2",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-go-module-google.golang.org-grpc-f03cddeffeffb9ca",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-8fe0be1a21a35a65",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -35014,7 +35014,7 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-aws-smithy-go-c8354cb3696c283d",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-aws-smithy-go-0af0b8e375fb4bab",
       "relationshipType": "CONTAINS"
     },
     {
@@ -35259,7 +35259,7 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-cad2155053939ab3",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-fxamacker-cbor-v2-ce4dea34f77bf9f5",
       "relationshipType": "CONTAINS"
     },
     {
@@ -35314,7 +35314,7 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-6105505a316879bb",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-github.com-go-webauthn-webauthn-7cd28dbd00cf9ca4",
       "relationshipType": "CONTAINS"
     },
     {
@@ -36019,7 +36019,7 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-go.getarcane.app-updater-bf123d552d2f621c",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-go.getarcane.app-updater-e57b4276524a581c",
       "relationshipType": "CONTAINS"
     },
     {
@@ -36189,7 +36189,7 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-google.golang.org-grpc-f03cddeffeffb9ca",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-google.golang.org-grpc-1e15c822b5efac8f",
       "relationshipType": "CONTAINS"
     },
     {
