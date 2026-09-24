@@ -39,7 +39,7 @@ The **Updates** page shows pending updates in **Containers** and **Projects** ta
 
 - **Update Container** / **Update** — update one row after confirmation.
 - **Bulk update** — select rows, click **Update**, and confirm.
-- **Ignore** / **Unignore** — toggle automatic updates for a container. Ignored rows stay listed. If the badge says _Controlled by Docker label_, change that label instead.
+- **Disable automatic updates** / **Enable automatic updates** — toggle automatic installation for a container. Rows with automatic updates disabled stay listed and keep receiving update checks and notifications. If the action says _Controlled by Docker label_, change that label instead.
 - **Update All** — applies every pending update on the selected environment, including ones not visible on the current page.
 
 > [!IMPORTANT]
@@ -51,12 +51,12 @@ The **Updates** page shows pending updates in **Containers** and **Projects** ta
 
 ## How Arcane decides what to update
 
-Arcane uses the `auto` strategy by default:
+Arcane uses the `digest` strategy by default: the configured tag, such as `3.1.2` or `latest`, is kept and only changes to its image digest are followed. Set `strategy: auto` to opt into version-based selection:
 
 - Complete stable version tags, such as `3.1.2` or `v3.1.2`, follow newer version tags. Without a constraint, updates stay within the current major version. For `0.x`, they stay within the current minor version.
 - Moving tags, such as `latest`, `next`, and `alpine`, keep their tag and follow changes to its image digest. Partial version tags, such as `16` or `3.1`, and ambiguous variant or prerelease tags also use digest checks unless you provide an explicit policy.
 
-A constraint or tag pattern supplied with `auto` requests version-based selection. Invalid constraints, patterns, or incompatible current tags report an error rather than silently switching to digest checks.
+A constraint or tag pattern, with `auto` or without a strategy, requests version-based selection. Invalid constraints, patterns, or incompatible current tags report an error rather than silently switching to digest checks.
 
 Set `strategy: digest` to keep a version tag fixed while still receiving new images published under that tag. Set `strategy: tag` to require version-based selection. Arcane checks the current tag's digest when no newer eligible version is available. Digest-pinned references and image IDs aren't eligible for updates.
 
@@ -81,7 +81,7 @@ services:
     image: ghcr.io/acme/worker:3.1.2
 ```
 
-The app follows newer `3.x` Alpine tags. The worker follows newer stable `3.x` tags through `auto`. Prerelease updates require an explicit constraint that admits them, such as `>=3.1.2-0 <4.0.0`. Arcane never selects an equal or older version as a tag upgrade.
+The app follows newer `3.x` Alpine tags. The worker follows newer stable `3.x` tags through the project's `auto` default. Prerelease updates require an explicit constraint that admits them, such as `>=3.1.2-0 <4.0.0`. Arcane never selects an equal or older version as a tag upgrade.
 
 For standalone containers, set the equivalent Docker labels:
 
@@ -112,7 +112,7 @@ Automatic edits to Compose image references require a single Compose file with e
 
 All labels live under the `com.getarcaneapp.arcane.*` namespace.
 
-### Disable updates for one container
+### Disable automatic updates for one container
 
 ```yaml
 labels:
@@ -121,9 +121,36 @@ labels:
 
 Accepted truthy values: `true`, `1`, `yes`, `on`. Falsy: `false`, `0`, `no`, `off`. Case-insensitive.
 
-You can also flip this from the container's detail page, or from the **Ignore** action on the Updates page. If the container already has an explicit updater label, the label wins and the UI reflects that.
+You can also flip this from the container's detail page, or from the **Disable automatic updates** action on the Updates page. If the container already has an explicit updater label, the label wins and the UI reflects that.
 
-Arcane skips scanning an image only when every container using it has opted out. Images with no running container are always scanned.
+This only stops Arcane from installing updates on its own. The container is still checked on the polling schedule, still appears on the **Updates** page when a newer image exists, and still triggers update notifications, so you can decide when to apply the update yourself.
+
+### Disable update checks for one container
+
+```yaml
+labels:
+  - com.getarcaneapp.arcane.update-check=false
+```
+
+Same accepted values as above. This stops update checks and notifications for the container. It does not change whether Arcane may install updates automatically, so a container that should be left alone entirely needs both labels:
+
+```yaml
+labels:
+  - com.getarcaneapp.arcane.updater=false
+  - com.getarcaneapp.arcane.update-check=false
+```
+
+Arcane skips scanning an image only when every container using it has opted out of update checks. Images with no running container are always scanned. Checking a single image explicitly from the Images page still works. There is no `x-arcane` field for this label; set it under the service's `labels` in Compose.
+
+| Configuration                            | Update checks and notifications | Automatic installation |
+| ---------------------------------------- | ------------------------------- | ---------------------- |
+| No labels, not excluded in the UI        | Yes                             | Yes                    |
+| `updater=false` or excluded in the UI    | Yes                             | No                     |
+| `update-check=false`                     | No                              | Yes                    |
+| `updater=false` and `update-check=false` | No                              | No                     |
+
+> [!NOTE]
+> In earlier releases, containers with automatic updates disabled were also skipped by update checks. After upgrading, those containers are checked again and can produce notifications. Add `com.getarcaneapp.arcane.update-check=false` to any container you want to stay silent. Remote environments running an older agent keep the old behavior until the agent is upgraded.
 
 ### Restart order
 

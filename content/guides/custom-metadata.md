@@ -113,12 +113,12 @@ services:
 
 These services start from the same image but select different target tags. See <Link href="/docs/guides/updates#tag-based-updates">Tag-based updates</Link> for version selection, checking, and applying updates.
 
-| Field         | Meaning                                                                                                                                                                        |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `enabled`     | Boolean controlling updater participation. Set `false` to opt out. This doesn't enable the environment's auto-update schedule.                                                 |
-| `strategy`    | `auto` is the default: complete stable version tags use tag checks; other tags use digest checks. `digest` keeps the configured tag. `tag` requires version-based selection.   |
-| `constraint`  | Optional semantic version range, such as `3.x`, `3.20.x`, or `=3.20.1`. In tag mode, an omitted constraint keeps updates within the current major, or current minor for `0.x`. |
-| `tag-pattern` | Optional full-tag regex. A named `version` capture extracts the comparable version from variant tags.                                                                          |
+| Field         | Meaning                                                                                                                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`     | Boolean controlling automatic installation. Set `false` to opt out; the service is still checked for updates. This doesn't enable the environment's auto-update schedule.            |
+| `strategy`    | `digest` is the default and keeps the configured tag. `auto` lets complete stable version tags use tag checks; other tags use digest checks. `tag` requires version-based selection. |
+| `constraint`  | Optional semantic version range, such as `3.x`, `3.20.x`, or `=3.20.1`. In tag mode, an omitted constraint keeps updates within the current major, or current minor for `0.x`.       |
+| `tag-pattern` | Optional full-tag regex. A named `version` capture extracts the comparable version from variant tags.                                                                                |
 
 Settings are resolved per field, in this order:
 
@@ -126,7 +126,7 @@ Settings are resolved per field, in this order:
 2. The service's `x-arcane.updater` fields.
 3. The project's top-level `x-arcane.updater` defaults.
 
-When `auto` has an explicit constraint or tag pattern, Arcane validates it and uses version-based selection. Invalid policies produce a check error. Prereleases require an explicit constraint that admits them.
+When a constraint or tag pattern is set, with `auto` or without a strategy, Arcane validates it and uses version-based selection. Invalid policies produce a check error. Prereleases require an explicit constraint that admits them.
 
 An omitted service field inherits its project default. An empty `constraint` or `tag-pattern` string clears an inherited value. For variant tags such as `3.1.2-alpine`, use:
 
