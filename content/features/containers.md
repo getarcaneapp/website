@@ -94,7 +94,7 @@ For Git-synced projects, this tab is read-only.
 
 ### Auto-update toggle
 
-The **Overview** tab has an **Auto Update** toggle for opting a single container in or out of Arcane's updater. If the container already has an explicit `com.getarcaneapp.arcane.updater` label, that label wins.
+The **Overview** tab has an **Auto Update** toggle for opting a single container in or out of automatic installation. Turning it off keeps update checks and notifications running; only the automatic install stops. If the container already has an explicit `com.getarcaneapp.arcane.updater` label, that label wins. To stop checks as well, add the `com.getarcaneapp.arcane.update-check=false` label. See <Link href="/docs/guides/updates#per-container-labels">Per-container labels</Link>.
 
 When a newer image is available, the detail header shows an **Update available** badge and an **Update** action to apply it on the spot (requires the `containers:autoupdate` permission). If the container belongs to a project, the header links to that project too.
 
