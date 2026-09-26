@@ -417,6 +417,17 @@
       "sourceSymbol": "config.Config.GPUType"
     },
     {
+      "env": "HTTPS_PROXY",
+      "field": "HTTPSProxy",
+      "type": "string",
+      "supportsFile": false,
+      "deprecated": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.HTTPSProxy"
+    },
+    {
       "env": "HTTP_CLIENT_TIMEOUT",
       "field": "HTTPClientTimeout",
       "type": "int",
@@ -427,6 +438,18 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.HTTPClientTimeout"
+    },
+    {
+      "env": "HTTP_PROXY",
+      "field": "HTTPProxy",
+      "type": "string",
+      "description": "HTTPProxy, HTTPSProxy and NoProxy are forwarded to temporary Trivy scan containers.",
+      "supportsFile": false,
+      "deprecated": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.HTTPProxy"
     },
     {
       "env": "JWT_REFRESH_EXPIRY",
@@ -503,6 +526,17 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ManagerApiUrl"
+    },
+    {
+      "env": "NO_PROXY",
+      "field": "NoProxy",
+      "type": "string",
+      "supportsFile": false,
+      "deprecated": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.NoProxy"
     },
     {
       "env": "OIDC_AUTO_REDIRECT_TO_PROVIDER",
@@ -2280,6 +2314,21 @@
       "source": "settings.Settings + settings.DefaultSettingsConfig",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.VulnerabilityScanInterval",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "VULNERABILITY_THREAT_INTEL_ENABLED",
+      "settingKey": "vulnerabilityThreatIntelEnabled",
+      "description": "Fetch the CISA KEV catalog and FIRST EPSS scores to prioritize exploited vulnerabilities. Disable for air-gapped installs.",
+      "defaultValue": "true",
+      "type": "boolean",
+      "category": "security",
+      "requires": "FEATURE_VULNERABILITY_MANAGEMENT_ENABLED=true to have effect at runtime.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.VulnerabilityThreatIntelEnabled",
       "sensitive": false,
       "deprecated": false,
       "public": false
