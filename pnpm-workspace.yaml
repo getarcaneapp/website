@@ -10,7 +10,7 @@ allowBuilds:
   workerd: true
 
 overrides:
-  '@sveltejs/kit': '^3.0.0-next.27'
+  '@sveltejs/kit': '3.0.0-next.30'
   cookie: '^1.1.1'
   devalue: '^5.6.2'
   undici: '^7.18.2'
@@ -28,3 +28,6 @@ peerDependencyRules:
     - vite
   allowedVersions:
     vite: '*'
+
+minimumReleaseAgeExclude:
+  - '@sveltejs/kit@3.0.0-next.30'
