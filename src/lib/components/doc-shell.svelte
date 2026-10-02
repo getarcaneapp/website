@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
-	import ExternalLink from 'virtual:icons/lucide/external-link';
-	import Pencil from 'virtual:icons/lucide/pencil';
+	import { EditIcon, ExternalLinkIcon } from '#lib/icons/index.js';
 
 	interface DocMeta {
 		title: string;
@@ -56,9 +55,9 @@
 					rel="noopener noreferrer"
 					class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
 				>
-					<Pencil class="size-3.5" />
+					<EditIcon class="size-3.5" />
 					Edit this page on GitHub
-					<ExternalLink class="size-3.5" />
+					<ExternalLinkIcon class="size-3.5" />
 				</a>
 			</footer>
 		</article>

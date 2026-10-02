@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { browser } from '$app/env';
 	import { cn } from '#lib/utils.js';
 	import Logo from './logo.svelte';
 	import greptileLogo from '../assets/greptile.svg?enhanced';
@@ -79,10 +79,10 @@
 
 	let discordOnlineCount = $state<number | null>(null);
 
-	onMount(async () => {
+	async function getDiscordOnlineCount(): Promise<number | null> {
 		try {
 			const response = await fetch('/api/discord/presence');
-			if (!response.ok) return;
+			if (!response.ok) return null;
 
 			const data: unknown = await response.json();
 			if (
@@ -93,12 +93,17 @@
 				Number.isInteger(data.online) &&
 				data.online >= 0
 			) {
-				discordOnlineCount = data.online;
+				return data.online;
 			}
 		} catch {
-			discordOnlineCount = null;
+			// presence is decorative; leave it hidden when unavailable
 		}
-	});
+		return null;
+	}
+
+	if (browser) {
+		getDiscordOnlineCount().then((count) => (discordOnlineCount = count));
+	}
 </script>
 
 <footer class="border-t border-border">
@@ -181,7 +186,7 @@
 										{link.label}
 										{#if link.href === DISCORD_URL && discordOnlineCount !== null}
 											<span
-												class="ml-1 inline-flex translate-y-px items-center rounded-full border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-[10px] leading-none font-medium text-primary tabular-nums transition-colors group-hover:border-primary/30 group-hover:bg-primary/15"
+												class="ml-1 inline-flex translate-y-px items-center rounded-full border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-3xs leading-none font-medium text-primary tabular-nums transition-colors group-hover:border-primary/30 group-hover:bg-primary/15"
 											>
 												{discordOnlineCount.toLocaleString()} online
 											</span>

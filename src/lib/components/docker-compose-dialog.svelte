@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Download from 'virtual:icons/lucide/download';
+	import { DownloadIcon } from '#lib/icons/index.js';
 	import { trackEvent } from '#lib/analytics.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import * as Code from '#lib/components/ui/code/index.js';
@@ -37,9 +37,7 @@
 </script>
 
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
-	<Dialog.Content
-		class="flex h-[90vh] max-h-[90vh] w-[95vw] max-w-full flex-col sm:h-auto sm:max-h-[80vh] sm:max-w-[600px] lg:min-h-[70vh] lg:max-w-[1500px]"
-	>
+	<Dialog.Content variant="wide">
 		<Dialog.Header class="shrink-0">
 			<Dialog.Title>Generated Docker Compose</Dialog.Title>
 			<Dialog.Description
@@ -56,7 +54,7 @@
 				class="flex shrink-0 flex-col items-stretch gap-2 pb-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
 			>
 				<Button onclick={downloadCompose} variant="outline" class="w-full sm:w-auto">
-					<Download class="mr-2 size-4" />
+					<DownloadIcon class="mr-2 size-4" />
 					Download File
 				</Button>
 				<Button variant="secondary" onclick={() => (open = false)} class="w-full sm:w-auto"

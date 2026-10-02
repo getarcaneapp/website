@@ -14,7 +14,7 @@
 	{target}
 	{rel}
 	class={cn(
-		'font-medium underline decoration-primary/40 underline-offset-[0.2em] hover:decoration-primary',
+		'font-medium underline decoration-primary/40 underline-offset-3 hover:decoration-primary',
 		className
 	)}
 	{...restProps}

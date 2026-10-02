@@ -9,10 +9,10 @@
 
 <div class="mt-4 rounded-xl border border-border bg-muted/20 p-4 shadow-sm">
 	<div class="mb-3 flex flex-wrap items-center justify-between gap-2">
-		<div class="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+		<div class="text-xs font-semibold tracking-ultrawide text-muted-foreground uppercase">
 			Current buildables
 		</div>
-		<Badge variant="secondary" class="text-[11px] font-semibold">
+		<Badge variant="secondary" size="sm">
 			{buildables.length} available
 		</Badge>
 	</div>
@@ -29,8 +29,8 @@
 		<Table.Body>
 			{#each buildables as buildable (buildable.feature)}
 				<Table.Row>
-					<Table.Cell class="font-medium">
-						<code class="rounded bg-muted px-1 py-0.5">{buildable.feature}</code>
+					<Table.Cell>
+						<code class="rounded bg-muted px-1 py-0.5 font-medium">{buildable.feature}</code>
 					</Table.Cell>
 					<Table.Cell>{buildable.description}</Table.Cell>
 					<Table.Cell>
@@ -40,15 +40,12 @@
 								href={buildable.sourceHref ?? communityHref}
 								target="_blank"
 								rel="noreferrer"
-								class="text-xs"
 								title="Provided by the community"
 							>
 								Community
 							</Badge>
 						{:else}
-							<Badge variant="secondary" class="text-xs" title="Maintained by the Arcane team"
-								>Official</Badge
-							>
+							<Badge variant="secondary" title="Maintained by the Arcane team">Official</Badge>
 						{/if}
 					</Table.Cell>
 					<Table.Cell>

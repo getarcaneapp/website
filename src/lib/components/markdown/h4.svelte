@@ -22,7 +22,7 @@
 	{#if id}
 		<a
 			href="#{id}"
-			class="ml-1 font-normal text-muted-foreground no-underline opacity-0 transition-opacity group-hover:opacity-100 before:content-['#']"
+			class="ml-1 font-normal text-muted-foreground no-underline opacity-0 transition-opacity group-hover:opacity-100 before:content-hash"
 			aria-label="Link to this section"
 		></a>
 	{/if}

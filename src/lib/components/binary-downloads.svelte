@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Download from 'virtual:icons/lucide/download';
+	import { browser } from '$app/env';
+	import { DownloadIcon } from '#lib/icons/index.js';
 	import * as Tabs from '#lib/components/ui/tabs/index.js';
 	import * as Table from '#lib/components/ui/table/index.js';
 
@@ -10,7 +11,9 @@
 		{ id: 'bin/cli-next/', label: 'CLI' }
 	] as const;
 
-	let activeTab = $state<string>(PREFIXES[0].id);
+	const INITIAL_TAB = PREFIXES[0].id;
+
+	let activeTab = $state<string>(INITIAL_TAB);
 	let cache = $state<Record<string, FileEntry[]>>({});
 	let loading = $state<Record<string, boolean>>({});
 	let errors = $state<Record<string, string>>({});
@@ -31,9 +34,8 @@
 		}
 	}
 
-	$effect(() => {
-		loadFiles(activeTab);
-	});
+	// Each tab's file list is fetched the first time it's shown.
+	if (browser) loadFiles(INITIAL_TAB);
 
 	function formatSize(bytes: number): string {
 		if (bytes < 1024) return `${bytes} B`;
@@ -59,12 +61,12 @@
 </script>
 
 <div class="my-4 overflow-hidden rounded-xl border">
-	<Tabs.Root bind:value={activeTab}>
+	<Tabs.Root bind:value={activeTab} onValueChange={loadFiles}>
 		<div class="flex items-center justify-between border-b bg-muted/40 px-4 py-2.5">
 			<span class="text-sm font-medium text-muted-foreground">Next Binaries</span>
 			<Tabs.List class="h-7">
 				{#each PREFIXES as p (p.id)}
-					<Tabs.Trigger value={p.id} class="h-6 px-3 text-xs">{p.label}</Tabs.Trigger>
+					<Tabs.Trigger value={p.id} size="sm" class="h-6">{p.label}</Tabs.Trigger>
 				{/each}
 			</Tabs.List>
 		</div>
@@ -84,33 +86,35 @@
 				{:else if cache[p.id] !== undefined}
 					<Table.Root>
 						<Table.Header>
-							<Table.Row class="hover:bg-transparent">
-								<Table.Head class="pl-4">File</Table.Head>
-								<Table.Head class="w-24 text-right">Size</Table.Head>
-								<Table.Head class="w-36">Modified</Table.Head>
-								<Table.Head class="w-12 pr-4"></Table.Head>
+							<Table.Row variant="static">
+								<Table.Head inset>File</Table.Head>
+								<Table.Head inset class="w-24 text-right">Size</Table.Head>
+								<Table.Head inset class="w-36">Modified</Table.Head>
+								<Table.Head inset class="w-12"></Table.Head>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
 							{#each cache[p.id] as file (file.key)}
 								<Table.Row>
-									<Table.Cell class="pl-4 font-mono text-xs">{fileName(file.key)}</Table.Cell>
-									<Table.Cell
-										class="text-right font-mono text-xs text-muted-foreground tabular-nums"
-									>
-										{formatSize(file.size)}
+									<Table.Cell inset>
+										<span class="font-mono text-xs">{fileName(file.key)}</span>
 									</Table.Cell>
-									<Table.Cell class="text-xs text-muted-foreground">
-										{formatDate(file.modified)}
+									<Table.Cell inset class="text-right">
+										<span class="font-mono text-xs text-muted-foreground tabular-nums">
+											{formatSize(file.size)}
+										</span>
 									</Table.Cell>
-									<Table.Cell class="pr-4 text-right">
+									<Table.Cell inset>
+										<span class="text-xs text-muted-foreground">{formatDate(file.modified)}</span>
+									</Table.Cell>
+									<Table.Cell inset class="text-right">
 										<a
 											data-sveltekit-reload
 											href={downloadUrl(file.key)}
 											title="Download {fileName(file.key)}"
 											class="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 										>
-											<Download class="size-3.5" />
+											<DownloadIcon class="size-3.5" />
 											<span class="sr-only">Download {fileName(file.key)}</span>
 										</a>
 									</Table.Cell>

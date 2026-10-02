@@ -1,7 +1,5 @@
 <script lang="ts">
-	import ChevronLeft from 'virtual:icons/lucide/chevron-left';
-	import ChevronRight from 'virtual:icons/lucide/chevron-right';
-	import FileText from 'virtual:icons/lucide/file-text';
+	import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon } from '#lib/icons/index.js';
 	import { trackEvent } from '#lib/analytics.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import * as Card from '#lib/components/ui/card/index.js';
@@ -168,216 +166,172 @@
 	let summaryOverflow = $derived(Math.max(summaryItems.length - 6, 0));
 </script>
 
-<div class="generator-wrapper mx-auto w-full max-w-375 px-0">
+{#snippet fieldMeta(field: GeneratorField)}
+	<div>
+		<Label for={field.key}>{field.label}</Label>
+		{#if field.description}
+			<p class="mt-1.5 text-sm text-muted-foreground">{field.description}</p>
+		{/if}
+	</div>
+{/snippet}
+
+<div class="mx-auto w-full max-w-375 animate-fade-in-up pl-2 motion-reduce:animate-none">
 	<Tabs.Root value={activeTab} onValueChange={handleTabChange}>
-		<div class="wizard-layout">
-			<div class="wizard-shell">
-				<header class="wizard-header">
-					<Tabs.List
-						class="wizard-steps no-scrollbar h-auto! w-full! justify-start! rounded-none! bg-transparent! p-0!"
-						aria-label="Setup steps"
-					>
+		<div class="grid gap-8 lg:grid-cols-wizard">
+			<div class="grid gap-8">
+				<header class="grid gap-6">
+					<Tabs.List variant="steps" aria-label="Setup steps">
 						{#each generatorConfig as tab, index (tab.id)}
-							<Tabs.Trigger
-								value={tab.id}
-								disabled={!canAccessTab(index)}
-								class="wizard-step h-auto! flex-none! justify-start! rounded-none! border-0! bg-transparent! shadow-none"
-							>
-								<span class="wizard-step__index">{index + 1}</span>
-								<span class="wizard-step__title">{tab.label}</span>
+							<Tabs.Trigger variant="steps" value={tab.id} disabled={!canAccessTab(index)}>
+								<span
+									class="inline-grid size-6 place-items-center rounded-full border border-border/65 text-3xs leading-none font-bold text-muted-foreground group-data-[state=active]:border-transparent group-data-[state=active]:bg-primary/60 group-data-[state=active]:text-primary-foreground"
+									>{index + 1}</span
+								>
+								<span>{tab.label}</span>
 							</Tabs.Trigger>
 						{/each}
 					</Tabs.List>
-					<p class="wizard-step-count">{stepProgressText}</p>
+					<p class="text-xs tracking-wider text-muted-foreground">{stepProgressText}</p>
 
-					<div class="wizard-progress">
-						<div class="wizard-progress__track">
-							<div class="wizard-progress__fill" style={`width: ${stepProgress}%`}></div>
-						</div>
+					<div class="h-0.75 overflow-hidden rounded-full bg-muted/65">
+						<div
+							class="h-full w-(--step-progress) rounded-full bg-linear-to-r from-primary to-primary-tint transition-all duration-300 motion-reduce:transition-none"
+							style={`--step-progress: ${stepProgress}%`}
+						></div>
 					</div>
 
 					{#if currentTab}
-						<div class="wizard-intro">
-							<h2 class="wizard-title">{currentTab.label} setup</h2>
-							<p class="wizard-subtitle">{stepSummary}</p>
+						<div class="grid gap-1.5">
+							<h2 class="text-2xl font-bold md:text-3xl lg:text-4xl">{currentTab.label} setup</h2>
+							<p class="text-base text-muted-foreground">{stepSummary}</p>
 						</div>
 					{/if}
 				</header>
 
-				<div class="wizard-body">
-					<div class="wizard-form">
-						<div class="relative overflow-hidden">
-							{#key activeTab}
-								<div
-									class="tab-content space-y-4"
-									class:slide-in-right={slideDirection === 'right'}
-									class:slide-in-left={slideDirection === 'left'}
-								>
-									{#each currentSections as section (section.id)}
-										<Card.Root class="wizard-panel border-border/40">
-											<Card.Header class="wizard-panel__header">
-												<Card.Title class="text-lg font-semibold">{section.title}</Card.Title>
-												<Card.Description class="text-muted-foreground"
-													>{section.description}</Card.Description
-												>
-											</Card.Header>
-											<Card.Content class="wizard-panel__fields">
-												{#each section.fields as field (field.key)}
-													{#if shouldShowField(field)}
-														{#if field.type === 'checkbox'}
-															<div class="wizard-field wizard-field--toggle">
-																<div class="wizard-field__meta">
-																	<Label for={field.key} class="wizard-field__label"
-																		>{field.label}</Label
-																	>
-																	{#if field.description}
-																		<p class="wizard-field__hint">{field.description}</p>
-																	{/if}
-																</div>
-																<Switch
-																	id={field.key}
-																	checked={config[field.key] === true}
-																	onCheckedChange={(checked) =>
-																		handleSwitchChange(field.key, checked === true)}
-																/>
-															</div>
-														{:else if field.type === 'select'}
-															<div class="wizard-field">
-																<div class="wizard-field__meta">
-																	<Label for={field.key} class="wizard-field__label"
-																		>{field.label}</Label
-																	>
-																	{#if field.description}
-																		<p class="wizard-field__hint">{field.description}</p>
-																	{/if}
-																</div>
-																<div class="wizard-field__control">
-																	<Select.Root
-																		type="single"
-																		value={config[field.key] as string}
-																		onValueChange={(value: string) =>
-																			handleSelectChange(field.key, value)}
-																	>
-																		<Select.Trigger
-																			class="w-full border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
-																		>
-																			{getSelectLabel(field, config[field.key]) ||
-																				field.placeholder ||
-																				'Select...'}
-																		</Select.Trigger>
-																		<Select.Content>
-																			{#each field.options || [] as option (option.value)}
-																				<Select.Item value={option.value}
-																					>{option.label}</Select.Item
-																				>
-																			{/each}
-																		</Select.Content>
-																	</Select.Root>
-																</div>
-															</div>
-														{:else if field.canGenerate}
-															<div class="wizard-field">
-																<div class="wizard-field__meta">
-																	<Label for={field.key} class="wizard-field__label"
-																		>{field.label}</Label
-																	>
-																	{#if field.description}
-																		<p class="wizard-field__hint">{field.description}</p>
-																	{/if}
-																</div>
-																<div class="wizard-field__control">
-																	<div class="wizard-field__actions">
-																		<Input
-																			id={field.key}
-																			type={field.type === 'password' ? 'password' : 'text'}
-																			bind:value={config[field.key]}
-																			placeholder={field.placeholder}
-																			class="flex-1 border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
-																		/>
-																		<Button
-																			type="button"
-																			variant="outline"
-																			onclick={() => (config[field.key] = generateRandomKey())}
-																			class="border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-500/5"
-																		>
-																			Generate
-																		</Button>
-																	</div>
-																</div>
-															</div>
+				<div class="relative overflow-hidden">
+					{#key activeTab}
+						<div
+							class={[
+								'space-y-4 motion-reduce:animate-none',
+								slideDirection === 'right' ? 'animate-slide-in-right' : 'animate-slide-in-left'
+							]}
+						>
+							{#each currentSections as section (section.id)}
+								<Card.Root variant="panel">
+									<Card.Header>
+										<Card.Title>{section.title}</Card.Title>
+										<Card.Description>{section.description}</Card.Description>
+									</Card.Header>
+									<Card.Content>
+										{#each section.fields as field (field.key)}
+											{#if shouldShowField(field)}
+												{#if field.type === 'checkbox'}
+													<div
+														class="grid grid-cols-content-action items-center gap-2.5 rounded-2xl border border-border/55 bg-background/88 p-3"
+													>
+														{@render fieldMeta(field)}
+														<Switch
+															id={field.key}
+															checked={config[field.key] === true}
+															onCheckedChange={(checked) =>
+																handleSwitchChange(field.key, checked === true)}
+														/>
+													</div>
+												{:else}
+													<div
+														class="grid gap-2.5 rounded-2xl border border-border/55 bg-background/88 p-3 md:grid-cols-2 md:items-center"
+													>
+														{@render fieldMeta(field)}
+														{#if field.type === 'select'}
+															<Select.Root
+																type="single"
+																value={config[field.key] as string}
+																onValueChange={(value: string) =>
+																	handleSelectChange(field.key, value)}
+															>
+																<Select.Trigger class="w-full">
+																	{getSelectLabel(field, config[field.key]) ||
+																		field.placeholder ||
+																		'Select...'}
+																</Select.Trigger>
+																<Select.Content>
+																	{#each field.options || [] as option (option.value)}
+																		<Select.Item value={option.value}>{option.label}</Select.Item>
+																	{/each}
+																</Select.Content>
+															</Select.Root>
 														{:else}
-															<div class="wizard-field">
-																<div class="wizard-field__meta">
-																	<Label for={field.key} class="wizard-field__label"
-																		>{field.label}</Label
+															<div class="flex w-full flex-col gap-2 md:flex-row md:items-center">
+																<Input
+																	id={field.key}
+																	type={field.type === 'password' ? 'password' : 'text'}
+																	bind:value={config[field.key]}
+																	placeholder={field.placeholder}
+																	class="flex-1"
+																/>
+																{#if field.canGenerate}
+																	<Button
+																		type="button"
+																		variant="outline"
+																		onclick={() => (config[field.key] = generateRandomKey())}
 																	>
-																	{#if field.description}
-																		<p class="wizard-field__hint">{field.description}</p>
-																	{/if}
-																</div>
-																<div class="wizard-field__control">
-																	<Input
-																		id={field.key}
-																		type={field.type === 'password' ? 'password' : 'text'}
-																		bind:value={config[field.key]}
-																		placeholder={field.placeholder}
-																		class="border-border/50 focus:border-purple-500/50 focus:ring-purple-500/20"
-																	/>
-																</div>
+																		Generate
+																	</Button>
+																{/if}
 															</div>
 														{/if}
-													{/if}
-												{/each}
-											</Card.Content>
-										</Card.Root>
-									{/each}
-								</div>
-							{/key}
+													</div>
+												{/if}
+											{/if}
+										{/each}
+									</Card.Content>
+								</Card.Root>
+							{/each}
 						</div>
-					</div>
+					{/key}
 				</div>
 			</div>
 
-			<aside class="wizard-summary">
-				<div class="wizard-summary__card">
-					<div class="wizard-summary__header">
-						<p class="wizard-summary__title">Current step summary</p>
-						<p class="wizard-summary__subtitle">Review key choices before continuing.</p>
+			<aside class="sticky top-below-header self-start">
+				<div
+					class="max-h-below-header animate-float overflow-auto rounded-2xl border border-border/60 bg-background/85 px-6 pt-5 pb-5.5 shadow-wizard transition duration-300 will-change-transform hover:-translate-y-1 hover:shadow-wizard-hover motion-reduce:animate-none"
+				>
+					<div class="mb-4 grid gap-1.5">
+						<p class="text-sm font-bold tracking-wider uppercase">Current step summary</p>
+						<p class="text-sm text-muted-foreground">Review key choices before continuing.</p>
 					</div>
-					<div class="wizard-summary__content">
+					<div class="grid gap-3.5">
 						{#if summaryPreview.length}
-							<ul class="wizard-summary__list">
+							<ul class="grid gap-3 text-sm text-muted-foreground">
 								{#each summaryPreview as item (item.label)}
-									<li>
+									<li class="flex items-baseline justify-between gap-5">
 										<span>{item.label}</span>
-										<strong>{item.value}</strong>
+										<strong class="font-semibold text-foreground">{item.value}</strong>
 									</li>
 								{/each}
 							</ul>
 							{#if summaryOverflow > 0}
-								<p class="wizard-summary__more">+{summaryOverflow} more selections</p>
+								<p class="text-xs text-muted-foreground">+{summaryOverflow} more selections</p>
 							{/if}
 						{:else}
-							<p class="wizard-summary__empty">
+							<p class="text-sm text-muted-foreground">
 								Make a selection in this step to see it summarized here.
 							</p>
 						{/if}
 					</div>
-					<div class="wizard-summary__footer">
+					<div
+						class="mt-3.5 flex items-center justify-between border-t border-border/60 pt-3.5 text-sm text-muted-foreground"
+					>
 						<span>Completion</span>
-						<strong>{completedStepFields.length}/{visibleStepFields.length}</strong>
+						<strong class="text-foreground"
+							>{completedStepFields.length}/{visibleStepFields.length}</strong
+						>
 					</div>
 				</div>
 
-				<div class="wizard-summary__actions">
-					<Button
-						variant="outline"
-						size="sm"
-						onclick={goToPrevTab}
-						disabled={!canGoPrev}
-						class="flex items-center gap-2 border-border/50 hover:border-purple-500/30 disabled:opacity-40"
-					>
-						<ChevronLeft class="h-4 w-4" />
+				<div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+					<Button variant="outline" size="sm" onclick={goToPrevTab} disabled={!canGoPrev}>
+						<ArrowLeftIcon class="h-4 w-4" />
 						Back
 					</Button>
 
@@ -386,14 +340,14 @@
 						size="sm"
 						onclick={isLastStep ? handleGenerateDockerCompose : goToNextTab}
 						disabled={!canGoNext && !isLastStep}
-						class="wizard-next flex items-center gap-2 border-border/50 hover:border-purple-500/30 disabled:opacity-40"
+						class="min-w-full sm:min-w-55"
 					>
 						{#if isLastStep}
-							<FileText class="h-4 w-4" />
+							<FileTextIcon class="h-4 w-4" />
 							{nextActionLabel}
 						{:else}
 							{nextActionLabel}
-							<ChevronRight class="h-4 w-4" />
+							<ArrowRightIcon class="h-4 w-4" />
 						{/if}
 					</Button>
 				</div>
@@ -403,401 +357,3 @@
 </div>
 
 <DockerComposeDialog bind:open={dialogOpen} {generatedCompose} />
-
-<style>
-	.generator-wrapper {
-		animation: fadeInUp 0.5s ease-out both;
-		padding-left: 0.5rem;
-	}
-
-	.wizard-layout {
-		display: grid;
-		gap: 2rem;
-	}
-
-	.wizard-shell {
-		display: grid;
-		gap: 2rem;
-	}
-
-	.wizard-header {
-		display: grid;
-		gap: 1.5rem;
-	}
-
-	.wizard-shell :global(.wizard-steps) {
-		display: flex;
-		flex-wrap: nowrap;
-		align-items: flex-end;
-		gap: 1.5rem;
-		padding: 0 0 0.45rem;
-		border-bottom: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
-		overflow-x: auto;
-	}
-
-	.wizard-step-count {
-		font-size: 0.78rem;
-		color: var(--muted-foreground);
-		letter-spacing: 0.05em;
-	}
-
-	.wizard-shell :global(.wizard-step) {
-		flex: 0 0 auto;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0 0 0.4rem;
-		border-radius: 0;
-		border: 0;
-		background: transparent;
-		color: var(--muted-foreground);
-		font-size: 0.85rem;
-		font-weight: 600;
-		text-align: left;
-		transition:
-			color 0.2s ease,
-			border-color 0.2s ease;
-		white-space: nowrap;
-		border-bottom: 2px solid transparent;
-		height: auto;
-		box-shadow: none;
-	}
-
-	.wizard-shell :global(.wizard-step:disabled) {
-		opacity: 0.45;
-		cursor: not-allowed;
-	}
-
-	.wizard-shell :global(.wizard-step:disabled:hover) {
-		border-bottom-color: transparent;
-	}
-
-	.wizard-step__index {
-		display: inline-grid;
-		place-items: center;
-		width: 1.5rem;
-		height: 1.5rem;
-		padding: 0;
-		border-radius: 999px;
-		font-size: 0.65rem;
-		font-weight: 700;
-		line-height: 1;
-		background: transparent;
-		border: 1px solid color-mix(in oklab, var(--border) 65%, transparent);
-		color: var(--muted-foreground);
-	}
-
-	.wizard-step__title {
-		font-size: 0.85rem;
-		letter-spacing: 0.01em;
-	}
-
-	:global(.wizard-step[data-state='active']) {
-		color: var(--foreground);
-		border-bottom-color: color-mix(in oklab, var(--primary) 70%, transparent);
-		background: transparent;
-		box-shadow: none;
-	}
-
-	:global(.wizard-step[data-state='active']) .wizard-step__index {
-		background: color-mix(in oklab, var(--primary) 60%, transparent);
-		color: var(--primary-foreground);
-		border-color: transparent;
-	}
-
-	.wizard-progress {
-		display: grid;
-		gap: 0.6rem;
-	}
-
-	.wizard-progress__track {
-		height: 3px;
-		border-radius: 999px;
-		background: color-mix(in oklab, var(--muted) 65%, transparent);
-		overflow: hidden;
-	}
-
-	.wizard-progress__fill {
-		height: 100%;
-		border-radius: inherit;
-		background: linear-gradient(90deg, oklch(0.606 0.25 292.717), oklch(0.7 0.23 300));
-		transition: width 0.3s ease;
-	}
-
-	.wizard-intro {
-		display: grid;
-		gap: 0.4rem;
-	}
-
-	.wizard-title {
-		font-size: clamp(1.6rem, 2.5vw, 2.2rem);
-		font-weight: 700;
-	}
-
-	.wizard-subtitle {
-		color: var(--muted-foreground);
-		font-size: 0.95rem;
-	}
-
-	.wizard-body {
-		display: grid;
-		gap: 1.5rem;
-	}
-
-	.wizard-shell :global(.wizard-panel) {
-		border-radius: 1.4rem;
-		background: color-mix(in oklab, var(--card) 70%, transparent);
-		box-shadow: 0 12px 32px -32px oklch(0 0 0 / 0.35);
-	}
-
-	.wizard-shell :global(.wizard-panel__header) {
-		padding-bottom: 0.5rem;
-	}
-
-	.wizard-shell :global(.wizard-panel__fields) {
-		display: grid;
-		gap: 1rem;
-	}
-
-	.wizard-field {
-		display: grid;
-		gap: 0.6rem;
-		padding: 0.75rem;
-		border-radius: 0.9rem;
-		border: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
-		background: color-mix(in oklab, var(--background) 88%, transparent);
-	}
-
-	.wizard-field--toggle {
-		grid-template-columns: minmax(0, 1fr) auto;
-		align-items: center;
-	}
-
-	.wizard-shell :global(.wizard-field__label) {
-		font-weight: 600;
-	}
-
-	.wizard-field__hint {
-		font-size: 0.8rem;
-		color: var(--muted-foreground);
-	}
-
-	.wizard-field__control {
-		width: 100%;
-	}
-
-	.wizard-field__actions {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.wizard-summary {
-		align-self: start;
-		position: sticky;
-		top: calc(var(--header-height) + var(--spacing) * 6);
-	}
-
-	.wizard-summary__card {
-		border-radius: 1.25rem;
-		border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
-		background: color-mix(in oklab, var(--background) 85%, transparent);
-		padding: 1.25rem 1.5rem 1.35rem;
-		max-height: calc(100vh - var(--header-height) - var(--spacing) * 6);
-		overflow: auto;
-		box-shadow:
-			0 24px 50px -45px oklch(0 0 0 / 0.6),
-			0 0 0 1px color-mix(in oklab, var(--border) 25%, transparent);
-		animation: summaryFloat 7s ease-in-out infinite;
-		transition:
-			transform 0.35s ease,
-			box-shadow 0.35s ease;
-		will-change: transform;
-	}
-
-	.wizard-summary__card:hover {
-		transform: translateY(-4px);
-		box-shadow:
-			0 28px 60px -45px oklch(0 0 0 / 0.65),
-			0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent);
-	}
-
-	.wizard-summary__header {
-		display: grid;
-		gap: 0.4rem;
-		margin-bottom: 1rem;
-	}
-
-	.wizard-summary__title {
-		font-size: 0.9rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-
-	.wizard-summary__subtitle {
-		color: var(--muted-foreground);
-		font-size: 0.85rem;
-	}
-
-	.wizard-summary__content {
-		display: grid;
-		gap: 0.85rem;
-	}
-
-	.wizard-summary__list {
-		display: grid;
-		gap: 0.7rem;
-		font-size: 0.85rem;
-		color: var(--muted-foreground);
-	}
-
-	.wizard-summary__list li {
-		display: flex;
-		justify-content: space-between;
-		gap: 1.2rem;
-		align-items: baseline;
-	}
-
-	.wizard-summary__list strong {
-		color: var(--foreground);
-		font-weight: 600;
-	}
-
-	.wizard-summary__more {
-		font-size: 0.75rem;
-		color: var(--muted-foreground);
-	}
-
-	.wizard-summary__empty {
-		font-size: 0.85rem;
-		color: var(--muted-foreground);
-	}
-
-	.wizard-summary__footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		border-top: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
-		padding-top: 0.9rem;
-		font-size: 0.85rem;
-		color: var(--muted-foreground);
-	}
-
-	.wizard-summary__footer strong {
-		color: var(--foreground);
-	}
-
-	.wizard-summary__actions {
-		display: flex;
-		gap: 0.75rem;
-		align-items: center;
-		flex-wrap: wrap;
-		justify-content: center;
-		margin-top: 1rem;
-	}
-
-	.wizard-shell :global(.wizard-next) {
-		min-width: 220px;
-	}
-
-	.tab-content {
-		animation-duration: 0.4s;
-		animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-		animation-fill-mode: both;
-	}
-
-	.slide-in-right {
-		animation-name: slideInRight;
-	}
-
-	.slide-in-left {
-		animation-name: slideInLeft;
-	}
-
-	@keyframes fadeInUp {
-		from {
-			opacity: 0;
-			transform: translateY(16px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes slideInRight {
-		from {
-			opacity: 0;
-			transform: translateX(12px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	@keyframes slideInLeft {
-		from {
-			opacity: 0;
-			transform: translateX(-12px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	@keyframes summaryFloat {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-6px);
-		}
-	}
-
-	@media (min-width: 768px) {
-		.wizard-field {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-			align-items: center;
-		}
-
-		.wizard-field--toggle {
-			grid-template-columns: minmax(0, 1fr) auto;
-		}
-
-		.wizard-field__actions {
-			flex-direction: row;
-			align-items: center;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.wizard-layout {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 260px);
-		}
-	}
-
-	@media (max-width: 640px) {
-		.wizard-shell :global(.wizard-next) {
-			min-width: 100%;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.generator-wrapper,
-		.tab-content {
-			animation: none;
-		}
-
-		.wizard-summary__card {
-			animation: none;
-		}
-
-		.wizard-progress__fill {
-			transition: none;
-		}
-	}
-</style>

@@ -1,16 +1,10 @@
 <script lang="ts">
-	import MoonIcon from 'virtual:icons/lucide/moon';
-	import SunIcon from 'virtual:icons/lucide/sun';
+	import { MoonIcon, SunIcon } from '#lib/icons/index.js';
 	import { toggleMode } from 'mode-watcher';
 	import { Button } from '#lib/components/ui/button/index.js';
 </script>
 
-<Button
-	onclick={toggleMode}
-	variant="ghost"
-	size="icon"
-	class="relative size-8 overflow-hidden text-foreground"
->
+<Button onclick={toggleMode} variant="ghost" size="icon" class="relative size-8 overflow-hidden">
 	<SunIcon
 		class="size-4 scale-100 rotate-0 transition-all duration-300 dark:scale-0 dark:-rotate-90"
 	/>

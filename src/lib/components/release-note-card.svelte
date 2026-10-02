@@ -1,18 +1,16 @@
 <script lang="ts">
-	import { cn } from '#lib/utils.js';
-	import { onMount } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import * as Card from '#lib/components/ui/card/index.js';
-	import ChevronDown from 'virtual:icons/lucide/chevron-down';
+	import { ArrowDownIcon } from '#lib/icons/index.js';
 	import Button from '#lib/components/ui/button/button.svelte';
+	import { cn } from '#lib/utils.js';
 
 	let {
 		id,
 		title,
 		description,
-		defaultExpanded = false,
-		bulkActionKey = 0,
-		bulkActionValue = null,
+		expanded,
+		onToggle,
 		class: className,
 		contentNodes,
 		badge,
@@ -21,121 +19,82 @@
 		id: string;
 		title: string;
 		description?: string;
-		defaultExpanded?: boolean;
-		bulkActionKey?: number;
-		bulkActionValue?: boolean | null;
+		expanded: boolean;
+		onToggle: () => void;
 		class?: string;
+		/** Pre-rendered release notes moved in from the page's markdown. */
 		contentNodes?: Node[];
-		badge?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		badge?: Snippet;
+		children?: Snippet;
 	} = $props();
-
-	let expanded = $state(false);
-	let initialized = $state(false);
-	let bodyRef = $state<HTMLDivElement>();
-
-	function loadExpandedState() {
-		const state = JSON.parse(localStorage.getItem('collapsible-cards-expanded') || '{}');
-		expanded = state[id] || false;
-	}
-
-	function saveExpandedState() {
-		const state = JSON.parse(localStorage.getItem('collapsible-cards-expanded') || '{}');
-		state[id] = expanded;
-		localStorage.setItem('collapsible-cards-expanded', JSON.stringify(state));
-	}
-
-	function toggleExpanded() {
-		expanded = !expanded;
-		saveExpandedState();
-	}
 
 	function onHeaderClick(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		const interactive = target.closest('button, a, [onclick], [role="button"]');
 		if (interactive && interactive !== e.currentTarget) return;
-		toggleExpanded();
+		onToggle();
 	}
 
 	function onHeaderKeydown(e: KeyboardEvent) {
 		if (e.key === 'Enter' || e.key === ' ') {
 			e.preventDefault();
-			toggleExpanded();
+			onToggle();
 		}
 	}
 
-	onMount(() => {
-		if (!initialized) {
-			expanded = defaultExpanded;
-			if (defaultExpanded) {
-				saveExpandedState();
-			}
-			loadExpandedState();
-			initialized = true;
-		}
-	});
-
-	$effect(() => {
-		if (!initialized || bulkActionKey === undefined) return;
-		if (bulkActionValue === null || bulkActionValue === undefined) return;
-		expanded = bulkActionValue;
-		saveExpandedState();
-	});
-
-	$effect(() => {
-		if (!expanded) return;
-		if (!bodyRef || !contentNodes?.length) return;
-		for (const node of contentNodes) {
-			if (node.parentNode !== bodyRef) {
-				bodyRef.appendChild(node);
-			}
-		}
-	});
+	const mountContent = (node: HTMLElement) => {
+		node.append(...(contentNodes ?? []));
+	};
 </script>
 
-<Card.Root {id} class={cn('changelog-entry gap-0 py-0', className)}>
-	<Card.Header
-		class="changelog-entry__header cursor-pointer select-none"
+<article
+	{id}
+	class={cn(
+		'relative scroll-mt-32 overflow-hidden rounded-lg border border-border bg-background target:ring-2 target:ring-primary/40',
+		className
+	)}
+>
+	<div
+		class={cn(
+			'flex cursor-pointer items-center justify-between gap-4 bg-surface px-6 py-4.5 transition-colors select-none hover:bg-muted/40',
+			expanded && 'border-b border-border'
+		)}
 		role="button"
 		tabindex={0}
 		aria-expanded={expanded}
 		onclick={onHeaderClick}
 		onkeydown={onHeaderKeydown}
 	>
-		<div class="changelog-entry__title">
+		<div class="flex flex-col gap-1">
 			<div class="flex flex-wrap items-center gap-2">
-				<Card.Title>
-					<h2>{title}</h2>
-				</Card.Title>
-				{#if badge}
-					{@render badge()}
-				{/if}
+				<h2 class="text-xl font-semibold tracking-tight">{title}</h2>
+				{@render badge?.()}
 			</div>
 			{#if description}
-				<Card.Description class="changelog-entry__date">{description}</Card.Description>
+				<p class="font-mono text-xs text-muted-foreground">{description}</p>
 			{/if}
 		</div>
-		<Card.Action class="ml-auto">
-			<Button
-				variant="ghost"
-				size="icon"
-				class={cn('changelog-entry__toggle', expanded && 'changelog-entry__toggle--expanded')}
-				onclick={() => toggleExpanded()}
-				aria-label={expanded ? 'Collapse section' : 'Expand section'}
-			>
-				<ChevronDown class="changelog-entry__chevron" />
-			</Button>
-		</Card.Action>
-	</Card.Header>
+		<Button
+			variant="outline"
+			size="icon"
+			class="ml-auto size-9 shrink-0"
+			onclick={onToggle}
+			aria-label={expanded ? 'Collapse section' : 'Expand section'}
+		>
+			<ArrowDownIcon
+				class={cn('size-4 transition-transform duration-200', expanded && 'rotate-180')}
+			/>
+		</Button>
+	</div>
 	{#if expanded}
 		<div transition:slide={{ duration: 200 }}>
-			<Card.Content class="changelog-entry__body">
+			<div class="release-notes px-6 pt-5 pb-6">
 				{#if contentNodes?.length}
-					<div bind:this={bodyRef} class="changelog-entry__content"></div>
+					<div class="grid gap-3" {@attach mountContent}></div>
 				{:else}
 					{@render children?.()}
 				{/if}
-			</Card.Content>
+			</div>
 		</div>
 	{/if}
-</Card.Root>
+</article>

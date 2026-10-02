@@ -55,47 +55,10 @@
 	/>
 
 	<CopyButton
-		class="hover:text-opacity-80 absolute top-1/2 right-2 size-7 -translate-y-1/2 transition-opacity ease-in-out hover:bg-transparent dark:hover:bg-transparent"
+		class="absolute top-1/2 right-2 size-7 -translate-y-1/2 transition-opacity ease-in-out hover:bg-transparent dark:hover:bg-transparent"
 		text={code}
 		{onCopy}
 		variant="ghost"
 		size="sm"
 	/>
 </div>
-
-<style>
-	.snippet :global(pre.shiki) {
-		margin: 0;
-		overflow-x: auto;
-		background-color: transparent;
-		padding-top: 0;
-		padding-bottom: 0;
-	}
-
-	.snippet :global(pre.shiki code) {
-		display: grid;
-		min-width: 100%;
-		border-radius: 0;
-		border-width: 0;
-		background-color: transparent;
-		padding: 0;
-		overflow-wrap: break-word;
-		box-decoration-break: clone;
-	}
-
-	.snippet :global(pre .line) {
-		display: inline-block;
-		min-height: 1rem;
-		width: 100%;
-		padding-top: 0.125rem;
-		padding-bottom: 0.125rem;
-	}
-
-	.snippet :global(pre .line.line--highlighted) {
-		background-color: var(--secondary);
-	}
-
-	.snippet :global(pre .line.line--highlighted span) {
-		position: relative;
-	}
-</style>

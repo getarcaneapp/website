@@ -25,7 +25,7 @@
 {#if collapsible === 'none'}
 	<div
 		class={cn(
-			'flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground',
+			'flex h-full w-(--sidebar-width) flex-col border-r border-border bg-transparent px-2 text-sidebar-foreground lg:h-[calc(100vh-var(--header-height))] lg:pr-4 lg:pb-6',
 			className
 		)}
 		bind:this={ref}
@@ -62,7 +62,6 @@
 		data-side={side}
 		data-slot="sidebar"
 	>
-		<!-- This is what handles the sidebar gap on desktop -->
 		<div
 			data-slot="sidebar-gap"
 			class={cn(

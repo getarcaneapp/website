@@ -165,12 +165,14 @@ export default defineConfig({
 	},
 	output: { assets: 'static' },
 	complete: async ({ blog }) => {
+		/** @param {unknown} value */
 		const xml = (value) =>
 			String(value)
 				.replaceAll('&', '&amp;')
 				.replaceAll('<', '&lt;')
 				.replaceAll('>', '&gt;')
 				.replaceAll('"', '&quot;');
+		/** @param {unknown} value */
 		const rfc822 = (value) => new Date(`${String(value).slice(0, 10)}T00:00:00.000Z`).toUTCString();
 
 		const posts = [...blog]

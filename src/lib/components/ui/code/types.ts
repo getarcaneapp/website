@@ -9,11 +9,13 @@ import type { CopyButtonPropsWithoutHTML } from '#lib/components/ui/copy-button/
 import type { SupportedLanguage } from './shiki.js';
 
 export const codeVariants = tv({
-	base: 'not-prose relative h-full overflow-auto rounded-lg border',
+	base: 'relative h-full overflow-auto rounded-lg border',
 	variants: {
 		variant: {
 			default: 'border-border bg-code',
-			secondary: 'bg-secondary/50 border-transparent'
+			secondary: 'bg-secondary/50 border-transparent',
+			/** Borderless, square — for code embedded in another framed surface. */
+			embedded: 'rounded-none border-0 bg-code'
 		}
 	}
 });

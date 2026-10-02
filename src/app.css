@@ -74,6 +74,93 @@
 	--color-code-number: var(--code-number);
 	--color-selection: var(--selection);
 	--color-selection-foreground: var(--selection-foreground);
+	--color-success: var(--success);
+	--color-warning: var(--warning);
+	--color-info: var(--info);
+	--color-primary-tint: color-mix(in oklch, var(--primary) 70%, white);
+	--color-primary-soft: color-mix(in oklch, var(--primary) 50%, white);
+
+	--text-2xs: 0.6875rem;
+	--text-3xs: 0.625rem;
+	--tracking-label: 0.12em;
+	--tracking-ultrawide: 0.2em;
+	--tracking-eyebrow: 0.3em;
+	--leading-prose: 1.65rem;
+	--drop-shadow-glow: 0 0 8px color-mix(in oklab, var(--primary) 50%, transparent);
+
+	--grid-template-columns-docs: minmax(0, 48rem);
+	--grid-template-columns-docs-toc: minmax(0, 1fr) minmax(0, 48rem) minmax(19rem, 1fr);
+	--grid-template-columns-aside-44: 11rem minmax(0, 1fr);
+	--grid-template-columns-label-auto: minmax(5rem, auto) 1fr;
+	--grid-template-columns-content-aside-60: minmax(0, 1fr) 15rem;
+	--grid-template-columns-changelog: minmax(13.75rem, 0.35fr) minmax(0, 1fr);
+	--grid-template-columns-auto-fit-45: repeat(auto-fit, minmax(11.25rem, 1fr));
+	--grid-template-columns-content-action: minmax(0, 1fr) auto;
+	--grid-template-columns-wizard: minmax(0, 1fr) minmax(0, 16.25rem);
+
+	--spacing-below-header: calc(var(--header-height) + var(--spacing) * 6);
+	--max-height-below-header: calc(100vh - var(--header-height) - var(--spacing) * 6);
+	/* Docs TOC sticks at the same spot it rests at (the docs grid's py-8), so it doesn't jump. */
+	--spacing-docs-toc: calc(var(--header-height) + var(--spacing) * 8);
+	--max-height-docs-toc: calc(100vh - var(--header-height) - var(--spacing) * 8);
+
+	--shadow-wizard:
+		0 24px 50px -45px oklch(0 0 0 / 0.6),
+		0 0 0 1px color-mix(in oklab, var(--border) 25%, transparent);
+	--shadow-wizard-hover:
+		0 28px 60px -45px oklch(0 0 0 / 0.65),
+		0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent);
+
+	--animate-fade-in-up: fade-in-up 0.5s ease-out both;
+	--animate-slide-in-right: slide-in-right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+	--animate-slide-in-left: slide-in-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+	--animate-float: float 7s ease-in-out infinite;
+
+	@keyframes fade-in-up {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes slide-in-right {
+		from {
+			opacity: 0;
+			transform: translateX(12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes slide-in-left {
+		from {
+			opacity: 0;
+			transform: translateX(-12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-6px);
+		}
+	}
+
+	--max-height-screen-90: 90vh;
+	--max-width-screen-96: 96vw;
 }
 
 :root {
@@ -118,6 +205,9 @@
 	--code-number: oklch(0.62 0 0);
 	--selection: oklch(0.85 0.08 292 / 0.45);
 	--selection-foreground: oklch(0.145 0 0);
+	--success: oklch(0.596 0.145 163.225);
+	--warning: oklch(0.666 0.179 58.318);
+	--info: oklch(0.588 0.158 241.966);
 }
 
 .dark {
@@ -160,6 +250,9 @@
 	--code-number: oklch(0.6 0 0);
 	--selection: oklch(0.42 0.12 292 / 0.6);
 	--selection-foreground: oklch(0.985 0 0);
+	--success: oklch(0.765 0.177 163.223);
+	--warning: oklch(0.828 0.189 84.429);
+	--info: oklch(0.746 0.16 232.661);
 }
 
 @layer base {
@@ -276,6 +369,39 @@
 	}
 }
 
+/* Radial purple glows behind landing sections. */
+@utility glow-top {
+	background-image: radial-gradient(
+		ellipse 50% 50% at 50% 0%,
+		oklch(0.6 0.26 292.717 / 0.2),
+		transparent 70%
+	);
+
+	@variant dark {
+		background-image: radial-gradient(
+			ellipse 50% 50% at 50% 0%,
+			oklch(0.65 0.24 292.717 / 0.15),
+			transparent 70%
+		);
+	}
+}
+
+@utility glow-center {
+	background-image: radial-gradient(
+		ellipse 50% 50% at 50% 50%,
+		oklch(0.6 0.26 292.717 / 0.1),
+		transparent 70%
+	);
+}
+
+@utility glow-left {
+	background-image: radial-gradient(
+		ellipse 50% 50% at 20% 50%,
+		oklch(0.6 0.26 292.717 / 0.15),
+		transparent 70%
+	);
+}
+
 /* Soft purple card glow on hover */
 @utility card-glow {
 	@apply relative overflow-hidden;
@@ -371,36 +497,6 @@
 	color: var(--muted-foreground);
 }
 
-.markdown .code-block .copy-code-button {
-	position: absolute;
-	top: 0.35rem;
-	right: 0.5rem;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 1.75rem;
-	height: 1.75rem;
-	border-radius: var(--radius-sm);
-	color: var(--muted-foreground);
-	background-color: transparent;
-	opacity: 0.6;
-	cursor: pointer;
-	transition:
-		opacity 0.15s ease,
-		color 0.15s ease,
-		background-color 0.15s ease;
-}
-
-.markdown .code-block:hover .copy-code-button,
-.markdown .code-block .copy-code-button:focus-visible {
-	opacity: 1;
-}
-
-.markdown .code-block .copy-code-button:hover {
-	color: var(--foreground);
-	background-color: var(--muted);
-}
-
 html.dark .shiki,
 html.dark .shiki span {
 	color: var(--shiki-dark) !important;
@@ -466,6 +562,162 @@ pre.line-numbers .line {
 	&::-webkit-scrollbar {
 		display: none;
 	}
+}
+
+/* Logo paths draw their outline, then fill in; staggered by each path's `--i`. */
+@utility logo-trace {
+	fill: #6d28d9;
+	stroke: #6d28d9;
+	stroke-dasharray: 1;
+	animation: logo-trace 1.7s ease both;
+	animation-delay: calc(var(--i) * 55ms);
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+	}
+}
+
+@keyframes logo-trace {
+	0% {
+		fill-opacity: 0;
+		stroke-opacity: 1;
+		stroke-dashoffset: 1;
+	}
+	55% {
+		fill-opacity: 0;
+		stroke-dashoffset: 0;
+	}
+	85% {
+		fill-opacity: 1;
+		stroke-opacity: 1;
+	}
+	100% {
+		fill-opacity: 1;
+		stroke-opacity: 0;
+	}
+}
+
+/* Release notes on /changelog: rendered markdown moved into release-note-card.svelte. */
+@utility release-notes {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+
+	& :is(ul, ol, p) {
+		margin-block: 0;
+	}
+
+	& pre {
+		max-width: 100%;
+		overflow-x: auto;
+	}
+
+	& :is(h2, h3) {
+		display: inline-flex;
+		width: fit-content;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.5rem;
+		margin-bottom: 0;
+		padding: 0.3rem 0.7rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		background: var(--surface);
+		font-size: 0.8rem;
+		font-weight: 600;
+	}
+
+	& :is(h2, h3):first-child {
+		margin-top: 0;
+	}
+
+	& :is(h2, h3)[id] {
+		scroll-margin-top: 6.5rem;
+	}
+
+	& :is(h2, h3) a[href^='#'] {
+		display: none;
+	}
+
+	& :is(h2, h3)[data-kind='features'] {
+		background: color-mix(in oklab, var(--primary) 8%, transparent);
+	}
+
+	& :is(h2, h3)[data-kind='fixes'] {
+		background: color-mix(in oklab, var(--chart-2) 8%, transparent);
+	}
+
+	& :is(h2, h3)[data-kind='deps'] {
+		background: color-mix(in oklab, var(--chart-4) 8%, transparent);
+	}
+
+	& :is(h2, h3)[data-kind='security'] {
+		background: color-mix(in oklab, var(--destructive) 8%, transparent);
+	}
+
+	& :is(h2, h3)[data-kind='refactor'] {
+		background: color-mix(in oklab, var(--chart-5) 8%, transparent);
+	}
+
+	& :is(h2, h3)[data-kind='other'] {
+		background: color-mix(in oklab, var(--chart-3) 8%, transparent);
+	}
+
+	& ul {
+		display: grid;
+		gap: 0.4rem;
+		padding-left: 1.2rem;
+	}
+
+	& ul li {
+		line-height: 1.5;
+	}
+}
+
+/* Shiki output inside the Code component (src/lib/components/ui/code). */
+[data-slot='code'] {
+	& pre.shiki {
+		border-radius: 0.5rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+	}
+
+	& pre.shiki:not([data-code-overflow] *):not([data-code-overflow]) {
+		overflow-y: auto;
+		max-height: min(100%, 650px);
+	}
+
+	& pre.shiki code {
+		border-radius: 0;
+		border-width: 0;
+	}
+
+	& pre.line-numbers .line::before {
+		color: var(--muted-foreground);
+	}
+
+	& pre .line.line--highlighted {
+		background-color: var(--secondary);
+	}
+
+	& pre .line.line--highlighted span {
+		position: relative;
+	}
+}
+
+/* The Snippet component renders a single unpadded, borderless line of Code. */
+.snippet {
+	& pre.shiki {
+		margin: 0;
+		background-color: transparent;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+}
+
+/* Pseudo-element "#" for heading anchor links; kept out of the heading's innerText. */
+@utility content-hash {
+	--tw-content: '#';
+	content: var(--tw-content);
 }
 
 @utility extend-touch-target {
@@ -590,8 +842,9 @@ pre.line-numbers .line {
 		font-size: 0.8rem;
 	}
 
+	/* Sized in em so inline code scales with its context (body text, headings, tables). */
 	.markdown code:not(pre code) {
-		@apply relative rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] outline-none;
+		@apply relative rounded-md bg-muted px-[0.375em] py-[0.25em] font-mono text-[0.8em] outline-none;
 	}
 
 	/* Improve spacing around custom components */

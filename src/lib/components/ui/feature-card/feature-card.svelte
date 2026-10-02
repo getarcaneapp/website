@@ -23,7 +23,6 @@
 	)}
 	{...restProps}
 >
-	<!-- Purple accent line on hover -->
 	<div
 		class="absolute inset-x-0 top-0 h-0.5 scale-x-0 bg-linear-to-r from-transparent via-primary/40 to-transparent transition-transform duration-300 group-hover:scale-x-100"
 	></div>

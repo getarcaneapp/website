@@ -1,8 +1,6 @@
 <script lang="ts">
-	import type { ComponentProps } from 'svelte';
-	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 	import { page } from '$app/state';
-	import { Button } from '#lib/components/ui/button/index.js';
 	import * as Popover from '#lib/components/ui/popover/index.js';
 	import { mainNavItems, SidebarNavItems } from '#lib/config/docs.js';
 	import { cn } from '#lib/utils.js';
@@ -11,7 +9,7 @@
 		content?: string;
 	};
 
-	let { class: className, ...restProps }: ComponentProps<typeof Button> = $props();
+	let { class: className, ...restProps }: HTMLButtonAttributes = $props();
 
 	let open = $state(false);
 
@@ -43,12 +41,12 @@
 <Popover.Root bind:open>
 	<Popover.Trigger>
 		{#snippet child(snippetProps: { props: Record<string, unknown> })}
-			<Button
+			<button
+				type="button"
 				{...snippetProps.props}
 				{...restProps}
-				variant="ghost"
 				class={cn(
-					'extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent',
+					'extend-touch-target inline-flex h-8 touch-manipulation items-center justify-start gap-2.5 rounded-xl outline-hidden select-none focus-visible:ring-0',
 					className
 				)}
 			>
@@ -57,24 +55,24 @@
 						<span
 							class={cn(
 								'absolute left-0 block h-0.5 w-4 bg-foreground transition-all duration-100',
-								open ? 'top-[0.4rem] -rotate-45' : 'top-1'
+								open ? 'top-1.75 -rotate-45' : 'top-1'
 							)}
 						></span>
 						<span
 							class={cn(
 								'absolute left-0 block h-0.5 w-4 bg-foreground transition-all duration-100',
-								open ? 'top-[0.4rem] rotate-45' : 'top-2.5'
+								open ? 'top-1.75 rotate-45' : 'top-2.5'
 							)}
 						></span>
 					</div>
 					<span class="sr-only">Toggle Menu</span>
 				</div>
 				<span class="flex h-8 items-center text-lg leading-none font-medium"> Menu </span>
-			</Button>
+			</button>
 		{/snippet}
 	</Popover.Trigger>
 	<Popover.Content
-		class="no-scrollbar h-(--bits-popover-content-available-height) w-(--bits-popover-content-available-width) overflow-y-auto rounded-none border-none bg-background/95 p-0 shadow-none backdrop-blur-2xl duration-200"
+		variant="fullscreen"
 		align="start"
 		side="bottom"
 		alignOffset={-16}
@@ -83,9 +81,7 @@
 	>
 		<div class="flex flex-col gap-12 overflow-auto px-6 py-6">
 			<div class="flex flex-col gap-4">
-				<div
-					class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
-				>
+				<div class="font-mono text-xs font-medium tracking-label text-muted-foreground uppercase">
 					Menu
 				</div>
 				<div class="flex flex-col gap-3">
@@ -99,7 +95,7 @@
 				{#each SidebarNavItems as group (group.title)}
 					<div class="flex flex-col gap-4">
 						<div
-							class="font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
+							class="font-mono text-xs font-medium tracking-label text-muted-foreground uppercase"
 						>
 							{group.title}
 						</div>

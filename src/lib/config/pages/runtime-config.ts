@@ -1,4 +1,3 @@
-import { browser, dev } from '$app/env';
 import type { EnvConfig } from '#lib/types/env-config.type.js';
 import type { EnvSettingOverride } from '#lib/types/env-settings-override.type.js';
 import staticConfig from '../../../../static/config.json' with { type: 'json' };
@@ -19,31 +18,7 @@ type RuntimeDocsConfig = {
 	settingEnvOverrides?: RuntimeEnvSettingOverride[];
 };
 
-const RUNTIME_CONFIG_URLS = ['/config.json'];
-
 const LOCAL_CONFIG = staticConfig as RuntimeDocsConfig;
-
-async function loadRuntimeDocsConfig(): Promise<RuntimeDocsConfig | null> {
-	if (!browser || dev) {
-		return LOCAL_CONFIG;
-	}
-
-	for (const url of RUNTIME_CONFIG_URLS) {
-		try {
-			const response = await fetch(url);
-
-			if (!response.ok) {
-				continue;
-			}
-
-			return (await response.json()) as RuntimeDocsConfig;
-		} catch {
-			continue;
-		}
-	}
-
-	return null;
-}
 
 function mapEnvConfig(config: RuntimeDocsConfig): EnvConfig[] {
 	return (config.envConfig ?? []).map((item) => ({
@@ -70,23 +45,3 @@ function mapEnvSettingsOverrides(config: RuntimeDocsConfig): EnvSettingOverride[
 export const envConfig = mapEnvConfig(LOCAL_CONFIG);
 
 export const envSettingsOverrides = mapEnvSettingsOverrides(LOCAL_CONFIG);
-
-export async function getRuntimeEnvConfig(): Promise<EnvConfig[]> {
-	const runtimeConfig = await loadRuntimeDocsConfig();
-
-	if (!runtimeConfig?.envConfig?.length) {
-		return envConfig;
-	}
-
-	return mapEnvConfig(runtimeConfig);
-}
-
-export async function getRuntimeEnvSettingsOverrides(): Promise<EnvSettingOverride[]> {
-	const runtimeConfig = await loadRuntimeDocsConfig();
-
-	if (!runtimeConfig?.settingEnvOverrides?.length) {
-		return envSettingsOverrides;
-	}
-
-	return mapEnvSettingsOverrides(runtimeConfig);
-}

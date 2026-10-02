@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import ArrowRight from 'virtual:icons/lucide/arrow-right';
-	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
+	import { browser } from '$app/env';
+	import { ArrowRightIcon, ExternalLinkIcon } from '#lib/icons/index.js';
 	import { trackEvent } from '#lib/analytics.js';
 	import CommunityPreview from '#lib/components/community/community-preview.svelte';
 	import ContentWrapper from '#lib/components/content-wrapper.svelte';
@@ -11,11 +10,8 @@
 	import * as Code from '#lib/components/ui/code/index.js';
 	import { FeatureCard } from '#lib/components/ui/feature-card/index.js';
 	import { features } from '#lib/config/features.js';
-	import { getLatestPost } from '#lib/blog.js';
 	import { MANAGER_IMAGES } from '#lib/utils/docker-compose-generator.js';
 	import { resolveInternalPath } from '#lib/utils.js';
-
-	const latestPost = getLatestPost();
 
 	interface StatsHistoryEntry {
 		date: string;
@@ -37,7 +33,6 @@
 	let imageLineFading = $state(false);
 	let composeHovered = $state(false);
 	let imageFadeTimer: ReturnType<typeof setTimeout> | undefined;
-	let imageAutoplayTimer: ReturnType<typeof setInterval> | undefined;
 
 	const composeFile = $derived(`services:
   arcane:
@@ -59,11 +54,6 @@ volumes:
 
 	let stats = $state<StatsResponse | null>(null);
 	let statusError = $state<string | null>(null);
-	let latestDateLabel = $state<string | null>(null);
-	let versionBreakdown = $state<Array<{ version: string; count: number }>>([]);
-	let typeBreakdown = $state<Array<{ type: string; count: number }>>([]);
-	let history = $state<StatsHistoryEntry[]>([]);
-	let historyMax = $state(0);
 
 	const formatDate = (isoDate: string): string => {
 		const date = new Date(`${isoDate}T00:00:00Z`);
@@ -106,13 +96,20 @@ volumes:
 			.sort((a, b) => b.count - a.count);
 	};
 
-	const buildHistory = (entries: StatsHistoryEntry[]): StatsHistoryEntry[] => {
-		const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
-		const windowed = sorted.slice(-HISTORY_WINDOW);
-		const maxValue = windowed.reduce((max, entry) => Math.max(max, entry.count), 0);
-		historyMax = Math.max(1, maxValue);
-		return windowed;
-	};
+	const buildHistory = (entries: StatsHistoryEntry[]): StatsHistoryEntry[] =>
+		[...entries].sort((a, b) => a.date.localeCompare(b.date)).slice(-HISTORY_WINDOW);
+
+	const historyEntries = $derived(Array.isArray(stats?.history) ? stats.history : []);
+	const history = $derived(buildHistory(historyEntries));
+	const historyMax = $derived(Math.max(1, ...history.map((entry) => entry.count)));
+	const versionBreakdown = $derived(buildVersionBreakdown(stats?.by_version));
+	const typeBreakdown = $derived(
+		buildBreakdown(stats?.by_type).map(({ key, count }) => ({ type: key, count }))
+	);
+	const latestDateLabel = $derived.by(() => {
+		const latestDate = selectLatestDate(historyEntries);
+		return latestDate ? formatDate(latestDate) : null;
+	});
 
 	const pauseComposeCycle = () => {
 		composeHovered = true;
@@ -123,12 +120,13 @@ volumes:
 		imageLineFading = false;
 	};
 
-	onMount(() => {
+	// Cycles the image line in the compose preview; pauses while it's hovered.
+	const cycleComposeImages = () => {
 		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		const holdMs = reduceMotion ? 5000 : 3200;
 		const fadeMs = reduceMotion ? 0 : 280;
 
-		imageAutoplayTimer = setInterval(() => {
+		const autoplayTimer = setInterval(() => {
 			if (composeHovered) return;
 
 			if (fadeMs === 0) {
@@ -152,79 +150,43 @@ volumes:
 		}, holdMs);
 
 		return () => {
-			if (imageAutoplayTimer) clearInterval(imageAutoplayTimer);
+			clearInterval(autoplayTimer);
 			if (imageFadeTimer) clearTimeout(imageFadeTimer);
 		};
-	});
+	};
 
-	onMount(async () => {
+	async function loadStats() {
 		try {
 			const response = await fetch(STATS_URL, { cache: 'no-store' });
 			if (!response.ok) {
 				throw new Error(`Unexpected status ${response.status}`);
 			}
-
-			const data: StatsResponse = await response.json();
-			stats = data;
-
-			versionBreakdown = buildVersionBreakdown(data.by_version);
-			typeBreakdown = buildBreakdown(data.by_type).map(({ key, count }) => ({ type: key, count }));
-
-			const historyEntries = Array.isArray(data.history) ? data.history : [];
-			history = buildHistory(historyEntries);
-
-			const latestDate = selectLatestDate(historyEntries);
-			latestDateLabel = latestDate ? formatDate(latestDate) : null;
+			stats = await response.json();
 		} catch (error) {
 			console.error('Failed to load analytics stats:', error);
 			statusError = 'Status currently unavailable.';
 		}
-	});
+	}
+
+	// Live install stats are fetched in the browser; the prerendered page shows placeholders.
+	if (browser) loadStats();
 </script>
 
 <div class="relative isolate overflow-hidden">
-	<!-- Purple ambient glow behind hero -->
 	<div
 		class="pointer-events-none absolute -inset-x-40 -top-40 h-150 opacity-60 dark:opacity-40"
 		aria-hidden="true"
 	>
-		<div
-			class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,oklch(0.6_0.26_292.717/0.2),transparent_70%)] dark:bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,oklch(0.65_0.24_292.717/0.15),transparent_70%)]"
-		></div>
+		<div class="absolute inset-0 glow-top"></div>
 	</div>
 
 	<ContentWrapper>
-		<!-- Hero -->
 		<section class="relative pt-10 pb-16 md:pt-14 md:pb-20">
-			<!-- Dot grid background -->
 			<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
 
 			<div class="relative mx-auto flex max-w-4xl flex-col items-center text-center">
-				<!-- Announcement pill -->
-				<a
-					href={latestPost?.href ?? '/changelog'}
-					onclick={() =>
-						trackEvent('CTA Clicked', {
-							cta: latestPost ? 'blog' : 'changelog',
-							placement: 'home_announcement'
-						})}
-					class="group mb-8 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary transition-all duration-300 hover:border-primary/40 hover:bg-primary/10"
-				>
-					<span class="relative flex size-2">
-						<span
-							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60 opacity-75"
-						></span>
-						<span class="relative inline-flex size-2 rounded-full bg-primary"></span>
-					</span>
-					<span class="truncate">{latestPost?.title ?? "See what's new in the changelog"}</span>
-					<ArrowRight
-						class="size-3 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-					/>
-				</a>
-
 				<LogoFull class="mb-10 h-16 w-auto sm:h-20 md:h-24" />
 
-				<!-- Main heading with gradient text -->
 				<h1
 					class="text-3xl font-semibold tracking-tighter text-balance sm:text-4xl md:text-5xl lg:text-6xl"
 				>
@@ -235,7 +197,7 @@ volumes:
 					</span>
 					<br />
 					<span
-						class="bg-linear-to-r from-primary via-purple-400 to-purple-300 bg-clip-text text-transparent dark:via-purple-400 dark:to-purple-300"
+						class="bg-linear-to-r from-primary via-primary-tint to-primary-soft bg-clip-text text-transparent"
 					>
 						designed for everyone.
 					</span>
@@ -252,10 +214,10 @@ volumes:
 						href="/docs/get-started/installation"
 						onclick={() =>
 							trackEvent('CTA Clicked', { cta: 'get_started', placement: 'home_hero' })}
-						class="group px-8"
+						class="group"
 					>
 						Get Started
-						<ArrowRight
+						<ArrowRightIcon
 							class="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
 						/>
 					</Button>
@@ -265,10 +227,10 @@ volumes:
 						href="https://demo.getarcane.app"
 						target="_blank"
 						onclick={() => trackEvent('CTA Clicked', { cta: 'demo', placement: 'home_hero' })}
-						class="group px-8"
+						class="group"
 					>
 						Try the Demo
-						<ArrowUpRight
+						<ExternalLinkIcon
 							class="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
 						/>
 					</Button>
@@ -281,13 +243,14 @@ volumes:
 
 			<div class="relative mx-auto mt-16 w-full max-w-2xl">
 				<div
-					class="pointer-events-none absolute -inset-4 rounded-2xl bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,oklch(0.6_0.26_292.717/0.1),transparent_70%)] opacity-60 dark:opacity-40"
+					class="pointer-events-none absolute -inset-4 rounded-2xl glow-center opacity-60 dark:opacity-40"
 					aria-hidden="true"
 				></div>
 
 				<div
-					class="compose-preview relative overflow-hidden rounded-xl border border-primary/20 bg-code shadow-lg shadow-primary/5"
-					class:compose-preview--swap={imageLineFading}
+					class="group/preview relative overflow-hidden rounded-xl border border-primary/20 bg-code shadow-lg shadow-primary/5 [&_.line--highlighted]:bg-primary/14 [&_.line--highlighted_span]:transition-opacity [&_.line--highlighted_span]:duration-280 data-swapping:[&_.line--highlighted_span]:opacity-0 motion-reduce:[&_.line--highlighted_span]:transition-none"
+					data-swapping={imageLineFading || undefined}
+					{@attach cycleComposeImages}
 					role="region"
 					aria-label="Docker Compose example"
 					onmouseenter={pauseComposeCycle}
@@ -295,9 +258,9 @@ volumes:
 				>
 					<div class="flex items-center gap-3 border-b border-primary/10 bg-surface/80 px-5 py-3">
 						<div class="flex items-center gap-1.5">
-							<span class="size-2.5 rounded-full bg-red-400/80"></span>
-							<span class="size-2.5 rounded-full bg-yellow-400/80"></span>
-							<span class="size-2.5 rounded-full bg-green-400/80"></span>
+							<span class="size-2.5 rounded-full bg-destructive/80"></span>
+							<span class="size-2.5 rounded-full bg-warning/80"></span>
+							<span class="size-2.5 rounded-full bg-success/80"></span>
 						</div>
 						<span class="font-mono text-xs text-muted-foreground/70">compose.yaml</span>
 					</div>
@@ -306,7 +269,7 @@ volumes:
 						code={composeFile}
 						highlight={[3]}
 						data-code-overflow
-						class="rounded-none border-0"
+						variant="embedded"
 					>
 						<Code.CopyButton size="sm" variant="ghost" />
 					</Code.Root>
@@ -397,7 +360,7 @@ volumes:
 					</div>
 				</div>
 
-				<div class="grid gap-6 px-6 py-6 md:px-8 lg:grid-cols-[minmax(0,1fr)_240px]">
+				<div class="grid gap-6 px-6 py-6 md:px-8 lg:grid-cols-content-aside-60">
 					<div class="space-y-6">
 						<div>
 							<p class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase">
@@ -448,8 +411,8 @@ volumes:
 							<div class="mt-3 flex items-end gap-1" aria-label="Recent heartbeat activity">
 								{#each history as entry (entry.date)}
 									<div
-										class="w-2.5 rounded-sm bg-primary/60 transition-all duration-200 hover:bg-primary"
-										style={`height: ${Math.max(8, Math.round((entry.count / historyMax) * 44))}px`}
+										class="h-(--bar-height) w-2.5 rounded-sm bg-primary/60 transition-all duration-200 hover:bg-primary"
+										style={`--bar-height: ${Math.max(8, Math.round((entry.count / historyMax) * 44))}px`}
 										title={`${entry.date}: ${entry.count}`}
 									>
 										<span class="sr-only">{entry.date}: {entry.count}</span>
@@ -474,23 +437,3 @@ volumes:
 		</section>
 	</ContentWrapper>
 </div>
-
-<style>
-	.compose-preview :global(pre .line.line--highlighted) {
-		background-color: color-mix(in oklab, var(--primary) 14%, transparent);
-	}
-
-	.compose-preview :global(pre .line.line--highlighted span) {
-		transition: opacity 280ms ease;
-	}
-
-	.compose-preview--swap :global(pre .line.line--highlighted span) {
-		opacity: 0;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.compose-preview :global(pre .line.line--highlighted span) {
-			transition: none;
-		}
-	}
-</style>

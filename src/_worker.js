@@ -41,19 +41,6 @@ function getDownloadFilename(key) {
 	return (key.split('/').pop() ?? 'download').replace(/["\r\n]/g, '');
 }
 
-/**
- * @param {Request} request
- * @param {URL} url
- * @returns {Response | null}
- */
-function getLegacyRedirect(request, url) {
-	if (url.hostname !== 'arcane.ofkm.dev') return null;
-
-	const redirectUrl = new URL(request.url);
-	redirectUrl.hostname = 'getarcane.app';
-	return Response.redirect(redirectUrl.toString(), 301);
-}
-
 const DOC_REDIRECTS = new Map([
 	['/docs/setup/installation', '/docs/get-started/installation'],
 	['/docs/setup/podman', '/docs/get-started/podman'],
@@ -165,6 +152,11 @@ async function getDiscordPresenceResponse(request, url, ctx) {
 	}
 }
 
+/**
+ * @param {URL} url
+ * @param {Env} env
+ * @returns {Promise<Response>}
+ */
 async function getBlogRssResponse(url, env) {
 	const asset = await env.ASSETS.fetch(new Request(new URL(BLOG_RSS_PATH, url.origin)));
 	if (!asset.ok) {
@@ -245,7 +237,7 @@ async function getAssetResponse(request, url, env) {
 	const hasExtension = url.pathname.includes('.') && !url.pathname.endsWith('/');
 	if (hasExtension) return response;
 
-	const fallbackRequest = new Request(new URL('/index.html', url.origin), request);
+	const fallbackRequest = new Request(new URL('/200.html', url.origin), request);
 	return env.ASSETS.fetch(fallbackRequest);
 }
 
@@ -258,7 +250,7 @@ export default {
 	 */
 	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
-		const redirect = getLegacyRedirect(request, url) ?? getDocRedirect(url);
+		const redirect = getDocRedirect(url);
 		if (redirect) return redirect;
 
 		switch (url.pathname) {

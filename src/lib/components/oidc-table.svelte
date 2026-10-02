@@ -112,8 +112,8 @@
 			<Table.Body>
 				{#each oidcEnvConfig as env (env.name)}
 					<Table.Row>
-						<Table.Cell class="font-medium">
-							<code class="rounded bg-muted px-1 py-0.5">{env.name}</code>
+						<Table.Cell>
+							<code class="rounded bg-muted px-1 py-0.5 font-medium">{env.name}</code>
 						</Table.Cell>
 						<Table.Cell>{env.description}</Table.Cell>
 						<Table.Cell>
@@ -136,7 +136,7 @@
 		</Table.Root>
 	</div>
 
-	<div class="manual-config-table">
+	<div>
 		<h3 class="mb-3 text-lg font-semibold">Manual Endpoint Overrides (Advanced)</h3>
 		<p class="mb-4 text-sm text-muted-foreground">
 			Use these if your OIDC provider does not support standard discovery via the Issuer URL.
@@ -152,8 +152,8 @@
 			<Table.Body>
 				{#each oidcManualConfig as env (env.name)}
 					<Table.Row>
-						<Table.Cell class="font-medium">
-							<code class="rounded bg-muted px-1 py-0.5">{env.name}</code>
+						<Table.Cell>
+							<code class="rounded bg-muted px-1 py-0.5 font-medium">{env.name}</code>
 						</Table.Cell>
 						<Table.Cell>{env.description}</Table.Cell>
 						<Table.Cell>
@@ -170,7 +170,7 @@
 		</Table.Root>
 	</div>
 
-	<div class="endpoint-table">
+	<div>
 		<h3 class="mb-3 text-lg font-semibold">Arcane Configuration Values</h3>
 		<Table.Root class="mb-6">
 			<Table.Header>
@@ -183,7 +183,7 @@
 			<Table.Body>
 				{#each oidcArcaneEndpoints as endpoint (endpoint.type)}
 					<Table.Row>
-						<Table.Cell class="font-medium">{endpoint.type}</Table.Cell>
+						<Table.Cell><span class="font-medium">{endpoint.type}</span></Table.Cell>
 						<Table.Cell>
 							<code class="rounded bg-muted px-1 py-0.5">{endpoint.value}</code>
 						</Table.Cell>

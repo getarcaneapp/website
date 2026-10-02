@@ -39,7 +39,7 @@ export default defineConfig({
 		},
 		overrides: [
 			{
-				files: ['vite.config.ts', 'velite.config.js', 'mdsvex.config.js'],
+				files: ['vite.config.ts', 'velite.config.js', 'mdsvex.config.ts'],
 				env: {
 					node: true
 				}
@@ -59,7 +59,7 @@ export default defineConfig({
 			preprocess: [mdsvex(mdsvexConfig), vitePreprocess()],
 			extensions: ['.svelte', '.md'],
 			adapter: adapter({
-				fallback: 'index.html',
+				fallback: '200.html',
 				pages: './build'
 			})
 		}),

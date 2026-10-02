@@ -29,42 +29,6 @@
 		if (Number.isNaN(parsed.getTime())) return date;
 		return parsed.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 	}
-
-	function useActiveItem(getItemIds: () => string[]) {
-		let activeId = $state<string | null>(null);
-		const itemIds = $derived(getItemIds().map((id) => id.replace('#', '')));
-
-		$effect(() => {
-			const observer = new IntersectionObserver(
-				(entries) => {
-					for (const entry of entries) {
-						if (entry.isIntersecting) {
-							activeId = entry.target.id;
-						}
-					}
-				},
-				{ rootMargin: '0px 0px -70% 0px', threshold: 0 }
-			);
-
-			for (const id of itemIds ?? []) {
-				const el = document.getElementById(id);
-				if (el) observer.observe(el);
-			}
-
-			return () => {
-				for (const id of itemIds ?? []) {
-					const el = document.getElementById(id);
-					if (el) observer.unobserve(el);
-				}
-			};
-		});
-
-		return {
-			get current() {
-				return activeId;
-			}
-		};
-	}
 </script>
 
 <script lang="ts">
@@ -78,8 +42,28 @@
 	}: { toc: TocEntry[]; class?: string; maxVisibleVersions?: number } = $props();
 
 	const flattened = $derived(flattenToc(toc ?? []));
-	const itemUrls = $derived(flattened.map((i) => i.url));
-	const active = useActiveItem(() => itemUrls);
+	const itemIds = $derived(flattened.map((i) => i.url.replace('#', '')));
+
+	let activeId = $state<string | null>(null);
+
+	// Tracks which release section is in view; re-runs when the set of sections changes.
+	const observeSections = () => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) activeId = entry.target.id;
+				}
+			},
+			{ rootMargin: '0px 0px -70% 0px', threshold: 0 }
+		);
+
+		for (const id of itemIds) {
+			const el = document.getElementById(id);
+			if (el) observer.observe(el);
+		}
+
+		return () => observer.disconnect();
+	};
 
 	const versions = $derived(
 		flattened.filter((item) => item.depth === 0 && /^v?\d/.test(item.title))
@@ -91,18 +75,18 @@
 </script>
 
 {#if versions.length}
-	<aside class={cn('hidden w-56 shrink-0 lg:block', className)}>
-		<div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto pb-6">
+	<aside class={cn('hidden w-56 shrink-0 lg:block', className)} {@attach observeSections}>
+		<div class="sticky top-below-header max-h-below-header overflow-y-auto pb-6">
 			<div class="docs-surface p-4">
 				<p
-					class="mb-3 font-mono text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase"
+					class="mb-3 font-mono text-xs font-medium tracking-label text-muted-foreground uppercase"
 				>
 					Versions
 				</p>
 				<nav class="relative flex flex-col gap-1">
 					<div class={cn('flex flex-col gap-1', collapsed && hasMore && 'pb-10')}>
 						{#each visibleVersions as item (item.url)}
-							{@const isActive = item.url === `#${active.current}`}
+							{@const isActive = item.url === `#${activeId}`}
 							{@const parsed = parseVersionTitle(item.title)}
 							<a
 								href={item.url}
@@ -118,7 +102,7 @@
 								<span class="flex flex-col gap-1">
 									<span class="truncate">{parsed.version}</span>
 									{#if parsed.date}
-										<span class="text-[0.7rem] tracking-[0.14em] text-muted-foreground uppercase">
+										<span class="text-2xs tracking-label text-muted-foreground uppercase">
 											{formatDateLabel(parsed.date)}
 										</span>
 									{/if}

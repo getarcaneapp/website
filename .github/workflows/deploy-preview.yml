@@ -61,6 +61,9 @@ jobs:
       - name: Build site
         run: vp build
 
+      - name: Build search index
+        run: vp exec pagefind --site build
+
       - name: Upload and Deploy Preview
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_API_TOKEN }}

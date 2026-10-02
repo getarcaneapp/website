@@ -1,13 +1,15 @@
 import type { Component } from 'svelte';
-import BookOpen from 'virtual:icons/lucide/book-open';
-import ChartBar from 'virtual:icons/lucide/chart-bar';
-import Clock from 'virtual:icons/lucide/clock';
-import Globe from 'virtual:icons/lucide/globe';
-import HardDrive from 'virtual:icons/lucide/hard-drive';
-import Package from 'virtual:icons/lucide/package';
-import ShieldCheck from 'virtual:icons/lucide/shield-check';
-import Sparkles from 'virtual:icons/lucide/sparkles';
-import Wrench from 'virtual:icons/lucide/wrench';
+import {
+	BookOpenIcon,
+	BoxIcon,
+	ChartIcon,
+	ClockIcon,
+	GlobeIcon,
+	ShieldCheckIcon,
+	SparklesIcon,
+	VolumesIcon,
+	WrenchIcon
+} from '#lib/icons/index.js';
 
 type IconComponent = Component<{ class?: string }>;
 
@@ -19,47 +21,47 @@ export interface Feature {
 
 export const features: Feature[] = [
 	{
-		icon: Sparkles,
+		icon: SparklesIcon,
 		title: 'Modern UI Interface',
 		description: 'Clean, intuitive design that makes Docker management a breeze.'
 	},
 	{
-		icon: Clock,
+		icon: ClockIcon,
 		title: 'Real-time Monitoring',
 		description: 'Live updates of container status, resource usage, and logs.'
 	},
 	{
-		icon: Wrench,
+		icon: WrenchIcon,
 		title: 'Container Management',
 		description: 'Start, stop, restart, and inspect containers with ease.'
 	},
 	{
-		icon: Package,
+		icon: BoxIcon,
 		title: 'Image Management',
 		description: 'Pull, and manage Docker images.'
 	},
 	{
-		icon: Globe,
+		icon: GlobeIcon,
 		title: 'Network Configuration',
 		description: 'Create and configure Docker networks.'
 	},
 	{
-		icon: HardDrive,
+		icon: VolumesIcon,
 		title: 'Volume Management',
 		description: 'Create and manage persistent data with Docker volumes.'
 	},
 	{
-		icon: ChartBar,
+		icon: ChartIcon,
 		title: 'Resource Visualization',
 		description: 'Visual graphs for CPU, memory, and network usage.'
 	},
 	{
-		icon: ShieldCheck,
+		icon: ShieldCheckIcon,
 		title: 'Vulnerability Scanning',
 		description: 'Scan images for known vulnerabilities right from the dashboard.'
 	},
 	{
-		icon: BookOpen,
+		icon: BookOpenIcon,
 		title: 'Fully Documented API',
 		description: 'RESTful API built with Huma on Gin, featuring built-in OpenAPI 3.1 documentation.'
 	}

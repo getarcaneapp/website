@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { browser } from '$app/env';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import GithubIcon from './icons/github.svelte';
+	import { GithubIcon } from '#lib/icons/index.js';
 
 	const FALLBACK_STAR_COUNT = 0;
 
@@ -18,9 +18,9 @@
 
 	let stars = $state(FALLBACK_STAR_COUNT);
 
-	onMount(async () => {
-		stars = await getGithubStarCount();
-	});
+	if (browser) {
+		getGithubStarCount().then((count) => (stars = count));
+	}
 </script>
 
 <Button
@@ -29,7 +29,7 @@
 	rel="noreferrer"
 	size="sm"
 	variant="ghost"
-	class="group h-8 shadow-none transition-all duration-200 hover:bg-muted/50"
+	class="group h-8"
 >
 	<GithubIcon class="transition-transform duration-200 group-hover:scale-110" />
 	<span

@@ -1,6 +1,6 @@
 ---
 title: 'Installation'
-description: 'Install Arcane with Docker Compose and sign in for the first time.'
+description: 'Install a new Arcane instance'
 ---
 
 <script lang="ts">
@@ -19,8 +19,6 @@ import { Link } from '#lib/components/ui/link/index.js';
 
 <Tabs.Content value="docker" data-install-method="docker">
 
-## Docker Compose (Recommended)
-
 ## 1. Create `compose.yaml`:
 
 ```yaml
@@ -33,15 +31,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
-      # Optional host project mount:
-      # - /path/to/projects:/app/data/projects
     environment:
       - APP_URL=http://localhost:3552
       - PUID=1000
       - PGID=1000
       - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-    # Use the host cgroup namespace so Arcane can detect its own container ID
-    # more reliably — this matters for self-upgrades.
     cgroup: host
     restart: unless-stopped
 

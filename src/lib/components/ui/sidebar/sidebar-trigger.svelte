@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PanelLeftIcon from 'virtual:icons/lucide/panel-left';
+	import { ArrowLeftIcon } from '#lib/icons/index.js';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { cn } from '#lib/utils.js';
@@ -29,6 +29,6 @@
 	}}
 	{...restProps}
 >
-	<PanelLeftIcon />
+	<ArrowLeftIcon />
 	<span class="sr-only">Toggle Sidebar</span>
 </Button>

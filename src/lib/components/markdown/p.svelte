@@ -5,6 +5,6 @@
 	let { class: className, children, ...restProps }: HTMLAttributes<HTMLParagraphElement> = $props();
 </script>
 
-<p class={cn('leading-[1.65rem] [&:not(:first-child)]:mt-6', className)} {...restProps}>
+<p class={cn('leading-prose [&:not(:first-child)]:mt-6', className)} {...restProps}>
 	{@render children?.()}
 </p>

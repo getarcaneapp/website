@@ -33,7 +33,7 @@
 
 <svelte:window onhashchange={revealLinkedSection} />
 
-<Tabs.Root bind:ref={root} bind:value={method} class="mt-6 min-w-0 gap-6">
+<Tabs.Root bind:ref={root} bind:value={method} variant="arcane" class="mt-6 min-w-0">
 	<div class="overflow-x-auto">
 		<Tabs.List variant="arcane" aria-label="Installation method">
 			<Tabs.Trigger variant="arcane" value="docker">Docker</Tabs.Trigger>

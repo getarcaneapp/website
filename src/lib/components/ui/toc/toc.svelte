@@ -1,6 +1,8 @@
 <script lang="ts" module>
 	export type TocProps = {
 		toc: Heading[];
+		/** `index` of the heading to highlight as the current section */
+		activeIndex?: number;
 		class?: string;
 		/** Indicates whether this is a child component or root component */
 		isChild?: boolean;
@@ -12,7 +14,7 @@
 	import { cn } from '#lib/utils.js';
 	import Self from './toc.svelte';
 
-	let { toc, isChild = false, class: className }: TocProps = $props();
+	let { toc, activeIndex, isChild = false, class: className }: TocProps = $props();
 </script>
 
 <ul
@@ -26,7 +28,7 @@
 				<a
 					href="#{heading.id}"
 					class={cn('block text-muted-foreground transition-colors hover:text-foreground', {
-						'font-medium text-foreground': heading.active
+						'font-medium text-foreground': heading.index === activeIndex
 					})}
 				>
 					{heading.label}
@@ -36,7 +38,7 @@
 			{/if}
 		</li>
 		{#if heading.children.length > 0}
-			<Self class={className} toc={heading.children} isChild={true} />
+			<Self class={className} toc={heading.children} {activeIndex} isChild={true} />
 		{/if}
 	{/each}
 </ul>

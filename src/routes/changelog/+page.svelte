@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import ExternalLink from 'virtual:icons/lucide/external-link';
-	import Search from 'virtual:icons/lucide/search';
+	import { ExternalLinkIcon, SearchIcon } from '#lib/icons/index.js';
 	import Button from '#lib/components/ui/button/button.svelte';
-	import Input from '#lib/components/ui/input/input.svelte';
 	import ChangelogToc from '#lib/components/changelog-toc.svelte';
 	import ReleaseNoteCard from '#lib/components/release-note-card.svelte';
 	import type { PageData } from './$types.js';
@@ -23,10 +20,10 @@
 		tocItems: TocEntry[];
 		contentNodes: Node[];
 		searchText: string;
-		defaultExpanded: boolean;
 	};
 
 	const REPO_URL = 'https://github.com/getarcaneapp/arcane';
+	const EXPANDED_STORAGE_KEY = 'collapsible-cards-expanded';
 
 	let { data }: { data: PageData } = $props();
 
@@ -56,12 +53,10 @@
 		return parsed.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 	};
 
-	let sourceRef = $state<HTMLDivElement>();
 	let query = $state('');
 	let ready = $state(false);
-	let sections = $state<ReleaseSection[]>([]);
-	let bulkActionKey = $state(0);
-	let bulkActionValue = $state<boolean | null>(null);
+	let sections = $state.raw<ReleaseSection[]>([]);
+	let expanded = $state<Record<string, boolean>>({});
 
 	const sidebarToc = $derived(
 		sections.map((section) => ({
@@ -79,16 +74,20 @@
 	const visibleCount = $derived(filteredSections.length);
 	const totalCount = $derived(sections.length);
 
+	const saveExpanded = () => {
+		localStorage.setItem(EXPANDED_STORAGE_KEY, JSON.stringify(expanded));
+	};
+
+	const toggleSection = (id: string) => {
+		expanded[id] = !expanded[id];
+		saveExpanded();
+	};
+
 	const applyBulkAction = (value: boolean) => {
-		if (typeof localStorage !== 'undefined') {
-			const state = JSON.parse(localStorage.getItem('collapsible-cards-expanded') || '{}');
-			for (const section of sections) {
-				state[section.id] = value;
-			}
-			localStorage.setItem('collapsible-cards-expanded', JSON.stringify(state));
+		for (const section of sections) {
+			expanded[section.id] = value;
 		}
-		bulkActionValue = value;
-		bulkActionKey += 1;
+		saveExpanded();
 	};
 
 	const classifySectionHeading = (heading: HTMLHeadingElement) => {
@@ -237,8 +236,7 @@
 				releaseUrl,
 				tocItems,
 				contentNodes,
-				searchText: `${titleText} ${searchContent}`.toLowerCase(),
-				defaultExpanded: index === 0
+				searchText: `${titleText} ${searchContent}`.toLowerCase()
 			});
 		});
 
@@ -246,11 +244,23 @@
 		return results;
 	};
 
-	onMount(() => {
-		if (!sourceRef) return;
-		sections = buildSections(sourceRef);
+	// The changelog markdown renders into a hidden container; this splits it into one card per
+	// release (moving the rendered nodes) and restores which cards were left expanded.
+	// Only writes state (never reads it), so the attachment runs once per mount.
+	const extractSections = (container: HTMLElement) => {
+		const built = buildSections(container);
+
+		const stored: Record<string, boolean> = JSON.parse(
+			localStorage.getItem(EXPANDED_STORAGE_KEY) || '{}'
+		);
+		// The latest release always starts expanded.
+		if (built[0]) stored[built[0].id] = true;
+		localStorage.setItem(EXPANDED_STORAGE_KEY, JSON.stringify(stored));
+
+		sections = built;
+		expanded = stored;
 		ready = true;
-	});
+	};
 </script>
 
 <svelte:head>
@@ -259,33 +269,39 @@
 </svelte:head>
 
 <div class="relative isolate">
-	<div class="changelog-shell relative overflow-hidden">
+	<div class="relative overflow-hidden">
 		<div
 			class="container mx-auto flex min-w-0 flex-1 flex-col gap-10 px-4 pt-12 pb-8 lg:pt-16 lg:pb-12"
 		>
-			<section class="changelog-hero">
-				<div class="changelog-hero__content">
-					<h1 class="changelog-title">{doc.title}</h1>
+			<section class="flex flex-col items-start">
+				<div class="flex max-w-3xl flex-col gap-4">
+					<h1 class="text-4xl font-semibold tracking-tight lg:text-5xl">{doc.title}</h1>
 					{#if doc.description}
-						<p class="changelog-subtitle">{doc.description}</p>
+						<p class="max-w-xl text-lg text-muted-foreground">{doc.description}</p>
 					{/if}
 				</div>
 			</section>
 
-			<div class="changelog-layout">
-				<ChangelogToc toc={sidebarToc} class="changelog-rail" maxVisibleVersions={12} />
+			<div class="grid grid-cols-1 gap-8 lg:grid-cols-changelog lg:items-start">
+				<ChangelogToc toc={sidebarToc} maxVisibleVersions={12} />
 
-				<div class="changelog-main">
-					<div class="changelog-controls">
-						<label class="changelog-search">
-							<Search class="size-4" />
-							<Input
+				<div class="flex min-w-0 flex-col gap-5">
+					<div
+						class="flex flex-col gap-3 rounded-lg border border-border bg-background p-4 lg:flex-row lg:items-center lg:justify-between"
+					>
+						<label
+							class="flex flex-1 items-center gap-2 rounded-md border border-border bg-background px-3 py-2"
+						>
+							<SearchIcon class="size-4 shrink-0" />
+							<input
+								type="search"
 								placeholder="Search releases, issues, or keywords"
 								bind:value={query}
 								aria-label="Search changelog"
+								class="w-full bg-transparent p-0 text-base outline-none placeholder:text-muted-foreground"
 							/>
 						</label>
-						<div class="changelog-actions">
+						<div class="flex flex-wrap gap-2">
 							<Button size="sm" variant="outline" onclick={() => applyBulkAction(true)}
 								>Expand all</Button
 							>
@@ -296,13 +312,19 @@
 					</div>
 
 					{#if ready}
-						<p class="changelog-count">
+						<p class="text-sm text-muted-foreground">
 							Showing {visibleCount} of {totalCount} releases
 						</p>
 					{/if}
 
-					<div class="changelog-body" data-ready={ready}>
-						<div class="changelog-source" bind:this={sourceRef}>
+					<div class="flex flex-col gap-6">
+						<div
+							class={[
+								'[&_.markdown]:flex [&_.markdown]:flex-col [&_.markdown]:gap-6',
+								ready && 'hidden'
+							]}
+							{@attach extractSections}
+						>
 							{#each Markdowns as Markdown, index (index)}
 								<Markdown />
 							{/each}
@@ -315,10 +337,10 @@
 											href={section.releaseUrl}
 											target="_blank"
 											rel="noopener noreferrer"
-											class="changelog-entry__release"
+											class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-sm font-medium text-foreground no-underline"
 										>
 											Release
-											<ExternalLink class="size-3.5" />
+											<ExternalLinkIcon class="size-3.5" />
 										</a>
 									{/if}
 								{/snippet}
@@ -326,18 +348,19 @@
 									id={section.id}
 									title={section.title}
 									description={section.dateLabel}
-									defaultExpanded={section.defaultExpanded}
+									expanded={expanded[section.id] ?? false}
+									onToggle={() => toggleSection(section.id)}
 									contentNodes={section.contentNodes}
 									{badge}
-									{bulkActionKey}
-									{bulkActionValue}
-								></ReleaseNoteCard>
+								/>
 							{/each}
 						{/if}
 					</div>
 
 					{#if ready && query && visibleCount === 0}
-						<div class="changelog-empty">
+						<div
+							class="rounded-lg border border-dashed border-border bg-muted/5 p-6 text-muted-foreground"
+						>
 							<p>No releases match "{query}".</p>
 							<p>Try searching for a version number, issue id, or a keyword like "OIDC".</p>
 						</div>
@@ -353,7 +376,7 @@
 								class="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
 							>
 								Edit this page on GitHub
-								<ExternalLink class="mb-1 size-4 align-text-bottom text-muted-foreground" />
+								<ExternalLinkIcon class="mb-1 size-4 align-text-bottom text-muted-foreground" />
 							</a>
 						</div>
 					</div>
@@ -362,321 +385,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	:global(:root) {
-		scroll-padding-top: 6.5rem;
-	}
-
-	.changelog-shell {
-		--changelog-stroke: color-mix(in oklab, var(--border) 95%, var(--foreground) 5%);
-	}
-
-	.changelog-hero {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-	}
-
-	.changelog-hero__content {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		max-width: 48rem;
-	}
-
-	.changelog-title {
-		font-size: clamp(2.5rem, 3.6vw, 3.5rem);
-		font-weight: 650;
-		letter-spacing: -0.02em;
-	}
-
-	.changelog-subtitle {
-		font-size: 1.1rem;
-		color: var(--muted-foreground);
-		max-width: 36rem;
-	}
-
-	.changelog-layout {
-		display: grid;
-		gap: 2rem;
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.changelog-main {
-		min-width: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 1.25rem;
-	}
-
-	.changelog-controls {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		padding: 1rem;
-		border-radius: var(--radius);
-		border: 1px solid var(--border);
-		background: var(--background);
-	}
-
-	.changelog-search {
-		display: flex;
-		flex: 1;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 0.75rem;
-		border-radius: var(--radius-md);
-		border: 1px solid var(--border);
-		background: var(--background);
-	}
-
-	.changelog-search :global(input) {
-		width: 100%;
-		border: none;
-		box-shadow: none;
-		padding: 0;
-		background: transparent;
-		font-size: 0.95rem;
-	}
-
-	.changelog-search :global(input:focus) {
-		outline: none;
-	}
-
-	.changelog-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.changelog-count {
-		font-size: 0.85rem;
-		color: var(--muted-foreground);
-	}
-
-	.changelog-body {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-	}
-
-	.changelog-body[data-ready='true'] .changelog-source {
-		display: none;
-	}
-
-	.changelog-empty {
-		padding: 1.5rem;
-		border-radius: var(--radius);
-		background: color-mix(in oklab, var(--background) 96%, var(--muted) 4%);
-		border: 1px dashed var(--changelog-stroke);
-		color: var(--muted-foreground);
-	}
-
-	:global(.changelog-body .markdown) {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-	}
-
-	:global(.changelog-entry) {
-		position: relative;
-		border-radius: var(--radius);
-		border: 1px solid var(--border);
-		background: var(--background);
-		overflow: hidden;
-		scroll-margin-top: 8rem;
-	}
-
-	:global(.changelog-entry__header) {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: 1.1rem 1.5rem;
-		background: var(--surface);
-		transition: background-color 150ms ease;
-	}
-
-	:global(.changelog-entry__header:hover) {
-		background: color-mix(in oklab, var(--surface) 85%, var(--muted) 15%);
-	}
-
-	:global(.changelog-entry:has(.changelog-entry__body) .changelog-entry__header) {
-		border-bottom: 1px solid var(--border);
-	}
-
-	:global(.changelog-entry__title) {
-		display: flex;
-		flex-direction: column;
-		gap: 0.3rem;
-	}
-
-	:global(.changelog-entry__title h2) {
-		margin: 0;
-		font-size: 1.3rem;
-		font-weight: 600;
-		letter-spacing: -0.01em;
-	}
-
-	:global(.changelog-entry__date) {
-		font-size: 0.75rem;
-		font-family: var(--font-mono);
-		color: var(--muted-foreground);
-	}
-
-	:global(.changelog-entry__release) {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.35rem;
-		font-size: 0.85rem;
-		font-weight: 500;
-		text-decoration: none;
-		padding: 0.3rem 0.7rem;
-		border-radius: var(--radius-md);
-		border: 1px solid var(--border);
-		background: var(--background);
-		color: var(--foreground);
-	}
-
-	:global(.changelog-entry__toggle) {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 0.8rem;
-		font-weight: 600;
-		border: 1px solid var(--border);
-		width: 2.25rem;
-		height: 2.25rem;
-		padding: 0;
-		border-radius: var(--radius-md);
-		background: var(--background);
-		cursor: pointer;
-		transition: background-color 150ms ease;
-	}
-
-	:global(.changelog-entry__toggle:hover) {
-		background: var(--muted);
-	}
-
-	:global(.changelog-entry__chevron) {
-		width: 1rem;
-		height: 1rem;
-		transition: transform 200ms ease;
-	}
-
-	:global(.changelog-entry__toggle--expanded .changelog-entry__chevron) {
-		transform: rotate(180deg);
-	}
-
-	:global(.changelog-entry__body) {
-		padding: 1.25rem 1.5rem 1.5rem;
-		display: block;
-	}
-
-	:global(.changelog-entry__content) {
-		display: grid;
-		gap: 0.75rem;
-		overflow-wrap: anywhere;
-		word-break: break-word;
-	}
-
-	:global(.changelog-entry__content > :first-child) {
-		margin-top: 0;
-	}
-
-	:global(.changelog-entry__content :is(ul, ol, p)) {
-		margin-block: 0;
-	}
-
-	:global(.changelog-entry__content :is(p, li, a, code)) {
-		overflow-wrap: anywhere;
-		word-break: break-word;
-	}
-
-	:global(.changelog-entry__content pre) {
-		max-width: 100%;
-		overflow-x: auto;
-	}
-
-	:global(.changelog-entry__body :is(h2, h3)) {
-		margin-top: 0.5rem;
-		margin-bottom: 0;
-		font-size: 0.8rem;
-		font-weight: 600;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.3rem 0.7rem;
-		border-radius: var(--radius-md);
-		background: var(--surface);
-		border: 1px solid var(--border);
-		width: fit-content;
-	}
-
-	:global(.changelog-entry__body :is(h2, h3):first-child) {
-		margin-top: 0;
-	}
-
-	:global(.changelog-entry__body :is(h2, h3) a[href^='#']) {
-		display: none;
-	}
-
-	:global(.changelog-entry__body :is(h2, h3)[data-kind='features']) {
-		background: color-mix(in oklab, var(--primary) 8%, transparent);
-	}
-
-	:global(.changelog-entry__body :is(h2, h3)[data-kind='fixes']) {
-		background: color-mix(in oklab, var(--chart-2) 8%, transparent);
-	}
-
-	:global(.changelog-entry__body :is(h2, h3)[data-kind='deps']) {
-		background: color-mix(in oklab, var(--chart-4) 8%, transparent);
-	}
-
-	:global(.changelog-entry__body :is(h2, h3)[data-kind='security']) {
-		background: color-mix(in oklab, var(--destructive) 8%, transparent);
-	}
-
-	:global(.changelog-entry__body :is(h2, h3)[data-kind='refactor']) {
-		background: color-mix(in oklab, var(--chart-5, var(--chart-3)) 8%, transparent);
-	}
-
-	:global(.changelog-entry__body :is(h2, h3)[data-kind='other']) {
-		background: color-mix(in oklab, var(--chart-3) 8%, transparent);
-	}
-
-	:global(.changelog-entry__body ul) {
-		display: grid;
-		gap: 0.4rem;
-		padding-left: 1.2rem;
-	}
-
-	:global(.changelog-entry__body ul li) {
-		line-height: 1.5;
-	}
-
-	:global(.changelog-entry:target) {
-		box-shadow: 0 0 0 2px color-mix(in oklab, var(--primary) 40%, transparent);
-	}
-
-	@media (min-width: 1024px) {
-		.changelog-layout {
-			grid-template-columns: minmax(220px, 0.35fr) minmax(0, 1fr);
-			align-items: start;
-		}
-
-		.changelog-controls {
-			flex-direction: row;
-			align-items: center;
-			justify-content: space-between;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		:global(.changelog-entry__toggle),
-		:global(.changelog-entry__body) {
-			transition: none;
-		}
-	}
-</style>

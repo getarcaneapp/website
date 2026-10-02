@@ -1,7 +1,5 @@
 <script lang="ts">
-	import ArrowUpRight from 'virtual:icons/lucide/arrow-up-right';
-	import Newspaper from 'virtual:icons/lucide/newspaper';
-	import Youtube from 'virtual:icons/lucide/youtube';
+	import { ExternalLinkIcon, NewsIcon, YoutubeBrandIcon } from '#lib/icons/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import type { CommunityItem } from '#lib/types/community.type.js';
 	import VideoEmbed from './video-embed.svelte';
@@ -33,8 +31,8 @@
 			<VideoEmbed videoId={item.videoId} title={item.title} thumbnail={item.thumbnail} />
 		</div>
 		<div class="flex flex-1 flex-col gap-2 p-5">
-			<Badge variant="outline" class="w-fit gap-1">
-				<Youtube class="size-3" />
+			<Badge variant="outline" class="w-fit">
+				<YoutubeBrandIcon class="size-3" />
 				Video
 			</Badge>
 			<a
@@ -65,18 +63,18 @@
 				<div
 					class="flex h-full w-full items-center justify-center bg-linear-to-br from-primary/10 via-primary/5 to-transparent"
 				>
-					<Newspaper class="size-8 text-primary/30" />
+					<NewsIcon class="size-8 text-primary/30" />
 				</div>
 			{/if}
 			<span
 				class="absolute top-3 right-3 flex size-7 items-center justify-center rounded-full border border-border bg-background/90 text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-primary"
 			>
-				<ArrowUpRight class="size-3.5" />
+				<ExternalLinkIcon class="size-3.5" />
 			</span>
 		</div>
 		<div class="flex flex-1 flex-col gap-2 p-5">
-			<Badge variant="outline" class="w-fit gap-1">
-				<Newspaper class="size-3" />
+			<Badge variant="outline" class="w-fit">
+				<NewsIcon class="size-3" />
 				Article
 			</Badge>
 			<span class="font-medium text-foreground transition-colors group-hover:text-primary">

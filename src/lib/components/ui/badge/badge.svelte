@@ -10,15 +10,34 @@
 					'bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 border-transparent',
 				destructive:
 					'bg-destructive [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/70 border-transparent text-white',
-				outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground'
+				outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+				muted:
+					'border-border text-muted-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground'
+			},
+			size: {
+				sm: 'text-2xs',
+				default: ''
+			},
+			shape: {
+				default: '',
+				pill: 'rounded-full px-2.5'
+			},
+			mono: {
+				true: 'font-mono',
+				false: ''
 			}
 		},
 		defaultVariants: {
-			variant: 'default'
+			variant: 'default',
+			size: 'default',
+			shape: 'default',
+			mono: false
 		}
 	});
 
 	export type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
+	export type BadgeSize = VariantProps<typeof badgeVariants>['size'];
+	export type BadgeShape = VariantProps<typeof badgeVariants>['shape'];
 </script>
 
 <script lang="ts">
@@ -30,10 +49,17 @@
 		href,
 		class: className,
 		variant = 'default',
+		size = 'default',
+		shape = 'default',
+		mono = false,
 		children,
 		...restProps
 	}: WithElementRef<HTMLAnchorAttributes> & {
 		variant?: BadgeVariant;
+		size?: BadgeSize;
+		shape?: BadgeShape;
+		/** Monospace text for code-like values. */
+		mono?: boolean;
 	} = $props();
 </script>
 
@@ -42,7 +68,7 @@
 	bind:this={ref}
 	data-slot="badge"
 	{href}
-	class={cn(badgeVariants({ variant }), className)}
+	class={cn(badgeVariants({ variant, size, shape, mono }), className)}
 	{...restProps}
 >
 	{@render children?.()}

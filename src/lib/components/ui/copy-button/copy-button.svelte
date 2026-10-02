@@ -3,9 +3,7 @@
 -->
 
 <script lang="ts">
-	import CheckIcon from 'virtual:icons/lucide/check';
-	import CopyIcon from 'virtual:icons/lucide/copy';
-	import XIcon from 'virtual:icons/lucide/x';
+	import { CheckIcon, CloseIcon, CopyIcon } from '#lib/icons/index.js';
 	import { scale } from 'svelte/transition';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { UseClipboard } from '#lib/hooks/use-clipboard.svelte.js';
@@ -54,7 +52,7 @@
 		</div>
 	{:else if clipboard.status === 'failure'}
 		<div in:scale={{ duration: animationDuration, start: 0.85 }}>
-			<XIcon tabindex={-1} />
+			<CloseIcon tabindex={-1} />
 			<span class="sr-only">Failed to copy</span>
 		</div>
 	{:else}

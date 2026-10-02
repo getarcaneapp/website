@@ -7,7 +7,9 @@
 			variant: {
 				default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
 				outline:
-					'bg-background hover:bg-sidebar-accent hover:text-sidebar-accent-foreground shadow-[0_0_0_1px_var(--sidebar-border)] hover:shadow-[0_0_0_1px_var(--sidebar-accent)]'
+					'bg-background hover:bg-sidebar-accent hover:text-sidebar-accent-foreground shadow-[0_0_0_1px_var(--sidebar-border)] hover:shadow-[0_0_0_1px_var(--sidebar-accent)]',
+				/** Docs nav link: a left rule that lights up for the active page. */
+				docs: 'rounded-none border-l border-transparent pr-2.5 pl-3 font-normal text-muted-foreground transition-colors duration-150 group-has-data-[sidebar=menu-action]/menu-item:pr-9 hover:bg-transparent hover:text-foreground active:bg-transparent data-[active=true]:border-primary data-[active=true]:bg-transparent data-[active=true]:font-medium data-[active=true]:text-foreground'
 			},
 			size: {
 				default: 'h-8 text-sm',

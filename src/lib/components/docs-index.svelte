@@ -1,17 +1,19 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
-	import ArrowRight from 'virtual:icons/lucide/arrow-right';
-	import ArrowUpCircle from 'virtual:icons/lucide/arrow-up-circle';
-	import BookOpen from 'virtual:icons/lucide/book-open';
-	import Boxes from 'virtual:icons/lucide/boxes';
-	import Code from 'virtual:icons/lucide/code';
-	import KeyRound from 'virtual:icons/lucide/key-round';
-	import LayoutTemplate from 'virtual:icons/lucide/layout-template';
-	import Network from 'virtual:icons/lucide/network';
-	import Rocket from 'virtual:icons/lucide/rocket';
-	import Settings2 from 'virtual:icons/lucide/settings-2';
-	import ShieldCheck from 'virtual:icons/lucide/shield-check';
-	import Terminal from 'virtual:icons/lucide/terminal';
+	import {
+		ApiKeyIcon,
+		ArrowRightIcon,
+		BookOpenIcon,
+		CircleArrowUpIcon,
+		CodeIcon,
+		CustomizeIcon,
+		LayersIcon,
+		NetworksIcon,
+		RocketIcon,
+		SettingsIcon,
+		ShieldCheckIcon,
+		TerminalIcon
+	} from '#lib/icons/index.js';
 	import { SidebarNavItems } from '#lib/config/docs.js';
 
 	type IconComponent = Component<{ class?: string }>;
@@ -19,47 +21,47 @@
 	// Icon + blurb per sidebar section title (keys must match SidebarNavItems titles).
 	const SECTION_META: Record<string, { icon: IconComponent; description: string }> = {
 		'Get Started': {
-			icon: Rocket,
+			icon: RocketIcon,
 			description: 'Install Arcane and get your first instance running.'
 		},
 		Features: {
-			icon: Boxes,
+			icon: LayersIcon,
 			description: 'Containers, images, volumes, networks, Swarm, and more.'
 		},
 		Customization: {
-			icon: LayoutTemplate,
+			icon: CustomizeIcon,
 			description: 'Project templates, template registries, and reusable variables.'
 		},
 		Configuration: {
-			icon: Settings2,
+			icon: SettingsIcon,
 			description: 'Environment variables, appearance, notifications, and analytics.'
 		},
 		'Authentication & Access': {
-			icon: KeyRound,
+			icon: ApiKeyIcon,
 			description: 'SSO, access control, and federated credentials.'
 		},
 		Networking: {
-			icon: Network,
+			icon: NetworksIcon,
 			description: 'Reverse proxies, WebSockets, and TLS configuration.'
 		},
 		'Security & Hardening': {
-			icon: ShieldCheck,
+			icon: ShieldCheckIcon,
 			description: 'Socket proxy, edge mTLS, and verified artifacts.'
 		},
 		Guides: {
-			icon: BookOpen,
+			icon: BookOpenIcon,
 			description: 'Task-focused walkthroughs for common workflows.'
 		},
 		'Upgrade & Migration': {
-			icon: ArrowUpCircle,
+			icon: CircleArrowUpIcon,
 			description: 'Move to Arcane 2.0 and try preview builds.'
 		},
 		CLI: {
-			icon: Terminal,
+			icon: TerminalIcon,
 			description: 'Install and configure the Arcane command-line tool.'
 		},
 		Development: {
-			icon: Code,
+			icon: CodeIcon,
 			description: 'Contribute code or translations to Arcane.'
 		}
 	};
@@ -78,7 +80,7 @@
 	});
 </script>
 
-<div class="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 	{#each cards as card (card.title)}
 		{@const Icon = card.icon}
 		<a
@@ -103,7 +105,7 @@
 			</div>
 			<span class="flex items-center gap-1 text-xs font-medium text-muted-foreground">
 				{card.count} article{card.count === 1 ? '' : 's'}
-				<ArrowRight class="size-3.5 transition-transform group-hover:translate-x-0.5" />
+				<ArrowRightIcon class="size-3.5 transition-transform group-hover:translate-x-0.5" />
 			</span>
 		</a>
 	{/each}

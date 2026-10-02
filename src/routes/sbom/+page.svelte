@@ -1,9 +1,12 @@
 <script lang="ts">
-	import Download from 'virtual:icons/lucide/download';
-	import Package from 'virtual:icons/lucide/package';
-	import Cpu from 'virtual:icons/lucide/cpu';
-	import Shield from 'virtual:icons/lucide/shield';
-	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
+	import { browser } from '$app/env';
+	import {
+		AlertTriangleIcon,
+		BoxIcon,
+		CpuIcon,
+		DownloadIcon,
+		SecurityIcon
+	} from '#lib/icons/index.js';
 	import * as Tabs from '#lib/components/ui/tabs/index.js';
 	import * as Table from '#lib/components/ui/table/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -103,9 +106,7 @@
 		}
 	}
 
-	$effect(() => {
-		loadSbomData();
-	});
+	if (browser) loadSbomData();
 
 	function formatLicense(license: string): string {
 		if (license === 'NOASSERTION' || !license) return '—';
@@ -151,18 +152,17 @@
 <div class="relative isolate">
 	<div class="container mx-auto flex min-w-0 flex-1 px-4 py-6 lg:py-8">
 		<div class="mx-auto flex w-full max-w-400 flex-col gap-8">
-			<!-- Header -->
-			<header class="sbom-hero">
-				<div class="sbom-hero__title">
-					<Shield class="size-6 text-muted-foreground" />
+			<header class="grid gap-3.5 border-b border-border pb-6">
+				<div class="flex flex-wrap items-center gap-4">
+					<SecurityIcon class="size-6 text-muted-foreground" />
 					<div>
-						<p class="sbom-eyebrow">Security transparency</p>
+						<p class="font-mono text-xs font-medium text-primary">Security transparency</p>
 						<h1 class="scroll-m-20 font-heading text-3xl font-semibold tracking-tight">
 							Software Bill of Materials
 						</h1>
 					</div>
 				</div>
-				<p class="sbom-hero__subtitle">
+				<p class="max-w-208 text-base text-muted-foreground">
 					Full visibility into every package and dependency shipped inside Arcane images.
 				</p>
 			</header>
@@ -178,7 +178,7 @@
 				<div
 					class="flex flex-col items-center gap-4 rounded-xl border border-destructive/20 bg-destructive/10 p-8"
 				>
-					<AlertTriangle class="size-12 text-destructive" />
+					<AlertTriangleIcon class="size-12 text-destructive" />
 					<p class="text-center text-destructive">{error}</p>
 					<p class="text-center text-sm text-muted-foreground">
 						SBOM data is generated from the latest release. If this is a new deployment, it may take
@@ -186,12 +186,13 @@
 					</p>
 				</div>
 			{:else}
-				<!-- Version info -->
 				{#if sbomData.metadata}
-					<div class="sbom-meta">
-						<div class="sbom-meta__left">
-							<div class="sbom-meta__pill">
-								<Badge variant="outline" class="font-mono">
+					<div
+						class="flex flex-col items-start justify-between gap-6 rounded-lg border border-border bg-background px-5 py-4 sm:flex-row sm:items-center"
+					>
+						<div class="grid gap-1.5">
+							<div class="flex flex-wrap items-center gap-3">
+								<Badge variant="outline" mono>
 									{sbomData.metadata.version}
 								</Badge>
 								<span class="text-sm text-muted-foreground">
@@ -202,43 +203,36 @@
 									})}
 								</span>
 							</div>
-							<p class="sbom-meta__note">
+							<p class="text-sm text-muted-foreground">
 								Export the raw SPDX 2.3 JSON if you need to automate audits.
 							</p>
 						</div>
-						<Button
-							variant="outline"
-							size="sm"
-							onclick={downloadSbom}
-							disabled={!currentSbom}
-							class="sbom-download"
-						>
-							<Download class="mr-2 size-4" />
+						<Button variant="outline" size="sm" onclick={downloadSbom} disabled={!currentSbom}>
+							<DownloadIcon class="mr-2 size-4" />
 							Download SPDX JSON
 						</Button>
 					</div>
 				{/if}
 
-				<!-- Image & Architecture Selection -->
-				<div class="sbom-controls">
-					<div class="sbom-control">
-						<p class="sbom-control__label">Image</p>
+				<div class="grid gap-6 md:grid-cols-2 md:items-start">
+					<div class="grid gap-1.5">
+						<p class="text-xs font-medium text-muted-foreground">Image</p>
 						<Tabs.Root bind:value={selectedImage} class="w-full sm:w-auto">
 							<Tabs.List>
 								<Tabs.Trigger value="manager">
-									<Package class="mr-2 size-4" />
+									<BoxIcon class="mr-2 size-4" />
 									Arcane (Manager)
 								</Tabs.Trigger>
 								<Tabs.Trigger value="agent">
-									<Cpu class="mr-2 size-4" />
+									<CpuIcon class="mr-2 size-4" />
 									Arcane Headless (Agent)
 								</Tabs.Trigger>
 							</Tabs.List>
 						</Tabs.Root>
 					</div>
 
-					<div class="sbom-control">
-						<p class="sbom-control__label">Architecture</p>
+					<div class="grid gap-1.5">
+						<p class="text-xs font-medium text-muted-foreground">Architecture</p>
 						<Tabs.Root bind:value={selectedArch}>
 							<Tabs.List>
 								{#each arches as arch (arch)}
@@ -249,35 +243,33 @@
 					</div>
 				</div>
 
-				<!-- Stats -->
-				<div class="sbom-stats">
-					<div class="sbom-stat">
-						<p class="sbom-stat__label">Total Packages</p>
-						<p class="sbom-stat__value">{packageCounts.total}</p>
+				<div class="grid grid-cols-auto-fit-45 gap-4">
+					<div class="rounded-lg border border-border bg-background px-4.5 py-4">
+						<p class="text-sm text-muted-foreground">Total Packages</p>
+						<p class="mt-1 text-2xl font-bold">{packageCounts.total}</p>
 					</div>
-					<div class="sbom-stat">
-						<p class="sbom-stat__label">Go Modules</p>
-						<p class="sbom-stat__value">{packageCounts.goModules}</p>
+					<div class="rounded-lg border border-border bg-background px-4.5 py-4">
+						<p class="text-sm text-muted-foreground">Go Modules</p>
+						<p class="mt-1 text-2xl font-bold">{packageCounts.goModules}</p>
 					</div>
-					<div class="sbom-stat">
-						<p class="sbom-stat__label">System Packages</p>
-						<p class="sbom-stat__value">{packageCounts.debPackages}</p>
+					<div class="rounded-lg border border-border bg-background px-4.5 py-4">
+						<p class="text-sm text-muted-foreground">System Packages</p>
+						<p class="mt-1 text-2xl font-bold">{packageCounts.debPackages}</p>
 					</div>
 				</div>
 
-				<!-- Filters -->
-				<div class="sbom-filters">
-					<label class="sbom-search">
-						<span class="sbom-search__label">Filter packages</span>
+				<div class="flex flex-wrap items-end gap-6">
+					<label class="grid flex-1 basis-64 gap-2">
+						<span class="text-xs font-medium text-muted-foreground">Filter packages</span>
 						<input
 							type="text"
 							placeholder="Search packages..."
 							bind:value={searchQuery}
-							class="sbom-search__input"
+							class="h-9.5 rounded-md border border-border bg-background px-3.5 text-sm text-foreground focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20 focus-visible:outline-none"
 						/>
 					</label>
-					<div class="sbom-filter-tabs">
-						<p class="sbom-control__label">Package type</p>
+					<div class="grid gap-2">
+						<p class="text-xs font-medium text-muted-foreground">Package type</p>
 						<Tabs.Root bind:value={packageFilter}>
 							<Tabs.List>
 								<Tabs.Trigger value="all">All</Tabs.Trigger>
@@ -288,12 +280,11 @@
 					</div>
 				</div>
 
-				<!-- Package Table -->
-				<div class="sbom-table">
+				<div class="overflow-hidden rounded-lg border border-border bg-background">
 					<Table.Root>
 						<Table.Header>
-							<Table.Row class="sbom-table__head">
-								<Table.Head class="w-[320px]">Package</Table.Head>
+							<Table.Row variant="surface">
+								<Table.Head class="w-80">Package</Table.Head>
 								<Table.Head class="w-42.5">Version</Table.Head>
 								<Table.Head class="w-30">Type</Table.Head>
 								<Table.Head>License</Table.Head>
@@ -301,24 +292,28 @@
 						</Table.Header>
 						<Table.Body>
 							{#each filteredPackages as pkg (pkg.name + pkg.version)}
-								<Table.Row class="sbom-table__row">
-									<Table.Cell class="sbom-table__package">{pkg.name}</Table.Cell>
-									<Table.Cell class="sbom-table__version">{pkg.version}</Table.Cell>
+								<Table.Row>
+									<Table.Cell><span class="font-mono text-sm">{pkg.name}</span></Table.Cell>
+									<Table.Cell><span class="font-mono text-sm">{pkg.version}</span></Table.Cell>
 									<Table.Cell>
 										<Badge variant={getTypeColor(pkg.type)}>
 											{pkg.type === 'go-module' ? 'Go' : pkg.type === 'deb' ? 'Deb' : 'Other'}
 										</Badge>
 									</Table.Cell>
-									<Table.Cell class="sbom-table__license">
-										{formatLicense(pkg.license)}
+									<Table.Cell>
+										<span class="block max-w-80 truncate text-sm text-muted-foreground">
+											{formatLicense(pkg.license)}
+										</span>
 									</Table.Cell>
 								</Table.Row>
 							{:else}
 								<Table.Row>
-									<Table.Cell colspan={4} class="py-8 text-center text-muted-foreground">
-										{currentSbom
-											? 'No packages found matching your search.'
-											: `SBOM for ${archLabels[selectedArch]} is not available yet. It is generated with the next release.`}
+									<Table.Cell colspan={4} class="text-center">
+										<p class="py-6 whitespace-normal text-muted-foreground">
+											{currentSbom
+												? 'No packages found matching your search.'
+												: `SBOM for ${archLabels[selectedArch]} is not available yet. It is generated with the next release.`}
+										</p>
 									</Table.Cell>
 								</Table.Row>
 							{/each}
@@ -326,7 +321,6 @@
 					</Table.Root>
 				</div>
 
-				<!-- Footer info -->
 				<div class="text-center text-sm text-muted-foreground">
 					<p>
 						SBOMs are generated during the container image build and extracted from the attestations
@@ -338,189 +332,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	.sbom-hero {
-		display: grid;
-		gap: 0.85rem;
-		padding-bottom: 1.5rem;
-		border-bottom: 1px solid var(--border);
-	}
-
-	.sbom-hero__title {
-		display: flex;
-		gap: 1rem;
-		align-items: center;
-		flex-wrap: wrap;
-	}
-
-	.sbom-eyebrow {
-		font-size: 0.75rem;
-		font-family: var(--font-mono);
-		color: var(--primary);
-		font-weight: 500;
-	}
-
-	.sbom-hero__subtitle {
-		color: var(--muted-foreground);
-		font-size: 1rem;
-		max-width: 52rem;
-	}
-
-	.sbom-meta {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1.5rem;
-		padding: 1rem 1.25rem;
-		border-radius: var(--radius);
-		border: 1px solid var(--border);
-		background: var(--background);
-	}
-
-	.sbom-meta__left {
-		display: grid;
-		gap: 0.35rem;
-	}
-
-	.sbom-meta__pill {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 0.75rem;
-	}
-
-	.sbom-meta__note {
-		font-size: 0.85rem;
-		color: var(--muted-foreground);
-	}
-
-	.sbom-controls {
-		display: grid;
-		gap: 1.5rem;
-	}
-
-	.sbom-control {
-		display: grid;
-		gap: 0.4rem;
-	}
-
-	.sbom-control__label {
-		font-size: 0.75rem;
-		color: var(--muted-foreground);
-		font-weight: 500;
-	}
-
-	.sbom-stats {
-		display: grid;
-		gap: 1rem;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-	}
-
-	.sbom-stat {
-		border-radius: var(--radius);
-		border: 1px solid var(--border);
-		background: var(--background);
-		padding: 1rem 1.1rem;
-	}
-
-	.sbom-stat__label {
-		font-size: 0.8rem;
-		color: var(--muted-foreground);
-	}
-
-	.sbom-stat__value {
-		font-size: 1.6rem;
-		font-weight: 700;
-		margin-top: 0.25rem;
-	}
-
-	.sbom-filters {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1.5rem;
-		align-items: end;
-	}
-
-	.sbom-search {
-		display: grid;
-		gap: 0.45rem;
-		flex: 1 1 260px;
-	}
-
-	.sbom-search__label {
-		font-size: 0.75rem;
-		color: var(--muted-foreground);
-		font-weight: 500;
-	}
-
-	.sbom-search__input {
-		height: 38px;
-		border-radius: var(--radius-md);
-		border: 1px solid var(--border);
-		background: var(--background);
-		padding: 0 0.9rem;
-		font-size: 0.9rem;
-		color: var(--foreground);
-	}
-
-	.sbom-search__input:focus-visible {
-		outline: none;
-		box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent);
-		border-color: var(--primary);
-	}
-
-	.sbom-filter-tabs {
-		display: grid;
-		gap: 0.45rem;
-	}
-
-	.sbom-table {
-		border-radius: var(--radius);
-		border: 1px solid var(--border);
-		overflow: hidden;
-		background: var(--background);
-	}
-
-	:global(.sbom-table__head) {
-		background: var(--surface);
-	}
-
-	:global(.sbom-table__head) :global(th) {
-		font-size: 0.75rem;
-		color: var(--muted-foreground);
-	}
-
-	:global(.sbom-table__row) {
-		border-color: var(--border);
-	}
-
-	:global(.sbom-table__package),
-	:global(.sbom-table__version) {
-		font-family: var(--font-mono);
-		font-size: 0.85rem;
-	}
-
-	:global(.sbom-table__license) {
-		color: var(--muted-foreground);
-		max-width: 320px;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		font-size: 0.85rem;
-	}
-
-	@media (min-width: 768px) {
-		.sbom-controls {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			align-items: start;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.sbom-meta {
-			flex-direction: column;
-			align-items: flex-start;
-		}
-	}
-</style>

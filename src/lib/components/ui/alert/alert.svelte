@@ -9,7 +9,7 @@
 				destructive:
 					'text-destructive bg-card *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
 				warning:
-					'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 *:data-[slot=alert-description]:text-amber-800 dark:*:data-[slot=alert-description]:text-amber-200 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400'
+					'border-warning/40 bg-warning/10 text-foreground *:data-[slot=alert-description]:text-foreground/80 [&>svg]:text-warning'
 			}
 		},
 		defaultVariants: {

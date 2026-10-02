@@ -7,7 +7,6 @@ export type Heading = {
 	id?: string;
 	level: number;
 	label: string;
-	active: boolean;
 	children: Heading[];
 };
 
@@ -16,7 +15,7 @@ const INDEX_ATTRIBUTE = 'data-toc-index';
 const ACTIVE_HEADING_OFFSET = 140;
 const BOTTOM_SCROLL_EPSILON = 4;
 
-/** A hook for generating a table of contents using the page content.
+/** Builds a table of contents from the headings inside an element and tracks the active one.
  *
  * ## Usage
  * ```svelte
@@ -24,136 +23,82 @@ const BOTTOM_SCROLL_EPSILON = 4;
  * 		const toc = new UseToc();
  * </script>
  *
- * <div bind:this={toc.ref} style="display: contents;">
+ * <div {@attach toc.attach}>
  * 		<h1>Table of Contents</h1>
  * 		<h2>Usage</h2>
  * </div>
  * ```
  */
 export class UseToc {
-	#ref = $state<HTMLElement>();
 	#toc = $state<Heading[]>([]);
+	#activeIndex = $state<number>();
 
-	// This sets everything up once #ref is bound
-	set ref(ref: HTMLElement | undefined) {
-		this.#ref = ref;
+	/** Attachment for the content element whose headings make up the table of contents. */
+	attach = (node: HTMLElement) => {
+		this.#toc = getToc(node);
 
-		if (!this.#ref) return;
-
-		this.#toc = getToc(this.#ref);
-
-		// should detect if a heading is added / removed / updated
+		// Picks up headings that are added, removed, or hidden after the first render.
 		const mutationObserver = new MutationObserver(() => {
-			if (!this.#ref) return;
-
-			this.#toc = getToc(this.#ref);
+			this.#toc = getToc(node);
 		});
-
-		mutationObserver.observe(this.#ref, {
+		mutationObserver.observe(node, {
 			childList: true,
 			subtree: true,
 			attributes: true,
 			attributeFilter: ['hidden']
 		});
 
-		const resetActiveHeading = (headings: Heading[]) => {
-			for (let i = 0; i < headings.length; i++) {
-				headings[i].active = false;
-
-				resetActiveHeading(headings[i].children);
-			}
+		let frame = 0;
+		const scheduleUpdate = () => {
+			if (frame) return;
+			frame = window.requestAnimationFrame(() => {
+				frame = 0;
+				this.#activeIndex = findActiveHeading(flattenHeadings(this.#toc))?.index;
+			});
 		};
 
-		const setHeadingActive = (headings: Heading[], index: number) => {
-			for (let i = 0; i < headings.length; i++) {
-				if (index === headings[i].index) {
-					headings[i].active = true;
-					break;
-				}
+		window.addEventListener('scroll', scheduleUpdate, { passive: true });
+		window.addEventListener('resize', scheduleUpdate);
+		scheduleUpdate();
 
-				setHeadingActive(headings[i].children, index);
-			}
+		return () => {
+			mutationObserver.disconnect();
+			window.removeEventListener('scroll', scheduleUpdate);
+			window.removeEventListener('resize', scheduleUpdate);
+			if (frame) window.cancelAnimationFrame(frame);
+			this.#toc = [];
 		};
-
-		// reactive to the table of contents
-		$effect(() => {
-			// Flatten all headings for easier access
-			const flattenHeadings = (headings: Heading[]): Heading[] => {
-				const result: Heading[] = [];
-				for (const h of headings) {
-					result.push(h);
-					result.push(...flattenHeadings(h.children));
-				}
-				return result;
-			};
-
-			const toc = this.#toc;
-			const allHeadings = flattenHeadings(toc);
-
-			if (allHeadings.length === 0) return;
-
-			let frame = 0;
-
-			const updateActiveHeading = () => {
-				const scrolledToBottom =
-					window.innerHeight + window.scrollY >=
-					document.documentElement.scrollHeight - BOTTOM_SCROLL_EPSILON;
-
-				let activeHeading: Heading | undefined;
-
-				if (scrolledToBottom) {
-					activeHeading = allHeadings.at(-1);
-				} else {
-					activeHeading =
-						allHeadings.findLast(
-							(heading) => heading.ref.getBoundingClientRect().top <= ACTIVE_HEADING_OFFSET
-						) ??
-						allHeadings.find(
-							(heading) => heading.ref.getBoundingClientRect().top >= ACTIVE_HEADING_OFFSET
-						) ??
-						allHeadings[0];
-				}
-
-				if (!activeHeading) return;
-
-				resetActiveHeading(toc);
-				setHeadingActive(toc, activeHeading.index);
-			};
-
-			const scheduleUpdate = () => {
-				if (frame) return;
-
-				frame = window.requestAnimationFrame(() => {
-					frame = 0;
-					updateActiveHeading();
-				});
-			};
-
-			window.addEventListener('scroll', scheduleUpdate, { passive: true });
-			window.addEventListener('resize', scheduleUpdate);
-
-			scheduleUpdate();
-
-			return () => {
-				window.removeEventListener('scroll', scheduleUpdate);
-				window.removeEventListener('resize', scheduleUpdate);
-
-				if (frame) {
-					window.cancelAnimationFrame(frame);
-				}
-			};
-		});
-	}
-
-	get ref() {
-		return this.#ref;
-	}
+	};
 
 	/** The generated table of contents */
 	get current() {
 		return this.#toc;
 	}
+
+	/** `index` of the heading currently scrolled into view */
+	get activeIndex() {
+		return this.#activeIndex;
+	}
 }
+
+const flattenHeadings = (headings: Heading[]): Heading[] =>
+	headings.flatMap((heading) => [heading, ...flattenHeadings(heading.children)]);
+
+const findActiveHeading = (headings: Heading[]): Heading | undefined => {
+	const scrolledToBottom =
+		window.innerHeight + window.scrollY >=
+		document.documentElement.scrollHeight - BOTTOM_SCROLL_EPSILON;
+
+	if (scrolledToBottom) return headings.at(-1);
+
+	return (
+		headings.findLast(
+			(heading) => heading.ref.getBoundingClientRect().top <= ACTIVE_HEADING_OFFSET
+		) ??
+		headings.find((heading) => heading.ref.getBoundingClientRect().top >= ACTIVE_HEADING_OFFSET) ??
+		headings[0]
+	);
+};
 
 const createHeading = (element: HTMLHeadingElement, index: number): Heading => {
 	const kind = element.tagName.toLowerCase() as HeadingKind;
@@ -167,7 +112,6 @@ const createHeading = (element: HTMLHeadingElement, index: number): Heading => {
 		id: element.id,
 		level: parseInt(kind[1]),
 		label: element.innerText ?? '',
-		active: false,
 		children: []
 	};
 };

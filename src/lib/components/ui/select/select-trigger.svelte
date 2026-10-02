@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ChevronDownIcon from 'virtual:icons/lucide/chevron-down';
+	import { ArrowDownIcon } from '#lib/icons/index.js';
 	import { Select as SelectPrimitive } from 'bits-ui';
 	import { cn, type WithoutChild } from '#lib/utils.js';
 
@@ -25,5 +25,5 @@
 	{...restProps}
 >
 	{@render children?.()}
-	<ChevronDownIcon class="size-4 opacity-50" />
+	<ArrowDownIcon class="size-4 opacity-50" />
 </SelectPrimitive.Trigger>

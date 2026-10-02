@@ -1,7 +1,5 @@
 <script lang="ts">
-	import ArrowLeft from 'virtual:icons/lucide/arrow-left';
-	import ChevronLeft from 'virtual:icons/lucide/chevron-left';
-	import ChevronRight from 'virtual:icons/lucide/chevron-right';
+	import { ArrowLeftIcon, ArrowRightIcon } from '#lib/icons/index.js';
 	import { findPostNeighbors } from '#lib/blog.js';
 	import BlogKindBadge from '#lib/components/blog-kind-badge.svelte';
 	import RssButton from '#lib/components/rss-button.svelte';
@@ -29,31 +27,36 @@
 					href="/blog"
 					class="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
 				>
-					<ArrowLeft class="size-3.5" />
+					<ArrowLeftIcon class="size-3.5" />
 					Blog
 				</a>
 				<RssButton />
 			</div>
 
-			<header class="border-b border-border pb-6">
-				<div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-					<BlogKindBadge kind={post.kind} />
-					<time datetime={post.date} class="text-sm text-muted-foreground">
-						{post.dateLabel}
-					</time>
-				</div>
-				<h1 class="mt-4 font-heading text-3xl font-semibold tracking-tight text-foreground">
-					{post.title}
-				</h1>
-				{#if post.description}
-					<p class="mt-3 text-base leading-relaxed text-muted-foreground">
-						{post.description}
-					</p>
-				{/if}
-			</header>
+			<div data-pagefind-body data-pagefind-meta="section:Blog" data-pagefind-weight="0.5">
+				<header class="border-b border-border pb-6">
+					<div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+						<BlogKindBadge kind={post.kind} />
+						<time datetime={post.date} class="text-sm text-muted-foreground">
+							{post.dateLabel}
+						</time>
+					</div>
+					<h1
+						class="mt-4 font-heading text-3xl font-semibold tracking-tight text-foreground"
+						data-pagefind-meta="title"
+					>
+						{post.title}
+					</h1>
+					{#if post.description}
+						<p class="mt-3 text-base leading-relaxed text-muted-foreground">
+							{post.description}
+						</p>
+					{/if}
+				</header>
 
-			<div class="mt-8">
-				<Markdown />
+				<div class="mt-8">
+					<Markdown />
+				</div>
 			</div>
 
 			{#if neighbors.previous || neighbors.next}
@@ -64,7 +67,7 @@
 							class="group flex flex-col gap-1 docs-surface p-4 transition-colors hover:bg-surface"
 						>
 							<span class="flex items-center gap-1 text-xs text-muted-foreground">
-								<ChevronLeft class="size-3.5" /> Older
+								<ArrowLeftIcon class="size-3.5" /> Older
 							</span>
 							<span class="font-medium text-foreground transition-colors group-hover:text-primary">
 								{neighbors.previous.title}
@@ -79,7 +82,7 @@
 							class="group flex flex-col gap-1 docs-surface p-4 text-right transition-colors hover:bg-surface sm:items-end"
 						>
 							<span class="flex items-center gap-1 text-xs text-muted-foreground">
-								Newer <ChevronRight class="size-3.5" />
+								Newer <ArrowRightIcon class="size-3.5" />
 							</span>
 							<span class="font-medium text-foreground transition-colors group-hover:text-primary">
 								{neighbors.next.title}

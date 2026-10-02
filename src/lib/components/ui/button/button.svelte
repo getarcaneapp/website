@@ -21,12 +21,16 @@
 					'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/70 hover:shadow-sm',
 				ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
 				link: 'text-primary underline-offset-4 hover:underline active:scale-100',
+				/** Search-field look for buttons that open a search palette. */
+				search:
+					'border border-border bg-background pl-3 font-normal text-muted-foreground shadow-none transition-colors duration-150 hover:bg-muted hover:text-foreground sm:pr-12',
 				brand:
 					'bg-primary text-primary-foreground shadow-xs shadow-primary/20 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30',
 				flat: 'bg-card/60 text-foreground border border-border backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
 			},
 			size: {
 				default: 'h-10 px-5 py-2.5 has-[>svg]:px-4',
+				xs: 'h-8 gap-1.5 px-4 text-xs font-semibold has-[>svg]:px-3',
 				sm: 'h-9 gap-1.5 px-4 has-[>svg]:px-3',
 				lg: 'h-11 px-7 text-base has-[>svg]:px-5',
 				icon: 'size-10'
@@ -72,7 +76,7 @@
 
 <script lang="ts">
 	import { cn } from '#lib/utils.js';
-	import LoaderCircleIcon from 'virtual:icons/lucide/loader-circle';
+	import { LoadingSpinnerIcon } from '#lib/icons/index.js';
 
 	let {
 		ref = $bindable(null),
@@ -104,10 +108,7 @@
 	tabindex={href && disabled ? -1 : tabindex}
 	class={cn(buttonVariants({ variant, size }), className)}
 	bind:this={ref}
-	onclick={async (
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		e: any
-	) => {
+	onclick={async (e: any) => {
 		onclick?.(e);
 
 		if (type === undefined) return;
@@ -124,7 +125,7 @@
 	{#if type !== undefined && loading}
 		<div class="absolute flex size-full place-items-center justify-center bg-inherit">
 			<div class="flex animate-spin place-items-center justify-center">
-				<LoaderCircleIcon class="size-4" />
+				<LoadingSpinnerIcon class="size-4" />
 			</div>
 		</div>
 		<span class="sr-only">Loading</span>

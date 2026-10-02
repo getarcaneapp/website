@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ArrowRight from 'virtual:icons/lucide/arrow-right';
+	import { ArrowRightIcon } from '#lib/icons/index.js';
 	import Button from '#lib/components/ui/button/button.svelte';
 	import { featuredCommunityItems } from '#lib/config/community.js';
 	import CommunityGrid from './community-grid.svelte';
@@ -19,7 +19,9 @@
 		<div class="mt-10 flex justify-center">
 			<Button variant="outline" href="/community" class="group">
 				Explore the community
-				<ArrowRight class="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+				<ArrowRightIcon
+					class="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+				/>
 			</Button>
 		</div>
 	</section>

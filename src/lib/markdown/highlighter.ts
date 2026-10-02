@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Build-time Shiki highlighter for mdsvex fenced code blocks.
  *
@@ -7,7 +6,8 @@
  * layout's element overrides — so the markdown `pre` component can't be used).
  * We mirror the runtime highlighter in `src/lib/components/ui/code` (same themes
  * and `pre` transformer) so build-time code blocks match component-rendered code.
- * The copy button is attached at runtime by the `copyCode` action in layout.svelte.
+ * Each block also gets a `CodeCopyButton`, which the markdown layout exports so the compiled
+ * `.md` can reach it as `Components.CodeCopyButton`.
  */
 import { escapeSvelte } from 'mdsvex';
 import { createHighlighterCore } from 'shiki/core';
@@ -28,7 +28,7 @@ const bundledLanguages = {
 };
 
 /** Fenced-block languages used in content that map onto a bundled grammar. */
-const aliases = /** @type {const} */ ({
+const aliases: Record<string, keyof typeof bundledLanguages> = {
 	dockerfile: 'docker',
 	nginxconf: 'nginx',
 	env: 'bash',
@@ -39,10 +39,9 @@ const aliases = /** @type {const} */ ({
 	yml: 'yaml',
 	ts: 'typescript',
 	js: 'javascript'
-});
+};
 
-/** @type {ReturnType<typeof createHighlighterCore> | undefined} */
-let highlighterPromise;
+let highlighterPromise: ReturnType<typeof createHighlighterCore> | undefined;
 
 function getHighlighter() {
 	if (!highlighterPromise) {
@@ -61,16 +60,15 @@ function getHighlighter() {
 /**
  * mdsvex highlighter. Returns Svelte markup: the highlighted HTML is escaped
  * for Svelte and embedded in an `{@html}` expression inside a `.code-block`
- * container that the `copyCode` action enhances with a copy button.
+ * container, followed by its copy button.
  *
- * @param {string} code raw code from the fenced block
- * @param {string | null} [lang] language id from the fence (may be empty/null)
- * @returns {Promise<string>}
+ * @param code raw code from the fenced block
+ * @param lang language id from the fence (may be empty/null)
  */
-export async function highlighter(code, lang) {
+export async function highlighter(code: string, lang?: string | null): Promise<string> {
 	const hl = await getHighlighter();
 	const requested = (lang || '').toLowerCase();
-	const resolved = aliases[/** @type {keyof typeof aliases} */ (requested)] ?? requested;
+	const resolved = aliases[requested] ?? requested;
 	// 'text' is a built-in no-op grammar — safe fallback for unknown languages.
 	const useLang = hl.getLoadedLanguages().includes(resolved) ? resolved : 'text';
 
@@ -96,5 +94,6 @@ export async function highlighter(code, lang) {
 	const langAttr = useLang === 'text' ? '' : ` data-lang="${useLang}"`;
 	// Preserve literal backslashes when JavaScript evaluates the template literal.
 	const escapedHtml = escapeSvelte(html.replaceAll('\\', '\\\\'));
-	return `<div class="code-block"${langAttr}>{@html \`${escapedHtml}\`}</div>`;
+	const copyButton = `<Components.CodeCopyButton code={${JSON.stringify(code)}}${useLang === 'text' ? '' : ` lang="${useLang}"`} />`;
+	return `<div class="code-block group/code"${langAttr}>{@html \`${escapedHtml}\`}${copyButton}</div>`;
 }

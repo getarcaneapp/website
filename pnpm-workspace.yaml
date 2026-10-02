@@ -10,9 +10,7 @@ allowBuilds:
   workerd: true
 
 overrides:
-  '@sveltejs/kit': '3.0.0-next.30'
-  cookie: '^1.1.1'
-  devalue: '^5.6.2'
+  '@sveltejs/kit': '3.0.0'
   undici: '^7.18.2'
   rollup: '>=4.59.0'
   ws: '>=8.21.0'
@@ -30,4 +28,6 @@ peerDependencyRules:
     vite: '*'
 
 minimumReleaseAgeExclude:
-  - '@sveltejs/kit@3.0.0-next.30'
+  - '@sveltejs/adapter-static@4.0.0'
+  - '@sveltejs/enhanced-img@1.0.0'
+  - '@sveltejs/kit@3.0.0'

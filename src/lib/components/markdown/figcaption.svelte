@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { cn } from '#lib/utils.js';
-	import { getIconForLanguageExtension } from '../icons/icons.js';
+	import { getIconForLanguageExtension } from '#lib/icons/language.js';
 
 	let {
 		class: className,

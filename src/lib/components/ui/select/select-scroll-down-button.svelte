@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ChevronDownIcon from 'virtual:icons/lucide/chevron-down';
+	import { ArrowDownIcon } from '#lib/icons/index.js';
 	import { Select as SelectPrimitive } from 'bits-ui';
 	import { cn, type WithoutChildrenOrChild } from '#lib/utils.js';
 
@@ -16,5 +16,5 @@
 	class={cn('flex cursor-default items-center justify-center py-1', className)}
 	{...restProps}
 >
-	<ChevronDownIcon class="size-4" />
+	<ArrowDownIcon class="size-4" />
 </SelectPrimitive.ScrollDownButton>

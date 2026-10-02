@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { browser } from '$app/env';
 	import { CommandSearch } from '#lib/components/command-search/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
@@ -11,7 +11,11 @@
 	import MobileNav from './mobile-nav.svelte';
 	import ModeSwitcher from './modeswitcher.svelte';
 
-	let version: string | undefined = $state('');
+	// Rendered height, including the announcement banner; the root layout exposes it as
+	// `--header-height` so sticky panels sit right below the header.
+	let { height = $bindable(0) }: { height?: number } = $props();
+
+	let version = $state('');
 
 	interface ArcaneConfig {
 		version: string;
@@ -31,16 +35,16 @@
 		}
 	}
 
-	onMount(() => {
+	// The latest version is fetched in the browser so the prerendered header doesn't go stale.
+	if (browser) {
 		readVersionFile().then((v) => {
-			if (v) {
-				version = v;
-			}
+			if (v) version = v;
 		});
-	});
+	}
 </script>
 
 <header
+	bind:offsetHeight={height}
 	class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-lg supports-backdrop-filter:bg-background/60"
 >
 	<AnnouncementBanner />
@@ -62,21 +66,17 @@
 				<Badge
 					href="/changelog"
 					aria-label={`View changelog for version ${version}`}
-					variant="outline"
-					class="hidden h-7 items-center rounded-full border-border px-2.5 font-mono text-xs font-medium text-muted-foreground sm:flex"
+					variant="muted"
+					shape="pill"
+					mono
+					class="hidden h-7 items-center sm:flex"
 				>
 					v{version}
 				</Badge>
 			{/if}
 			<GithubLink />
 			<ModeSwitcher />
-			<Button
-				href="https://demo.getarcane.app"
-				target="_blank"
-				variant="brand"
-				size="sm"
-				class="h-8 text-xs font-semibold"
-			>
+			<Button href="https://demo.getarcane.app" target="_blank" variant="brand" size="xs">
 				Try the Demo
 			</Button>
 		</div>

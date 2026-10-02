@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Play from 'virtual:icons/lucide/play';
+	import { PlayIcon } from '#lib/icons/index.js';
 
 	interface Props {
 		videoId: string;
@@ -38,7 +38,7 @@
 			<span
 				class="absolute inset-0 m-auto flex size-14 items-center justify-center rounded-full border border-white/30 bg-black/50 backdrop-blur transition-transform duration-300 group-hover/play:scale-110"
 			>
-				<Play class="size-6 translate-x-0.5 text-white" />
+				<PlayIcon class="size-6 translate-x-0.5 text-white" />
 			</span>
 		</button>
 	{/if}

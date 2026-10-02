@@ -31,8 +31,7 @@
 <script lang="ts">
 	import { cn } from '#lib/utils.js';
 	import CopyButton from '#lib/components/ui/copy-button/copy-button.svelte';
-	import ClipboardIcon from 'virtual:icons/lucide/clipboard';
-	import TerminalIcon from 'virtual:icons/lucide/terminal';
+	import { CopyIcon, TerminalIcon } from '#lib/icons/index.js';
 	import * as Tooltip from '#lib/components/ui/tooltip/index.js';
 	import * as Tabs from '#lib/components/ui/tabs/index.js';
 
@@ -94,7 +93,7 @@
 							size="sm"
 						>
 							{#snippet icon()}
-								<ClipboardIcon />
+								<CopyIcon />
 							{/snippet}
 						</CopyButton>
 					{/snippet}
@@ -109,10 +108,3 @@
 		</span>
 	</div>
 </div>
-
-<style>
-	.no-scrollbar {
-		-ms-overflow-style: none; /* IE and Edge */
-		scrollbar-width: none; /* Firefox */
-	}
-</style>

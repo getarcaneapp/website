@@ -1,28 +1,17 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Label } from '#lib/components/ui/label/index.js';
 	import * as Table from '#lib/components/ui/table/index.js';
-	import {
-		envSettingsOverrides,
-		getRuntimeEnvSettingsOverrides
-	} from '#lib/config/pages/runtime-config.js';
+	import { envSettingsOverrides } from '#lib/config/pages/runtime-config.js';
 
 	const searchId = $props.id();
 	let query = $state('');
-	let tableOverrides = $state(envSettingsOverrides);
 	const search = $derived(query.trim().toLowerCase());
 	const filteredOverrides = $derived(
-		tableOverrides.filter((item) =>
+		envSettingsOverrides.filter((item) =>
 			`${item.env} ${item.settingKey} ${item.description}`.toLowerCase().includes(search)
 		)
 	);
-
-	onMount(() => {
-		void (async () => {
-			tableOverrides = await getRuntimeEnvSettingsOverrides();
-		})();
-	});
 </script>
 
 <div class="env-var-table mt-4">
@@ -36,7 +25,7 @@
 		/>
 	</div>
 	<p class="mb-3 text-sm text-muted-foreground" role="status">
-		{filteredOverrides.length} of {tableOverrides.length} setting overrides
+		{filteredOverrides.length} of {envSettingsOverrides.length} setting overrides
 	</p>
 	<Table.Root class="mb-6 table-fixed">
 		<Table.Header>
@@ -48,16 +37,16 @@
 		<Table.Body>
 			{#each filteredOverrides as item (item.env)}
 				<Table.Row>
-					<Table.Cell class="align-top font-medium whitespace-nowrap">
+					<Table.Cell class="align-top whitespace-nowrap">
 						<code
-							class="inline-block max-w-full overflow-x-auto rounded bg-muted px-1.5 py-1 text-xs whitespace-nowrap sm:text-sm"
+							class="inline-block max-w-full overflow-x-auto rounded bg-muted px-1.5 py-1 text-xs font-medium whitespace-nowrap sm:text-sm"
 						>
 							{item.env}
 						</code>
 					</Table.Cell>
 					<Table.Cell class="align-top whitespace-normal">
 						<div class="space-y-2.5">
-							<div class="grid gap-2 sm:grid-cols-[minmax(5rem,auto)_1fr] sm:items-center">
+							<div class="grid gap-2 sm:grid-cols-label-auto sm:items-center">
 								<span
 									class="self-center text-xs font-medium tracking-wide text-muted-foreground uppercase"
 								>
@@ -89,14 +78,14 @@
 								<div class="flex flex-wrap gap-2">
 									{#if item.sensitive}
 										<span
-											class="rounded-full bg-amber-500/12 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400"
+											class="rounded-full bg-warning/12 px-2 py-1 text-xs font-medium text-warning"
 										>
 											Sensitive
 										</span>
 									{/if}
 									{#if item.deprecated}
 										<span
-											class="rounded-full bg-red-500/12 px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400"
+											class="rounded-full bg-destructive/12 px-2 py-1 text-xs font-medium text-destructive"
 										>
 											Deprecated
 										</span>

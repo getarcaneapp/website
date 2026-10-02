@@ -49,10 +49,6 @@ export function getPublishedPosts(): BlogPost[] {
 		.sort(byDateDesc);
 }
 
-export function getLatestPost(): BlogPost | undefined {
-	return getPublishedPosts()[0];
-}
-
 export function getFeaturedPost(): BlogPost | undefined {
 	return getPublishedPosts().find((post) => post.featured);
 }

@@ -1,10 +1,12 @@
 <script module>
 	// mdsvex reads this module script's named exports to override the HTML
 	// elements Markdown generates with these components. (`pre` is intentionally
-	// omitted — fenced code is handled at build time by the Shiki highlighter.)
+	// omitted — fenced code is handled at build time by the Shiki highlighter, which
+	// renders `CodeCopyButton` through the same `Components` import.)
 	export {
 		a,
 		blockquote,
+		CodeCopyButton,
 		figcaption,
 		h1,
 		h2,
@@ -28,12 +30,10 @@
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { copyCode } from '#lib/markdown/copy-code.js';
-
 	// mdsvex also passes frontmatter values as props; only `children` is used.
 	let { children }: { children?: Snippet } = $props();
 </script>
 
-<div class="markdown" use:copyCode>
+<div class="markdown">
 	{@render children?.()}
 </div>

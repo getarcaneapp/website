@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CheckIcon from 'virtual:icons/lucide/check';
+	import { CheckIcon } from '#lib/icons/index.js';
 	import { Select as SelectPrimitive } from 'bits-ui';
 	import { cn, type WithoutChild } from '#lib/utils.js';
 

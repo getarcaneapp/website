@@ -36,10 +36,7 @@
 			<ol class="divide-y divide-border border-y border-border">
 				{#each data.posts as post (post.slug)}
 					<li>
-						<a
-							href={post.href}
-							class="group grid gap-3 py-8 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-8"
-						>
+						<a href={post.href} class="group grid gap-3 py-8 sm:grid-cols-aside-44 sm:gap-8">
 							<time datetime={post.date} class="pt-1 text-sm text-muted-foreground">
 								{post.dateLabel}
 							</time>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ArrowRightIcon from 'virtual:icons/lucide/arrow-right';
+	import { ArrowRightIcon, FileTextIcon, HashIcon } from '#lib/icons/index.js';
 	import type { Component } from 'svelte';
 	import { tick } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
@@ -9,113 +9,131 @@
 	import * as Dialog from '#lib/components/ui/dialog/index.js';
 	import { SidebarNavItems } from '#lib/config/docs.js';
 	import { useIsMac } from '#lib/hooks/is-mac.svelte.js';
+	import { loadPagefind, search, type SearchResult } from '#lib/search/pagefind.js';
 	import { cn, resolveInternalPath } from '#lib/utils.js';
-	import CommandMenuItem from './command-search-item.svelte';
 
 	type KbdProps = HTMLAttributes<HTMLElement> & { content: string | Component };
 
 	const isMac = useIsMac();
+
 	let open = $state(false);
-	const openExternal = (href: string) => {
-		if (typeof window !== 'undefined') {
-			window.open(href, '_blank', 'noopener,noreferrer');
-		}
-	};
-
-	type SearchDoc = {
-		id: string;
-		title: string;
-		description: string;
-		section: string;
-		href: string;
-		headings: string[];
-		content: string;
-		type?: 'page' | 'heading';
-		parentTitle?: string;
-	};
-
 	let query = $state('');
-	let allDocs = $state<SearchDoc[]>([]);
-	let results = $state<SearchDoc[]>([]);
-	let loading = $state(false);
+	let results = $state.raw<SearchResult[]>([]);
+	let searching = $state(false);
+	let error = $state('');
 
-	async function ensureIndex() {
-		if (allDocs.length) return;
-		loading = true;
-		try {
-			const res = await fetch('/api/command');
-			const json = (await res.json()) as { docs: SearchDoc[] };
-			allDocs = json.docs;
-		} finally {
-			loading = false;
+	const openExternal = (href: string) => {
+		window.open(href, '_blank', 'noopener,noreferrer');
+	};
+
+	function setOpen(value: boolean) {
+		open = value;
+		if (value) {
+			// Warm the index so the first keystroke doesn't wait for it.
+			loadPagefind().catch(() => {});
+			return;
 		}
-	}
-
-	function score(doc: SearchDoc, q: string) {
-		const ql = q.toLowerCase();
-		let s = 0;
-
-		// exact match boost
-		if (doc.title.toLowerCase() === ql) s += 10;
-
-		if (doc.title.toLowerCase().includes(ql)) s += 5;
-		if (doc.section.toLowerCase().includes(ql)) s += 3;
-		if (doc.description.toLowerCase().includes(ql)) s += 2;
-		if (doc.headings.join(' ').toLowerCase().includes(ql)) s += 2;
-		if (doc.content.toLowerCase().includes(ql)) s += 1;
-
-		// type boost
-		if (doc.type === 'page') s += 0.5;
-
-		return s;
+		query = '';
+		results = [];
+		error = '';
+		searching = false;
 	}
 
 	async function onQueryChange() {
-		const q = query.trim();
-		if (!q) {
+		const term = query.trim();
+		if (!term) {
 			results = [];
+			searching = false;
+			error = '';
 			return;
 		}
-		await ensureIndex();
-		results = allDocs
-			.map((d) => ({ d, s: score(d, q) }))
-			.filter((x) => x.s > 0)
-			.sort((a, b) => b.s - a.s)
-			.slice(0, 50)
-			.map((x) => x.d);
+
+		searching = true;
+		try {
+			const found = await search(term);
+			if (found === null) return; // superseded by a newer keystroke
+			results = found;
+			error = '';
+			searching = false;
+		} catch {
+			results = [];
+			searching = false;
+			error = import.meta.env.DEV
+				? 'The search index is built by `pnpm build`; it isn’t available in dev mode.'
+				: 'Search is temporarily unavailable.';
+		}
 	}
 
 	async function runCommand(command: () => unknown) {
-		open = false;
+		setOpen(false);
 		await tick();
 		command();
 	}
 
-	function handleKeydown(e: KeyboardEvent) {
-		if ((e.key === 'l' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
-			if (
-				(e.target instanceof HTMLElement && e.target.isContentEditable) ||
-				e.target instanceof HTMLInputElement ||
-				e.target instanceof HTMLTextAreaElement ||
-				e.target instanceof HTMLSelectElement
-			) {
-				return;
-			}
+	const isEditableTarget = (target: EventTarget | null) =>
+		(target instanceof HTMLElement && target.isContentEditable) ||
+		target instanceof HTMLInputElement ||
+		target instanceof HTMLTextAreaElement ||
+		target instanceof HTMLSelectElement;
 
-			e.preventDefault();
-			open = !open;
-			if (open) ensureIndex();
-		}
+	// ⌘K / Ctrl+K toggles search, and "/" opens it. Any other combination — including
+	// modifiers on their own — is left to the browser.
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.repeat || e.isComposing) return;
+
+		const key = e.key.toLowerCase();
+		const isModK = key === 'k' && e.metaKey !== e.ctrlKey && !e.altKey && !e.shiftKey;
+		// "/" may need Shift or AltGr (reported as Ctrl+Alt) on some keyboard layouts.
+		const isSlash = key === '/' && !e.metaKey && (!e.ctrlKey || e.altKey);
+		if (!isModK && !isSlash) return;
+
+		// Let "/" be typed into fields.
+		if (isSlash && isEditableTarget(e.target)) return;
+
+		e.preventDefault();
+		setOpen(!open);
 	}
 </script>
 
 <svelte:document onkeydown={handleKeydown} />
 
+{#snippet searchHit(href: string, title: string, excerpt: string, section?: string, nested = false)}
+	<Command.Item
+		value={href}
+		variant={nested ? 'nested' : 'result'}
+		onSelect={() => runCommand(() => goto(resolveInternalPath(href)))}
+	>
+		{#if nested}
+			<HashIcon />
+		{:else}
+			<FileTextIcon />
+		{/if}
+		<div class="flex min-w-0 flex-1 flex-col gap-0.5">
+			<div class="flex min-w-0 items-baseline gap-2">
+				<span class="truncate">{title}</span>
+				{#if section}
+					<span class="ml-auto shrink-0 font-mono text-xs font-normal text-muted-foreground">
+						{section}
+					</span>
+				{/if}
+			</div>
+			{#if excerpt}
+				<!-- Pagefind escapes page text; the only markup is its <mark> highlights. -->
+				<p
+					class="line-clamp-2 text-xs font-normal text-muted-foreground [&_mark]:rounded-sm [&_mark]:bg-primary/15 [&_mark]:text-foreground"
+				>
+					{@html excerpt}
+				</p>
+			{/if}
+		</div>
+	</Command.Item>
+{/snippet}
+
 {#snippet CommandMenuKbd({ class: className, content, ...restProps }: KbdProps)}
 	{@const Content = content}
 	<kbd
 		class={cn(
-			"pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-border bg-muted px-1 font-sans text-[0.7rem] font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3",
+			"pointer-events-none flex h-5 items-center justify-center gap-1 rounded border border-border bg-muted px-1 font-sans text-2xs font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3",
 			className
 		)}
 		{...restProps}
@@ -128,86 +146,62 @@
 	</kbd>
 {/snippet}
 
-<Dialog.Root bind:open>
+<Dialog.Root bind:open={() => open, setOpen}>
 	<Dialog.Trigger>
 		{#snippet child(snippetProps: { props: Record<string, unknown> })}
 			<Button
 				{...snippetProps.props}
-				variant="secondary"
-				class={cn(
-					'relative h-8 w-full justify-start border border-border bg-background pl-3 font-normal text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground sm:pr-12 md:w-40 lg:w-56 xl:w-64'
-				)}
-				onclick={() => (open = true)}
+				variant="search"
+				class="relative h-8 w-full justify-start md:w-40 lg:w-56 xl:w-64"
+				onclick={() => setOpen(true)}
 			>
 				<span class="hidden lg:inline-flex">Search documentation...</span>
 				<span class="inline-flex lg:hidden">Search...</span>
 				<div class="absolute top-1.5 right-1.5 hidden gap-1 sm:flex">
 					{@render CommandMenuKbd({ content: isMac.current ? '⌘' : 'Ctrl' })}
-					{@render CommandMenuKbd({ content: 'L', class: 'aspect-square' })}
+					{@render CommandMenuKbd({ content: 'K', class: 'aspect-square' })}
 				</div>
 			</Button>
 		{/snippet}
 	</Dialog.Trigger>
-	<Dialog.Content
-		showCloseButton={false}
-		class="rounded-xl border border-border bg-popover p-2 pb-2 shadow-lg"
-	>
+	<Dialog.Content showCloseButton={false} variant="command">
 		<Dialog.Header class="sr-only">
 			<Dialog.Title>Search documentation...</Dialog.Title>
 			<Dialog.Description>Search docs</Dialog.Description>
 		</Dialog.Header>
 
-		<Command.Root
-			class="rounded-none bg-transparent **:data-[slot=command-input]:h-10 **:data-[slot=command-input]:py-0 **:data-[slot=command-input]:text-sm **:data-[slot=command-input]:placeholder:text-muted-foreground/70 **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:h-10 **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border **:data-[slot=command-input-wrapper]:border-border **:data-[slot=command-input-wrapper]:bg-background **:data-[slot=command-input-wrapper]:px-2"
-		>
+		<Command.Root shouldFilter={false}>
 			<Command.Input
 				placeholder="Search documentation..."
 				bind:value={query}
 				oninput={onQueryChange}
 			/>
-			<Command.List class="no-scrollbar min-h-28 scroll-pt-2 scroll-pb-1.5 overflow-auto">
-				<Command.Empty class="py-10 text-center text-sm text-muted-foreground">
-					{#if loading}Building search index…{/if}
-					{#if !loading}Type to search documentation.{/if}
-				</Command.Empty>
-
-				{#if query}
-					<Command.Group
-						heading="Search results"
-						class="!p-0 [&_[data-command-group-heading]]:scroll-mt-16 [&_[data-command-group-heading]]:!p-3 [&_[data-command-group-heading]]:!pb-1 [&_[data-command-group-heading]]:text-[0.65rem] [&_[data-command-group-heading]]:tracking-[0.3em] [&_[data-command-group-heading]]:uppercase"
-					>
-						{#each results as r (r.id)}
-							<CommandMenuItem
-								value={`${r.title} ${r.section} ${r.parentTitle ?? ''}`}
-								keywords={[r.description, ...r.headings]}
-								onSelect={() => runCommand(() => goto(resolveInternalPath(r.href)))}
-							>
-								<ArrowRightIcon />
-								<div class="flex flex-col">
-									<span>{r.title}</span>
-									{#if r.parentTitle}
-										<span class="text-[0.65rem] leading-none font-normal text-muted-foreground">
-											{r.parentTitle}
-										</span>
-									{/if}
-								</div>
-								<span
-									class="ml-auto font-mono text-xs font-normal text-muted-foreground tabular-nums"
-								>
-									{r.section}
-								</span>
-							</CommandMenuItem>
-						{/each}
-					</Command.Group>
+			<Command.List>
+				{#if query.trim()}
+					{#if error}
+						<p class="px-3 py-10 text-center text-sm text-muted-foreground">{error}</p>
+					{:else if searching && !results.length}
+						<p class="px-3 py-10 text-center text-sm text-muted-foreground">Searching…</p>
+					{:else if !results.length}
+						<p class="px-3 py-10 text-center text-sm text-muted-foreground">
+							No results for “{query.trim()}”.
+						</p>
+					{:else}
+						<Command.Group heading="Search results">
+							{#each results as result (result.href)}
+								{@render searchHit(result.href, result.title, result.excerpt, result.section)}
+								{#each result.headings as heading (heading.href)}
+									{@render searchHit(heading.href, heading.title, heading.excerpt, undefined, true)}
+								{/each}
+							{/each}
+						</Command.Group>
+					{/if}
 				{:else}
 					{#each SidebarNavItems as group (group.title)}
-						<Command.Group
-							heading={group.title}
-							class="!p-0 [&_[data-command-group-heading]]:scroll-mt-16 [&_[data-command-group-heading]]:!p-3 [&_[data-command-group-heading]]:!pb-1 [&_[data-command-group-heading]]:text-[0.65rem] [&_[data-command-group-heading]]:tracking-[0.3em] [&_[data-command-group-heading]]:uppercase"
-						>
+						<Command.Group heading={group.title}>
 							{#each group.items as item, i (i)}
-								<CommandMenuItem
-									value={item.title?.toString() ? `${group.title} ${item.title}` : ''}
+								<Command.Item
+									value={`${group.title} ${item.title}`}
 									onSelect={() =>
 										runCommand(() => {
 											if (!item.href) return;
@@ -220,7 +214,7 @@
 								>
 									<ArrowRightIcon />
 									{item.title}
-								</CommandMenuItem>
+								</Command.Item>
 							{/each}
 						</Command.Group>
 					{/each}

@@ -1,89 +1,63 @@
 <script lang="ts">
-	import AlertCircle from 'virtual:icons/lucide/alert-circle';
-	import AlertTriangle from 'virtual:icons/lucide/alert-triangle';
-	import Info from 'virtual:icons/lucide/info';
-	import Lightbulb from 'virtual:icons/lucide/lightbulb';
-	import OctagonAlert from 'virtual:icons/lucide/octagon-alert';
+	import {
+		AlertIcon,
+		AlertTriangleIcon,
+		DangerIcon,
+		InfoIcon,
+		LightbulbIcon
+	} from '#lib/icons/index.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { cn } from '#lib/utils.js';
 
-	let { class: className, children, ...restProps }: HTMLAttributes<HTMLElement> = $props();
-
-	// Extract text content to detect callout type
-	let textContent = $state('');
-
-	function getCalloutType(content: string): keyof typeof calloutConfig | null {
-		const lower = content.toLowerCase();
-		if (lower.includes('[!note]')) return 'note';
-		if (lower.includes('[!tip]')) return 'tip';
-		if (lower.includes('[!important]')) return 'important';
-		if (lower.includes('[!warning]')) return 'warning';
-		if (lower.includes('[!caution]')) return 'caution';
-		return null;
-	}
-
 	const calloutConfig = {
 		note: {
-			icon: Info,
+			icon: InfoIcon,
 			label: 'Note',
 			borderClass: 'border-l-[#0969da] dark:border-l-[#4493f8]',
 			titleClass: 'text-[#0969da] dark:text-[#4493f8]'
 		},
 		tip: {
-			icon: Lightbulb,
+			icon: LightbulbIcon,
 			label: 'Tip',
 			borderClass: 'border-l-[#1a7f37] dark:border-l-[#3fb950]',
 			titleClass: 'text-[#1a7f37] dark:text-[#3fb950]'
 		},
 		important: {
-			icon: AlertCircle,
+			icon: AlertIcon,
 			label: 'Important',
 			borderClass: 'border-l-[#8250df] dark:border-l-[#ab7df8]',
 			titleClass: 'text-[#8250df] dark:text-[#ab7df8]'
 		},
 		warning: {
-			icon: AlertTriangle,
+			icon: AlertTriangleIcon,
 			label: 'Warning',
 			borderClass: 'border-l-[#9a6700] dark:border-l-[#d29922]',
 			titleClass: 'text-[#9a6700] dark:text-[#d29922]'
 		},
 		caution: {
-			icon: OctagonAlert,
+			icon: DangerIcon,
 			label: 'Caution',
 			borderClass: 'border-l-[#cf222e] dark:border-l-[#f85149]',
 			titleClass: 'text-[#cf222e] dark:text-[#f85149]'
 		}
 	};
 
-	let type = $state<keyof typeof calloutConfig | null>(null);
-	let config = $state<(typeof calloutConfig)[keyof typeof calloutConfig] | null>(null);
+	type CalloutType = keyof typeof calloutConfig;
 
-	function cleanContent(element: HTMLElement) {
-		const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+	// `data-callout` is set at build time by the remarkCallouts plugin (src/lib/markdown/callouts.js).
+	let {
+		class: className,
+		children,
+		'data-callout': callout,
+		...restProps
+	}: HTMLAttributes<HTMLElement> & { 'data-callout'?: string } = $props();
 
-		let node;
-		while ((node = walker.nextNode())) {
-			if (node.textContent) {
-				node.textContent = node.textContent.replace(
-					/\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i,
-					''
-				);
-			}
-		}
-	}
-
-	function handleMount(element: HTMLElement) {
-		textContent = element.textContent || '';
-		type = getCalloutType(textContent);
-		config = type ? calloutConfig[type] : null;
-
-		if (type) {
-			cleanContent(element);
-		}
-	}
+	const config = $derived(
+		callout && callout in calloutConfig ? calloutConfig[callout as CalloutType] : null
+	);
 </script>
 
-{#if type && config}
+{#if config}
 	{@const Icon = config.icon}
 	<div
 		class={cn(
@@ -92,7 +66,6 @@
 			className
 		)}
 		{...restProps}
-		use:handleMount
 	>
 		<div class={cn('mb-2 flex items-center gap-2 leading-none font-medium', config.titleClass)}>
 			<Icon class="size-4 shrink-0" />
@@ -106,27 +79,7 @@
 	<blockquote
 		class={cn('mt-6 border-l-2 border-border pl-4 text-muted-foreground italic', className)}
 		{...restProps}
-		use:handleMount
 	>
 		{@render children?.()}
 	</blockquote>
 {/if}
-
-<!-- Usage Examples -->
-
-<!-- 
-> [!NOTE]
-> Highlights information that users should take into account, even when skimming.
-
-> [!TIP]
-> Optional information to help a user be more successful.
-
-> [!IMPORTANT]
-> Crucial information necessary for users to succeed.
-
-> [!WARNING]
-> Critical content demanding immediate user attention due to potential risks.
-
-> [!CAUTION]
-> Negative potential consequences of an action. 
- -->

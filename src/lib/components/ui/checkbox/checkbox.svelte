@@ -1,6 +1,5 @@
 <script lang="ts">
-	import CheckIcon from 'virtual:icons/lucide/check';
-	import MinusIcon from 'virtual:icons/lucide/minus';
+	import { CheckIcon, MinusIcon } from '#lib/icons/index.js';
 	import { Checkbox as CheckboxPrimitive } from 'bits-ui';
 	import { cn, type WithoutChildrenOrChild } from '#lib/utils.js';
 
