@@ -1,13 +1,13 @@
 ---
 title: Translating Arcane
-description: Help translate Arcane into your language
+description: Translate the Arcane interface into your language on Crowdin.
 ---
 
 <script lang="ts">
 import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
 </script>
 
-Help the community by translating Arcane into your language.
+Arcane's UI translations are managed on Crowdin. You translate strings in the browser, and Crowdin opens pull requests with the new translations against the Arcane repository.
 
 <ScreenshotFrame
   src="/img/screenshots/locale-switcher.jpeg"
@@ -17,15 +17,13 @@ Help the community by translating Arcane into your language.
   decoding="async"
 />
 
-## Getting Started
+## Translate strings
 
-1. Visit our [Crowdin project page](https://crowdin.com/project/arcane-docker-management).
-2. Choose the language you wish to translate into.
+1. Open the [Arcane project on Crowdin](https://crowdin.com/project/arcane-docker-management).
+2. Choose the language you want to translate into.
 3. Open the `en.json` source file.
-4. Now you can start translating the strings.
+4. Translate the strings.
 
-## Adding a New Language
+## Request a new language
 
-Is your language missing from Crowdin? You can [request its addition](https://github.com/getarcaneapp/arcane/issues/new?assignees=&labels=language-request&projects=&template=language-request.yml&title=%F0%9F%8C%90+Language+request%3A+%3Clanguage+name+in+english%3E).
-
-Make Sure to include the [ISO 639-1 Language Code](https://www.andiamo.co.uk/resources/iso-language-codes/) and the Native Language name
+If your language isn't on Crowdin yet, [request it on GitHub](https://github.com/getarcaneapp/arcane/issues/new?assignees=&labels=language-request&projects=&template=language-request.yml&title=%F0%9F%8C%90+Language+request%3A+%3Clanguage+name+in+english%3E). Include the [ISO 639-1 language code](https://www.andiamo.co.uk/resources/iso-language-codes/) and the language's native name.

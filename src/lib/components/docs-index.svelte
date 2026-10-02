@@ -1,68 +1,58 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
 	import {
-		ApiKeyIcon,
 		ArrowRightIcon,
 		BookOpenIcon,
-		CircleArrowUpIcon,
 		CodeIcon,
-		CustomizeIcon,
-		LayersIcon,
+		ContainersIcon,
+		EnvironmentsIcon,
 		NetworksIcon,
 		RocketIcon,
 		SettingsIcon,
 		ShieldCheckIcon,
-		TerminalIcon
+		UsersIcon
 	} from '#lib/icons/index.js';
 	import { SidebarNavItems } from '#lib/config/docs.js';
 
 	type IconComponent = Component<{ class?: string }>;
 
-	// Icon + blurb per sidebar section title (keys must match SidebarNavItems titles).
 	const SECTION_META: Record<string, { icon: IconComponent; description: string }> = {
 		'Get Started': {
 			icon: RocketIcon,
-			description: 'Install Arcane and get your first instance running.'
+			description: 'Install Arcane, migrate to 2.0, try preview builds, or downgrade.'
 		},
-		Features: {
-			icon: LayersIcon,
-			description: 'Containers, images, volumes, networks, Swarm, and more.'
+		'Managing Docker': {
+			icon: ContainersIcon,
+			description: 'Projects, containers, images, volumes, backups, and auto updates.'
 		},
-		Customization: {
-			icon: CustomizeIcon,
-			description: 'Project templates, template registries, and reusable variables.'
+		'Remote Hosts & Swarm': {
+			icon: EnvironmentsIcon,
+			description: 'Manage other Docker hosts with agents, and run Docker Swarm.'
 		},
-		Configuration: {
+		'Users & Access': {
+			icon: UsersIcon,
+			description: 'Single sign-on, passkeys, roles, and account recovery.'
+		},
+		'Settings & Integrations': {
 			icon: SettingsIcon,
-			description: 'Environment variables, appearance, notifications, and analytics.'
+			description: 'Appearance, notifications, the mobile app, and GPU monitoring.'
 		},
-		'Authentication & Access': {
-			icon: ApiKeyIcon,
-			description: 'SSO, access control, and federated credentials.'
-		},
-		Networking: {
+		'Reverse Proxy & Networking': {
 			icon: NetworksIcon,
-			description: 'Reverse proxies, WebSockets, and TLS configuration.'
+			description:
+				'Put Arcane behind Nginx, Apache, or Traefik, enable TLS, or use an outbound proxy.'
 		},
-		'Security & Hardening': {
+		Security: {
 			icon: ShieldCheckIcon,
-			description: 'Socket proxy, edge mTLS, and verified artifacts.'
+			description: 'Vulnerability scans, socket proxy, edge mTLS, and signed images.'
 		},
-		Guides: {
+		Reference: {
 			icon: BookOpenIcon,
-			description: 'Task-focused walkthroughs for common workflows.'
+			description: 'Environment variables, Compose labels, the API, and the CLI.'
 		},
-		'Upgrade & Migration': {
-			icon: CircleArrowUpIcon,
-			description: 'Move to Arcane 2.0 and try preview builds.'
-		},
-		CLI: {
-			icon: TerminalIcon,
-			description: 'Install and configure the Arcane command-line tool.'
-		},
-		Development: {
+		Contributing: {
 			icon: CodeIcon,
-			description: 'Contribute code or translations to Arcane.'
+			description: 'Build Arcane from source, translate it, and add build-time features.'
 		}
 	};
 

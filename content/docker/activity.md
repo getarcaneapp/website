@@ -1,0 +1,80 @@
+---
+title: 'Activity & Events'
+description: 'Follow running operations in the Activity Center and review past actions in the Event Log.'
+---
+
+<script lang="ts">
+import { Link } from '#lib/components/ui/link/index.js';
+import ScreenshotFrame from '#lib/components/screenshot-frame.svelte';
+</script>
+
+The **Activity Center** lists operations Arcane runs in the background, such as image pulls and deploys, so you can follow them and read their output from anywhere. The **Event Log** is the long-term audit trail for an environment.
+
+## Follow an activity
+
+Open the Activity Center from the sidebar or mobile navigation bar and select an activity.
+
+> [!NOTE]
+> Activity output, like <Link href="/docs/docker/image-builds">build</Link> output, shows the `docker` command's text and colors, as in a terminal.
+
+<ScreenshotFrame
+  src="/img/screenshots/activity-center.jpeg"
+  alt="A completed image build in the Activity Center."
+  caption="Find an operation in the Activity Center and open it to inspect its output."
+  loading="lazy"
+  decoding="async"
+/>
+
+Arcane tracks these operations:
+
+- image pulls, <Link href="/docs/docker/image-builds">builds</Link>, and update checks
+- project pull, build, deploy, redeploy, down, restart, and destroy
+- container start, stop, restart, redeploy, and delete
+- vulnerability scans and system prunes
+
+Each activity has one of these statuses:
+
+- **Queued**: waiting for a free slot.
+- **Running**: in progress.
+- **Completed**: finished successfully.
+- **Failed**: finished with an error; the output explains why.
+- **Cancelled**: stopped before it finished.
+
+If an activity is interrupted, for example by an Arcane restart, a background check marks it **Failed** so it doesn't stay stuck in **Running**.
+
+For projects, you can also attach to an operation as it runs with **Watch output**. See <Link href="/docs/docker/projects">Projects</Link>.
+
+## Set retention and concurrency
+
+Go to **Settings → Activity**:
+
+- **Retention Days**: how long finished activities are kept.
+- **Maximum Entries**: a hard cap on stored activity history.
+- **Concurrent Activity Limit**: how many activities may run at once. Activities beyond the limit wait in **Queued**.
+
+## Review automation runs
+
+With the `jobs:manage` permission:
+
+1. Open the environment's **Automations** tab.
+2. Open **Run history** for a job to see each run's attempts, errors, and per-target results, plus its operation output when it has an activity.
+
+A queued run on a remote environment shows **Waiting for environment** until the agent is reachable. Agents running an older Arcane version must be upgraded to report run history.
+
+Depending on its state, a run offers **Retry run** or **Cancel pending run**. A run marked **Needs attention** blocks later runs of the same job. Check its output and the affected resources, then choose **Resolve after review**. Resolving keeps the history and lets scheduled work continue; it doesn't rerun the operation or mark it successful.
+
+## Review the Event Log
+
+Open **Events** to view the audit trail. Events outlive the Activity Center's history.
+
+<ScreenshotFrame
+  src="/img/screenshots/event-log-page.jpeg"
+  alt="Arcane Event Log showing recorded actions and their timestamps."
+  caption="Use the Event Log to review actions taken in an environment."
+  loading="lazy"
+  decoding="async"
+/>
+
+Each row shows **Severity**, **Type**, **User** when known, and **Timestamp**. Search or filter by type and severity, then select a row for details.
+
+The log also records Docker daemon events, including container exits, out-of-memory kills, unhealthy status changes, and image, network, and volume changes. This includes actions taken outside Arcane, such as starting a container from the Docker CLI. New events appear as they arrive.

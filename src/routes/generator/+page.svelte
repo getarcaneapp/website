@@ -23,7 +23,12 @@
 						<BookOpenIcon class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
 						Setup Guide
 					</Button>
-					<Button variant="outline" size="sm" href="/docs/configuration/environment" class="group">
+					<Button
+						variant="outline"
+						size="sm"
+						href="/docs/reference/environment-variables"
+						class="group"
+					>
 						<SettingsIcon class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
 						Environment Docs
 					</Button>

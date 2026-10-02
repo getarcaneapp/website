@@ -1,6 +1,6 @@
 ---
-title: 'Socket Proxy Setup'
-description: 'Secure your Docker socket by using a proxy layer with Arcane.'
+title: 'Socket Proxy'
+description: 'Limit what Arcane can do through the Docker socket by putting a proxy in front of it.'
 ---
 
 <script lang="ts">
@@ -8,112 +8,28 @@ import { Snippet } from '#lib/components/ui/snippet/index.js';
 import { Link } from '#lib/components/ui/link/index.js';
 </script>
 
-> [!NOTE] Enhanced Security Setup
-> A Docker socket proxy adds an extra layer of safety by letting Arcane use only the Docker features it actually needs.
+> [!NOTE]
+> A Docker socket proxy is a small container that sits between Arcane and the Docker socket and only forwards the Docker API calls you allow. Mounting `/var/run/docker.sock` directly gives Arcane full control of Docker; with a proxy, Arcane gets only what it needs, and the socket itself is mounted read-only in the proxy.
 
-## Why Use a Socket Proxy?
+This page assumes you've read <Link href="/docs/get-started/installation">Installation</Link>, which covers the encryption key, the projects folder, starting Arcane, and the first login.
 
-By default, Arcane connects directly to the Docker socket (`/var/run/docker.sock`), which gives it full access to Docker. A socket proxy filters requests between Arcane and Docker so you can:
+## Set up the proxy
 
-- **Limit access** to only the Docker actions Arcane needs
-- **Keep the Docker socket read-only** inside the proxy
-- **Turn specific Docker features on or off**
-- **Add another layer between Arcane and Docker**
+1. Create a `compose.yaml` with one of the examples below. **wollomatic/socket-proxy** is recommended and is what the <Link href="/generator">compose generator</Link> produces. Use **Tecnativa** only if you already run it.
+2. Replace `<your-encryption-key>` with your key and `/opt/docker` with your projects folder.
+3. Run `docker compose up -d`. The proxy starts first, then Arcane connects to it.
 
-## 1. Create **_compose.yaml_** with Socket Proxy:
+Arcane uses the proxy because of this one setting:
+
+<Snippet text="DOCKER_HOST=tcp://docker-socket-proxy:2375" class="mt-2" />
 
 > [!NOTE]
-> On SELinux hosts, you generally only need SELinux-specific options on bind mounts and direct socket mode.
->
-> - Add `:z` to bind mounts where Arcane should manage files on the host (projects folder, build folder, backups, etc.).
-> - `label:disable` is still used in direct-socket mode to relax Docker socket access labels.
+> On SELinux hosts, add `:z` to bind mounts that Arcane manages on the host, such as the projects, builds, and backups folders. You don't need `label:disable` with a proxy; that is only for mounting the socket directly.
 
-The <Link href="/generator">compose generator</Link> uses **wollomatic/socket-proxy**. The Tecnativa example below still works if you already run that image.
-
-### Tecnativa docker-socket-proxy
+### wollomatic/socket-proxy
 
 ```yaml
 services:
-  # Docker Socket Proxy - see https://github.com/Tecnativa/docker-socket-proxy
-  docker-socket-proxy:
-    image: tecnativa/docker-socket-proxy:latest
-    container_name: arcane-docker-proxy
-    environment:
-      - EVENTS=1
-      - PING=1
-      - VERSION=1
-      # Security critical
-      - AUTH=0
-      - SECRETS=0
-      - POST=1
-      # Not always needed
-      - BUILD=0
-      - COMMIT=0
-      - CONFIGS=0
-      - CONTAINERS=1
-      - DISTRIBUTION=0
-      - EXEC=1
-      - IMAGES=1
-      - INFO=1
-      - NETWORKS=1
-      - NODES=0
-      - PLUGINS=0
-      - SERVICES=0
-      - SESSION=0
-      - SWARM=0
-      - SYSTEM=0
-      - TASKS=0
-      - VOLUMES=1
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - arcane-internal
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-
-  arcane:
-    image: ghcr.io/getarcaneapp/manager:latest
-    container_name: arcane
-    ports:
-      - '3552:3552'
-    volumes:
-      - arcane-data:/app/data
-      - /path/to/projects:/app/data/projects:z
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
-      - DOCKER_HOST=tcp://docker-socket-proxy:2375
-    networks:
-      - arcane-internal
-    depends_on:
-      - docker-socket-proxy
-    healthcheck:
-      test: ['CMD', './arcane', 'health', '--timeout', '2s']
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 15s
-    restart: unless-stopped
-
-networks:
-  arcane-internal:
-    driver: bridge
-    name: arcane-internal
-
-volumes:
-  arcane-data:
-    name: arcane-data
-```
-
-### wollomatic/socket-proxy (recommended)
-
-This is the layout the compose generator produces. Its allowlist covers the Docker API calls Arcane needs, including Swarm, image builds, commits, and image update checks.
-
-```yaml
-services:
-  # Docker Socket Proxy - see https://github.com/wollomatic/socket-proxy
   docker-socket-proxy:
     image: wollomatic/socket-proxy:1.13.1
     container_name: arcane-docker-proxy
@@ -187,11 +103,10 @@ services:
       - '3552:3552'
     volumes:
       - arcane-data:/app/data
-      - /path/to/projects:/app/data/projects:z
+      - /opt/docker:/opt/docker:z
     environment:
-      - PUID=1000
-      - PGID=1000
-      - ENCRYPTION_KEY=xxxxxxxxxxxxxxxxxxxxxx
+      - ENCRYPTION_KEY=<your-encryption-key>
+      - PROJECTS_DIRECTORY=/opt/docker
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
     networks:
       - arcane-internal
@@ -215,96 +130,102 @@ volumes:
     name: arcane-data
 ```
 
-## 2. Key Configuration Details:
+wollomatic blocks every request unless its HTTP method and path are allowed. This allowlist is the minimum Arcane needs, including Swarm, image builds, commits, and image update checks:
 
-### Tecnativa environment variables
+| Method   | Allowed paths                                                                                                                                       |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`    | ping, events, version, info, containers, exec, images, networks, volumes, distribution, swarm, nodes, services, tasks, secrets, configs             |
+| `HEAD`   | ping, version                                                                                                                                       |
+| `POST`   | containers, exec, images, networks, volumes, commit, build, BuildKit (`/session`, `/grpc`), registry auth, swarm, nodes, services, secrets, configs |
+| `PUT`    | container archives                                                                                                                                  |
+| `DELETE` | containers, images, networks, volumes, nodes, services, secrets, configs                                                                            |
 
-The socket proxy uses environment variables as simple switches. Use `1` to allow something and `0` to block it:
+`-allowfrom=arcane` accepts connections only from the Arcane container, and `-allowhealthcheck` is needed for the proxy's healthcheck.
 
-**Required for Arcane:**
+### Tecnativa docker-socket-proxy
 
-- `EVENTS=1` - lets Arcane watch for Docker activity
-- `CONTAINERS=1` - lets Arcane manage containers
-- `EXEC=1` - lets Arcane run commands inside containers
-- `IMAGES=1` - lets Arcane manage images
-- `NETWORKS=1` - lets Arcane manage networks
-- `VOLUMES=1` - lets Arcane manage volumes
-- `POST=1` - lets Arcane create or update things
-- `DISTRIBUTION=1` - lets Arcane inspect images and check for image updates.
+```yaml
+services:
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy:latest
+    container_name: arcane-docker-proxy
+    environment:
+      - EVENTS=1
+      - PING=1
+      - VERSION=1
+      - AUTH=0
+      - SECRETS=0
+      - POST=1
+      - BUILD=0
+      - COMMIT=0
+      - CONFIGS=0
+      - CONTAINERS=1
+      - DISTRIBUTION=1
+      - EXEC=1
+      - IMAGES=1
+      - INFO=1
+      - NETWORKS=1
+      - NODES=0
+      - PLUGINS=0
+      - SERVICES=0
+      - SESSION=0
+      - SWARM=0
+      - SYSTEM=0
+      - TASKS=0
+      - VOLUMES=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - arcane-internal
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
-**System Information:**
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - arcane-data:/app/data
+      - /opt/docker:/opt/docker:z
+    environment:
+      - ENCRYPTION_KEY=<your-encryption-key>
+      - PROJECTS_DIRECTORY=/opt/docker
+      - DOCKER_HOST=tcp://docker-socket-proxy:2375
+    networks:
+      - arcane-internal
+    depends_on:
+      - docker-socket-proxy
+    healthcheck:
+      test: ['CMD', './arcane', 'health', '--timeout', '2s']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
 
-- `PING=1` - health checks
-- `VERSION=1` - Docker version info
-- `INFO=1` - Docker system info
+networks:
+  arcane-internal:
+    driver: bridge
+    name: arcane-internal
 
-**Security Critical (Disabled):**
-
-- `AUTH=0` - blocks authentication-related APIs
-- `SECRETS=0` - blocks Docker secrets access
-
-**Optional (Disabled):**
-
-- `BUILD=0` - blocks image builds
-- `COMMIT=0` - blocks container commits
-- `CONFIGS=0` - blocks Docker configs
-- `NODES=0` - blocks node management
-- `PLUGINS=0` - blocks plugin management
-- `SERVICES=0` - blocks Swarm services
-- `SESSION=0` - blocks session management
-- `SWARM=0` - blocks Docker Swarm features
-- `SYSTEM=0` - blocks system-wide operations
-- `TASKS=0` - blocks Swarm tasks
-
-> [!NOTE]
-> The Tecnativa example above is a narrower allowlist. Enable `BUILD`, `COMMIT`, `DISTRIBUTION`, `SWARM`, `NODES`, `SERVICES`, `TASKS`, `SECRETS`, and `CONFIGS` if you want Swarm, image builds, commits, and image-update checks through that proxy.
-
-### wollomatic command flags
-
-wollomatic/socket-proxy denies every request unless you allow the HTTP method and path. The compose generator allowlist is the minimum Arcane needs:
-
-- `GET` — ping, events, version, info, containers, exec, images, networks, volumes, distribution, swarm, nodes, services, tasks, secrets, configs
-- `HEAD` — ping and version
-- `POST` — containers, exec, images, networks, volumes, commit, build, BuildKit (`/session`, `/grpc`), registry auth, swarm, nodes, services, secrets, configs
-- `PUT` — container archives
-- `DELETE` — containers, images, networks, volumes, nodes, services, secrets, configs
-
-`-allowfrom=arcane` only accepts connections from the Arcane container. `-allowhealthcheck` is required for the proxy healthcheck.
-
-### Arcane Configuration
-
-The only Arcane setting you usually need here is:
-
-<Snippet text="DOCKER_HOST=tcp://docker-socket-proxy:2375" class="mt-2" />
-
-This tells Arcane to use the proxy instead of connecting directly to Docker.
-
-## 3. Generating secrets
-
-You can generate the required secrets with the Arcane CLI in a temporary container or with your computer's `openssl` command.
-
-Via Docker Container:
-
-<Snippet text="docker run --rm ghcr.io/getarcaneapp/manager:latest /app/arcane generate secret" class="mt-2" />
-
-Standalone Arcane Binary:
-
-<Snippet text="arcane-cli generate secret" class="mt-2" />
-
-## 4. Start the Project
-
-```bash
-docker compose up -d
+volumes:
+  arcane-data:
+    name: arcane-data
 ```
 
-The proxy starts first, then Arcane connects to it.
+Tecnativa uses environment variables as switches: `1` allows an API section, `0` blocks it.
 
-## 5. Access Arcane
+| Variable                                                            | Value | Why                                                                         |
+| ------------------------------------------------------------------- | ----- | --------------------------------------------------------------------------- |
+| `EVENTS`, `CONTAINERS`, `EXEC`, `IMAGES`, `NETWORKS`, `VOLUMES`     | `1`   | Watch Docker activity and manage containers, images, networks, and volumes. |
+| `POST`                                                              | `1`   | Create and change resources. Without it the proxy is read-only.             |
+| `DISTRIBUTION`                                                      | `1`   | Inspect images and check for image updates.                                 |
+| `PING`, `VERSION`, `INFO`                                           | `1`   | Health checks and Docker version and system info.                           |
+| `AUTH`, `SECRETS`                                                   | `0`   | Block authentication and Docker secrets APIs.                               |
+| `BUILD`, `COMMIT`, `CONFIGS`, `NODES`, `SERVICES`, `SWARM`, `TASKS` | `0`   | Block image builds, commits, and Swarm.                                     |
+| `PLUGINS`, `SESSION`, `SYSTEM`                                      | `0`   | Block plugin, session, and system-wide APIs.                                |
 
-Open <Link href="http://localhost:3552">localhost:3552</Link> in your browser and follow the setup. The first time you sign in, you'll be asked to change the default admin password.
-
-Username:
-<Snippet text="arcane" class="mt-2 max-w-[300px]" />
-
-Password:
-<Snippet text="arcane-admin" class="mt-2 max-w-[300px]" />
+> [!NOTE]
+> This is narrower than the wollomatic allowlist. To use Swarm, image builds, or commits through Tecnativa, set `BUILD`, `COMMIT`, `SWARM`, `NODES`, `SERVICES`, `TASKS`, `SECRETS`, and `CONFIGS` to `1`.

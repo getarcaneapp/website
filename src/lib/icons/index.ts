@@ -1,9 +1,10 @@
-export { default as CustomizeIcon } from 'virtual:icons/material-symbols/inbox-customize-outline-rounded';
+export { default as EnvironmentsIcon } from 'virtual:icons/solar/server-minimalistic-linear';
+export { default as ContainersIcon } from 'virtual:icons/carbon/web-services-container';
 export { default as NetworksIcon } from 'virtual:icons/fluent/virtual-network-16-filled';
 export { default as VolumesIcon } from 'virtual:icons/fluent/hard-drive-20-filled';
 export { default as SettingsIcon } from 'virtual:icons/solar/settings-outline';
 export { default as SecurityIcon } from 'virtual:icons/ic/round-security';
-export { default as ApiKeyIcon } from 'virtual:icons/hugeicons/lock-key';
+export { default as UsersIcon } from 'virtual:icons/material-symbols/person-text';
 export { default as InfoIcon } from 'virtual:icons/pepicons-pop/info-circle';
 export { default as CpuIcon } from 'virtual:icons/solar/cpu-outline';
 export { default as PlayIcon } from 'virtual:icons/lucide/play';
@@ -25,14 +26,12 @@ export { default as BookOpenIcon } from 'virtual:icons/solar/notebook-minimalist
 export { default as CodeIcon } from 'virtual:icons/solar/code-bold';
 export { default as MoonIcon } from 'virtual:icons/solar/moon-bold';
 export { default as SunIcon } from 'virtual:icons/solar/sun-bold';
-export { default as CircleArrowUpIcon } from 'virtual:icons/solar/round-alt-arrow-up-linear';
 export { default as BoxIcon } from 'virtual:icons/solar/box-minimalistic-linear';
 export { default as EditIcon } from 'virtual:icons/solar/pen-linear';
 export { default as SearchIcon } from 'virtual:icons/solar/minimalistic-magnifer-linear';
 export { default as FileTextIcon } from 'virtual:icons/solar/file-text-linear';
 export { default as TerminalIcon } from 'virtual:icons/solar/programming-linear';
 export { default as GlobeIcon } from 'virtual:icons/solar/global-linear';
-export { default as LayersIcon } from 'virtual:icons/solar/layers-minimalistic-linear';
 export { default as HashIcon } from 'virtual:icons/gravity-ui/hashtag';
 export { default as ShieldCheckIcon } from 'virtual:icons/solar/shield-check-linear';
 export { default as AlertTriangleIcon } from 'virtual:icons/solar/danger-triangle-linear';

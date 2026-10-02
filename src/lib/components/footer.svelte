@@ -58,7 +58,7 @@
 			links: [
 				{ label: 'DockerHub', href: 'https://hub.docker.com/u/getarcaneapp', external: true },
 				{ label: 'GitHub', href: 'https://github.com/getarcaneapp/arcane', external: true },
-				{ label: 'API Reference', href: '/api-reference' },
+				{ label: 'API Reference', href: '/docs/reference/api' },
 				{ label: 'SBOM', href: '/sbom' }
 			]
 		},

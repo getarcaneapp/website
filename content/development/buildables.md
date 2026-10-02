@@ -1,0 +1,73 @@
+---
+title: 'Buildables'
+description: 'Optional Arcane features compiled in with a Go build tag.'
+---
+
+<script lang="ts">
+import { Snippet } from '#lib/components/ui/snippet/index.js';
+import BuildablesTable from '#lib/components/buildables-table.svelte';
+import { Link } from '#lib/components/ui/link/index.js';
+</script>
+
+Buildables are optional Arcane features that are only compiled in when you build with the Go `buildables` build tag. They're for developers and people who build their own Arcane binaries or images, usually for testing, CI, or demos.
+
+Prerequisites: a clone of the <Link href="https://github.com/getarcaneapp/arcane">Arcane repository</Link>, Go, `just`, and <Link href="https://viteplus.dev">Vite+</Link> for the frontend build. See <Link href="/docs/development/contribute">Contributing to Arcane</Link>.
+
+## Build Arcane with buildables
+
+Run these from the repository root.
+
+1. Build the frontend. It's written to `backend/frontend/dist` and embedded in the binary:
+
+<Snippet class="mt-2" text="just build single frontend" />
+
+2. Build the backend with the `buildables` tag and the features you want in `EnabledFeatures`:
+
+```bash
+cd backend
+CGO_ENABLED=0 go build \
+  -tags buildables \
+  -ldflags "-X github.com/getarcaneapp/arcane/backend/v2/buildables.EnabledFeatures=autologin" \
+  -trimpath \
+  -o arcane \
+  ./cmd/main.go
+```
+
+To build for a Linux container from another OS or architecture, add `GOOS=linux GOARCH=amd64` (or `arm64`) before `go build`.
+
+## Build a Docker image
+
+1. Build a Linux binary as above.
+2. Create `backend/Dockerfile.buildables` that copies it over the binary in the official image:
+
+```dockerfile
+FROM ghcr.io/getarcaneapp/manager:latest
+COPY arcane /app/arcane
+```
+
+3. Build the image from the `backend` directory:
+
+<Snippet class="mt-2" text="docker build -f backend/Dockerfile.buildables -t arcane:buildables backend" />
+
+For an agent image, use `ghcr.io/getarcaneapp/agent:latest` as the base and copy the binary to `/app/arcane-agent` instead.
+
+> [!NOTE]
+> Official images don't include buildables. If you need them, use a custom image like the one above.
+
+## Choose features
+
+`EnabledFeatures` is a comma-separated list, for example `autologin` or `feature-a,feature-b`. Names are case-insensitive and surrounding spaces are ignored.
+
+Some buildables read extra environment variables at runtime. These only exist in buildables builds; the table below lists them.
+
+<BuildablesTable />
+
+> [!NOTE]
+> **Official** buildables are maintained by the Arcane team. **Community** buildables are built and supported by the community.
+
+## Add a new buildable feature
+
+1. Put feature-only code in files guarded with `//go:build buildables` where appropriate.
+2. Check `buildables.HasBuildFeature("your-feature")` before running the feature. Without the `buildables` tag, a stub makes this always return `false`.
+3. Add any buildable-only settings to `BuildablesConfig` in `backend/internal/config/buildables_config.go`.
+4. Build tests for the feature with the `buildables` tag. `just test backend` already runs with `-tags=exclude_frontend,buildables` and `EnabledFeatures=autologin`.

@@ -315,7 +315,7 @@ volumes:
 						<p class="mt-1 text-sm leading-relaxed text-muted-foreground">
 							Live, anonymized check-ins from running Arcane servers.
 							<a
-								href={resolveInternalPath('/docs/configuration/analytics')}
+								href={resolveInternalPath('/docs/settings/analytics')}
 								class="font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
 							>
 								Learn more

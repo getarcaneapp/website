@@ -37,7 +37,7 @@ Edge certificates issued after the upgrade use the new algorithm. Existing CAs d
 
 ## Cookies and TLS
 
-Cookie headers can grow because the signatures are bigger. They might split into four pieces and reach five or six kilobytes total. Reverse proxies usually handle it but some need the buffer limit raised. See the <Link href="/docs/networking/websockets-reverse-proxies">reverse proxy guide</Link> for configuration examples.
+Cookie headers can grow because the signatures are bigger. They might split into four pieces and reach five or six kilobytes total. Reverse proxies usually handle it but some need the buffer limit raised. See the <Link href="/docs/networking/reverse-proxy">reverse proxy guide</Link> for configuration examples.
 
 TLS 1.3 becomes required for new edge connections that use these certificates. Proxies in the middle should support it or the old ECDSA setup stays untouched. See <Link href="/docs/security/edge-mtls">Edge Agent mTLS</Link> for details.
 

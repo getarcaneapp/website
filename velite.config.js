@@ -35,33 +35,27 @@ const getStarted = defineCollection({
 	schema: docSchema
 });
 
-const upgrade = defineCollection({
-	name: 'upgrade',
-	pattern: './upgrade/**/*.md',
+const docker = defineCollection({
+	name: 'docker',
+	pattern: './docker/**/*.md',
 	schema: docSchema
 });
 
-const features = defineCollection({
-	name: 'features',
-	pattern: './features/**/*.md',
+const remote = defineCollection({
+	name: 'remote',
+	pattern: './remote/**/*.md',
 	schema: docSchema
 });
 
-const customization = defineCollection({
-	name: 'customization',
-	pattern: './customization/**/*.md',
+const access = defineCollection({
+	name: 'access',
+	pattern: './access/**/*.md',
 	schema: docSchema
 });
 
-const configuration = defineCollection({
-	name: 'configuration',
-	pattern: './configuration/**/*.md',
-	schema: docSchema
-});
-
-const authentication = defineCollection({
-	name: 'authentication',
-	pattern: './authentication/**/*.md',
+const settings = defineCollection({
+	name: 'settings',
+	pattern: './settings/**/*.md',
 	schema: docSchema
 });
 
@@ -77,15 +71,9 @@ const security = defineCollection({
 	schema: docSchema
 });
 
-const guides = defineCollection({
-	name: 'guides',
-	pattern: './guides/**/*.md',
-	schema: docSchema
-});
-
-const cli = defineCollection({
-	name: 'cli',
-	pattern: './cli/**/*.md',
+const reference = defineCollection({
+	name: 'reference',
+	pattern: './reference/**/*.md',
 	schema: docSchema
 });
 
@@ -131,12 +119,6 @@ const blog = defineCollection({
 		})
 });
 
-const api = defineCollection({
-	name: 'api',
-	pattern: './api.md',
-	schema: docSchema
-});
-
 const privacy = defineCollection({
 	name: 'privacy',
 	pattern: './privacy.md',
@@ -148,19 +130,16 @@ export default defineConfig({
 	collections: {
 		indexPage,
 		getStarted,
-		upgrade,
-		features,
-		customization,
-		configuration,
-		authentication,
+		docker,
+		remote,
+		access,
+		settings,
 		networking,
 		security,
-		guides,
-		cli,
+		reference,
 		development,
 		changelog,
 		blog,
-		api,
 		privacy
 	},
 	output: { assets: 'static' },

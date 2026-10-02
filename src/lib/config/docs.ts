@@ -1,21 +1,18 @@
 import {
-	authentication,
-	cli,
-	configuration,
-	customization,
+	access,
 	development,
-	features,
+	docker,
 	getStarted,
-	guides,
 	networking,
+	reference,
+	remote,
 	security,
-	upgrade
+	settings
 } from '#velite/index.js';
 
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
 	{ href: '/blog', label: 'Blog' },
-	{ href: '/api-reference', label: 'API' },
 	{ href: '/generator', label: 'Compose Generator' },
 	{ href: '/community', label: 'Community' }
 ];
@@ -44,15 +41,13 @@ function toHref(path: string) {
 
 const ALL_DOCS: Doc[] = [
 	...getStarted,
-	...upgrade,
-	...features,
-	...customization,
-	...configuration,
-	...authentication,
+	...docker,
+	...remote,
+	...access,
+	...settings,
 	...networking,
 	...security,
-	...guides,
-	...cli,
+	...reference,
 	...development
 ] as Doc[];
 
@@ -75,98 +70,93 @@ function group(title: string, children: Array<SidebarNavItem | null>): SidebarNa
 	};
 }
 
-// Sidebar layout — paths listed in display order.
+function parent(
+	path: string,
+	children: Array<SidebarNavItem | null>,
+	title?: string
+): SidebarNavItem | null {
+	const item = leaf(path, title);
+	if (!item) return null;
+	return { ...item, items: children.filter((c): c is SidebarNavItem => c !== null) };
+}
+
 const GET_STARTED = group('Get Started', [
 	leaf('get-started/installation'),
 	leaf('get-started/podman'),
-	leaf('get-started/lxc-container')
+	leaf('get-started/lxc-container'),
+	leaf('get-started/migrate-v2'),
+	leaf('get-started/preview-builds'),
+	leaf('get-started/downgrading')
 ]);
 
-const SWARM_PARENT: SidebarNavItem = {
-	title: 'Docker Swarm',
-	href: toHref('features/swarm'),
-	items: [
-		leaf('features/swarm-cluster', 'Cluster'),
-		leaf('features/swarm-workloads', 'Workloads'),
-		leaf('features/swarm-nodes-agents', 'Nodes & Agents'),
-		leaf('features/swarm-configs-secrets', 'Configs & Secrets')
-	].filter((c): c is SidebarNavItem => c !== null)
-};
-
-const PROJECTS_PARENT: SidebarNavItem = {
-	title: 'Projects',
-	href: toHref('features/projects'),
-	items: [leaf('features/git-sync', 'Git Sync')].filter((c): c is SidebarNavItem => c !== null)
-};
-
-const FEATURES = group('Features', [
-	PROJECTS_PARENT,
-	leaf('features/containers'),
-	leaf('features/images'),
-	leaf('features/image-builds'),
-	leaf('features/volumes'),
-	leaf('features/backups'),
-	leaf('features/networks'),
-	leaf('features/vulnerability-scans'),
-	leaf('features/environments'),
-	leaf('features/activity-and-events'),
-	SWARM_PARENT
+const MANAGING_DOCKER = group('Managing Docker', [
+	parent('docker/projects', [leaf('docker/git-sync'), leaf('docker/gitops-hooks')]),
+	leaf('docker/containers'),
+	leaf('docker/images'),
+	leaf('docker/image-builds'),
+	leaf('docker/volumes'),
+	leaf('docker/networks'),
+	leaf('docker/backups'),
+	leaf('docker/auto-updates'),
+	parent('docker/templates', [leaf('docker/template-registries')]),
+	leaf('docker/variables'),
+	leaf('docker/activity')
 ]);
 
-const CUSTOMIZATION = group('Customization', [
-	leaf('customization/templates', 'Using Templates'),
-	leaf('customization/registries'),
-	leaf('customization/variables')
+const REMOTE = group('Remote Hosts & Swarm', [
+	leaf('remote/environments'),
+	parent('remote/swarm', [
+		leaf('remote/swarm-cluster', 'Cluster'),
+		leaf('remote/swarm-workloads', 'Workloads'),
+		leaf('remote/swarm-nodes-agents', 'Nodes & Agents'),
+		leaf('remote/swarm-configs-secrets', 'Configs & Secrets')
+	])
 ]);
 
-const CONFIGURATION = group('Configuration', [
-	leaf('configuration/environment'),
-	leaf('configuration/appearance'),
-	leaf('configuration/notifications'),
-	leaf('configuration/analytics')
+const ACCESS = group('Users & Access', [
+	leaf('access/sso'),
+	leaf('access/passkeys'),
+	leaf('access/roles'),
+	leaf('access/federated-credentials'),
+	leaf('access/account-recovery')
 ]);
 
-const AUTH_ACCESS = group('Authentication & Access', [
-	leaf('authentication/sso'),
-	leaf('authentication/passkeys'),
-	leaf('authentication/rbac', 'Access Control'),
-	leaf('authentication/federated-credentials')
+const SETTINGS = group('Settings & Integrations', [
+	leaf('settings/appearance'),
+	leaf('settings/notifications'),
+	leaf('settings/mobile-app'),
+	leaf('settings/gpu-monitoring'),
+	leaf('settings/analytics')
 ]);
 
-const NETWORKING = group('Networking', [
-	leaf('networking/proxy'),
-	leaf('networking/websockets-reverse-proxies'),
-	leaf('networking/traefik'),
-	leaf('networking/tls')
+const NETWORKING = group('Reverse Proxy & Networking', [
+	leaf('networking/reverse-proxy'),
+	leaf('networking/tls'),
+	leaf('networking/outbound-proxy')
 ]);
 
-const SECURITY = group('Security & Hardening', [
+const SECURITY = group('Security', [
+	leaf('security/vulnerability-scans'),
 	leaf('security/socket-proxy'),
-	leaf('security/account-recovery'),
 	leaf('security/edge-mtls'),
 	leaf('security/verify-artifacts')
 ]);
 
-const GUIDES = group('Guides', [
-	leaf('guides/updates'),
-	leaf('guides/arcane-mobile'),
-	leaf('guides/gitops-lifecycle-hooks'),
-	leaf('guides/custom-metadata'),
-	leaf('guides/buildables'),
-	leaf('guides/buildables/autologin'),
-	leaf('guides/gpu-setup')
+const REFERENCE = group('Reference', [
+	leaf('reference/environment-variables'),
+	leaf('reference/compose-labels'),
+	leaf('reference/api'),
+	parent(
+		'reference/cli/install',
+		[leaf('reference/cli/config'), leaf('reference/cli/commands')],
+		'CLI'
+	)
 ]);
 
-const UPGRADE = group('Upgrade & Migration', [
-	leaf('upgrade/migrate-v2'),
-	leaf('upgrade/next-images')
-]);
-
-const CLI = group('CLI', [leaf('cli/install'), leaf('cli/config'), leaf('cli/commands')]);
-
-const DEVELOPMENT = group('Development', [
+const CONTRIBUTING = group('Contributing', [
 	leaf('development/contribute'),
-	leaf('development/translate')
+	leaf('development/translate'),
+	parent('development/buildables', [leaf('development/buildables/autologin')])
 ]);
 
 const COMMUNITY: SidebarNavItem = {
@@ -183,16 +173,14 @@ const COMMUNITY: SidebarNavItem = {
 
 const sectionNavItems: SidebarNavItem[] = [
 	GET_STARTED,
-	UPGRADE,
-	FEATURES,
-	CUSTOMIZATION,
-	CONFIGURATION,
-	AUTH_ACCESS,
+	MANAGING_DOCKER,
+	REMOTE,
+	ACCESS,
+	SETTINGS,
 	NETWORKING,
 	SECURITY,
-	GUIDES,
-	CLI,
-	DEVELOPMENT
+	REFERENCE,
+	CONTRIBUTING
 ].filter((s) => s.items.length > 0);
 
 export const SidebarNavItems: SidebarNavItem[] = [...sectionNavItems, COMMUNITY];

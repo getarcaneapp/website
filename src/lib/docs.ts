@@ -1,38 +1,32 @@
 import { error } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 import {
-	api,
-	authentication,
-	cli,
-	configuration,
-	customization,
+	access,
 	development,
-	features,
+	docker,
 	getStarted,
-	guides,
 	indexPage,
 	networking,
 	privacy,
+	reference,
+	remote,
 	security,
-	upgrade
+	settings
 } from '#velite/index.js';
 
 type CollectionDoc = (typeof indexPage)[number];
 
 const allDocs: CollectionDoc[] = [
 	...indexPage,
-	...api,
 	...privacy,
 	...getStarted,
-	...upgrade,
-	...features,
-	...customization,
-	...configuration,
-	...authentication,
+	...docker,
+	...remote,
+	...access,
+	...settings,
 	...networking,
 	...security,
-	...guides,
-	...cli,
+	...reference,
 	...development
 ];
 
