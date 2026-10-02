@@ -1,53 +1,32 @@
 <script lang="ts">
-	import { AppleBrandIcon, ExternalLinkIcon } from '#lib/icons/index.js';
-	import { Button } from '#lib/components/ui/button/index.js';
+	import { AppleBrandIcon, ArrowRightIcon } from '#lib/icons/index.js';
+	import { trackEvent } from '#lib/analytics.js';
+	import { cn } from '#lib/utils.js';
+
+	let { class: className }: { class?: string } = $props();
 
 	const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Y9KUft8F';
 </script>
 
-<section class="relative pb-20">
-	<div
-		class="relative overflow-hidden rounded-xl border border-primary/20 bg-linear-to-br from-primary/3 via-background to-background p-6 md:flex-row md:items-center md:justify-between md:px-8 md:py-8"
-	>
-		<div class="pointer-events-none absolute -inset-20 opacity-30" aria-hidden="true">
-			<div class="absolute inset-0 glow-left"></div>
-		</div>
-
-		<div class="relative flex items-start gap-5">
-			<div
-				class="flex size-12 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-primary/5"
-			>
-				<AppleBrandIcon class="size-6 text-primary" />
-			</div>
-			<div>
-				<span
-					class="mb-3 inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-0.5 font-mono text-xs font-medium text-primary"
-				>
-					TestFlight beta
-				</span>
-				<h2 class="text-lg font-semibold tracking-tight text-foreground">Arcane Mobile for iOS</h2>
-				<p class="mt-1 max-w-xl text-sm leading-relaxed text-muted-foreground">
-					Manage your Docker containers on the go. Native app for iPhone, iPad, and Mac — now
-					accepting beta testers.
-				</p>
-				<div class="mt-5 flex items-center gap-4">
-					<Button
-						href={TESTFLIGHT_URL}
-						target="_blank"
-						rel="noopener noreferrer"
-						variant="default"
-						class="group"
-					>
-						Join the TestFlight beta
-						<ExternalLinkIcon
-							class="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-						/>
-					</Button>
-					<span class="text-xs text-muted-foreground"
-						>Requires iOS 18+ / iPadOS 18+ / macOS 26+</span
-					>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+<a
+	href={TESTFLIGHT_URL}
+	target="_blank"
+	rel="noopener noreferrer"
+	title="Requires iOS 18+ / iPadOS 18+ / macOS 26+"
+	onclick={() => trackEvent('CTA Clicked', { cta: 'testflight', placement: 'home_hero' })}
+	class={cn(
+		'group inline-flex max-w-full items-center gap-2.5 rounded-full border border-primary/30 bg-primary/8 px-3.5 py-1.5 text-sm text-foreground/90 shadow-sm shadow-primary/10 backdrop-blur-sm transition-colors hover:border-primary/50 hover:bg-primary/12 hover:text-foreground',
+		className
+	)}
+>
+	<AppleBrandIcon class="size-3.5 shrink-0 text-foreground" aria-hidden="true" />
+	<span class="truncate">Arcane for iOS</span>
+	<span class="h-3.5 w-px shrink-0 bg-primary/30" aria-hidden="true"></span>
+	<span class="inline-flex shrink-0 items-center gap-0.5 font-medium text-primary">
+		Join the beta
+		<ArrowRightIcon
+			class="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+			aria-hidden="true"
+		/>
+	</span>
+</a>

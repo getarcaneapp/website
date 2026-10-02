@@ -3,7 +3,7 @@
 	import { ArrowRightIcon, ExternalLinkIcon } from '#lib/icons/index.js';
 	import { trackEvent } from '#lib/analytics.js';
 	import CommunityPreview from '#lib/components/community/community-preview.svelte';
-	import ContentWrapper from '#lib/components/content-wrapper.svelte';
+	import RedditComments from '#lib/components/community/reddit-comments.svelte';
 	import LogoFull from '#lib/components/logo-full.svelte';
 	import MobileBetaCallout from '#lib/components/mobile-beta-callout.svelte';
 	import Button from '#lib/components/ui/button/button.svelte';
@@ -180,16 +180,18 @@ volumes:
 		<div class="absolute inset-0 glow-top"></div>
 	</div>
 
-	<ContentWrapper>
-		<section class="relative pt-10 pb-16 md:pt-14 md:pb-20">
+	<div class="mx-auto w-full max-w-screen-2xl px-4 pt-6 sm:pt-10 lg:px-6">
+		<section
+			class="relative grid items-center gap-12 pt-10 pb-16 md:pt-14 md:pb-20 lg:min-h-screen-70 lg:grid-cols-2 lg:gap-16"
+		>
 			<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
 
-			<div class="relative mx-auto flex max-w-4xl flex-col items-center text-center">
-				<LogoFull class="mb-10 h-16 w-auto sm:h-20 md:h-24" />
+			<div class="relative flex flex-col items-center text-center lg:items-start lg:text-left">
+				<MobileBetaCallout class="mb-8" />
 
-				<h1
-					class="text-3xl font-semibold tracking-tighter text-balance sm:text-4xl md:text-5xl lg:text-6xl"
-				>
+				<LogoFull class="mb-8 h-16 w-auto sm:h-20 lg:h-24" />
+
+				<h1 class="text-3xl font-semibold tracking-tighter text-balance sm:text-4xl md:text-5xl">
 					<span
 						class="bg-linear-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent"
 					>
@@ -203,12 +205,7 @@ volumes:
 					</span>
 				</h1>
 
-				<p class="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-					A beautiful, intuitive interface for managing your Docker containers, images, networks,
-					and volumes. No terminal required.
-				</p>
-
-				<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+				<div class="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
 					<Button
 						size="lg"
 						href="/docs/get-started/installation"
@@ -241,7 +238,7 @@ volumes:
 				</p>
 			</div>
 
-			<div class="relative mx-auto mt-16 w-full max-w-2xl">
+			<div class="relative mx-auto w-full max-w-2xl lg:max-w-none">
 				<div
 					class="pointer-events-none absolute -inset-4 rounded-2xl glow-center opacity-60 dark:opacity-40"
 					aria-hidden="true"
@@ -276,9 +273,11 @@ volumes:
 				</div>
 			</div>
 		</section>
+	</div>
 
-		<MobileBetaCallout />
+	<RedditComments />
 
+	<div class="mx-auto w-full max-w-screen-2xl px-4 pb-6 sm:pb-10 lg:px-6">
 		<section class="relative pb-20">
 			<div class="mb-10 flex flex-col items-center gap-2 text-center">
 				<h2 class="mt-3 font-heading text-3xl font-semibold tracking-tight md:text-4xl">
@@ -435,5 +434,5 @@ volumes:
 				{/if}
 			</div>
 		</section>
-	</ContentWrapper>
+	</div>
 </div>

@@ -47,7 +47,7 @@
 		class={cn(
 			'group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar',
 			variant === 'docs' &&
-				'min-h-[calc(100vh-var(--header-height))] gap-6 px-0 [--sidebar-width:240px] [--top-spacing:0] lg:grid lg:grid-cols-[var(--sidebar-width)_minmax(0,1fr)] lg:gap-8 lg:[--sidebar-width:260px] lg:[--top-spacing:calc(var(--spacing)*4)] 2xl:[--sidebar-width:280px] 3xl:fixed:container 3xl:fixed:px-3',
+				'min-h-[calc(100vh-var(--header-height))] gap-6 px-0 [--sidebar-width:240px] [--top-spacing:0] lg:grid lg:grid-cols-[var(--sidebar-width)_minmax(0,1fr)] lg:gap-8 lg:[--sidebar-width:260px] lg:[--top-spacing:calc(var(--spacing)*4)] 2xl:[--sidebar-width:280px]',
 			className
 		)}
 		bind:this={ref}
