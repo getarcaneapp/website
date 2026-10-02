@@ -1,11 +1,3 @@
-/**
- * Browser client for the Pagefind full-text index.
- *
- * The index is generated from the prerendered HTML by `pagefind --site build` after `vp build`
- * and served from `/pagefind/`. Only elements marked `data-pagefind-body` (docs and blog
- * content) are indexed, so it isn't available under `pnpm dev` until a build has run.
- */
-
 type PagefindSubResult = {
 	title: string;
 	url: string;

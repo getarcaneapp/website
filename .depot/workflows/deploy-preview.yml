@@ -68,7 +68,7 @@ jobs:
         run: vp run velite
 
       - name: Build site
-        run: vp build
+        run: vp run build
 
       - name: Upload and Deploy Preview
         env:

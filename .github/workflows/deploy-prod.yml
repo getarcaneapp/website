@@ -40,10 +40,7 @@ jobs:
         run: vp run velite
 
       - name: Build site
-        run: vp build
-
-      - name: Build search index
-        run: vp exec pagefind --site build
+        run: vp run build
 
       - name: Deploy to Cloudflare Workers
         env:
