@@ -1,0 +1,22 @@
+---
+import type { CommunityItem } from '../../lib/types/community.type';
+import CommunityCard from './CommunityCard.astro';
+
+interface Props {
+	items: CommunityItem[];
+	emptyMessage?: string;
+}
+const { items, emptyMessage = 'Nothing here yet — check back soon.' } = Astro.props;
+---
+
+{items.length ? (
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		{items.map((item) => (
+			<CommunityCard item={item} />
+		))}
+	</div>
+) : (
+	<div class="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border py-16 text-center">
+		<p class="text-sm text-muted-foreground">{emptyMessage}</p>
+	</div>
+)}

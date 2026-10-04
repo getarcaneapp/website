@@ -1,0 +1,144 @@
+---
+import { DISCORD_URL } from '../../lib/config/docs';
+import { buildables } from '../../lib/config/pages/buildables';
+---
+
+<div class="buildables not-content">
+	<div class="buildables-head">
+		<span>Current buildables</span>
+		<span class="badge">{buildables.length} available</span>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th>Feature</th>
+				<th>Description</th>
+				<th>Source</th>
+				<th>Docs</th>
+				<th>Config</th>
+			</tr>
+		</thead>
+		<tbody>
+			{buildables.map((buildable) => (
+				<tr>
+					<td>
+						<code>{buildable.feature}</code>
+					</td>
+					<td>{buildable.description}</td>
+					<td>
+						{buildable.source === 'Community' ? (
+							<a
+								class="badge outline"
+								href={buildable.sourceHref ?? DISCORD_URL}
+								target="_blank"
+								rel="noreferrer"
+								title="Provided by the community"
+							>
+								Community
+							</a>
+						) : (
+							<span class="badge" title="Maintained by the Arcane team">
+								Official
+							</span>
+						)}
+					</td>
+					<td>
+						<a class="docs-link" href={buildable.docsHref}>
+							Full docs
+						</a>
+					</td>
+					<td>
+						{buildable.envVars?.length ? (
+							<div class="env-list">
+								{buildable.envVars.map((envVar) => (
+									<code>{envVar}</code>
+								))}
+							</div>
+						) : (
+							<span class="muted">—</span>
+						)}
+					</td>
+				</tr>
+			))}
+		</tbody>
+	</table>
+</div>
+
+<style>
+	.buildables {
+		margin-top: 1rem;
+		padding: 1rem;
+		border: 1px solid var(--surface-border);
+		border-radius: var(--sl-radius);
+		background-color: color-mix(in oklch, var(--surface-muted), transparent 60%);
+		overflow-x: auto;
+	}
+	.buildables-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: var(--sl-text-sm);
+	}
+	th,
+	td {
+		padding: 0.6rem 0.75rem;
+		border-bottom: 1px solid var(--sl-color-hairline-light);
+		text-align: start;
+		vertical-align: top;
+	}
+	th {
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	tr:last-child td {
+		border-bottom: 0;
+	}
+	code {
+		padding: 0.1rem 0.35rem;
+		border-radius: 0.25rem;
+		background-color: var(--surface-muted);
+		font-size: var(--sl-text-xs);
+	}
+	.badge {
+		display: inline-flex;
+		padding: 0.125rem 0.5rem;
+		border-radius: 999px;
+		background-color: var(--surface-muted);
+		font-size: var(--sl-text-xs);
+		font-weight: 500;
+		letter-spacing: normal;
+		text-transform: none;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.badge.outline {
+		border: 1px solid var(--surface-border);
+		background: transparent;
+	}
+	.docs-link {
+		color: var(--sl-color-accent);
+		font-weight: 500;
+		text-underline-offset: 0.2em;
+	}
+	.env-list {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.25rem;
+	}
+	.muted {
+		color: var(--sl-color-gray-3);
+	}
+</style>

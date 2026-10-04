@@ -1,0 +1,94 @@
+---
+title: 'Image Builds'
+description: 'Build container images from Compose projects or a build workspace, locally or with Depot.'
+---
+
+import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
+
+Arcane builds container images from a Dockerfile, for a Compose project's `build:` services or by hand in the **Build Workspace**. Builds run on the local Docker host or on Depot, a hosted remote build service.
+
+## Configure build settings
+
+Open **Settings → Builds** and set:
+
+1. **Builds Directory**: absolute path inside the Arcane container that the workspace opens.
+2. **Default Provider**: **Local Docker** or **Depot**.
+3. **Build Timeout**: between 60 and 14,400 seconds.
+4. **Depot Project ID** and **Depot Token**: set both to enable Depot.
+
+> [!TIP]
+> A blank Depot token on save keeps the saved one.
+
+## Mount the builds folder
+
+The Build Workspace reads build contexts from **Builds Directory** (`/builds` by default) inside the Arcane container. In Arcane's `compose.yaml`, mount a host folder such as `/srv/arcane/builds:/builds`, or a named volume such as `arcane-builds:/builds` declared under the top-level `volumes:` key.
+
+## Build from a project
+
+For Compose services with `build:`, use **Build** or **Build & Deploy** on the project page.
+
+> [!NOTE]
+> Depot builds and pushed builds need an explicit `image:` name on each service. Generated local-only tags can't be pushed.
+
+## Run a manual build
+
+<ScreenshotFrame
+  name="image-builds"
+  alt="A completed local Docker image build with its context files and output."
+  caption="Build an image from a workspace and follow the build output in Arcane."
+  loading="lazy"
+  decoding="async"
+/>
+
+1. Open **Images → Builds**.
+2. In the left panel, choose a context folder.
+3. In **Build Configuration**, name the image (see [Name the image](#name-the-image)).
+4. Optionally expand **Advanced** for Dockerfile path, target stage, platforms, build args, labels, cache, and runtime options.
+5. Pick a provider.
+6. Choose **Push**, **Load**, or both.
+7. Click **Build** and watch the live output.
+
+### Name the image
+
+A build that only loads locally uses the free-form **Image Tags** field: one or more full references, separated by commas or newlines.
+
+With **Push** on, which includes every Depot build, choose:
+
+- **Registry**: one of your enabled container registries.
+- **Repository name**: one of the repository names saved on that registry.
+- **Tag**: free text, such as `1.0.0`.
+
+Arcane shows the resulting `host/repository:tag` as a read-only **Image reference** above the build button. Changing the registry clears the repository, and a repository not in that registry's list is rejected.
+
+| Message                                          | What to do                                                                                                 |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| No repository names configured for this registry | Add repository names in your [registry settings](/docs/docker/images#private-registries). |
+| No enabled registries                            | Add or enable a container registry.                                                                        |
+| No permission to list registries                 | Ask an admin for registry read access.                                                                     |
+
+### Rebuild from history
+
+The **Build History** tab lists every build with its status, provider, time, and duration. Open a row to see its configuration and output, and click **Rebuild** to load that configuration into the form.
+
+## Build providers
+
+| Provider     | Where it builds                 | Push and Load                                           |
+| ------------ | ------------------------------- | ------------------------------------------------------- |
+| Local Docker | The Docker host running Arcane. | You choose. With neither selected, the image is loaded. |
+| Depot        | Depot's hosted build machines.  | Push is always on and Load is always off.               |
+
+The default provider comes from **Settings → Builds**, and you can override it for each manual build. If Depot isn't configured, Arcane uses Local Docker.
+
+## Reference
+
+### Build options
+
+**Push** sends the image to a registry; **Load** adds it to the local Docker images. Arcane rejects options the provider doesn't support:
+
+| Option                                             | Meaning                                                  | Local Docker | Depot |
+| -------------------------------------------------- | -------------------------------------------------------- | ------------ | ----- |
+| Platforms                                          | Target CPU architectures, such as `linux/amd64`.         | One platform | Many  |
+| Cache To                                           | Where to export the build cache, such as a registry ref. | No           | Yes   |
+| Entitlements                                       | Extra BuildKit permissions, such as `network.host`.      | No           | Yes   |
+| Privileged                                         | Runs build steps with elevated privileges.               | No           | Yes   |
+| Network, Isolation, Shm size, Ulimits, Extra Hosts | Runtime settings for `RUN` steps.                        | Yes          | No    |

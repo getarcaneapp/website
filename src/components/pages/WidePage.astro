@@ -1,0 +1,26 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+interface Props {
+	title: string;
+	description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<StarlightPage frontmatter={{ title, description, template: 'splash', editUrl: false }}>
+	<div class="wide-page">
+		<slot />
+	</div>
+</StarlightPage>
+
+<style is:global>
+	:root:has(.wide-page) .content-panel .sl-container {
+		max-width: 94rem;
+	}
+	@media (min-width: 64rem) {
+		:root:has(.wide-page) .page-title h1 {
+			font-size: 2.25rem;
+		}
+	}
+</style>

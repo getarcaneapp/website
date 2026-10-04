@@ -1,4 +1,3 @@
-import type { Component } from 'svelte';
 import {
 	BookOpenIcon,
 	BoxIcon,
@@ -11,7 +10,7 @@ import {
 	WrenchIcon
 } from '#lib/icons/index.js';
 
-type IconComponent = Component<{ class?: string }>;
+type IconComponent = typeof SparklesIcon;
 
 export interface Feature {
 	icon: IconComponent;

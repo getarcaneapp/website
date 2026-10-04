@@ -1,0 +1,50 @@
+---
+import { envSettingsOverrides } from '../../lib/config/pages/runtime-config';
+import TableFilter from './TableFilter.astro';
+---
+
+<TableFilter
+	label="Search setting overrides"
+	noun="setting overrides"
+	total={envSettingsOverrides.length}
+	empty="No setting overrides match. Try a shorter name or clear the search."
+>
+	<table>
+		<thead>
+			<tr>
+				<th>Env Var</th>
+				<th>Details</th>
+			</tr>
+		</thead>
+		<tbody>
+			{envSettingsOverrides.map((item) => (
+				<tr data-search={`${item.env} ${item.settingKey} ${item.description}`.toLowerCase()}>
+					<td>
+						<code>{item.env}</code>
+					</td>
+					<td>
+						<div class="env-details">
+							<div class="env-meta">
+								<span class="env-label">Setting</span>
+								<code>{item.settingKey}</code>
+							</div>
+							<p>{item.description}</p>
+							{item.requires && (
+								<p class="env-note">
+									<span class="env-label">Requires:</span> {item.requires}
+								</p>
+							)}
+							{item.note && <p class="env-note">{item.note}</p>}
+							{(item.sensitive || item.deprecated) && (
+								<div class="env-badges">
+									{item.sensitive && <span class="env-badge sensitive">Sensitive</span>}
+									{item.deprecated && <span class="env-badge deprecated">Deprecated</span>}
+								</div>
+							)}
+						</div>
+					</td>
+				</tr>
+			))}
+		</tbody>
+	</table>
+</TableFilter>

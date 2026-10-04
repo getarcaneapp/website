@@ -1,0 +1,46 @@
+---
+import { ArrowRightIcon, CloseIcon } from '../lib/icons/index';
+import { getFeaturedPost } from '../lib/blog';
+
+const featured = await getFeaturedPost();
+---
+
+{featured && (
+	<div
+		class="relative flex items-center justify-center border-b border-primary/20 bg-primary/8 px-12 py-2"
+		data-announcement={featured.slug}
+		data-pagefind-ignore
+	>
+		<a
+			href={featured.href}
+			class="inline-flex min-w-0 items-center gap-2 text-xs font-medium text-primary hover:underline"
+		>
+			<span class="truncate">{featured.data.banner ?? featured.data.title}</span>
+			<ArrowRightIcon class="size-3 shrink-0" />
+		</a>
+		<button
+			type="button"
+			class="absolute top-1/2 right-3 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground"
+			aria-label="Dismiss announcement"
+			data-announcement-dismiss
+		>
+			<CloseIcon class="size-3.5" />
+		</button>
+	</div>
+)}
+
+<script is:inline>
+	(() => {
+		document.querySelectorAll('[data-announcement]').forEach((el) => {
+			const key = `arcane:dismissed-announcement:${el.dataset.announcement}`;
+			if (localStorage.getItem(key) === '1') {
+				el.remove();
+				return;
+			}
+			el.querySelector('[data-announcement-dismiss]')?.addEventListener('click', () => {
+				localStorage.setItem(key, '1');
+				el.remove();
+			});
+		});
+	})();
+</script>

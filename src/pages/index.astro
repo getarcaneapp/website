@@ -1,0 +1,328 @@
+---
+import '../styles/landing.css';
+import { Code } from 'astro:components';
+import Announcement from '../components/Announcement.astro';
+import Heartbeat from '../lib/components/heartbeat.svelte';
+import CommunityPreview from '../components/community/CommunityPreview.astro';
+import RedditComments from '../components/community/RedditComments.astro';
+import Header from '../components/landing/Header.astro';
+import { button } from '../components/landing/button';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteScripts from '../components/SiteScripts.astro';
+import LogoFull from '../lib/components/logo-full.svelte';
+import { features } from '../lib/config/features';
+import { DEMO_URL } from '../lib/config/docs';
+import {
+	AppleBrandIcon,
+	ArrowRightIcon,
+	CopyIcon,
+	CheckIcon,
+	ExternalLinkIcon
+} from '../lib/icons/index';
+import { MANAGER_IMAGES } from '../lib/utils/docker-compose-generator';
+import { PLAUSIBLE_INIT, PLAUSIBLE_SRC, sharedHead } from '../sharedHead';
+
+const title = 'Arcane - Modern Docker Management, Designed for Everyone';
+const description =
+	'Arcane is a free, open-source Docker management UI for containers, images, volumes, networks, Compose projects, and remote hosts.';
+const site = Astro.site!;
+const canonical = new URL('/', site).href;
+const head = sharedHead(site).filter((tag) => tag.tag !== 'script');
+
+const composeFile = (image: string) => `services:
+  arcane:
+    image: ${image}
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+    environment:
+      - ENCRYPTION_KEY=your-32-char-encryption-key
+      - TZ=UTC
+    cgroup: host
+    restart: unless-stopped
+
+volumes:
+  arcane-data:`;
+const images = Object.values(MANAGER_IMAGES);
+
+const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Y9KUft8F';
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<link rel="icon" href="/img/favicon.ico" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:site_name" content="Arcane" />
+		{head.map(({ tag: Tag, attrs }) => (
+			<Tag {...attrs} />
+		))}
+		<script async src={PLAUSIBLE_SRC}></script>
+		<script is:inline set:html={PLAUSIBLE_INIT} />
+		<script is:inline>
+			(() => {
+				const stored = localStorage.getItem('starlight-theme');
+				const theme =
+					stored === 'light' || stored === 'dark'
+						? stored
+						: matchMedia('(prefers-color-scheme: light)').matches
+							? 'light'
+							: 'dark';
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
+	</head>
+	<body class="overscroll-none">
+		<Announcement />
+		<Header />
+		<main class="relative isolate overflow-hidden">
+			<div
+				class="pointer-events-none absolute -inset-x-40 -top-40 h-150 opacity-40 light:opacity-60"
+				aria-hidden="true"
+			>
+				<div class="absolute inset-0 glow-top"></div>
+			</div>
+
+			<div class="mx-auto w-full max-w-screen-2xl px-4 pt-6 sm:pt-10 lg:px-6">
+				<section
+					class="relative grid items-center gap-12 pt-10 pb-16 md:pt-14 md:pb-20 lg:min-h-screen-70 lg:grid-cols-2 lg:gap-16"
+					aria-labelledby="hero-title"
+				>
+					<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
+
+					<div class="relative flex flex-col items-center text-center lg:items-start lg:text-left">
+						<a
+							href={TESTFLIGHT_URL}
+							target="_blank"
+							rel="noopener noreferrer"
+							title="Requires iOS 18+ / iPadOS 18+ / macOS 26+"
+							data-track-cta="testflight"
+							data-track-placement="home_hero"
+							class="group mb-8 inline-flex max-w-full items-center gap-2.5 rounded-full border border-primary/30 bg-primary/8 px-3.5 py-1.5 text-sm text-foreground/90 shadow-sm shadow-primary/10 backdrop-blur-sm transition-colors hover:border-primary/50 hover:bg-primary/12 hover:text-foreground"
+						>
+							<AppleBrandIcon class="size-3.5 shrink-0 text-foreground" aria-hidden="true" />
+							<span class="truncate">Arcane for iOS</span>
+							<span class="h-3.5 w-px shrink-0 bg-primary/30" aria-hidden="true"></span>
+							<span class="inline-flex shrink-0 items-center gap-0.5 font-medium text-primary">
+								Join the beta
+								<ArrowRightIcon
+									class="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+									aria-hidden="true"
+								/>
+							</span>
+						</a>
+
+						<LogoFull class="mb-8 h-16 w-auto sm:h-20 lg:h-24" />
+
+						<h1
+							id="hero-title"
+							class="text-3xl font-semibold tracking-tighter text-balance sm:text-4xl md:text-5xl"
+						>
+							<span class="bg-linear-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent">
+								Modern Docker management,
+							</span>
+							<br />
+							<span class="bg-linear-to-r from-primary via-primary-tint to-primary-soft bg-clip-text text-transparent">
+								designed for everyone.
+							</span>
+						</h1>
+
+						<div class="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+							<a
+								href="/docs/get-started/installation"
+								class:list={[button.primaryLg, 'group']}
+								data-track-cta="get_started"
+								data-track-placement="home_hero"
+							>
+								Get Started
+								<ArrowRightIcon class="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+							</a>
+							<a
+								href={DEMO_URL}
+								target="_blank"
+								class:list={[button.outlineLg, 'group']}
+								data-track-cta="demo"
+								data-track-placement="home_hero"
+							>
+								Try the Demo
+								<ExternalLinkIcon class="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+							</a>
+						</div>
+
+						<p class="mt-5 text-sm font-medium tracking-wide text-primary">
+							Always free. Forever. Never changing.
+						</p>
+					</div>
+
+					<div class="relative mx-auto w-full max-w-2xl lg:max-w-none">
+						<div
+							class="pointer-events-none absolute -inset-4 rounded-2xl glow-center opacity-40 light:opacity-60"
+							aria-hidden="true"
+						></div>
+						<div
+							class="relative overflow-hidden rounded-xl border border-primary/20 bg-code shadow-lg shadow-primary/5 [&_.line:nth-child(3)]:bg-primary/14 [&_.line:nth-child(3)_span]:transition-opacity [&_.line:nth-child(3)_span]:duration-280 data-swapping:[&_.line:nth-child(3)_span]:opacity-0 motion-reduce:[&_.line:nth-child(3)_span]:transition-none"
+							role="region"
+							aria-label="Docker Compose example"
+							data-compose-preview
+						>
+							<div class="flex items-center gap-3 border-b border-primary/10 bg-surface/80 px-5 py-3">
+								<div class="flex items-center gap-1.5">
+									<span class="size-2.5 rounded-full bg-destructive/80"></span>
+									<span class="size-2.5 rounded-full bg-warning/80"></span>
+									<span class="size-2.5 rounded-full bg-success/80"></span>
+								</div>
+								<span class="font-mono text-xs text-muted-foreground/70">compose.yaml</span>
+								<button
+									type="button"
+									class="ml-auto grid size-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+									aria-label="Copy compose.yaml"
+									data-compose-copy
+								>
+									<CopyIcon class="size-4" data-copy-icon />
+									<CheckIcon class="hidden size-4" data-copied-icon />
+								</button>
+							</div>
+							{images.map((image, index) => (
+								<div data-compose-variant hidden={index > 0} data-code={composeFile(image)}>
+									<Code
+										code={composeFile(image)}
+										lang="yaml"
+										themes={{ light: 'github-light-default', dark: 'github-dark-default' }}
+										defaultColor={false}
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			</div>
+
+			<RedditComments />
+
+			<div class="mx-auto w-full max-w-screen-2xl px-4 pb-6 sm:pb-10 lg:px-6">
+				<section class="relative pb-20" aria-labelledby="features-title">
+					<div class="mb-10 flex flex-col items-center gap-2 text-center">
+						<h2 id="features-title" class="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+							Everything you need to manage Docker
+						</h2>
+						<p class="mt-2 max-w-xl text-sm text-muted-foreground">
+							A comprehensive set of tools to handle every aspect of your container infrastructure.
+						</p>
+					</div>
+					<div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border shadow-sm sm:grid-cols-2 lg:grid-cols-3">
+						{features.map((feature, i) => (
+							<div
+								class:list={[
+									'group relative flex h-full flex-col gap-2 bg-background p-6 transition-all duration-300 hover:bg-linear-to-b hover:from-primary/2 hover:to-transparent sm:p-8',
+									i === features.length - 1 && 'sm:col-span-2 lg:col-span-1'
+								]}
+							>
+								<div class="absolute inset-x-0 top-0 h-0.5 scale-x-0 bg-linear-to-r from-transparent via-primary/40 to-transparent transition-transform duration-300 group-hover:scale-x-100" />
+								<div class="flex size-10 items-center justify-center rounded-full border border-border bg-surface/50 transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/5">
+									<feature.icon class="size-5 text-muted-foreground transition-colors duration-300 group-hover:text-primary" />
+								</div>
+								<h3 class="mt-1 text-sm font-medium text-foreground transition-colors duration-300 group-hover:text-primary/90">
+									{feature.title}
+								</h3>
+								<p class="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
+							</div>
+						))}
+					</div>
+				</section>
+
+				<CommunityPreview />
+
+				<section class="relative pb-20" aria-labelledby="heartbeat-title">
+					<div class="overflow-hidden rounded-xl border border-border shadow-sm">
+						<div class="flex flex-col gap-2 border-b border-border bg-linear-to-r from-transparent via-primary/2 to-transparent px-6 py-6 md:flex-row md:items-center md:justify-between md:px-8">
+							<div>
+								<h2
+									id="heartbeat-title"
+									class="text-xl font-semibold tracking-tight text-foreground"
+								>
+									Analytics Heartbeat
+								</h2>
+								<p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+									Live, anonymized check-ins from running Arcane servers.
+									<a
+										href="/docs/settings/analytics"
+										class="font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
+									>
+										Learn more
+									</a>
+								</p>
+							</div>
+						</div>
+						<Heartbeat client:visible />
+					</div>
+				</section>
+			</div>
+		</main>
+		<div class="mx-auto w-full max-w-screen-2xl px-4 lg:px-6">
+			<SiteFooter />
+		</div>
+		<SiteScripts />
+
+		<script>
+			const preview = document.querySelector<HTMLElement>('[data-compose-preview]');
+			if (preview) {
+				const variants = [...preview.querySelectorAll<HTMLElement>('[data-compose-variant]')];
+				let index = 0;
+				let hovered = false;
+				let fadeTimer: ReturnType<typeof setTimeout> | undefined;
+				const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+				const holdMs = reduceMotion ? 5000 : 3200;
+				const fadeMs = reduceMotion ? 0 : 280;
+
+				const show = (next: number) => {
+					variants.forEach((variant, i) => (variant.hidden = i !== next));
+					index = next;
+				};
+
+				preview.addEventListener('mouseenter', () => {
+					hovered = true;
+					if (fadeTimer) clearTimeout(fadeTimer);
+					delete preview.dataset.swapping;
+				});
+				preview.addEventListener('mouseleave', () => (hovered = false));
+
+				if (variants.length > 1) {
+					setInterval(() => {
+						if (hovered) return;
+						if (fadeMs === 0) return show((index + 1) % variants.length);
+						preview.dataset.swapping = '';
+						fadeTimer = setTimeout(() => {
+							if (!hovered) show((index + 1) % variants.length);
+							requestAnimationFrame(() =>
+								requestAnimationFrame(() => delete preview.dataset.swapping)
+							);
+						}, fadeMs);
+					}, holdMs);
+				}
+
+				const copyButton = preview.querySelector<HTMLButtonElement>('[data-compose-copy]');
+				copyButton?.addEventListener('click', async () => {
+					await navigator.clipboard.writeText(variants[index]?.dataset.code ?? '');
+					copyButton.querySelector('[data-copy-icon]')?.classList.add('hidden');
+					copyButton.querySelector('[data-copied-icon]')?.classList.remove('hidden');
+					setTimeout(() => {
+						copyButton.querySelector('[data-copy-icon]')?.classList.remove('hidden');
+						copyButton.querySelector('[data-copied-icon]')?.classList.add('hidden');
+					}, 1500);
+				});
+			}
+		</script>
+	</body>
+</html>

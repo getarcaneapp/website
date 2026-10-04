@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import DiscordPresence from './DiscordPresence.astro';
+import Logo from '../lib/components/logo.svelte';
+import { DISCORD_URL, GITHUB_REPO } from '../lib/config/docs';
+import greptile from '../assets/sponsors/greptile.svg';
+import graphite from '../assets/sponsors/graphite.png';
+import depotLight from '../assets/sponsors/depot-light.svg';
+import depotDark from '../assets/sponsors/depot-dark.svg';
+import orbstack from '../assets/sponsors/orbstack.png';
+import snykLight from '../assets/sponsors/snyk-light.png';
+import snykDark from '../assets/sponsors/snyk-dark.png';
+import docker from '../assets/sponsors/docker.svg';
+
+interface Props {
+	class?: string;
+}
+const { class: className } = Astro.props;
+
+const sponsors = [
+	{ name: 'Greptile', href: 'https://greptile.com', logo: greptile },
+	{
+		name: 'Graphite',
+		href: 'https://graphite.dev',
+		logo: graphite,
+		wordmark: true,
+		imgClass: 'size-6 rounded-md'
+	},
+	{ name: 'Depot', href: 'https://depot.dev', logo: depotLight, logoDark: depotDark },
+	{
+		name: 'OrbStack',
+		href: 'https://orbstack.dev',
+		logo: orbstack,
+		wordmark: true,
+		imgClass: 'size-6 rounded-md'
+	},
+	{ name: 'Snyk', href: 'https://snyk.io', logo: snykLight, logoDark: snykDark },
+	{ name: 'Docker', href: 'https://www.docker.com', logo: docker, imgClass: 'h-5' }
+];
+
+const logoClass =
+	'h-6 w-auto opacity-60 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0';
+
+const columns = [
+	{
+		title: 'Product',
+		links: [
+			{ label: 'DockerHub', href: 'https://hub.docker.com/u/getarcaneapp', external: true },
+			{ label: 'GitHub', href: `https://github.com/${GITHUB_REPO}`, external: true },
+			{ label: 'API Reference', href: '/docs/reference/api' },
+			{ label: 'SBOM', href: '/sbom' }
+		]
+	},
+	{
+		title: 'Resources',
+		links: [
+			{ label: 'Blog', href: '/blog' },
+			{ label: 'Changelog', href: '/changelog' },
+			{ label: 'Community', href: '/community' },
+			{ label: 'Discord', href: DISCORD_URL, external: true }
+		]
+	},
+	{ title: 'Legal', links: [{ label: 'Privacy', href: '/privacy' }] }
+];
+---
+
+<footer
+	class:list={['arcane-ui not-content border-t border-border', className]}
+	data-pagefind-ignore
+>
+	<div class="h-px w-full bg-linear-to-r from-transparent via-primary/30 to-transparent"></div>
+	<div class="flex flex-col justify-between gap-10 py-12 md:flex-row">
+		<div class="flex flex-col gap-10">
+			<div class="flex max-w-xs flex-col gap-4">
+				<a
+					href="/"
+					class="flex items-center gap-2.5 text-foreground transition-opacity hover:opacity-80"
+				>
+					<Logo class="size-5" />
+					<span class="text-sm font-semibold tracking-tight">Arcane</span>
+				</a>
+				<p class="text-sm leading-relaxed text-muted-foreground">
+					Modern Docker management, designed for everyone.
+				</p>
+			</div>
+			<div class="mt-auto flex flex-col gap-4">
+				<span class="text-xs font-medium tracking-wider text-muted-foreground/70 uppercase">
+					Supported by
+				</span>
+				<div class="flex flex-wrap items-center gap-x-8 gap-y-5">
+					{sponsors.map((sponsor) => (
+						<a
+							href={sponsor.href}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group inline-flex items-center gap-2"
+							aria-label={sponsor.name}
+						>
+							{sponsor.logoDark ? (
+								<>
+									<Image
+										src={sponsor.logo}
+										alt=""
+										class:list={[logoClass, 'dark:hidden', sponsor.imgClass]}
+									/>
+									<Image
+										src={sponsor.logoDark}
+										alt=""
+										class:list={[logoClass, 'light:hidden', sponsor.imgClass]}
+									/>
+								</>
+							) : (
+								<Image src={sponsor.logo} alt="" class:list={[logoClass, sponsor.imgClass]} />
+							)}
+							{sponsor.wordmark && (
+								<span class="text-sm font-bold text-foreground/80 transition-colors duration-300 group-hover:text-foreground">
+									{sponsor.name}
+								</span>
+							)}
+						</a>
+					))}
+				</div>
+			</div>
+		</div>
+		<div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+			{columns.map((column) => (
+				<div class="flex flex-col gap-3">
+					<span class="text-sm font-medium text-foreground">{column.title}</span>
+					<ul class="flex flex-col gap-2">
+						{column.links.map((link) => (
+							<li>
+								<a
+									href={link.href}
+									target={link.external ? '_blank' : undefined}
+									rel={link.external ? 'noopener noreferrer' : undefined}
+									class="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+								>
+									{link.label}
+									{link.href === DISCORD_URL && <DiscordPresence />}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))}
+		</div>
+	</div>
+</footer>

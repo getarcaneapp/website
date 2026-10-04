@@ -51,3 +51,4 @@ export { default as SvelteBrandIcon } from 'virtual:icons/simple-icons/svelte';
 export { default as TypeScriptBrandIcon } from 'virtual:icons/simple-icons/typescript';
 export { default as JsonBrandIcon } from 'virtual:icons/simple-icons/json';
 export { default as CssBrandIcon } from 'virtual:icons/simple-icons/css';
+export { default as GithubBrandIcon } from 'virtual:icons/simple-icons/github';

@@ -1,0 +1,172 @@
+---
+interface Props {
+	label: string;
+	noun: string;
+	total: number;
+	empty: string;
+}
+const { label, noun, total, empty } = Astro.props;
+const inputId = `filter-${noun.replace(/\W+/g, '-')}`;
+---
+
+<div class="table-filter not-content" data-table-filter data-noun={noun}>
+	<label for={inputId}>{label}</label>
+	<input
+		id={inputId}
+		type="search"
+		placeholder="Name or description, e.g. backup"
+		autocomplete="off"
+	/>
+	<p class="table-filter-status" role="status" data-table-filter-status>
+		{total} of {total} {noun}
+	</p>
+	<slot />
+	<p class="table-filter-empty" data-table-filter-empty hidden>
+		{empty}
+	</p>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-table-filter]').forEach((root) => {
+		const input = root.querySelector('input');
+		const status = root.querySelector('[data-table-filter-status]');
+		const empty = root.querySelector<HTMLElement>('[data-table-filter-empty]');
+		const rows = [...root.querySelectorAll<HTMLElement>('[data-search]')];
+		const noun = root.dataset.noun ?? '';
+		input?.addEventListener('input', () => {
+			const query = input.value.trim().toLowerCase();
+			let shown = 0;
+			for (const row of rows) {
+				const match = !query || (row.dataset.search ?? '').includes(query);
+				row.hidden = !match;
+				if (match) shown++;
+			}
+			if (status) status.textContent = `${shown} of ${rows.length} ${noun}`;
+			if (empty) empty.hidden = shown > 0;
+		});
+	});
+</script>
+
+<style>
+	.table-filter {
+		margin-top: 1rem;
+	}
+	label {
+		display: block;
+		margin-bottom: 0.5rem;
+		font-size: var(--sl-text-sm);
+		font-weight: 500;
+		color: var(--sl-color-white);
+	}
+	input {
+		width: 100%;
+		height: 2.5rem;
+		padding: 0 0.875rem;
+		border: 1px solid var(--surface-border);
+		border-radius: 0.625rem;
+		background-color: var(--sl-color-black);
+		color: var(--sl-color-white);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+	}
+	input:focus-visible {
+		outline: 2px solid color-mix(in oklch, var(--sl-color-accent), transparent 50%);
+		outline-offset: 1px;
+	}
+	.table-filter-status {
+		margin: 0.75rem 0;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+	.table-filter-empty {
+		margin: 0;
+		padding: 1rem;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+	.table-filter :global(table) {
+		display: table;
+		width: 100%;
+		table-layout: fixed;
+		margin: 0;
+		border: 1px solid var(--surface-border);
+		border-radius: var(--sl-radius);
+		border-collapse: separate;
+		border-spacing: 0;
+		overflow: hidden;
+		font-size: var(--sl-text-sm);
+	}
+	.table-filter :global(:is(th, td)) {
+		padding: 0.75rem 0.9rem;
+		border-bottom: 1px solid var(--sl-color-hairline-light);
+		text-align: start;
+		vertical-align: top;
+	}
+	.table-filter :global(th) {
+		background-color: var(--surface-muted);
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.table-filter :global(tr:last-child td) {
+		border-bottom: 0;
+	}
+	.table-filter :global(tr[hidden]) {
+		display: none;
+	}
+	.table-filter :global(th:first-child) {
+		width: 40%;
+	}
+	.table-filter :global(code) {
+		display: inline-block;
+		max-width: 100%;
+		padding: 0.15rem 0.4rem;
+		border: 1px solid var(--surface-border);
+		border-radius: 0.375rem;
+		background-color: var(--surface-muted);
+		font-size: var(--sl-text-xs);
+		overflow-wrap: anywhere;
+		color: var(--sl-color-white);
+	}
+	.table-filter :global(.env-details > * + *) {
+		margin-top: 0.625rem;
+	}
+	.table-filter :global(.env-details p) {
+		margin: 0;
+	}
+	.table-filter :global(.env-meta) {
+		display: grid;
+		grid-template-columns: minmax(5rem, auto) 1fr;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.table-filter :global(.env-label) {
+		font-size: var(--sl-text-xs);
+		font-weight: 500;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	.table-filter :global(.env-note) {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+	.table-filter :global(.env-badges) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.table-filter :global(.env-badge) {
+		padding: 0.15rem 0.5rem;
+		border-radius: 999px;
+		font-size: var(--sl-text-xs);
+		font-weight: 500;
+	}
+	.table-filter :global(.env-badge.deprecated) {
+		background-color: color-mix(in oklch, var(--destructive), transparent 88%);
+		color: var(--destructive);
+	}
+	.table-filter :global(.env-badge.sensitive) {
+		background-color: color-mix(in oklch, var(--warning), transparent 88%);
+		color: var(--warning);
+	}
+</style>

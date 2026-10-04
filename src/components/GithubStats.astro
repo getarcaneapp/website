@@ -1,0 +1,61 @@
+---
+import { GITHUB_REPO } from '../lib/config/docs';
+import { GithubBrandIcon } from '../lib/icons/index';
+
+interface Props {
+	showVersion?: boolean;
+	class?: string;
+}
+const { showVersion = true, class: className } = Astro.props;
+---
+
+{showVersion && (
+	<a
+		href="/changelog"
+		aria-label="View the changelog for the latest version"
+		class="inline-flex h-6 items-center rounded-full border border-surface-border px-2 text-xs font-semibold text-gray-2 tabular-nums no-underline transition-colors hover:border-gray-4 hover:text-fg"
+		data-github-version
+		hidden
+	/>
+)}
+<a
+	href={`https://github.com/${GITHUB_REPO}`}
+	aria-label="Arcane on GitHub"
+	class:list={[
+		'inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-medium text-gray-2 no-underline transition-colors hover:bg-surface-muted hover:text-fg',
+		className
+	]}
+>
+	<GithubBrandIcon class="size-4" />
+	<span class="tabular-nums" data-github-stars hidden></span>
+</a>
+
+<script>
+	import { GITHUB_REPO } from '../lib/config/docs';
+
+	const fill = (selector: string, text: string) => {
+		document.querySelectorAll<HTMLElement>(selector).forEach((el) => {
+			el.textContent = text;
+			el.hidden = false;
+		});
+	};
+
+	fetch(`https://ungh.cc/repos/${GITHUB_REPO}`)
+		.then((res) => res.json())
+		.then((data: { repo?: { stars?: number } }) => {
+			const stars = data.repo?.stars;
+			if (typeof stars !== 'number') return;
+			fill('[data-github-stars]', stars >= 1000 ? `${(stars / 1000).toFixed(1)}k` : String(stars));
+		})
+		.catch(() => {});
+
+	if (document.querySelector('[data-github-version]')) {
+		fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/refs/heads/main/.arcane.json`)
+			.then((res) => res.json())
+			.then((data: { version?: string }) => {
+				if (typeof data.version !== 'string') return;
+				fill('[data-github-version]', `v${data.version.replace(/^v/, '')}`);
+			})
+			.catch(() => {});
+	}
+</script>

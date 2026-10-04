@@ -1,0 +1,49 @@
+---
+import { envConfig } from '../../lib/config/pages/runtime-config';
+import TableFilter from './TableFilter.astro';
+---
+
+<TableFilter
+	label="Search environment variables"
+	noun="variables"
+	total={envConfig.length}
+	empty="No variables match. Try a shorter name or clear the search."
+>
+	<table>
+		<thead>
+			<tr>
+				<th>Variable</th>
+				<th>Details</th>
+			</tr>
+		</thead>
+		<tbody>
+			{envConfig.map((env) => (
+				<tr data-search={`${env.name} ${env.description}`.toLowerCase()}>
+					<td>
+						<code>{env.name}</code>
+					</td>
+					<td>
+						<div class="env-details">
+							<p>{env.description}</p>
+							{env.deprecated && (
+								<div class="env-badges">
+									<span class="env-badge deprecated">Deprecated</span>
+								</div>
+							)}
+							<div class="env-meta">
+								<span class="env-label">Default</span>
+								<code>{env.defaultValue || '—'}</code>
+								{env.exampleValue && (
+									<>
+										<span class="env-label">Example</span>
+										<code>{env.exampleValue}</code>
+									</>
+								)}
+							</div>
+						</div>
+					</td>
+				</tr>
+			))}
+		</tbody>
+	</table>
+</TableFilter>

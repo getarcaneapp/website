@@ -3,10 +3,11 @@
 	"compatibility_date": "2025-10-13",
 	"preview_urls": true,
 	"workers_dev": true,
-	"main": "./src/_worker.js",
+	"main": "./src/worker.ts",
 	"assets": {
-		"directory": "./build",
-		"binding": "ASSETS"
+		"directory": "./dist",
+		"binding": "ASSETS",
+		"not_found_handling": "404-page"
 	},
 	"routes": [
 		{

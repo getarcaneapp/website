@@ -1,0 +1,13 @@
+---
+import WidePage from '../components/pages/WidePage.astro';
+import SbomExplorer from '../lib/components/sbom-explorer.svelte';
+---
+
+<WidePage
+	title="Software Bill of Materials"
+	description="Full visibility into every package and dependency shipped inside Arcane images."
+>
+	<div class="not-content">
+		<SbomExplorer client:load />
+	</div>
+</WidePage>
