@@ -128,29 +128,29 @@ Turn a `docker run` command into Compose:
 
 Get an overview of scan results, or the full findings list:
 
-<Snippet text="arcane-cli vulnerabilities summary" class="mt-2" />
+<Snippet text="arcane-cli images vulnerabilities summary" class="mt-2" />
 
-<Snippet text="arcane-cli vulnerabilities list" class="mt-2" />
+<Snippet text="arcane-cli images vulnerabilities list" class="mt-2" />
 
 Scan an image now, or show one image's findings:
 
-<Snippet text="arcane-cli vulnerabilities scan nginx:latest" class="mt-2" />
+<Snippet text="arcane-cli images vulnerabilities scan nginx:latest" class="mt-2" />
 
-<Snippet text="arcane-cli vulnerabilities image nginx:latest" class="mt-2" />
+<Snippet text="arcane-cli images vulnerabilities image nginx:latest" class="mt-2" />
 
 Silence a CVE you've reviewed (and list or undo ignores with `ignored` / `unignore`):
 
-<Snippet text="arcane-cli vulnerabilities ignore CVE-2026-1234" class="mt-2" />
+<Snippet text="arcane-cli images vulnerabilities ignore CVE-2026-1234" class="mt-2" />
 
 ## System backups
 
 Manage <Link href="/docs/docker/backups">Arcane system backups</Link> from the terminal:
 
-<Snippet text="arcane-cli backups list" class="mt-2" />
+<Snippet text="arcane-cli admin backups list" class="mt-2" />
 
-<Snippet text="arcane-cli backups create" class="mt-2" />
+<Snippet text="arcane-cli admin backups create" class="mt-2" />
 
-<Snippet text="arcane-cli backups restore <backup-id>" class="mt-2" />
+<Snippet text="arcane-cli admin backups restore <backup-id>" class="mt-2" />
 
 There are also subcommands for retention policies (`policies`), the recovery key (`recovery`), uploading a local backup to S3 (`upload`), and finding S3 restore points not in the database (`discover`).
 

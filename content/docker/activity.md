@@ -51,6 +51,7 @@ Go to **Settings → Activity**:
 - **Retention Days**: how long finished activities are kept.
 - **Maximum Entries**: a hard cap on stored activity history.
 - **Concurrent Activity Limit**: how many activities may run at once. Activities beyond the limit wait in **Queued**.
+- **Upgrade Log Retention**: how many days Arcane keeps the log files written by self-upgrades. Cleanup runs hourly. The default is `3`; set `0` to keep them indefinitely.
 
 ## Review automation runs
 

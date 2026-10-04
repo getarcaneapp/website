@@ -20,6 +20,15 @@ Arcane finds the provider's endpoints from the issuer URL and its `.well-known/o
 
 Arcane creates an OIDC user the first time they sign in. You can disable local login if you want everyone to sign in through your provider.
 
+## Skip the login screen
+
+Turn on **Auto Redirect to Provider** in **Settings → Authentication** (or set `OIDC_AUTO_REDIRECT_TO_PROVIDER=true`) to send users straight to your provider instead of showing Arcane's login page.
+
+If the provider is down or misconfigured, open `https://<your-arcane-url>/login/backup`. This backup login page never redirects, so you can still sign in with a local account or a passkey and fix the OIDC settings.
+
+> [!NOTE]
+> The backup login page only shows the password form while local login is enabled. If you disabled it, sign in with a passkey or see <Link href="/docs/access/account-recovery">Account Recovery</Link>.
+
 ## Configure OIDC with Compose
 
 You can set the same options with environment variables instead of the UI:

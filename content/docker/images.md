@@ -107,6 +107,17 @@ team/platform/api
 
 Arcane checks each entry against Docker's reference format and removes duplicates. These names fill the **Repository name** dropdown for builds that push images (see <Link href="/docs/docker/image-builds">Image Builds</Link>). A registry without repository names still works for pulls and update checks, but can't be a push target.
 
+### Browse a registry
+
+Click **Browse** on a saved registry to see its repositories and tags. Each tag shows its digest, size, and platforms, and you can copy the full image reference.
+
+Registries that publish a catalog, such as a self-hosted Distribution registry, list every repository. Docker Hub, GHCR, and similar registries do not, so Arcane shows the **Repository Names** saved on the registry instead. Type any other repository into **Open Repository** to load its tags.
+
+Browsing requires the `registries:read` and `registries:browse` permissions. Users with `registries:delete-tags` can also delete tags, one at a time or in bulk.
+
+> [!WARNING]
+> Arcane deletes a tag by its manifest digest, so every other tag pointing to the same manifest is removed too. The registry only frees the storage after it runs garbage collection.
+
 ### Amazon ECR
 
 ECR is a first-class registry type. When adding an ECR registry, provide:
