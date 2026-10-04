@@ -6,6 +6,18 @@
   ],
   "envConfig": [
     {
+      "env": "ACTOR_PORT",
+      "field": "ActorPort",
+      "type": "string",
+      "defaultValue": "3551",
+      "supportsFile": false,
+      "deprecated": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.ActorPort"
+    },
+    {
       "env": "ADMIN_STATIC_API_KEY",
       "field": "AdminStaticAPIKey",
       "type": "string",
@@ -443,7 +455,6 @@
       "env": "HTTP_PROXY",
       "field": "HTTPProxy",
       "type": "string",
-      "description": "HTTPProxy, HTTPSProxy and NoProxy are forwarded to temporary Trivy scan containers.",
       "supportsFile": false,
       "deprecated": false,
       "conditional": false,
@@ -651,7 +662,6 @@
       "env": "OIDC_ROLE_MAPPINGS",
       "field": "OidcRoleMappings",
       "type": "string",
-      "description": "OidcRoleMappings declaratively defines OIDC group→role mappings as a JSON array of role.OidcRoleMappingSpec. Reconciled into source='env' rows on every boot; rows are read-only at runtime. Supports *_FILE for Docker secrets. Leave empty to manage mappings purely via the UI/API.",
       "options": [
         "file"
       ],
@@ -854,7 +864,6 @@
       "field": "Timezone",
       "type": "string",
       "defaultValue": "Local",
-      "description": "Timezone for cron job scheduling. Uses IANA timezone names (e.g., \"America/New_York\", \"Europe/London\"). \"Local\" uses the system's local timezone, \"UTC\" for Coordinated Universal Time.",
       "supportsFile": false,
       "deprecated": false,
       "conditional": false,
@@ -928,7 +937,7 @@
       "env": "AUTO_HEAL_INTERVAL",
       "settingKey": "autoHealInterval",
       "description": "How often to check container health (cron expression)",
-      "defaultValue": "*/30 * * * * *",
+      "defaultValue": "0 */5 * * * *",
       "type": "cron",
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. AUTO_HEAL_ENABLED=true to have effect at runtime.",
       "source": "settings.Settings + settings.DefaultSettingsConfig",
@@ -1021,6 +1030,21 @@
       "source": "settings.Settings + settings.DefaultSettingsConfig",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.MaxConcurrentActivities",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "UPGRADE_LOG_RETENTION_DAYS",
+      "settingKey": "upgradeLogRetentionDays",
+      "description": "Delete upgrade log files older than this many days. Cleanup runs hourly. Default: 3 days. Set 0 to keep logs indefinitely.",
+      "defaultValue": "3",
+      "type": "number",
+      "category": "activity",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.UpgradeLogRetentionDays",
       "sensitive": false,
       "deprecated": false,
       "public": false
@@ -1427,6 +1451,21 @@
       "public": false
     },
     {
+      "env": "FEATURE_SWARM_ENABLED",
+      "settingKey": "featureSwarmEnabled",
+      "description": "Show Docker Swarm for this environment. An active swarm cluster keeps it enabled",
+      "defaultValue": "false",
+      "type": "boolean",
+      "category": "general",
+      "note": "An active swarm cluster keeps Swarm enabled regardless of this value.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.FeatureSwarmEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
+    },
+    {
       "env": "FEATURE_VULNERABILITY_MANAGEMENT_ENABLED",
       "settingKey": "featureVulnerabilityManagementEnabled",
       "description": "Enable vulnerability management for this environment. Disabling retains reports and configuration and leaves standalone image patching available",
@@ -1634,7 +1673,7 @@
       "env": "DOCKER_CLIENT_REFRESH_INTERVAL",
       "settingKey": "dockerClientRefreshInterval",
       "description": "How often to refresh the cached Docker client API version (cron expression)",
-      "defaultValue": "*/30 * * * * *",
+      "defaultValue": "0 */5 * * * *",
       "type": "cron",
       "category": "internal",
       "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
