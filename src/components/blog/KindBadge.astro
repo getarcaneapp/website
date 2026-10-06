@@ -1,0 +1,36 @@
+---
+interface Props {
+	kind: 'news' | 'update' | 'deprecation' | 'release';
+}
+const { kind } = Astro.props;
+const labels = { news: 'News', update: 'Update', deprecation: 'Deprecation', release: 'Release' };
+---
+
+<span class:list={['kind-badge', kind]}>{labels[kind]}</span>
+
+<style>
+	.kind-badge {
+		--badge: var(--primary);
+		display: inline-flex;
+		align-items: center;
+		padding: 0.125rem 0.5rem;
+		border: 1px solid color-mix(in oklab, var(--badge) 25%, transparent);
+		border-radius: 0.375rem;
+		background-color: color-mix(in oklab, var(--badge) 10%, transparent);
+		color: var(--badge);
+		font-size: 0.625rem;
+		font-weight: 500;
+		letter-spacing: 0.04em;
+		line-height: 1.5;
+		text-transform: uppercase;
+	}
+	.kind-badge.deprecation {
+		--badge: var(--warning);
+	}
+	.kind-badge.release {
+		--badge: var(--chart-2);
+	}
+	.kind-badge.update {
+		--badge: var(--info);
+	}
+</style>

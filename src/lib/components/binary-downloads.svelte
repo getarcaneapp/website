@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/env';
 	import { DownloadIcon } from '#lib/icons/index.js';
 	import * as Tabs from '#lib/components/ui/tabs/index.js';
 	import * as Table from '#lib/components/ui/table/index.js';
@@ -35,7 +34,9 @@
 	}
 
 	// Each tab's file list is fetched the first time it's shown.
-	if (browser) loadFiles(INITIAL_TAB);
+	$effect(() => {
+		loadFiles(INITIAL_TAB);
+	});
 
 	function formatSize(bytes: number): string {
 		if (bytes < 1024) return `${bytes} B`;
@@ -109,7 +110,6 @@
 									</Table.Cell>
 									<Table.Cell inset class="text-right">
 										<a
-											data-sveltekit-reload
 											href={downloadUrl(file.key)}
 											title="Download {fileName(file.key)}"
 											class="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"

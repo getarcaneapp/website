@@ -1,0 +1,89 @@
+---
+title: 'Swarm Cluster'
+description: 'Initialize, join, unlock, and update a Docker Swarm cluster.'
+---
+
+import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
+
+Use the **Cluster** page to create, join, or leave a Swarm in the selected environment. It is also where you unlock the cluster, rotate join tokens, and update the live Swarm spec.
+
+<ScreenshotFrame
+  name="swarm-setup"
+  alt="The Swarm setup page before a cluster has been initialized."
+  caption="An engine outside a Swarm offers initialization and join options."
+  loading="lazy"
+  decoding="async"
+/>
+
+## Initialize a Swarm
+
+Use this when the selected environment isn't part of a Swarm yet.
+
+1. Open **Swarm → Cluster**.
+2. Under **Initialize Cluster**, optionally open **Advanced settings** and fill in the fields below.
+3. Click **Initialize**.
+
+The defaults suit a local or single-network cluster. Change the advanced settings only when your network or security setup needs it.
+
+| Field                  | What it does                                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Listen address**     | Address and port the Swarm manager listens on for cluster traffic.                                                              |
+| **Advertise address**  | Address other nodes use to reach this manager. Set it when the host has several network interfaces.                             |
+| **Swarm spec JSON**    | A full Swarm spec as a JSON object, for settings not covered by the other fields.                                               |
+| **Auto-lock managers** | Encrypts manager data so a restarted manager stays locked until you enter the unlock key.                                       |
+| **Force new cluster**  | Creates a new single-manager cluster from this node's existing Swarm state. Use it to recover a cluster that lost its managers. |
+
+Arcane then shows the rest of the Swarm workspace for that environment.
+
+## Join an existing Swarm
+
+Use this to add the selected environment to a cluster that is already running, as a manager or a worker.
+
+1. Open **Swarm → Cluster**.
+2. Under **Join Existing Cluster**, enter the remote manager addresses (comma separated), the join token, and optional listen and advertise addresses.
+3. Click **Join**.
+
+## Easy Join remote environments
+
+When the selected environment is a Swarm manager, **Easy Join** adds other Remote Environments to its cluster without you copying manager addresses or join tokens.
+
+Start it from **Swarm → Cluster → Easy Join**, or from a Remote Environment's detail page or row menu. Only enabled, online environments not already linked to a node of this cluster are offered.
+
+1. Select each target environment.
+2. Choose **worker** or **manager** and an availability mode.
+3. Optionally set listen, advertise, or data-path addresses per target. Leave the manager addresses blank to use the ones Arcane finds in the cluster; any address you enter must be reachable from every selected host.
+4. Confirm.
+
+The join tokens are never shown. Each target gets its own result in **Join results**, and a failed target doesn't undo the others:
+
+| Result                                    | Meaning                                                                                                   |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Joined and verified**                   | The host joined and Arcane linked the environment to its Swarm node.                                      |
+| **Already a member and verified**         | The host was already in this cluster. Arcane linked it without rejoining.                                 |
+| **Joined; verification is still pending** | The host joined, but Arcane couldn't confirm the node in time. Opening **Nodes** finishes the link later. |
+
+A host that is active in a different cluster is rejected; Arcane doesn't force it to leave.
+
+Easy Join needs `swarm:join` on the manager and on every target. The **Easy Join** button on the Cluster page also needs `swarm:nodes` and `swarm:unlock` on the manager.
+
+## Leave a cluster
+
+Click **Leave Cluster** to remove the selected node from the Swarm. Select **Force leave** if a normal leave fails.
+
+## Unlock a locked cluster
+
+If **Auto-lock managers** is on and a manager restarted, the cluster stays locked until you unlock it.
+
+1. Open **Swarm → Cluster**.
+2. Enter the unlock key.
+3. Click **Unlock**.
+
+## Rotate join tokens and the unlock key
+
+The Cluster page shows the **worker join token**, the **manager join token**, and the **manager unlock key**, and can rotate each of them. Treat them like passwords. Rotating one invalidates the old value.
+
+## Update the cluster spec
+
+Under **Update Swarm Spec**, click **Load current spec**, edit the JSON, and click **Update Spec**. This changes live cluster scheduling and security settings, so only use it if you know the Docker Swarm setting you are changing.
+
+Cluster actions need a **Swarm manager** environment and the matching permissions. See [Docker Swarm](/docs/remote/swarm) for the permission rules.

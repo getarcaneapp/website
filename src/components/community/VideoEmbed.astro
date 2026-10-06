@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+import { PlayIcon } from '../../lib/icons/index';
+
+interface Props {
+	videoId: string;
+	title: string;
+	thumbnail?: string;
+}
+const { videoId, title, thumbnail } = Astro.props;
+const poster = thumbnail ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+---
+
+<div
+	class="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-muted"
+	data-video-embed
+>
+	<button
+		type="button"
+		class="group/play absolute inset-0 h-full w-full cursor-pointer"
+		aria-label={`Play video: ${title}`}
+		data-video-id={videoId}
+		data-video-title={title}
+	>
+		<Image
+			src={poster}
+			alt=""
+			inferSize
+			widths={[480, 960]}
+			sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw"
+			class="h-full w-full object-cover"
+			loading="lazy"
+		/>
+		<span class="absolute inset-0 bg-black/20 transition-colors group-hover/play:bg-black/30"></span>
+		<span class="absolute inset-0 m-auto flex size-14 items-center justify-center rounded-full border border-white/30 bg-black/50 backdrop-blur transition-transform duration-300 group-hover/play:scale-110">
+			<PlayIcon class="size-6 translate-x-0.5 text-white" />
+		</span>
+	</button>
+</div>
+
+<script>
+	document
+		.querySelectorAll<HTMLButtonElement>('[data-video-embed] button[data-video-id]')
+		.forEach((button) => {
+			button.addEventListener('click', () => {
+				const iframe = document.createElement('iframe');
+				iframe.className = 'absolute inset-0 h-full w-full';
+				iframe.src = `https://www.youtube-nocookie.com/embed/${button.dataset.videoId}?autoplay=1&rel=0`;
+				iframe.title = `YouTube: ${button.dataset.videoTitle}`;
+				iframe.allowFullscreen = true;
+				iframe.allow =
+					'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+				iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+				button.replaceWith(iframe);
+			});
+		});
+</script>

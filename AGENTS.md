@@ -2,57 +2,62 @@
 
 ## Project Summary
 
-- SvelteKit app using Svelte 5 (runes syntax) with Tailwind CSS 4.
-- Docs content is Markdown via mdsvex and organized/validated by Velite.
-- Static site build (adapter-static) with Cloudflare Workers previews/deployments.
+- Astro 7 + Starlight site with Tailwind CSS 4. Svelte 5 (runes syntax) is used only for the interactive islands (Compose generator, SBOM explorer, analytics heartbeat, preview binary list).
+- Docs are Markdown/MDX in Starlight's `docs` collection; the blog and changelog are their own content collections.
+- Fully static build, deployed to Cloudflare Workers as static assets behind a small hand-written Worker (`src/worker.ts`).
 
 ## Key Paths
 
-- Content source: `content/` (Markdown; mdsvex renders via layout).
-- Velite config: `velite.config.js` (collections + schema).
-- mdsvex config: `mdsvex.config.js` and `src/lib/components/markdown/layout.svelte`.
-- Docs data/helpers: `src/lib/docs.ts`.
-- Sidebar/nav config: `src/lib/config/docs.ts`.
-- UI primitives: `src/lib/components/ui/` (shadcn-svelte style index exports).
-- App components: `src/lib/components/`.
-- Routes: `src/routes/`.
+- Docs content: `src/content/docs/docs/` (served at `/docs/...`). `src/content/docs/privacy.md` and `src/content/docs/404.md` are Starlight pages too.
+- Blog: `src/content/blog/`. Changelog: `src/content/changelog/<year>.md`.
+- Collections: `src/content.config.ts`. Site config, Starlight overrides, Expressive Code: `astro.config.mjs`.
+- Sidebar and header navigation: `src/lib/config/docs.ts`.
+- Markdown plugins (callouts, changelog cards): `src/lib/markdown/`.
+- Theme: `src/styles/global.css` (Arcane tokens mapped onto Starlight's `--sl-*` variables, plus the shadcn tokens the islands use) and `src/styles/starlight.css` (overrides of Starlight's markup).
+- Starlight overrides: `src/components/overrides/`. Docs content components: `src/components/content/`.
+- Pages outside the docs: `src/pages/` (`index.astro` is a standalone landing page; the rest use `StarlightPage`).
+- Worker entry: `src/worker.ts` (redirects, `/api/discord/presence`, `/api/r2/list`, `/api/r2/get`, then static assets with a 404 fallback). Live widgets (GitHub stars and version, Discord presence, analytics heartbeat, preview binaries) fetch in the browser.
+- UI primitives for the Svelte islands: `src/lib/components/ui/`.
 
 ## Content Workflow
 
-- Every Markdown file requires frontmatter: `title` and `description`. Do not write an `# H1` — the route renders `title` and `description` above your content.
-- Place docs in the matching `content/` collection (see `velite.config.js`). Top-level folders match sidebar groups: `get-started/` (Get Started), `docker/` (Managing Docker), `remote/` (Remote Hosts & Swarm), `access/` (Users & Access), `settings/` (Settings & Integrations), `networking/` (Reverse Proxy & Networking), `security/` (Security), `reference/` (Reference), `development/` (Contributing).
-- To make a new page appear in the sidebar, add a `leaf('<dir>/<name>')` call to the right `group(...)` array in `src/lib/config/docs.ts`, **at the position you want it displayed**. Sidebar order is literal array order — the `published` flag is the only frontmatter the nav reads. Without a `leaf()` the page still builds and is reachable by URL, but is invisible in the sidebar, the `/docs` index, mobile nav, and the prev/next pager.
-- If adding a new group, also add it to `sectionNavItems` in the same file and add a matching key to `SECTION_META` in `src/lib/components/docs-index.svelte`. The `SECTION_META` key must match the group title exactly or the card silently disappears from `/docs`.
-- If adding a new top-level directory, register it in all four places: the collection in `velite.config.js`, `ALL_DOCS` in `src/lib/config/docs.ts`, `allDocs` in `src/lib/docs.ts`, and `ALL_DOCS` in `src/routes/docs/[...slug]/+page.ts`.
-- Cross-link with `<Link href="/docs/...">` (root-relative, no `.md`). Callouts are GitHub-style blockquote markers: `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`.
-- Blog posts live in `content/blog/<slug>.md` and show up at `/blog/<slug>` automatically — no sidebar `leaf()` is required. Required frontmatter: `title`, `description`, `date` (`YYYY-MM-DD`). Optional: `kind` (`news` | `deprecation` | `release`, default `news`), `featured` (site-wide banner; newest featured post wins), `banner` (short banner copy; falls back to `title`), `published`. Do not write an `# H1`. Set `featured: false` on older posts when a newer one should take the banner.
-- Do not hand-edit `static/config.json`, `content/changelog/*`, `static/sbom/`, or `static/rss.xml` — CI regenerates changelog/SBOM from the latest Arcane release, and Velite regenerates the blog RSS feed.
-- If you rename or move a content file, add a 301 from the old `/docs/...` path in `src/_worker.js` (`DOC_REDIRECTS`). The static adapter has no redirect layer of its own.
+- Every docs page requires frontmatter: `title` and `description`. Do not write an `# H1` — the page renders `title` and `description` above your content.
+- Use `.md` unless the page imports a component; then use `.mdx` and put `import` lines right after the frontmatter. Content components are imported from `#components/content/...` (e.g. `ScreenshotFrame`, `Collapsible`), and tabs from `@astrojs/starlight/components` (`Tabs`, `TabItem`).
+- Top-level folders under `src/content/docs/docs/` match sidebar groups: `get-started/`, `docker/`, `remote/`, `access/`, `settings/`, `networking/`, `security/`, `reference/`, `development/`.
+- To make a new page appear in the sidebar, add a `doc('<dir>/<name>')` call to the right section in `docSections` in `src/lib/config/docs.ts`, **at the position you want it displayed**. Without it the page still builds and is reachable by URL, but is invisible in the sidebar, the `/docs` index, and the prev/next pager.
+- If adding a new section, also add a matching key to `SECTION_META` in `src/components/content/DocsIndex.astro`. The key must match the section label exactly or the card silently disappears from `/docs`.
+- Cross-link with Markdown links to root-relative paths: `[Installation](/docs/get-started/installation)`. Callouts are GitHub-style blockquote markers: `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`; `src/lib/markdown/callouts.ts` turns them into Starlight asides at build time.
+- Blog posts live in `src/content/blog/<slug>.md` and show up at `/blog/<slug>` automatically. Required frontmatter: `title`, `description`, `date` (`YYYY-MM-DD`). Optional: `kind` (`news` | `update` | `deprecation` | `release`, default `news`), `featured` (site-wide banner; newest featured post wins), `banner` (short banner copy; falls back to `title`), `published`. Do not write an `# H1`. Set `featured: false` on older posts when a newer one should take the banner.
+- Do not hand-edit `static/config.json`, `src/content/changelog/*`, or `static/sbom/` — CI regenerates them from the latest Arcane release. The RSS feed is generated by `src/pages/rss.xml.ts`.
+- If you rename or move a content file, add a 301 from the old `/docs/...` path to `DOC_REDIRECTS` in `src/worker.ts`.
 
 ## Svelte Guidelines
 
-- Use Svelte 5 runes: `$props`, `$state`, `$derived`, `{@render ...}`.
-- Keep component structure consistent with existing patterns in `src/routes/` and `src/lib/components/`.
+- Use Svelte 5 runes: `$props`, `$state`, `$derived`, `{@render ...}`. Svelte components are only for client-side interactivity; render static markup with Astro components.
 - When changing `.svelte` or `.svelte.ts/.svelte.js`, run the Svelte MCP fixer.
 
 ## Dev & Quality Commands (pnpm only)
 
-- `pnpm dev` (local dev; runs Velite watcher + Vite)
-- `pnpm build`
-- `pnpm check`
+- `pnpm dev` or `vp run dev` (Astro dev server on port 3001)
+- `pnpm build` or `vp run build`
+- `pnpm check` (`astro check` + `vp check`)
 - `pnpm lint`
 - `pnpm format`
 
-**Never start, stop, restart, or curl the local dev server.** A `pnpm dev` is already running at all times. Do not run `pnpm dev`, `vp dev`, `vite`, or `velite --watch`. Do not kill processes on ports 3001/3002. Edit files and let the existing server hot-reload.
+Astro owns the dev server and build, so use `vp run dev` / `vp run build`, never the built-in `vp dev` / `vp build`, which run plain Vite without Astro. Vite+ handles formatting, linting and the commit hook.
 
-`pnpm build` is the real gate for content changes: every doc is prerendered and `getDoc` throws a 404 on an unknown slug, so a broken internal `/docs/...` link or a missing `#anchor` fails the build. Run it after any content edit.
+Oxfmt does not format `.astro` files yet, so `pnpm format` and `pnpm check` also run Prettier with `prettier-plugin-astro` on `src/**/*.astro` (config in `.prettierrc.yaml`, matching the Oxfmt settings). The commit hook formats staged `.astro` files the same way.
+
+`pnpm screenshots` regenerates the docs screenshots in `src/assets/screenshots/` (light and dark pairs) from a temporary Arcane container with demo data; it needs Docker and Playwright's Chromium. `<ScreenshotFrame name="dashboard" />` picks the pair by name and fails the build when one is missing.
+
+**Never start, stop, restart, or curl the local dev server.** A `pnpm dev` is already running at all times. Do not run `pnpm dev`, `vp dev`, or `astro dev`. Do not kill processes on ports 3001/3002. Edit files and let the existing server hot-reload.
+
+`pnpm build` is the real gate for content changes: `starlight-links-validator` fails the build on a broken internal `/docs/...` link or a missing `#anchor`. Run it after any content edit.
 
 ## Build/Runtime Notes
 
-- Icons are provided through Iconify/unplugin-icons virtual Svelte imports.
-- Static build output goes to `build/` with `index.html` fallback.
-
-<!--VITE PLUS START-->
+- Icons come from Iconify through unplugin-icons (`virtual:icons/...`, re-exported from `src/lib/icons/index.ts`). They are Svelte components and render without JavaScript when used in `.astro` files.
+- Build output goes to `dist/`, which `wrangler.jsonc` serves as static assets. `static/` is the public directory.
 
 # Using Vite+, the Unified Toolchain for the Web
 

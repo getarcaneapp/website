@@ -1,0 +1,44 @@
+---
+import CommunityGrid from '../components/community/CommunityGrid.astro';
+import { button } from '../components/landing/button';
+import WidePage from '../components/pages/WidePage.astro';
+import { communityArticles, communityVideos } from '../lib/config/community';
+import { DISCORD_URL } from '../lib/config/docs';
+---
+
+<WidePage
+	title="Community"
+	description="Videos, articles, and blog posts from the Arcane community. Share your own content and join the conversation."
+>
+	<div class="arcane-ui not-content">
+		<section class="relative pb-16">
+			<h2 class="mb-6 text-lg font-semibold tracking-tight text-foreground">Videos</h2>
+			<CommunityGrid items={communityVideos} emptyMessage="No videos yet — check back soon." />
+		</section>
+
+		<section class="relative pb-16">
+			<h2 class="mb-6 text-lg font-semibold tracking-tight text-foreground">
+				Articles & blog posts
+			</h2>
+			<CommunityGrid items={communityArticles} emptyMessage="No articles yet — check back soon." />
+		</section>
+
+		<section class="relative pb-8">
+			<div class="flex flex-col items-center gap-3 rounded-xl border border-border bg-background p-8 text-center">
+				<h2 class="text-lg font-semibold tracking-tight text-foreground">
+					Made something about Arcane?
+				</h2>
+				<p class="max-w-md text-sm text-muted-foreground">
+					Share your video, article, or blog post with the community. Reach out on Discord or email
+					info@getarcane.app. We would love to feature your content as an appreciation for
+					supporting our project.
+				</p>
+				<div class="mt-2 flex flex-wrap items-center justify-center gap-3">
+					<a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" class={button.outline}>
+						Join the Discord
+					</a>
+				</div>
+			</div>
+		</section>
+	</div>
+</WidePage>

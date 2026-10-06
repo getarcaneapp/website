@@ -1,0 +1,52 @@
+<script>
+	import { trackEvent } from '../lib/analytics';
+
+	function revealHashTarget() {
+		let id: string;
+		try {
+			id = decodeURIComponent(location.hash.slice(1));
+		} catch {
+			return;
+		}
+		if (!id) return;
+		const target = document.getElementById(id);
+		if (!target) return;
+
+		let opened = false;
+		for (let el: HTMLElement | null = target; el; el = el.parentElement) {
+			if (el instanceof HTMLDetailsElement && !el.open) {
+				el.open = true;
+				opened = true;
+			}
+			if (el.getAttribute('role') === 'tabpanel' && el.hidden) {
+				const tabId = el.getAttribute('aria-labelledby');
+				if (tabId) document.getElementById(tabId)?.click();
+				opened = true;
+			}
+		}
+		if (opened) requestAnimationFrame(() => target.scrollIntoView());
+	}
+
+	revealHashTarget();
+	window.addEventListener('hashchange', revealHashTarget);
+
+	document.addEventListener('click', (event) => {
+		const element = event.target instanceof Element ? event.target : null;
+		if (!element) return;
+
+		const copy = element.closest('.expressive-code .copy button');
+		if (copy) {
+			const language = copy.closest('figure')?.querySelector('pre')?.dataset.language ?? 'text';
+			trackEvent('Docs Code Copied', { language });
+			return;
+		}
+
+		const cta = element.closest<HTMLElement>('[data-track-cta]');
+		if (cta) {
+			trackEvent('CTA Clicked', {
+				cta: cta.dataset.trackCta as 'demo',
+				placement: (cta.dataset.trackPlacement ?? 'home_hero') as 'home_hero'
+			});
+		}
+	});
+</script>

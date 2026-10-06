@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="${REPO:-getarcaneapp/arcane}"
-CHANGELOG_DIR="${CHANGELOG_DIR:-content/changelog}"
+CHANGELOG_DIR="${CHANGELOG_DIR:-src/content/changelog}"
 PER_PAGE="${PER_PAGE:-100}"
 RELEASES_JSON="${RELEASES_JSON:-}"
 

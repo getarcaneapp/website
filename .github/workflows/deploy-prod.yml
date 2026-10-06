@@ -36,9 +36,6 @@ jobs:
           [[ -f ~/.bashrc ]] && source ~/.bashrc
           vp install
 
-      - name: Generate content data
-        run: vp run velite
-
       - name: Build site
         run: vp run build
 

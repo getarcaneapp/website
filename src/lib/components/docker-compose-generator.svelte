@@ -294,7 +294,7 @@
 
 			<aside class="sticky top-below-header self-start">
 				<div
-					class="max-h-below-header animate-float overflow-auto rounded-2xl border border-border/60 bg-background/85 px-6 pt-5 pb-5.5 shadow-wizard transition duration-300 will-change-transform hover:-translate-y-1 hover:shadow-wizard-hover motion-reduce:animate-none"
+					class="max-h-below-header overflow-auto rounded-2xl border border-border/60 bg-background/85 px-6 pt-5 pb-5.5 shadow-wizard transition duration-300 will-change-transform hover:-translate-y-1 hover:shadow-wizard-hover motion-reduce:animate-none"
 				>
 					<div class="mb-4 grid gap-1.5">
 						<p class="text-sm font-bold tracking-wider uppercase">Current step summary</p>

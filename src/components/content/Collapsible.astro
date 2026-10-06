@@ -1,0 +1,105 @@
+---
+import { ArrowDownIcon } from '../../lib/icons/index';
+
+interface Props {
+	id: string;
+	title: string;
+	description?: string;
+	open?: boolean;
+}
+const { id, title, description, open = false } = Astro.props;
+---
+
+<details class="collapsible" open={open}>
+	<summary>
+		<div class="collapsible-heading">
+			<h3 id={id}>{title}</h3>
+			{description && <p>{description}</p>}
+		</div>
+		<ArrowDownIcon class="collapsible-icon" aria-hidden="true" />
+	</summary>
+	<div class="collapsible-body">
+		<slot />
+	</div>
+</details>
+
+<style>
+	.collapsible {
+		margin-block: 1rem 0;
+		padding: 0;
+		border: 1px solid var(--surface-border);
+		border-radius: var(--sl-radius);
+		background-color: color-mix(in oklch, var(--surface-muted), transparent 50%);
+		transition:
+			background-color 0.15s ease,
+			border-color 0.15s ease;
+	}
+	.collapsible + :global(.collapsible) {
+		margin-top: 0.75rem;
+	}
+	.collapsible:hover,
+	.collapsible[open] {
+		border-color: color-mix(in oklch, var(--sl-color-accent), transparent 70%);
+	}
+	.collapsible[open] {
+		background-color: var(--surface-muted);
+	}
+	.collapsible > summary {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0.875rem 1rem;
+		cursor: pointer;
+		list-style: none;
+		user-select: none;
+	}
+	.collapsible[open] > summary {
+		margin: 0;
+	}
+	.collapsible > summary::before {
+		content: none;
+	}
+	.collapsible > summary::-webkit-details-marker {
+		display: none;
+	}
+	.collapsible-heading {
+		flex: 1;
+		min-width: 0;
+	}
+	.collapsible-heading h3 {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.4;
+		letter-spacing: -0.01em;
+		color: var(--sl-color-white);
+		scroll-margin-top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height) + 1.5rem);
+	}
+	.collapsible-heading p {
+		margin: 0.25rem 0 0;
+		font-size: var(--sl-text-sm);
+		font-weight: 400;
+		line-height: 1.5;
+		color: var(--sl-color-gray-3);
+	}
+	.collapsible :global(.collapsible-icon) {
+		width: 1.25rem;
+		height: 1.25rem;
+		flex-shrink: 0;
+		color: var(--sl-color-gray-3);
+		transition: transform 0.2s ease;
+	}
+	.collapsible[open] :global(.collapsible-icon) {
+		transform: rotate(180deg);
+	}
+	.collapsible-body {
+		padding: 1rem;
+		border-top: 1px solid var(--surface-border);
+	}
+	.collapsible-body > :global(:first-child) {
+		margin-top: 0;
+	}
+</style>

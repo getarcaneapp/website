@@ -50,7 +50,7 @@ jobs:
 
           CHANGELOG_UP_TO_DATE=false
           shopt -s nullglob
-          CHANGELOG_FILES=(content/changelog/*.md)
+          CHANGELOG_FILES=(src/content/changelog/*.md)
           if (( ${#CHANGELOG_FILES[@]} > 0 )); then
             CHANGELOG_UP_TO_DATE=true
             while IFS= read -r tag; do
@@ -86,7 +86,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          RELEASES_JSON="${{ steps.releases.outputs.releases_json }}" REPO="getarcaneapp/arcane" CHANGELOG_DIR="content/changelog" bash scripts/update-changelog.sh
+          RELEASES_JSON="${{ steps.releases.outputs.releases_json }}" REPO="getarcaneapp/arcane" CHANGELOG_DIR="src/content/changelog" bash scripts/update-changelog.sh
 
       - name: Checkout arcane repo
         uses: actions/checkout@v6
@@ -210,7 +210,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if [[ -n "$(git status --porcelain -- content/changelog.md content/changelog/ static/config.json static/sbom/)" ]]; then
+          if [[ -n "$(git status --porcelain -- src/content/changelog/ static/config.json static/sbom/)" ]]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
@@ -252,8 +252,7 @@ jobs:
           base: main
           labels: 'docs(changelog),chore(config),chore(sbom)'
           add-paths: |
-            content/changelog.md
-            content/changelog/
+            src/content/changelog/
             static/config.json
             static/sbom/
           delete-branch: true

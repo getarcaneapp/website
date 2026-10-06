@@ -18,7 +18,7 @@ type AnalyticsEvents = {
 	};
 	'CTA Clicked': {
 		cta: 'changelog' | 'blog' | 'demo' | 'get_started' | 'testflight';
-		placement: 'home_announcement' | 'home_hero';
+		placement: 'home_announcement' | 'home_hero' | 'header';
 	};
 };
 

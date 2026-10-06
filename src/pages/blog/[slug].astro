@@ -1,0 +1,58 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import KindBadge from '../../components/blog/KindBadge.astro';
+import RssLink from '../../components/blog/RssLink.astro';
+import { findPostNeighbors, getPublishedPosts, type BlogPost } from '../../lib/blog';
+
+export const getStaticPaths = (async () => {
+	const posts = await getPublishedPosts();
+	return posts.map((post) => ({ params: { slug: post.slug }, props: { post, posts } }));
+}) satisfies GetStaticPaths;
+
+const { post, posts } = Astro.props as { post: BlogPost; posts: BlogPost[] };
+const { Content, headings } = await render(post);
+const { previous, next } = findPostNeighbors(posts, post.slug);
+---
+
+<StarlightPage
+	frontmatter={{
+		title: post.data.title,
+		description: post.data.description,
+		editUrl: `https://github.com/getarcaneapp/website/edit/main/${post.filePath}`,
+		prev: previous ? { link: previous.href, label: previous.data.title } : false,
+		next: next ? { link: next.href, label: next.data.title } : false
+	}}
+	headings={headings}
+	sidebar={[
+		{ label: 'All posts', link: '/blog' },
+		{
+			label: 'Posts',
+			items: posts.map((p) => ({ label: p.data.title, link: p.href }))
+		}
+	]}
+>
+	<div class="post-meta not-content">
+		<KindBadge kind={post.data.kind} />
+		<time datetime={post.dateYmd}>{post.dateLabel}</time>
+		<RssLink />
+	</div>
+	<Content />
+</StarlightPage>
+
+<style>
+	.post-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.post-meta time {
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+	.post-meta :global(.rss-link) {
+		margin-inline-start: auto;
+	}
+</style>

@@ -1,0 +1,46 @@
+---
+title: 'Environment Variables'
+description: 'Every environment variable Arcane reads, and which settings you can override from the environment.'
+---
+
+import EnvTable from '#components/content/EnvTable.astro';
+import EnvOverridesTable from '#components/content/EnvOverridesTable.astro';
+
+This page lists the environment variables Arcane reads at startup. Most settings can also be changed in the Settings UI; use these when you configure Arcane from your Compose file or need a value in place before first start.
+
+<div id="environment-variables" class="scroll-m-28">
+
+<EnvTable />
+
+</div>
+
+> [!NOTE]
+> Arcane also accepts the lowercase proxy variables `http_proxy`, `https_proxy`, and `no_proxy`.
+
+To use an external Postgres database through `DATABASE_URL`, see [Installation](/docs/get-started/installation), which has the connection string format.
+
+## Settings overrides
+
+The overrides below only take effect when `UI_CONFIGURATION_DISABLED=true` or `AGENT_MODE=true` is set. Otherwise Arcane ignores them.
+
+<EnvOverridesTable />
+
+## Container runtime user
+
+When Arcane runs inside a container, it drops to the built-in non-root user (`65532:65532`) unless `PUID` and `PGID` are set. Arcane treats itself as containerized when `ARCANE_IN_CONTAINER=true` (set by the official images), when the `container` variable is non-empty, or when `/.dockerenv` or `/run/.containerenv` exists. Outside a container, the process keeps the user it was started as.
+
+Set `PUID` and `PGID` if mounted files should belong to a specific host user and group. If you point `DOCKER_HOST` at a custom Unix socket, Arcane uses that socket path when it adds the runtime user to the socket's group.
+
+## Timezone and scheduled jobs
+
+Arcane's recurring jobs (image update checks, auto-updates, vulnerability scans, scheduled pruning, GitOps sync, and environment health checks) run on cron-style schedules evaluated in the timezone set by `TZ`. Set it to an [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) so jobs run at the local times you expect:
+
+```bash
+TZ=America/New_York
+```
+
+If `TZ` is unset, Arcane uses the container's local time, which is UTC on the official images. Job intervals and cron expressions are set in the Settings UI, or through the environment when [settings overrides](#settings-overrides) are enabled.
+
+## Admin API key bootstrap
+
+Set `ADMIN_STATIC_API_KEY` when automation needs a known API key from the first start. At startup, Arcane creates or updates a protected admin API key with this value, so you don't have to create it in the UI. See the [API Reference](/docs/reference/api) for usage and webhook examples.

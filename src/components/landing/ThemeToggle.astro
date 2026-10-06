@@ -1,0 +1,24 @@
+---
+import { MoonIcon, SunIcon } from '../../lib/icons/index';
+---
+
+<button
+	type="button"
+	class="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+	data-theme-toggle
+	aria-label="Switch between light and dark theme"
+	title="Switch theme"
+>
+	<SunIcon class="size-4.5 light:hidden" />
+	<MoonIcon class="size-4.5 dark:hidden" />
+</button>
+
+<script is:inline>
+	document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+			document.documentElement.dataset.theme = next;
+			localStorage.setItem('starlight-theme', next);
+		});
+	});
+</script>

@@ -1,0 +1,205 @@
+---
+title: 'Reverse Proxy Setup'
+description: 'Put Arcane behind Nginx, Apache, or Traefik with WebSockets and the real client IP.'
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+To put Arcane behind a reverse proxy such as Nginx, Apache, or Traefik, the proxy has to forward WebSocket connections, which Arcane uses for live updates, and pass the real client IP so Arcane can apply login rate limits per client. You also need to set `TRUSTED_PROXIES` so Arcane believes the forwarded IP, and make sure the proxy's header-size limit isn't too small for Arcane's session cookies.
+
+Set `APP_URL` to the public URL users open, such as `https://arcane.example.com`, without the internal `:3552` port.
+
+## Configure your proxy
+
+<Tabs syncKey="reverse-proxy">
+
+<TabItem label="Nginx">
+
+<span id="nginx"></span>
+
+This Nginx example enables WebSockets. Replace the domain name and certificate paths with your own values:
+
+```nginxconf
+server {
+   listen 80;
+   server_name arcane.yourdomain.com;
+   return 301 https://$host$request_uri;
+}
+
+server {
+        listen 443 ssl http2;
+
+        ssl_certificate        /etc/letsencrypt/live/arcane.yourdomain.com/fullchain.pem;
+        ssl_certificate_key    /etc/letsencrypt/live/arcane.yourdomain.com/privkey.pem;
+
+        server_name arcane.yourdomain.com;
+
+        location / {
+                add_header X-Robots-Tag "noindex, nofollow";
+                proxy_pass http://127.0.0.1:3552;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_cache_bypass $http_upgrade;
+        }
+
+        access_log /var/log/nginx/arcane-access.log;
+        error_log /var/log/nginx/arcane-error.log debug;
+}
+```
+
+The lines that enable WebSockets are:
+
+- `proxy_http_version 1.1;`
+- `proxy_set_header Upgrade $http_upgrade;`
+- `proxy_set_header Connection "upgrade";`
+- `proxy_cache_bypass $http_upgrade;`
+
+This config forwards the client IP in `X-Forwarded-For` and `X-Real-IP`. Set `TRUSTED_PROXIES` so Arcane trusts it, as described [below](#trust-the-proxy-with-trusted_proxies).
+
+</TabItem>
+
+<TabItem label="Apache">
+
+<span id="apache"></span>
+
+If you use Apache 2.4.47 or later, you need `mod_proxy_http` and a `ProxyPassMatch` rule with `upgrade=websocket`:
+
+```apache
+Define HOST arcane.example.com
+Define PORT 3552
+
+<VirtualHost *:443>
+  ServerName ${HOST}
+
+  ProxyPassMatch ^/(.*)\/ws\/(.*)$  ws://127.0.0.1:${PORT}/$1/ws/$2 upgrade=websocket
+  ProxyPass / http://127.0.0.1:${PORT}/
+  ProxyPassReverse / http://127.0.0.1:${PORT}/
+
+  ErrorLog ${APACHE_LOG_DIR}/arcane.error.log
+  CustomLog ${APACHE_LOG_DIR}/arcane.access.log combined
+
+  Include /etc/letsencrypt/options-ssl-apache.conf
+  SSLCertificateFile /etc/letsencrypt/live/${HOST}/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/${HOST}/privkey.pem
+</VirtualHost>
+```
+
+Apache's `mod_proxy` adds `X-Forwarded-For` automatically. Set `TRUSTED_PROXIES` so Arcane trusts it, as described [below](#trust-the-proxy-with-trusted_proxies).
+
+</TabItem>
+
+<TabItem label="Traefik">
+
+<span id="traefik"></span>
+
+Traefik forwards WebSockets without extra middleware. Edge Agents with `EDGE_TRANSPORT=auto` (the default) or `grpc` open a long-lived gRPC tunnel to `/api/tunnel/connect`, so Traefik must forward that path as unencrypted HTTP/2 (`h2c`) without timing it out. Without Edge Agents, you only need the web router in step 2.
+
+### 1. Turn off the HTTPS read timeout
+
+Traefik's HTTPS entrypoint times out after 60 seconds by default, which kills the gRPC stream. Add this to the Traefik service `command` (or the same setting in your static config). It goes on the entrypoint, not a router.
+
+```yaml
+command:
+  - '--entrypoints.websecure.transport.respondingtimeouts.readtimeout=0s'
+```
+
+See Traefik's [responding timeouts](https://doc.traefik.io/traefik/reference/install-configuration/entrypoints/#respondingtimeouts).
+
+### 2. Add gRPC and web routers
+
+Put these labels on your Arcane service. Change `arcane.example.com`, `letsencrypt`, and `proxy` to your hostname, certificate resolver, and the Docker network Traefik is on. `APP_URL` is the public site. `TRUSTED_PROXIES` is the subnet of that same Docker network. See [Trust the proxy](#trust-the-proxy-with-trusted_proxies) for how to look it up.
+
+```yaml
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    environment:
+      - APP_URL=https://arcane.example.com
+      - TRUSTED_PROXIES=172.18.0.0/16
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - 'traefik.http.routers.arcane-grpc.rule=Host(`arcane.example.com`) && Path(`/api/tunnel/connect`) && Method(`POST`) && HeaderRegexp(`Content-Type`, `^application/grpc`)'
+      - traefik.http.routers.arcane-grpc.entrypoints=websecure
+      - traefik.http.routers.arcane-grpc.priority=100
+      - traefik.http.routers.arcane-grpc.tls.certresolver=letsencrypt
+      - traefik.http.routers.arcane-grpc.service=arcane-grpc
+      - traefik.http.services.arcane-grpc.loadbalancer.server.port=3552
+      - traefik.http.services.arcane-grpc.loadbalancer.server.scheme=h2c
+      - 'traefik.http.routers.arcane-web.rule=Host(`arcane.example.com`)'
+      - traefik.http.routers.arcane-web.entrypoints=websecure
+      - traefik.http.routers.arcane-web.priority=10
+      - traefik.http.routers.arcane-web.tls.certresolver=letsencrypt
+      - traefik.http.routers.arcane-web.service=arcane-web
+      - traefik.http.services.arcane-web.loadbalancer.server.port=3552
+      - traefik.http.services.arcane-web.loadbalancer.server.scheme=http
+
+networks:
+  proxy:
+    external: true
+```
+
+The gRPC router takes `POST /api/tunnel/connect`. Everything else, including WebSockets, uses the web router. Traefik proxies WebSockets without extra middleware. See Traefik's [exposing gRPC](https://doc.traefik.io/traefik/expose/overview/#exposing-grpc-services) for more on `h2c` backends.
+
+### 3. Point the Edge Agent at that URL
+
+`MANAGER_API_URL` should match `APP_URL`. See [Remote Environments](/docs/remote/environments) if you haven't created the agent yet.
+
+```yaml
+environment:
+  - EDGE_AGENT=true
+  - EDGE_TRANSPORT=auto
+  - MANAGER_API_URL=https://arcane.example.com
+  - AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+### 4. Restart and check the agent logs
+
+Restart Traefik and the Edge Agent, then read the agent's logs:
+
+```bash
+docker restart traefik arcane-edge-agent
+docker logs -f arcane-edge-agent
+```
+
+A working setup logs `Edge tunnel connected to manager` with `transport=grpc`. If Traefik doesn't forward gRPC, the agent logs `gRPC edge tunnel connection failed, falling back to websocket transport` and connects over WebSocket instead.
+
+</TabItem>
+
+</Tabs>
+
+## Trust the proxy with `TRUSTED_PROXIES`
+
+Arcane rate-limits authentication endpoints (login, token refresh, OIDC callback) per client IP. Behind a reverse proxy, every request appears to come from the proxy's IP. That weakens brute-force protection and can lock out legitimate users who share the proxy.
+
+Set `TRUSTED_PROXIES` on the Arcane container to your proxy's address, such as `TRUSTED_PROXIES=10.0.0.5`, or to a CIDR range, such as the Docker network that the proxy and Arcane share (`TRUSTED_PROXIES=172.18.0.0/16`). Arcane then reads the real client IP from `X-Forwarded-For` for requests coming from those addresses. Docker's default address pools hand out subnets from `172.17.0.0`–`172.31.0.0` and then `192.168.0.0/16`, and your daemon may be configured differently, so look up the network's actual subnet:
+
+```bash
+docker network inspect <network> --format '{{range .IPAM.Config}}{{.Subnet}}{{end}}'
+```
+
+`TRUSTED_PROXIES` accepts a comma-separated list of IPs or CIDR ranges. Only requests whose direct peer is in this list have their forwarded headers trusted, so an untrusted client cannot spoof its IP via `X-Forwarded-For`. See the [Environment Variables](/docs/reference/environment-variables) reference for all configuration options.
+
+> [!NOTE]
+> If you bind Arcane to a loopback address with `LISTEN`, such as `LISTEN=127.0.0.1` for a proxy on the same host, Arcane trusts loopback proxies (`127.0.0.0/8`, `::1/128`) automatically and you don't need `TRUSTED_PROXIES`. This only works with literal loopback IPs, not hostnames such as `localhost`.
+
+## Allow large enough headers
+
+If sign-in fails with oversized-header errors, raise your proxy's request header limit, such as `large_client_header_buffers` in Nginx. Current Arcane sessions fit in one cookie, but sessions created by older releases carry larger ML-DSA-87 (post-quantum) tokens split across up to four cookies until the session refreshes.
+
+## Other proxies
+
+[websocket.org](https://websocket.org/) has WebSocket setup guides for other proxies and load balancers:
+
+- [Nginx](https://websocket.org/guides/infrastructure/nginx/)
+- [Amazon ALB](https://websocket.org/guides/infrastructure/aws/alb/)
+- [Cloudflare](https://websocket.org/guides/infrastructure/cloudflare/)
+- [Kubernetes](https://websocket.org/guides/infrastructure/kubernetes/)

@@ -1,16 +1,9 @@
-import { enhancedImages } from '@sveltejs/enhanced-img';
-import adapter from '@sveltejs/adapter-static';
-import { sveltekit } from '@sveltejs/kit/vite';
-import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite-plus';
-import Icons from 'unplugin-icons/vite';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { mdsvex } from 'mdsvex';
-import { mdsvexConfig } from './mdsvex.config.js';
 
 export default defineConfig({
 	staged: {
-		'*': 'vp check --fix'
+		'*': 'vp check --fix',
+		'*.astro': 'prettier --write'
 	},
 	fmt: {
 		useTabs: true,
@@ -19,13 +12,13 @@ export default defineConfig({
 		printWidth: 100,
 		svelte: true,
 		experimentalTailwindcss: {
-			stylesheet: './src/app.css',
+			stylesheet: './src/styles/global.css',
 			attributes: ['class'],
 			functions: ['clsx', 'cn'],
 			preserveWhitespace: true
 		},
 		experimentalSortPackageJson: true,
-		ignorePatterns: ['static/**']
+		ignorePatterns: ['static/**', 'src/content/**', 'pnpm-lock.yaml']
 	},
 	lint: {
 		plugins: ['oxc', 'typescript', 'unicorn'],
@@ -33,57 +26,17 @@ export default defineConfig({
 			builtin: true,
 			browser: true
 		},
-		ignorePatterns: ['.svelte-kit/**', '.velite/**', 'build/**'],
+		ignorePatterns: ['.astro/**', 'dist/**'],
 		options: {
 			reportUnusedDisableDirectives: 'error'
 		},
 		overrides: [
 			{
-				files: ['vite.config.ts', 'velite.config.js', 'mdsvex.config.ts'],
-				env: {
-					node: true
-				}
-			},
-			{
-				files: ['src/routes/api/**/*.ts'],
+				files: ['vite.config.ts', 'astro.config.mjs'],
 				env: {
 					node: true
 				}
 			}
 		]
-	},
-	plugins: [
-		tailwindcss(),
-		enhancedImages(),
-		sveltekit({
-			preprocess: [mdsvex(mdsvexConfig), vitePreprocess()],
-			extensions: ['.svelte', '.md'],
-			adapter: adapter({
-				fallback: '200.html',
-				pages: './build'
-			})
-		}),
-		Icons({
-			compiler: 'svelte',
-			autoInstall: false
-		})
-	],
-	server: {
-		fs: {
-			allow: ['..', './content']
-		}
-	},
-	build: {
-		minify: 'oxc',
-		rolldownOptions: {
-			treeshake: true,
-			output: {
-				minify: {
-					compress: {
-						dropConsole: true
-					}
-				}
-			}
-		}
 	}
 });

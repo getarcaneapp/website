@@ -1,0 +1,19 @@
+<span
+	class="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-3xs leading-none font-medium text-primary tabular-nums"
+	data-discord-presence
+	hidden
+></span>
+
+<script>
+	fetch('/api/discord/presence')
+		.then((res) => (res.ok ? res.json() : null))
+		.then((data: { online?: unknown } | null) => {
+			const online = data?.online;
+			if (typeof online !== 'number' || !Number.isInteger(online) || online < 0) return;
+			document.querySelectorAll<HTMLElement>('[data-discord-presence]').forEach((el) => {
+				el.textContent = `${online.toLocaleString('en-US')} online`;
+				el.hidden = false;
+			});
+		})
+		.catch(() => {});
+</script>

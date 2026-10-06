@@ -10,7 +10,6 @@ allowBuilds:
   workerd: true
 
 overrides:
-  '@sveltejs/kit': '3.0.0'
   undici: '^7.18.2'
   rollup: '>=4.59.0'
   ws: '>=8.21.0'
@@ -26,8 +25,3 @@ peerDependencyRules:
     - vite
   allowedVersions:
     vite: '*'
-
-minimumReleaseAgeExclude:
-  - '@sveltejs/adapter-static@4.0.0'
-  - '@sveltejs/enhanced-img@1.0.0'
-  - '@sveltejs/kit@3.0.0'
