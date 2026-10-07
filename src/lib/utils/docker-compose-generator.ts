@@ -140,6 +140,7 @@ const SOCKET_PROXY_GET_PATHS = [
 	'/events(/.*)?',
 	'/version',
 	'/info(/.*)?',
+	'/system/df',
 	'/containers(/.*)?',
 	'/exec(/.*)?',
 	'/images(/.*)?',
@@ -254,7 +255,7 @@ function buildTecnativaSocketProxyService(): ComposeRecord {
 			'SERVICES=1',
 			'SESSION=1',
 			'SWARM=1',
-			'SYSTEM=0',
+			'SYSTEM=1',
 			'TASKS=1',
 			'VOLUMES=1'
 		],

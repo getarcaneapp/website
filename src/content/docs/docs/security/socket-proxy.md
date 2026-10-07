@@ -39,6 +39,7 @@ services:
       - '-allowGET=(/v[\d.]+)?/events(/.*)?'
       - '-allowGET=(/v[\d.]+)?/version'
       - '-allowGET=(/v[\d.]+)?/info(/.*)?'
+      - '-allowGET=(/v[\d.]+)?/system/df'
       - '-allowGET=(/v[\d.]+)?/containers(/.*)?'
       - '-allowGET=(/v[\d.]+)?/exec(/.*)?'
       - '-allowGET=(/v[\d.]+)?/images(/.*)?'
@@ -131,7 +132,7 @@ wollomatic blocks every request unless its HTTP method and path are allowed. Thi
 
 | Method   | Allowed paths                                                                                                                                       |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`    | ping, events, version, info, containers, exec, images, networks, volumes, distribution, swarm, nodes, services, tasks, secrets, configs             |
+| `GET`    | ping, events, version, info, `/system/df`, containers, exec, images, networks, volumes, distribution, swarm, nodes, services, tasks, secrets, configs |
 | `HEAD`   | ping, version                                                                                                                                       |
 | `POST`   | containers, exec, images, networks, volumes, commit, build, BuildKit (`/session`, `/grpc`), registry auth, swarm, nodes, services, secrets, configs |
 | `PUT`    | container archives                                                                                                                                  |
@@ -167,7 +168,7 @@ services:
       - SERVICES=0
       - SESSION=0
       - SWARM=0
-      - SYSTEM=0
+      - SYSTEM=1
       - TASKS=0
       - VOLUMES=1
     volumes:
@@ -220,9 +221,10 @@ Tecnativa uses environment variables as switches: `1` allows an API section, `0`
 | `POST`                                                              | `1`   | Create and change resources. Without it the proxy is read-only.             |
 | `DISTRIBUTION`                                                      | `1`   | Inspect images and check for image updates.                                 |
 | `PING`, `VERSION`, `INFO`                                           | `1`   | Health checks and Docker version and system info.                           |
+| `SYSTEM`                                                           | `1`   | Allow `/system/df`, which scheduled pruning requires.                       |
 | `AUTH`, `SECRETS`                                                   | `0`   | Block authentication and Docker secrets APIs.                               |
 | `BUILD`, `COMMIT`, `CONFIGS`, `NODES`, `SERVICES`, `SWARM`, `TASKS` | `0`   | Block image builds, commits, and Swarm.                                     |
-| `PLUGINS`, `SESSION`, `SYSTEM`                                      | `0`   | Block plugin, session, and system-wide APIs.                                |
+| `PLUGINS`, `SESSION`                                                | `0`   | Block plugin and session APIs.                                             |
 
 > [!NOTE]
 > This is narrower than the wollomatic allowlist. To use Swarm, image builds, or commits through Tecnativa, set `BUILD`, `COMMIT`, `SWARM`, `NODES`, `SERVICES`, `TASKS`, `SECRETS`, and `CONFIGS` to `1`.
