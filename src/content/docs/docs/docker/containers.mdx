@@ -91,6 +91,10 @@ The **Overview** tab's **Auto Update** toggle turns automatic installation on or
 
 When a newer image is available, the detail header shows an **Update available** badge and an **Update** action to apply it on the spot (requires the `containers:autoupdate` permission). If the container belongs to a project, the header links to that project too.
 
+## Open a shell
+
+With `containers:exec`, a running container's detail view has a **Shell** tab. Pick `sh`, `bash`, `ash`, `zsh`, or a custom path. Your browser remembers the choice per Compose service, or per container name for standalone containers, so it survives recreating the container. Otherwise the tab uses the environment's **Default Shell** (**Environments → the environment → Docker**), `/bin/sh` by default.
+
 ## View logs
 
 Open a container's detail view and switch to the **Logs** tab. The viewer:

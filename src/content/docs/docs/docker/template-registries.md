@@ -46,6 +46,7 @@ Include `$schema` so editors can validate the file:
 			"compose_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/docker-compose.yml",
 			"env_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/.env.example",
 			"documentation_url": "https://github.com/yourcompany/docker-templates/tree/main/internal-app",
+			"icon_url": "https://raw.githubusercontent.com/yourcompany/docker-templates/main/internal-app/icon.svg",
 			"tags": ["internal", "webapp", "postgres"]
 		}
 	]
@@ -92,7 +93,7 @@ The registry must match the schema at `https://github.com/getarcaneapp/arcane-te
 
 ### Template fields
 
-All template fields are required.
+All template fields are required except `icon_url`.
 
 | Field               | Description                                               |
 | ------------------- | --------------------------------------------------------- |
@@ -104,4 +105,7 @@ All template fields are required.
 | `compose_url`       | Direct URL to the Compose file.                           |
 | `env_url`           | Direct URL to the `.env.example` file.                    |
 | `documentation_url` | URL to the template's docs or README.                     |
+| `icon_url`          | Direct URL to the template's icon.                        |
 | `tags`              | Array of unique slugs (lowercase, hyphens), at least one. |
+
+Arcane shows `icon_url` for remote templates and doesn't read icons from their Compose files. After you **Download** a template, an `x-arcane` icon in its Compose file takes precedence.

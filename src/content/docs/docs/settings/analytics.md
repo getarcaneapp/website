@@ -28,10 +28,10 @@ Arcane doesn't send user identifiers, project metadata, secrets, tokens, or envi
 A successful heartbeat log looks like this:
 
 ```
-Jan 31 21:10:26.504 INF analytics heartbeat sent successfully jobName=analytics-heartbeat version=unknown instanceID=5bd274b3-7500-74b3-aa06-59308f0a0eb2 serverType=manager heartbeatURL=http://localhost:8080/heartbeat env=development
+Jan 31 21:10:26.504 INF analytics heartbeat sent successfully version=unknown instanceId=5bd274b3-7500-74b3-aa06-59308f0a0eb2 serverType=manager
 ```
 
-Only `version`, `instanceID`, and `serverType` are sent. The other fields (`jobName`, `heartbeatURL`, `env`) are local context.
+If a heartbeat fails, Arcane tries again about an hour later.
 
 > [!NOTE]
 > If you want to send analytics but the check-in is blocked:

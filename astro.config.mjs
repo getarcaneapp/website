@@ -14,6 +14,7 @@ export default defineConfig({
 	site,
 	trailingSlash: 'never',
 	publicDir: './static',
+	server: { host: true },
 	build: { format: 'file' },
 	image: {
 		remotePatterns: [

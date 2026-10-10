@@ -82,6 +82,7 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 			doc('settings/notifications'),
 			doc('settings/mobile-app'),
 			doc('settings/gpu-monitoring'),
+			doc('settings/opentelemetry'),
 			doc('settings/analytics')
 		]
 	},

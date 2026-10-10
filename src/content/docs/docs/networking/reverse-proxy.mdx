@@ -180,13 +180,13 @@ A working setup logs `Edge tunnel connected to manager` with `transport=grpc`. I
 
 Arcane rate-limits authentication endpoints (login, token refresh, OIDC callback) per client IP. Behind a reverse proxy, every request appears to come from the proxy's IP. That weakens brute-force protection and can lock out legitimate users who share the proxy.
 
-Set `TRUSTED_PROXIES` on the Arcane container to your proxy's address, such as `TRUSTED_PROXIES=10.0.0.5`, or to a CIDR range, such as the Docker network that the proxy and Arcane share (`TRUSTED_PROXIES=172.18.0.0/16`). Arcane then reads the real client IP from `X-Forwarded-For` for requests coming from those addresses. Docker's default address pools hand out subnets from `172.17.0.0`–`172.31.0.0` and then `192.168.0.0/16`, and your daemon may be configured differently, so look up the network's actual subnet:
+Set `TRUSTED_PROXIES` on the Arcane container to your proxy's address, such as `TRUSTED_PROXIES=10.0.0.5/32`, or to a wider CIDR range, such as the Docker network that the proxy and Arcane share (`TRUSTED_PROXIES=172.18.0.0/16`). Arcane then reads the real client IP from `X-Forwarded-For` for requests coming from those addresses. Docker's default address pools hand out subnets from `172.17.0.0`–`172.31.0.0` and then `192.168.0.0/16`, and your daemon may be configured differently, so look up the network's actual subnet:
 
 ```bash
 docker network inspect <network> --format '{{range .IPAM.Config}}{{.Subnet}}{{end}}'
 ```
 
-`TRUSTED_PROXIES` accepts a comma-separated list of IPs or CIDR ranges. Only requests whose direct peer is in this list have their forwarded headers trusted, so an untrusted client cannot spoof its IP via `X-Forwarded-For`. See the [Environment Variables](/docs/reference/environment-variables) reference for all configuration options.
+`TRUSTED_PROXIES` accepts a comma-separated list of CIDR ranges. Write a single address as `/32` for IPv4 or `/128` for IPv6; Arcane logs a warning and ignores entries without a prefix length. Only requests whose direct peer is in this list have their forwarded headers trusted, so an untrusted client cannot spoof its IP via `X-Forwarded-For`. Loopback and private-network addresses are not trusted unless they are in the list. See the [Environment Variables](/docs/reference/environment-variables) reference for all configuration options.
 
 > [!NOTE]
 > If you bind Arcane to a loopback address with `LISTEN`, such as `LISTEN=127.0.0.1` for a proxy on the same host, Arcane trusts loopback proxies (`127.0.0.0/8`, `::1/128`) automatically and you don't need `TRUSTED_PROXIES`. This only works with literal loopback IPs, not hostnames such as `localhost`.
