@@ -34,6 +34,7 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 			doc('get-started/lxc-container'),
 			doc('get-started/migrate-v2'),
 			doc('get-started/preview-builds'),
+			doc('get-started/preview-features'),
 			doc('get-started/downgrading')
 		]
 	},
@@ -82,6 +83,7 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 			doc('settings/notifications'),
 			doc('settings/mobile-app'),
 			doc('settings/gpu-monitoring'),
+			doc('settings/opentelemetry'),
 			doc('settings/analytics')
 		]
 	},

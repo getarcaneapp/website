@@ -117,6 +117,8 @@ Retention runs separately for each schedule, and separately for local and S3 cop
 
 Deleting backups by hand also tries to remove every stored copy. If the local copy is deleted but S3 deletion fails, the row stays as S3-only and Arcane reports the error. If any remote copy can't be deleted, the row stays, so the backup isn't wrongly shown as gone.
 
+Deleting a local backup doesn't free its disk space right away. Arcane prunes the local system and volume backup repositories at 04:15 and 16:15 every day in Arcane's configured timezone, and Rustic keeps deleted data for about a day before a prune removes it, so the space can take up to two days to come back.
+
 ### System-managed volume backups
 
 To back up many volumes with one schedule, an admin can open **Settings → Backups**, click **Create schedule**, and choose the **Volume** type. Set the schedule, retention, destination, and stop-containers option as above, then pick which volumes to include:

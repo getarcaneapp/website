@@ -275,6 +275,8 @@ Switch between the stable and next release channels:
 arcane-cli self-update channel next
 ```
 
+To check release signatures before updating, turn on the [signature verification preview](/docs/reference/cli/config#verify-self-update-signatures).
+
 ## Diagnose problems and set up your shell
 
 Diagnose connectivity and configuration problems:
@@ -300,10 +302,15 @@ arcane-cli generate secret
 Every command accepts `--output json` (or the shorthand `--json`), which makes the CLI easy to pair with `jq`:
 
 ```bash
-arcane-cli containers list --json | jq -r ".[].name"
+arcane-cli containers list --json | jq -r ".data[].name"
 ```
 
-Add `--yes` to skip confirmation prompts in unattended scripts.
+In JSON mode, stdout carries exactly one JSON document. Status messages and progress go to stderr. List commands print the server's paginated response with `data` and `pagination`. Other commands print only the resource or result. `images pull`, `images build`, and the streaming `projects` commands print an array of the server's progress frames once the operation finishes.
+
+Commands that remove or reset resources ask for confirmation first. Add `--yes` to skip confirmation prompts in unattended scripts. On delete commands, `--force` skips the prompt too.
+
+> [!IMPORTANT]
+> Without a terminal, or with `--json`, a prompt fails with `confirmation required: re-run with --yes` instead of waiting for input. Piping `y` into the command does not answer it.
 
 List commands are paginated. `--all` (`-a`) returns every item, ignoring pagination — it cannot be combined with `--limit` or `--start`:
 
@@ -313,3 +320,14 @@ arcane-cli containers list --all --json
 
 > [!NOTE]
 > `--all` means "ignore pagination", not "include stopped containers". `containers list` already returns containers in every state.
+
+## Renamed flags
+
+Some flags were renamed so they no longer clash with the global `--env`, `--config`, and `--output` flags, or to replace a separate off switch. The old names still work but print a deprecation warning, and they will be removed in v3. Update your scripts to the new names:
+
+| Command                                                                                                                                                                          | Old flag     | New flag              |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
+| `containers create`                                                                                                                                                              | `--env`      | `--env-var`, `-e`     |
+| `admin notifications settings set`                                                                                                                                               | `--config`   | `--provider-config`   |
+| `templates download`                                                                                                                                                             | `--output`   | `--output-file`, `-o` |
+| `environments create`, `environments update`, `registries create`, `registries update`, `templates registries update`, `admin federated update`, `admin backups policies update` | `--disabled` | `--enabled=false`     |

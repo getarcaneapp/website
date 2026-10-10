@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { DownloadIcon } from '#lib/icons/index.js';
 	import * as Tabs from '#lib/components/ui/tabs/index.js';
 	import * as Table from '#lib/components/ui/table/index.js';
@@ -33,9 +34,10 @@
 		}
 	}
 
-	// Each tab's file list is fetched the first time it's shown.
+	// Each tab's file list is fetched the first time it's shown. Untracked so a failed
+	// request (loading flips back while cache stays empty) doesn't re-run this and refetch.
 	$effect(() => {
-		loadFiles(INITIAL_TAB);
+		untrack(() => loadFiles(INITIAL_TAB));
 	});
 
 	function formatSize(bytes: number): string {
