@@ -44,3 +44,7 @@ If `TZ` is unset, Arcane uses the container's local time, which is UTC on the of
 ## Admin API key bootstrap
 
 Set `ADMIN_STATIC_API_KEY` when automation needs a known API key from the first start. At startup, Arcane creates or updates a protected admin API key with this value, so you don't have to create it in the UI. See the [API Reference](/docs/reference/api) for usage and webhook examples.
+
+## Observability
+
+Arcane exports metrics, traces, and logs when the standard `OTEL_*` exporter variables are set. See [OpenTelemetry](/docs/settings/opentelemetry) for setup.
