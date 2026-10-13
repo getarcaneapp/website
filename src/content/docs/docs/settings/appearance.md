@@ -58,5 +58,5 @@ Upload a custom profile picture from **Account**. Arcane accepts PNG, JPEG, and 
 
 These settings apply to every user and are under **Settings → Users**:
 
-- **Enable Gravatar** — use Gravatar as the fallback source for users without an uploaded photo.
+- **Enable Gravatar** — use Gravatar as the fallback source for users without an uploaded photo. Off by default on new installations; upgraded installations keep their current value. Setting `ENABLE_GRAVATAR=true` or `false` on the Arcane container overrides this setting and locks it in the UI.
 - **Profile Picture Upload Size (MB)** — maximum cropped image size users can upload. The default is 2 MB, and the allowed range is 1–50 MB.

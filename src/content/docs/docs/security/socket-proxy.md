@@ -33,7 +33,7 @@ services:
     user: '0:0'
     command:
       - '-listenip=0.0.0.0'
-      - '-allowfrom=arcane'
+      - '-allowfrom=arcane,arcane-upgrader'
       - '-allowhealthcheck'
       - '-allowGET=(/v[\d.]+)?/_ping'
       - '-allowGET=(/v[\d.]+)?/events(/.*)?'
@@ -138,7 +138,12 @@ wollomatic blocks every request unless its HTTP method and path are allowed. Thi
 | `PUT`    | container archives                                                                                                                                  |
 | `DELETE` | containers, images, networks, volumes, nodes, services, secrets, configs                                                                            |
 
-`-allowfrom=arcane` accepts connections only from the Arcane container, and `-allowhealthcheck` is needed for the proxy's healthcheck.
+`-allowfrom=arcane,arcane-upgrader` accepts connections from Arcane and its self-upgrade helper. `arcane-upgrader` is a temporary alias on the helper's user-defined Docker network, independent of Arcane's container name. It keeps the helper authorized while Arcane is replaced. `-allowhealthcheck` is needed for the proxy's healthcheck.
+
+If you rename the Arcane container, replace `arcane` in the allowlist with its name and keep `arcane-upgrader`. The proxy and helper must share a user-defined network, as in the example above.
+
+> [!IMPORTANT]
+> Existing installations using `-allowfrom=arcane` must add `arcane-upgrader` and recreate the proxy. Install the Arcane release containing this fix once through Docker Compose by pulling and recreating the Arcane service. Older Arcane versions create helpers without the alias, even when they pull a newer helper image. Subsequent self-upgrades can use the updated allowlist; no subnet-wide access is needed.
 
 ### Tecnativa docker-socket-proxy
 

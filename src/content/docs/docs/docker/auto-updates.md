@@ -28,6 +28,8 @@ The **Updates** page lists pending updates in **Containers** and **Projects** ta
 - **Disable automatic updates** and **Enable automatic updates** toggle automatic installation for one container. Disabled rows stay listed and still get checks and notifications. If the action shows _Controlled by Docker label_, change the label instead.
 - **Update All** applies every pending update in the selected environment, including rows not on the current page.
 
+**Update Containers** on the **Containers** page runs the same **Update All** after confirmation. **Update Projects** on the **Projects** page asks for confirmation, checks every image for updates, and redeploys each project that has one.
+
 > [!IMPORTANT]
 > **Updates → Update All** updates your containers and projects. **Environments → Update All** upgrades Arcane managers and agents; see [Remote Environments](/docs/remote/environments). If Arcane's own container has a pending update, **Updates → Update All** includes it and restarts Arcane after the other updates finish. The confirmation tells you when this applies.
 

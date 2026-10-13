@@ -199,7 +199,7 @@ function allowFlag(method: string, path: string): string {
 function socketProxyCommand(): string[] {
 	return [
 		quoteYamlScalar('-listenip=0.0.0.0'),
-		quoteYamlScalar('-allowfrom=arcane'),
+		quoteYamlScalar('-allowfrom=arcane,arcane-upgrader'),
 		quoteYamlScalar('-allowhealthcheck'),
 		...SOCKET_PROXY_GET_PATHS.map((path) => allowFlag('GET', path)),
 		...SOCKET_PROXY_HEAD_PATHS.map((path) => allowFlag('HEAD', path)),

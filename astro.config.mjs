@@ -14,12 +14,12 @@ export default defineConfig({
 	site,
 	trailingSlash: 'never',
 	publicDir: './static',
+	server: { host: true },
 	build: { format: 'file' },
 	image: {
 		remotePatterns: [
 			{ protocol: 'https', hostname: 'i.ytimg.com' },
-			{ protocol: 'https', hostname: 'miro.medium.com' },
-			{ protocol: 'https', hostname: 'www.virtualizationhowto.com' }
+			{ protocol: 'https', hostname: 'miro.medium.com' }
 		]
 	},
 	vite: {

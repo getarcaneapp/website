@@ -1,3 +1,4 @@
+import virtualizationHowtoThumbnail from '../../assets/community/virtualizationhowto-docker-ui.webp';
 import type { CommunityItem } from '#lib/types/community.type.js';
 
 const communityItems: CommunityItem[] = [
@@ -46,8 +47,7 @@ const communityItems: CommunityItem[] = [
 		url: 'https://www.virtualizationhowto.com/2025/12/why-arcane-might-be-the-next-big-docker-ui-for-the-home-lab/',
 		publishedAt: '2025-12-29',
 		source: 'Virtualization Howto',
-		thumbnail:
-			'https://www.virtualizationhowto.com/wp-content/smush-webp/2025/12/docker-management-ui.png.webp',
+		thumbnail: virtualizationHowtoThumbnail,
 		featured: true
 	}
 ];

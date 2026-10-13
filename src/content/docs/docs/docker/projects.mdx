@@ -33,7 +33,9 @@ Use the **Labels** filter to find projects with a container label. Enter a key s
 2. Enter a name.
 3. Paste or write the Compose YAML.
 4. Optional: open the **Environment Configuration (.env)** editor and add variables. Arcane saves them to a `.env` file next to the Compose file.
-5. Click **Create Project**. Arcane saves the project and tries to start it.
+5. Click **Create Project**, or press `Ctrl/Cmd+S`. Arcane saves the project and tries to start it.
+
+Arcane creates the project folder from the name. If the Projects Directory already has a folder with that name that contains no Compose file and isn't used by another project, Arcane creates the project in it and keeps the files already there. An existing `.env` is kept if you leave the `.env` editor empty; different content is rejected. Otherwise Arcane adds a number to the folder name, such as `myapp-1`.
 
 ## Control a project
 
@@ -82,7 +84,7 @@ From the workspace panel you can:
 - **Edit**: open any UTF-8 text file in its own tab. Binary files can be uploaded but not edited.
 - **Rename**, **Move**, and **Delete**: reorganize the folder. Non-empty folders can be deleted recursively.
 
-All file changes are staged until you **Save** the project. Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden from the tree. For projects using Git **Pull**, files managed by the sync are read-only; other workspace files stay editable.
+All file changes are staged until you **Save** the project or press `Ctrl/Cmd+S`. Middle-click a tab to close it. Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden from the tree. For projects using Git **Pull**, files managed by the sync are read-only; other workspace files stay editable.
 
 > [!NOTE]
 > The Compose file, `.env`, `.env.git`, and `project.env` are protected. They show a lock icon and can't be renamed, moved, or deleted from the tree. Edit them through their own editors instead.
