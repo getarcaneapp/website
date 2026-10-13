@@ -326,6 +326,19 @@
       "sourceSymbol": "config.Config.EdgeMTLSServerName"
     },
     {
+      "env": "EDGE_MUX_DISABLED",
+      "field": "EdgeMuxDisabled",
+      "type": "bool",
+      "defaultValue": "false",
+      "description": "keeps the legacy edge message protocol; remove in v3",
+      "supportsFile": false,
+      "deprecated": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.EdgeMuxDisabled"
+    },
+    {
       "env": "EDGE_RECONNECT_INTERVAL",
       "field": "EdgeReconnectInterval",
       "type": "int",
@@ -1419,6 +1432,21 @@
       "sensitive": false,
       "deprecated": false,
       "public": false
+    },
+    {
+      "env": "DEVELOPMENT_BRANDING_ENABLED",
+      "settingKey": "developmentBrandingEnabled",
+      "description": "Show the development icon instead of the standard Arcane logo on non-stable builds",
+      "defaultValue": "true",
+      "type": "boolean",
+      "category": "general",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.DevelopmentBrandingEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
     },
     {
       "env": "DISK_USAGE_PATH",
@@ -2517,10 +2545,9 @@
       "env": "ENABLE_GRAVATAR",
       "settingKey": "enableGravatar",
       "description": "Enable Gravatar profile pictures for users",
-      "defaultValue": "true",
+      "defaultValue": "false",
       "type": "boolean",
       "category": "users",
-      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
       "source": "settings.Settings + settings.DefaultSettingsConfig",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.EnableGravatar",
