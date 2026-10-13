@@ -1,78 +1,52 @@
 ---
 title: 'Preview Features'
-description: 'Turn on features that are still in development in the web UI, iOS app, and CLI.'
+description: 'Try features that are still in development in the web UI, iOS app, and CLI.'
 ---
 
 import { Badge, TabItem, Tabs } from '@astrojs/starlight/components';
 
-Preview features are still in development. They are off by default, and you turn each one on separately in the web UI, the iOS app, or the CLI. They may not work as expected, and their behavior may change or be removed in a later release.
+Preview features are unfinished. They're off by default, may have bugs, and can change or go away in a future release. Each client (web UI, iOS app, CLI) has its own toggle.
 
 ## All environments
 
 <Badge text="Preview" variant="caution" />
 
-The all environments preview replaces the environment switcher with one combined view. Resource lists such as containers, projects, images, volumes, networks, ports, updates, and vulnerability scans show items from every enabled environment together, with each item labeled by the environment it belongs to. Actions on a resource run in that resource's environment.
+Shows containers, projects, images, volumes, networks, ports, updates, and vulnerability scans from every enabled environment in one list, instead of switching between environments. Each item is tagged with its environment, and actions run against that environment.
 
-The preview is turned on separately in each client. Turning it on in the web UI doesn't change the iOS app or the CLI.
-
-### Turn on all environments
+Bulk actions like update checks, updates, and pruning run on every enabled environment, even if the list is filtered. Check the environment count in the confirmation before you continue.
 
 <Tabs syncKey="arcane-client">
 
 <TabItem label="Web UI">
 
-1. Click your avatar at the bottom of the sidebar and select **Account**.
-2. Open the **Previews** tab.
-3. Switch on **All environments (preview)**.
+Go to **Account** → **Previews** (click your avatar at the bottom of the sidebar) and turn on **All environments (preview)**. The setting is saved to your account, not the browser.
 
-The setting is saved to your user account, so it follows you to any browser you sign in from. While the preview is on, the **Previews** tab also offers:
+The same tab lets you choose whether lists show the environment name or just a colored dot, and set a color per environment.
 
-- **Environment labels**: show the environment's name in resource lists, or only a color dot with the name on hover.
-- **Environment colors**: pick a color for each environment's label.
-
-To turn the preview off, switch it off on the **Previews** tab, or open the environment switcher and click **Turn off preview**.
+To turn it off, use the same toggle or click **Turn off preview** in the environment switcher.
 
 </TabItem>
 
 <TabItem label="iOS app">
 
-1. Open the **More** tab and select **Preview Features**.
-2. Switch on **All Environments**.
+Go to **More** → **Preview Features** and turn on **All Environments**. You can also set a color per environment there.
 
-You can also turn it on from the walkthrough: tap **Replay Walkthrough** on the same screen and tap **Enable Preview** on the last page. **Environment Colors** sets the color shown next to each environment's resources.
-
-The setting is stored on the device. Environment switching is hidden while the preview is on; switch **All Environments** off to choose a single environment again.
+The setting is per device. Turn it off to pick a single environment again.
 
 </TabItem>
 
 <TabItem label="CLI">
 
-Set `previews.allEnvironments` in your [CLI config](/docs/reference/cli/config):
-
 ```bash
 arcane-cli config set previews.allEnvironments true
-arcane-cli containers list
 ```
 
-Lists use one combined table with an `ENVIRONMENT` column. To run a single command against one environment, pass `--env <id>`. To turn the preview off and return to your saved default environment:
+Lists get an `ENVIRONMENT` column. Use `--env <id>` to target one environment for a single command. Set it back to `false` to go back to your default environment.
 
-```bash
-arcane-cli config set previews.allEnvironments false
-```
-
-See [Preview every environment](/docs/reference/cli/config#preview-every-environment) for resource pickers, fleet confirmations, and the aggregate JSON format.
+See the [CLI config reference](/docs/reference/cli/config#preview-every-environment) for details.
 
 </TabItem>
 
 </Tabs>
 
-### What changes while it's on
-
-- **Only enabled environments are included.** Disabled environments don't appear. If an environment can't be reached, the rest still load and a notice lists the ones that are missing.
-- **Environment switching is unavailable.** The combined view replaces picking a single environment. Use list filters to focus on one environment without leaving the view.
-- **Bulk actions apply to every environment.** Update checks, updates, and pruning run on all enabled environments, even when a list is filtered. The confirmation shows how many environments the action will run on, so review it before you continue.
-- **Global pages work as before.** Pages that aren't tied to one environment, such as users, registries, templates, and variables, keep their existing scope.
-
-## Report a problem
-
-Report problems with preview features on [GitHub Issues](https://github.com/getarcaneapp/arcane/issues). Include which client you were using and the version shown on your dashboard.
+Found a bug? [Open an issue](https://github.com/getarcaneapp/arcane/issues) and mention which client and version you're on.
