@@ -1565,6 +1565,21 @@
       "public": false
     },
     {
+      "env": "ALL_ENVIRONMENTS_LIMIT",
+      "settingKey": "allEnvironmentsLimit",
+      "description": "Maximum environments included in one all-environments request (default: 64)",
+      "defaultValue": "64",
+      "type": "number",
+      "category": "internal",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.AllEnvironmentsLimit",
+      "sensitive": false,
+      "deprecated": false,
+      "public": true
+    },
+    {
       "env": "AUTO_HEAL_ENABLED",
       "settingKey": "autoHealEnabled",
       "description": "Automatically restart containers that become unhealthy",
