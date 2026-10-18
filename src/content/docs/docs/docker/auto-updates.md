@@ -7,17 +7,55 @@ Auto updates check registries for newer images on a schedule and recreate contai
 
 Before you start: the images must come from registries Arcane can reach (store private registry credentials under [Container Registries](/docs/docker/images#private-registries)), and each container must be one Arcane can recreate with the same ports, mounts, environment, and labels.
 
+On Podman hosts, containers started by a Quadlet are skipped. Recreating them would take them out of systemd's control, so update them with [Podman auto-update](/docs/podman/auto-update).
+
 ## Turn on auto updates
 
-1. Open **Environments** and select the environment, for example **Local Docker**.
+1. Open **Environments** and select the environment.
 2. Open the **Automations** tab and find the **Updates** section.
 3. Turn on **Image Update Watcher** and pick a schedule, or enter a custom one.
 4. Turn on **Auto Update** and set its schedule. It can't be turned on while **Image Update Watcher** is off.
-5. Optionally, under **Excluded Containers**, select containers that should never be updated automatically.
-6. Save.
+5. Optionally, set **Update Delay (hours)** so new images wait before they are installed. See [Delay new images](#delay-new-images).
+6. Optionally, under **Excluded Containers**, select containers that should never be updated automatically.
+7. Save.
 
 > [!NOTE]
 > Schedules are cron expressions. Arcane doesn't enforce a minimum interval, so avoid very frequent checks against rate-limited registries.
+
+## Delay new images
+
+**Update Delay (hours)** makes automatic updates wait until a new image has been available for that many hours. A compromised image is often reported and pulled within hours or days, so a delay keeps it from reaching your containers in that window. The default is `0`, which installs updates as soon as the schedule runs. The maximum is `8760` hours (one year).
+
+The delay counts from when Arcane first detects the new digest or version, not from the image's build date, which the publisher controls. Arcane restarts the count when:
+
+- The target changes, for example a newer version is released or a tag is republished with a new digest.
+- The update stops being pending, for example after it is installed or rolled back.
+
+A failed check keeps the count. Updates that are still waiting stay on the **Updates** page and are installed on the first scheduled run after the delay ends. The delay only applies to the **Auto Update** schedule; **Update**, **Update All**, and other manual updates install immediately.
+
+To use a different delay for one container, set it in Compose or as a label. A per-container value, including `0`, overrides the environment setting:
+
+```yaml
+x-arcane:
+  updater:
+    delay: 72 # project default, in hours
+
+services:
+  app:
+    image: ghcr.io/acme/app:latest
+  cache:
+    image: redis:7
+    x-arcane:
+      updater:
+        delay: 0 # this service updates immediately
+```
+
+```yaml
+labels:
+  - com.getarcaneapp.arcane.updater.delay=72
+```
+
+The delay must be a whole number of hours. Compose values above `8760` or below `0` are rejected; a label above `8760` is treated as `8760`.
 
 ## Apply updates from the Updates page
 

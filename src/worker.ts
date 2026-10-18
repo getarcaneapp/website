@@ -24,7 +24,8 @@ const DISCORD_PRESENCE_PATH = '/api/discord/presence';
 const DOC_REDIRECTS = new Map([
 	['/api-reference', '/docs/reference/api'],
 	['/docs/setup/installation', '/docs/get-started/installation'],
-	['/docs/setup/podman', '/docs/get-started/podman'],
+	['/docs/setup/podman', '/docs/podman/setup'],
+	['/docs/get-started/podman', '/docs/podman/setup'],
 	['/docs/guides/lxc-container', '/docs/get-started/lxc-container'],
 	['/docs/setup/migrate-v2', '/docs/get-started/migrate-v2'],
 	['/docs/setup/next-images', '/docs/get-started/preview-builds'],

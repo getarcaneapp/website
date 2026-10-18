@@ -101,12 +101,13 @@ services:
         enabled: false
 ```
 
-| Field         | Label                                         | Meaning                                                                                                                                                  |
-| ------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled`     | `com.getarcaneapp.arcane.updater`             | Boolean. `false` stops automatic installation; the container is still checked. It does not turn on the environment's auto-update schedule.               |
-| `strategy`    | `com.getarcaneapp.arcane.updater.strategy`    | `digest` (default), `auto`, or `tag`.                                                                                                                    |
-| `constraint`  | `com.getarcaneapp.arcane.updater.constraint`  | Semantic version range, such as `3.x`, `3.20.x`, or `=3.20.1`. Without one, version updates stay within the current major, or current minor for `0.x`.   |
-| `tag-pattern` | `com.getarcaneapp.arcane.updater.tag-pattern` | Regex the whole tag must match. A named `version` capture extracts the version from variant tags; without one, the whole tag must be a semantic version. |
+| Field         | Label                                         | Meaning                                                                                                                                                                                                                               |
+| ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`     | `com.getarcaneapp.arcane.updater`             | Boolean. `false` stops automatic installation; the container is still checked. It does not turn on the environment's auto-update schedule.                                                                                            |
+| `strategy`    | `com.getarcaneapp.arcane.updater.strategy`    | `digest` (default), `auto`, or `tag`.                                                                                                                                                                                                 |
+| `constraint`  | `com.getarcaneapp.arcane.updater.constraint`  | Semantic version range, such as `3.x`, `3.20.x`, or `=3.20.1`. Without one, version updates stay within the current major, or current minor for `0.x`.                                                                                |
+| `tag-pattern` | `com.getarcaneapp.arcane.updater.tag-pattern` | Regex the whole tag must match. A named `version` capture extracts the version from variant tags; without one, the whole tag must be a semantic version.                                                                              |
+| `delay`       | `com.getarcaneapp.arcane.updater.delay`       | Whole hours, `0` to `8760`, a new image must be available before auto-update installs it. Overrides the environment's **Update Delay**; `0` installs immediately. See [Delay new images](/docs/docker/auto-updates#delay-new-images). |
 
 Each field is resolved separately, first match wins:
 
@@ -132,6 +133,7 @@ What each strategy does, and how updates are checked and applied, is explained i
 | `com.getarcaneapp.arcane.updater.strategy`    | Update strategy.                                                                         |
 | `com.getarcaneapp.arcane.updater.constraint`  | Version range for tag updates.                                                           |
 | `com.getarcaneapp.arcane.updater.tag-pattern` | Tag regex for tag updates.                                                               |
+| `com.getarcaneapp.arcane.updater.delay`       | Hours to wait before auto-update installs a new image.                                   |
 | `com.getarcaneapp.arcane.update-check`        | `false` stops update checks and notifications. No `x-arcane` field.                      |
 | `com.getarcaneapp.arcane.depends-on`          | Comma-separated container names to restart in order during updates. No `x-arcane` field. |
 | `com.getarcaneapp.arcane.stop-signal`         | Signal used to stop the container during updates. No `x-arcane` field.                   |

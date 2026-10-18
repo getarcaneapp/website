@@ -126,14 +126,14 @@ const columns = [
 			{columns.map((column) => (
 				<div class="flex flex-col gap-3">
 					<span class="text-sm font-medium text-foreground">{column.title}</span>
-					<ul class="flex flex-col gap-2">
+					<ul class="flex flex-col md:gap-2">
 						{column.links.map((link) => (
 							<li>
 								<a
 									href={link.href}
 									target={link.external ? '_blank' : undefined}
 									rel={link.external ? 'noopener noreferrer' : undefined}
-									class="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+									class="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground max-md:py-2.5"
 								>
 									{link.label}
 									{link.href === DISCORD_URL && <DiscordPresence />}

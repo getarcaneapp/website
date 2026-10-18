@@ -18,24 +18,24 @@ If a value is sensitive, use a secret. Otherwise a config is fine.
 
 ## Create a config
 
-1. Open **Swarm → Configs**.
-2. Enter a name.
-3. Enter the config content.
+1. Open **Swarm → Configs** and click **Create Config**.
+2. Enter a name and the config content.
+3. Optionally, add labels.
 4. Click **Create Config**.
-
-Delete configs from the same page when they're no longer used.
 
 ## Create a secret
 
-1. Open **Swarm → Secrets**.
-2. Enter a name.
-3. Enter the secret value.
+1. Open **Swarm → Secrets** and click **Create Secret**.
+2. Enter a name and the secret value.
+3. Optionally, add labels.
 4. Click **Create Secret**.
 
-Delete secrets from the same page when they're no longer used.
+Secret values can't be viewed after they're saved.
 
 ## Change a config or secret
 
-Docker doesn't allow editing configs or secrets, and Arcane has no update action. To change one, create a replacement and update the workload that uses it.
+Click a config or secret, or choose **Edit** from its row menu, to change its labels. Docker doesn't allow changing the name, the config content, or the secret value. To change those, create a replacement and update the services that use it, then delete the old one from its row menu.
+
+If someone else changes the same config or secret while you're editing it, Docker rejects your save. Open it again to load the current version.
 
 Join tokens and the manager unlock key are not Swarm secrets. They're cluster credentials, managed on the Cluster page.

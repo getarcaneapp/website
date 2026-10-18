@@ -7,6 +7,7 @@
 	--sl-color-bg-inline-code: var(--surface-muted);
 	--sl-content-width: 48rem;
 	--sl-nav-height: 4rem;
+	--sl-menu-button-size: 2.5rem;
 	--sl-radius: 0.75rem;
 }
 
@@ -205,6 +206,24 @@ site-search dialog {
 .sl-markdown-content > :is(.sl-heading-wrapper, h2, h3):first-child {
 	margin-top: 0;
 }
+@media (max-width: 49.99rem) {
+	:root {
+		--sl-text-h2: 1.5rem;
+		--sl-text-h3: 1.25rem;
+	}
+	.sl-markdown-content
+		:is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2)):not(
+			:where(.not-content *, summary *)
+		) {
+		margin-top: 2.75rem;
+	}
+	.sl-markdown-content
+		:is(.sl-heading-wrapper.level-h3, h3:not(.sl-heading-wrapper > h3)):not(
+			:where(.not-content *, summary *)
+		) {
+		margin-top: 2.25rem;
+	}
+}
 @media (min-width: 64rem) {
 	.sl-markdown-content
 		:is(.sl-heading-wrapper.level-h2, h2:not(.sl-heading-wrapper > h2)):not(
@@ -336,6 +355,27 @@ site-search dialog {
 .sl-markdown-content tr:last-child td:not(:where(.not-content *)) {
 	border-bottom: 0;
 }
+@media (max-width: 49.99rem) {
+	.sl-markdown-content table:not(:where(.not-content *)) {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+	}
+	.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+		min-width: 7.5rem;
+		overflow-wrap: break-word;
+	}
+	.sl-markdown-content :is(th, td):first-child:not(:where(.not-content *)) {
+		min-width: 6rem;
+	}
+	.sl-markdown-content :is(th, td):last-child:not(:first-child, :where(.not-content *)) {
+		min-width: 12rem;
+	}
+	.sl-markdown-content td code:not(:where(.not-content *)) {
+		overflow-wrap: break-word;
+	}
+}
 
 .expressive-code .frame.is-terminal:not(.has-title) > .header {
 	display: none;
@@ -428,7 +468,7 @@ mobile-starlight-toc .dropdown {
 }
 mobile-starlight-toc .dropdown a {
 	border-top: 0;
-	padding-block: 0.4rem;
+	padding-block: 0.6rem;
 	padding-inline: calc(1rem + 0.75rem * var(--depth)) 1rem;
 	font-size: 0.875rem;
 	color: var(--sl-color-gray-3);
@@ -486,6 +526,8 @@ mobile-starlight-toc .dropdown a[aria-current='true']::after {
 
 .sl-menu-button,
 :root[data-theme='light'] .sl-menu-button {
+	align-items: center;
+	justify-content: center;
 	background-color: var(--surface-muted);
 	color: var(--sl-color-white);
 	box-shadow: none;

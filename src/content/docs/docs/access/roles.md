@@ -94,6 +94,8 @@ Upgrading from a release before 2.0? Arcane converts existing users and API keys
 | **Monitor**         | Read-only with logs         | Read resources, view logs, dashboards, events. No mutations, no exec.                                                    |
 | **Viewer**          | Auditors                    | Read-only across Docker resources and most org pages. No logs, no actions.                                               |
 
+For Podman, Editor and No-Shell Editor get every `podman` permission. Deployer gets `podman:read`, `podman:quadlets:lifecycle`, and `podman:autoupdate`. Monitor and Viewer get `podman:read`.
+
 ## Permission catalog
 
 ### Org-level permissions (Global scope)
@@ -127,6 +129,7 @@ Upgrading from a release before 2.0? Arcane converts existing users and API keys
 | `volumes`          | `list`, `read`, `create`, `delete`, `prune`, `upload`, `backup`                                                           |
 | `networks`         | `list`, `read`, `create`, `delete`, `prune`                                                                               |
 | `swarm`            | `read`, `init`, `join`, `leave`, `spec`, `nodes`, `services`, `services:logs`, `stacks`, `configs`, `secrets`, `unlock`   |
+| `podman`           | `read`, `pods`, `quadlets`, `quadlets:lifecycle`, `kube`, `secrets`, `autoupdate`                                         |
 | `gitops`           | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle`                                                         |
 | `webhooks`         | `list`, `create`, `update`, `delete`                                                                                      |
 | `jobs`             | `manage`                                                                                                                  |

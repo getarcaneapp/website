@@ -1,5 +1,6 @@
 ---
 import GithubStats from '../GithubStats.astro';
+import NavMenu from '../NavMenu.astro';
 import Logo from '../../lib/components/logo.svelte';
 import { mainNavItems } from '../../lib/config/docs';
 import ThemeToggle from './ThemeToggle.astro';
@@ -26,6 +27,7 @@ const link =
 			))}
 			<GithubStats showVersion={false} />
 			<ThemeToggle />
+			<NavMenu class="md:hidden" />
 		</nav>
 	</div>
 </header>

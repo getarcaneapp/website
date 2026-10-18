@@ -2,6 +2,8 @@
 import Search from '@astrojs/starlight/components/Search.astro';
 import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
 import { mainNavItems } from '../../lib/config/docs';
+import GithubStats from '../GithubStats.astro';
+import NavMenu from '../NavMenu.astro';
 import SocialIcons from './SocialIcons.astro';
 import ThemeSelect from './ThemeSelect.astro';
 
@@ -26,6 +28,10 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
 			<SocialIcons />
 			<ThemeSelect />
 		</div>
+		<NavMenu class="header-menu">
+			<GithubStats />
+			<ThemeSelect />
+		</NavMenu>
 	</div>
 </div>
 
@@ -99,6 +105,24 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
 	@media (min-width: 50rem) {
 		.right-group {
 			display: flex;
+		}
+	}
+	.header-end :global(.header-menu) {
+		flex-shrink: 0;
+	}
+	@media (max-width: 49.99rem) {
+		:global(:root[data-has-sidebar]) .header-end :global(.header-menu) {
+			display: none;
+		}
+	}
+	@media (min-width: 50rem) {
+		.header-end :global(.header-menu .nav-menu-extras) {
+			display: none;
+		}
+	}
+	@media (min-width: 72rem) {
+		.header-end :global(.header-menu) {
+			display: none;
 		}
 	}
 	.header-end :global(site-search) {

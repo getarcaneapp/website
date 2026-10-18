@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-- Astro 7 + Starlight site with Tailwind CSS 4. Svelte 5 (runes syntax) is used only for the interactive islands (Compose generator, SBOM explorer, analytics heartbeat, preview binary list).
+- Astro 7 + Starlight site with Tailwind CSS 4. Svelte 5 (runes syntax) is used only for the interactive islands (Instance Generator, SBOM explorer, analytics heartbeat, preview binary list).
 - Docs are Markdown/MDX in Starlight's `docs` collection; the blog and changelog are their own content collections.
 - Fully static build, deployed to Cloudflare Workers as static assets behind a small hand-written Worker (`src/worker.ts`).
 
@@ -23,7 +23,7 @@
 
 - Every docs page requires frontmatter: `title` and `description`. Do not write an `# H1` — the page renders `title` and `description` above your content.
 - Use `.md` unless the page imports a component; then use `.mdx` and put `import` lines right after the frontmatter. Content components are imported from `#components/content/...` (e.g. `ScreenshotFrame`, `Collapsible`), and tabs from `@astrojs/starlight/components` (`Tabs`, `TabItem`).
-- Top-level folders under `src/content/docs/docs/` match sidebar groups: `get-started/`, `docker/`, `remote/`, `access/`, `settings/`, `networking/`, `security/`, `reference/`, `development/`.
+- Top-level folders under `src/content/docs/docs/` match sidebar groups: `get-started/`, `docker/`, `podman/`, `remote/`, `access/`, `settings/`, `networking/`, `security/`, `reference/`, `development/`.
 - To make a new page appear in the sidebar, add a `doc('<dir>/<name>')` call to the right section in `docSections` in `src/lib/config/docs.ts`, **at the position you want it displayed**. Without it the page still builds and is reachable by URL, but is invisible in the sidebar, the `/docs` index, and the prev/next pager.
 - If adding a new section, also add a matching key to `SECTION_META` in `src/components/content/DocsIndex.astro`. The key must match the section label exactly or the card silently disappears from `/docs`.
 - Cross-link with Markdown links to root-relative paths: `[Installation](/docs/get-started/installation)`. Callouts are GitHub-style blockquote markers: `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`; `src/lib/markdown/callouts.ts` turns them into Starlight asides at build time.

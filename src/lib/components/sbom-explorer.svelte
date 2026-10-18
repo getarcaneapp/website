@@ -188,12 +188,12 @@
 			<div class="grid gap-1.5">
 				<p class="text-xs font-medium text-muted-foreground">Image</p>
 				<Tabs.Root bind:value={selectedImage} class="w-full sm:w-auto">
-					<Tabs.List>
-						<Tabs.Trigger value="manager">
+					<Tabs.List class="max-w-full max-lg:h-auto max-lg:flex-wrap">
+						<Tabs.Trigger value="manager" class="max-lg:h-8">
 							<BoxIcon class="mr-2 size-4" />
 							Arcane (Manager)
 						</Tabs.Trigger>
-						<Tabs.Trigger value="agent">
+						<Tabs.Trigger value="agent" class="max-lg:h-8">
 							<CpuIcon class="mr-2 size-4" />
 							Arcane Headless (Agent)
 						</Tabs.Trigger>
@@ -204,9 +204,9 @@
 			<div class="grid gap-1.5">
 				<p class="text-xs font-medium text-muted-foreground">Architecture</p>
 				<Tabs.Root bind:value={selectedArch}>
-					<Tabs.List>
+					<Tabs.List class="max-w-full max-lg:h-auto max-lg:flex-wrap">
 						{#each arches as arch (arch)}
-							<Tabs.Trigger value={arch}>{archLabels[arch]}</Tabs.Trigger>
+							<Tabs.Trigger value={arch} class="max-lg:h-8">{archLabels[arch]}</Tabs.Trigger>
 						{/each}
 					</Tabs.List>
 				</Tabs.Root>

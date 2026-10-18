@@ -17,6 +17,7 @@ export { default as CheckIcon } from 'virtual:icons/material-symbols/fitbit-chec
 export { default as LoadingSpinnerIcon } from 'virtual:icons/svg-spinners/ring-resize';
 export { default as AlertIcon } from 'virtual:icons/mdi/alert-decagram';
 export { default as CloseIcon } from 'virtual:icons/majesticons/close';
+export { default as MenuIcon } from 'virtual:icons/solar/hamburger-menu-linear';
 export { default as CopyIcon } from 'virtual:icons/ci/copy';
 export { default as ClockIcon } from 'virtual:icons/solar/clock-circle-linear';
 export { default as DownloadIcon } from 'virtual:icons/solar/download-linear';
@@ -52,3 +53,16 @@ export { default as TypeScriptBrandIcon } from 'virtual:icons/simple-icons/types
 export { default as JsonBrandIcon } from 'virtual:icons/simple-icons/json';
 export { default as CssBrandIcon } from 'virtual:icons/simple-icons/css';
 export { default as GithubBrandIcon } from 'virtual:icons/simple-icons/github';
+export { default as DockerBrandIcon } from 'virtual:icons/simple-icons/docker';
+export { default as PodmanBrandIcon } from 'virtual:icons/simple-icons/podman';
+export { default as ServiceIcon } from 'virtual:icons/solar/widget-linear';
+export { default as LinkIcon } from 'virtual:icons/solar/link-round-linear';
+export { default as RoutingIcon } from 'virtual:icons/solar/routing-2-linear';
+export { default as ServerIcon } from 'virtual:icons/solar/server-square-linear';
+export { default as SlidersIcon } from 'virtual:icons/solar/settings-minimalistic-linear';
+export { default as FolderIcon } from 'virtual:icons/solar/folder-linear';
+export { default as DatabaseIcon } from 'virtual:icons/solar/database-linear';
+export { default as KeyIcon } from 'virtual:icons/solar/key-linear';
+export { default as UserIdIcon } from 'virtual:icons/solar/user-id-linear';
+export { default as ChevronDownIcon } from 'virtual:icons/solar/alt-arrow-down-linear';
+export { default as RefreshIcon } from 'virtual:icons/solar/refresh-linear';

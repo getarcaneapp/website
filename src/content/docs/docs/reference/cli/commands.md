@@ -223,6 +223,74 @@ arcane-cli admin backups restore <backup-id>
 
 There are also subcommands for retention policies (`policies`), the recovery key (`recovery`), uploading a local backup to S3 (`upload`), and finding S3 restore points not in the database (`discover`).
 
+## Podman
+
+These commands work on environments that run Podman. Check what the host supports first:
+
+```bash
+arcane-cli podman status
+```
+
+Pods take the same flags as `podman pod create`:
+
+```bash
+arcane-cli podman pods list
+```
+
+```bash
+arcane-cli podman pods create --name web -p 8080:80 --memory 512m
+```
+
+```bash
+arcane-cli podman pods stop web --timeout 30
+```
+
+```bash
+arcane-cli podman pods delete web --force
+```
+
+Install a Quadlet with any files it needs, then start its unit:
+
+```bash
+arcane-cli podman quadlets install web.kube --extra-file web.yaml
+```
+
+```bash
+arcane-cli podman quadlets start web.kube
+```
+
+Play, tear down, or generate Kubernetes YAML:
+
+```bash
+arcane-cli podman kube play web.yaml --replace
+```
+
+```bash
+arcane-cli podman kube down web.yaml
+```
+
+```bash
+arcane-cli podman kube generate web --type deployment --service
+```
+
+Create or replace a secret. Without `--file`, the CLI prompts for the value, or reads one line from stdin:
+
+```bash
+arcane-cli podman secrets create db-password --file ./db-password.txt
+```
+
+```bash
+arcane-cli podman secrets update db-password
+```
+
+Run Podman auto-update. `--dry-run` needs Podman 6.2 or later:
+
+```bash
+arcane-cli podman autoupdate --dry-run
+```
+
+See [Podman Overview](/docs/podman/overview) for what each feature needs on the host.
+
 ## Activities and webhooks
 
 Follow what the server is doing:

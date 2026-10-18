@@ -9,6 +9,8 @@ import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 const bundledLanguages = {
 	bash: () => import('@shikijs/langs/bash'),
 	diff: () => import('@shikijs/langs/diff'),
+	dotenv: () => import('@shikijs/langs/dotenv'),
+	ini: () => import('@shikijs/langs/ini'),
 	javascript: () => import('@shikijs/langs/javascript'),
 	json: () => import('@shikijs/langs/json'),
 	svelte: () => import('@shikijs/langs/svelte'),

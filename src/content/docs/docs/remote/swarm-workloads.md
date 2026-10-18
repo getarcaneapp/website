@@ -27,7 +27,7 @@ A stack deploys related services together from a Compose file.
 Useful shortcuts in the stack editor:
 
 - **Use Template** — load a saved Arcane template. See [Templates](/docs/docker/templates).
-- **Convert from Docker Run** — paste a `docker run` and let Arcane generate Compose and env content as a starting point. For standalone prep, use the [Compose Generator](/generator).
+- **Convert from Docker Run** — paste a `docker run` and let Arcane generate Compose and env content as a starting point. For standalone prep, use the [Instance Generator](/generator).
 - **Save as Template** — save the editor content as a reusable template.
 - **Override file** — add a `compose.override.yaml` alongside the main Compose file. Arcane merges the two at deploy time, the same way the Docker CLI does.
 

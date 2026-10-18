@@ -1,7 +1,10 @@
+import type { DeploymentTargetId } from '#lib/types/instance-generator.type.js';
+
 type PlausibleProperty = string | number | boolean;
 
 type AnalyticsEvents = {
 	'Compose Generated': {
+		deployment: DeploymentTargetId;
 		access_method: 'direct_socket' | 'socket_proxy';
 		socket_proxy_provider: 'none' | 'wollomatic' | 'tecnativa';
 		database: 'postgresql' | 'sqlite';
@@ -11,6 +14,7 @@ type AnalyticsEvents = {
 		registry: 'ghcr' | 'quay' | 'docker';
 	};
 	'Compose Exported': {
+		deployment: DeploymentTargetId;
 		method: 'copy' | 'download';
 	};
 	'Docs Code Copied': {

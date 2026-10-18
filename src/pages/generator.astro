@@ -1,18 +1,22 @@
 ---
 import { button } from '../components/landing/button';
 import WidePage from '../components/pages/WidePage.astro';
-import DockerComposeGenerator from '../lib/components/docker-compose-generator.svelte';
+import InstanceGenerator from '../lib/components/instance-generator.svelte';
 import { BookOpenIcon, SettingsIcon } from '../lib/icons/index';
 ---
 
 <WidePage
-	title="Docker Compose Generator"
-	description="Follow the guided steps to configure Arcane services, credentials, and storage. Your Compose file is updated in real time."
+	title="Instance Generator"
+	description="Pick a deployment, set your options, and copy the Compose file, Quadlet, or agent config Arcane needs."
 >
 	<div class="arcane-ui not-content">
-		<div class="inline-flex w-full flex-wrap gap-2.5 sm:w-auto">
+		<p class="max-w-2xl text-base text-muted-foreground">
+			Pick a deployment, set your options, and copy the files Arcane needs. The output updates as
+			you go.
+		</p>
+		<div class="mt-4 flex flex-wrap gap-2">
 			<a href="/docs/get-started/installation" class:list={[button.outlineSm, 'group']}>
-				<BookOpenIcon class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+				<BookOpenIcon class="h-4 w-4" />
 				Setup Guide
 			</a>
 			<a href="/docs/reference/environment-variables" class:list={[button.outlineSm, 'group']}>
@@ -21,7 +25,7 @@ import { BookOpenIcon, SettingsIcon } from '../lib/icons/index';
 			</a>
 		</div>
 		<section id="configure" class="mt-8">
-			<DockerComposeGenerator client:load />
+			<InstanceGenerator client:load />
 		</section>
 	</div>
 </WidePage>

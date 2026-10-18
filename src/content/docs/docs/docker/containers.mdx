@@ -42,6 +42,8 @@ To keep a container out of the default list and dashboard counts, give it the `c
 - **Kill** — send a signal to the container's main process. Requires `containers:kill`.
 - **Redeploy** — pull the latest image and recreate the container with the same name, mounts, labels, networks, and restart policy. Use this to update a single container in place.
 
+On Podman, containers started by a Quadlet show a **Quadlet** badge. Start, stop, and restart go to their systemd unit, and Arcane refuses to edit, redeploy, or remove them. See [Quadlets](/docs/podman/quadlets#containers-that-belong-to-a-quadlet).
+
 ## Edit a container
 
 Choose **Edit** from a container's detail page or row menu to change its image, ports, mounts, variables, restart policy, networks, resource limits, or Linux capabilities. Network options include static IPv4 addresses and aliases. Editing requires `containers:edit`; network connections also require `networks:connect` / `networks:disconnect`.

@@ -1,7 +1,7 @@
 export const mainNavItems = [
 	{ href: '/docs', label: 'Docs' },
 	{ href: '/blog', label: 'Blog' },
-	{ href: '/generator', label: 'Compose Generator' },
+	{ href: '/generator', label: 'Instance Generator' },
 	{ href: '/community', label: 'Community' }
 ];
 
@@ -30,7 +30,6 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 		label: 'Get Started',
 		items: [
 			doc('get-started/installation'),
-			doc('get-started/podman'),
 			doc('get-started/lxc-container'),
 			doc('get-started/migrate-v2'),
 			doc('get-started/preview-builds'),
@@ -52,6 +51,18 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 			parent('Templates', 'docker/templates', [doc('docker/template-registries')]),
 			doc('docker/variables'),
 			doc('docker/activity')
+		]
+	},
+	{
+		label: 'Podman',
+		items: [
+			doc('podman/setup'),
+			doc('podman/overview'),
+			doc('podman/pods'),
+			doc('podman/quadlets'),
+			doc('podman/kube'),
+			doc('podman/secrets'),
+			doc('podman/auto-update')
 		]
 	},
 	{

@@ -25,7 +25,7 @@ The agent connects in one of two modes:
 ## Requirements
 
 - The Arcane Manager is running.
-- Docker is installed on the agent host and the agent can mount `/var/run/docker.sock`.
+- Docker or Podman is installed on the agent host and the agent can mount its socket at `/var/run/docker.sock`. For Podman, mount the Podman socket there as described in [Run Arcane on Podman](/docs/podman/setup).
 - The environment is created in Arcane before you start the agent.
 - **Direct**: the Manager can reach the agent on port `3553`.
 - **Edge**: the agent can reach the Manager's URL.
@@ -163,7 +163,7 @@ ENVIRONMENT=production PORT=3553 LISTEN=127.0.0.1 AGENT_MODE=true AGENT_TOKEN=ar
 
 ## Edit an environment
 
-Select an environment under **Environments**. Click its **name** or **API URL** in the header to edit them; both are read-only for the local environment. The header also has **Test Connection**, a button to copy the API URL, and **Regenerate API Key** for non-Edge environments.
+Select an environment under **Environments**. Click its **name** or **API URL** in the header to edit them; both are read-only for the local environment. Arcane names the local environment after its host when the environment is first created, and renames one that's still called **Local Docker** from an older version. The header also has **Test Connection**, a button to copy the API URL, and **Regenerate API Key** for non-Edge environments.
 
 The environment page has these tabs:
 

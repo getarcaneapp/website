@@ -252,6 +252,14 @@ const headings = rendered.flatMap(({ headings }) =>
 		padding: 1rem 1.25rem 1.25rem;
 		overflow-wrap: anywhere;
 	}
+	@media (max-width: 40rem) {
+		.changelog :global(.release-summary) {
+			padding: 0.75rem 1rem;
+		}
+		.changelog :global(.release-notes) {
+			padding: 0.875rem 1rem 1rem;
+		}
+	}
 	.changelog :global(.release-notes > :first-child) {
 		margin-top: 0;
 	}
