@@ -47,6 +47,7 @@ export { default as RssIcon } from 'virtual:icons/ic/round-rss-feed';
 export { default as MinusIcon } from 'virtual:icons/ic/round-remove';
 export { default as YoutubeBrandIcon } from 'virtual:icons/mdi/youtube';
 export { default as AppleBrandIcon } from 'virtual:icons/simple-icons/apple';
+export { default as AndroidBrandIcon } from 'virtual:icons/simple-icons/android';
 export { default as SvelteBrandIcon } from 'virtual:icons/simple-icons/svelte';
 export { default as TypeScriptBrandIcon } from 'virtual:icons/simple-icons/typescript';
 export { default as JsonBrandIcon } from 'virtual:icons/simple-icons/json';

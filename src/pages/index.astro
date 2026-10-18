@@ -13,6 +13,7 @@ import LogoFull from '../lib/components/logo-full.svelte';
 import { features } from '../lib/config/features';
 import { DEMO_URL } from '../lib/config/docs';
 import {
+	AndroidBrandIcon,
 	AppleBrandIcon,
 	ArrowRightIcon,
 	CopyIcon,
@@ -48,7 +49,7 @@ volumes:
   arcane-data:`;
 const images = Object.values(MANAGER_IMAGES);
 
-const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Y9KUft8F';
+const MOBILE_BETA_URL = '/docs/settings/mobile-app';
 ---
 
 <!doctype html>
@@ -104,16 +105,17 @@ const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Y9KUft8F';
 
 					<div class="relative flex flex-col items-center text-center lg:items-start lg:text-left">
 						<a
-							href={TESTFLIGHT_URL}
-							target="_blank"
-							rel="noopener noreferrer"
-							title="Requires iOS 18+ / iPadOS 18+ / macOS 26+"
-							data-track-cta="testflight"
+							href={MOBILE_BETA_URL}
+							title="Available for iOS, iPadOS, macOS, and Android"
+							data-track-cta="mobile_beta"
 							data-track-placement="home_hero"
 							class="group mb-8 inline-flex max-w-full items-center gap-2.5 rounded-full border border-primary/30 bg-primary/8 px-3.5 py-1.5 text-sm text-foreground/90 shadow-sm shadow-primary/10 backdrop-blur-sm transition-colors hover:border-primary/50 hover:bg-primary/12 hover:text-foreground"
 						>
-							<AppleBrandIcon class="size-3.5 shrink-0 text-foreground" aria-hidden="true" />
-							<span class="truncate">Arcane for iOS</span>
+							<span class="inline-flex shrink-0 items-center gap-1.5" aria-hidden="true">
+								<AppleBrandIcon class="size-3.5 text-foreground" />
+								<AndroidBrandIcon class="size-3.5 text-foreground" />
+							</span>
+							<span class="truncate">Arcane Mobile</span>
 							<span class="h-3.5 w-px shrink-0 bg-primary/30" aria-hidden="true"></span>
 							<span class="inline-flex shrink-0 items-center gap-0.5 font-medium text-primary">
 								Join the beta

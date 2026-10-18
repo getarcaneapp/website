@@ -3,7 +3,7 @@ title: 'OpenTelemetry in Arcane 2.16.0'
 description: 'Arcane 2.16.0 can export metrics, traces, and logs to any OpenTelemetry collector.'
 date: 2026-10-10
 kind: update
-featured: true
+featured: false
 banner: 'Arcane 2.16.0 adds OpenTelemetry metrics, traces, and logs.'
 ---
 

@@ -1,24 +1,34 @@
 ---
 title: 'Arcane Mobile'
-description: 'Use Arcane from your iPhone or iPad.'
+description: 'Use Arcane from your iPhone, iPad, or Android phone.'
 ---
 
-Arcane Mobile is the iOS and iPadOS app for Arcane. Use it to check on your servers, run container and project actions, and receive push notifications from your phone.
+Arcane Mobile is the app for Arcane on iPhone, iPad, and Android. Use it to check on your servers, run container and project actions, and receive push notifications from your phone.
 
 ## Before you start
 
-- an iPhone or iPad running iOS 18 or iPadOS 18 or later
+- an iPhone or iPad running iOS 18 or iPadOS 18 or later, or an Android phone with Google Play
 - an Arcane server that your device can reach
 - your Arcane username and password, or access through OIDC if your server uses single sign-on
 
 ## Install the beta
+
+### iPhone and iPad
 
 1. Open the [Arcane Mobile TestFlight beta](https://testflight.apple.com/join/Y9KUft8F) on your iPhone or iPad.
 2. Install TestFlight if Apple asks you to.
 3. Join the beta and install Arcane Mobile.
 4. Open **Arcane** from your Home Screen.
 
-Report beta app bugs in the [iOS issue tracker](https://github.com/getarcaneapp/ios/issues) or discuss the beta in [Arcane Discord](https://discord.gg/WyXYpdyV3Z).
+### Android
+
+1. Join the [Arcane Mobile beta Google group](https://groups.google.com/g/arcane-mobile-beta) with the Google account you use on your phone.
+2. Open the [beta opt-in page](https://play.google.com/apps/testing/app.getarcane.android) and tap **Become a tester**.
+3. Install [Arcane Mobile from Google Play](https://play.google.com/store/apps/details?id=app.getarcane.android).
+
+If Google Play says the app is not available, wait a few minutes after opting in and try again. Make sure Play is signed in with the same Google account you used to join the group.
+
+Report beta app bugs in the [Arcane Mobile issue tracker](https://github.com/getarcaneapp/mobile/issues) or discuss the beta in [Arcane Discord](https://discord.gg/WyXYpdyV3Z).
 
 ## Connect to your server
 
@@ -29,7 +39,7 @@ Enter your full Arcane URL, including `https://` or `http://` and any port:
 
 For a home-network server, your device needs local access or a VPN. Include the protocol, IP address, and port as shown above. For public access, use HTTPS with a secure reverse proxy that forwards WebSocket traffic to Arcane.
 
-If the app cannot connect, open the same Arcane URL in Safari on your device. If Safari cannot reach it, the app cannot either. If you are still setting up the server, follow the [Arcane installation guide](/docs/get-started/installation).
+If the app cannot connect, open the same Arcane URL in your phone's browser. If the browser cannot reach it, the app cannot either. If you are still setting up the server, follow the [Arcane installation guide](/docs/get-started/installation).
 
 ## Sign in
 
