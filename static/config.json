@@ -197,7 +197,7 @@
       "env": "DATABASE_URL",
       "field": "DatabaseURL",
       "type": "string",
-      "defaultValue": "file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate",
+      "defaultValue": "file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(10000)&_txlock=immediate",
       "options": [
         "file"
       ],
@@ -451,18 +451,6 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.HTTPSProxy"
-    },
-    {
-      "env": "HTTP_CLIENT_TIMEOUT",
-      "field": "HTTPClientTimeout",
-      "type": "int",
-      "defaultValue": "0",
-      "supportsFile": false,
-      "deprecated": false,
-      "conditional": false,
-      "source": "config.Config",
-      "sourceFile": "backend/internal/config/config.go",
-      "sourceSymbol": "config.Config.HTTPClientTimeout"
     },
     {
       "env": "HTTP_PROXY",
@@ -1350,6 +1338,20 @@
       "public": false
     },
     {
+      "env": "BUILD_HISTORY_RETENTION_DAYS",
+      "settingKey": "buildHistoryRetentionDays",
+      "description": "Delete completed and failed image build records older than this many days. Set 0 to disable age-based cleanup.",
+      "defaultValue": "30",
+      "type": "number",
+      "category": "build",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.BuildHistoryRetentionDays",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
       "env": "BUILD_PROVIDER",
       "settingKey": "buildProvider",
       "description": "Default build provider (local or depot)",
@@ -1664,6 +1666,21 @@
       "source": "settings.Settings + settings.DefaultSettingsConfig",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.AutoUpdate",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "AUTO_UPDATE_DELAY",
+      "settingKey": "autoUpdateDelay",
+      "description": "Hours a new image must be available before auto-update applies it (0 = immediately)",
+      "defaultValue": "0",
+      "type": "number",
+      "category": "internal",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env. AUTO_UPDATE=true to have effect at runtime.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.AutoUpdateDelay",
       "sensitive": false,
       "deprecated": false,
       "public": false
