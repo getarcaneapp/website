@@ -116,6 +116,27 @@ const inputId = `filter-${noun.replace(/\W+/g, '-')}`;
 	.table-filter :global(th:first-child) {
 		width: 40%;
 	}
+	@media (max-width: 40rem) {
+		.table-filter :global(:is(table, tbody, tr, td)) {
+			display: block;
+			width: 100%;
+		}
+		.table-filter :global(thead) {
+			display: none;
+		}
+		.table-filter :global(tr) {
+			border-bottom: 1px solid var(--sl-color-hairline-light);
+		}
+		.table-filter :global(tr:last-child) {
+			border-bottom: 0;
+		}
+		.table-filter :global(td) {
+			border-bottom: 0;
+		}
+		.table-filter :global(td:first-child) {
+			padding-bottom: 0;
+		}
+	}
 	.table-filter :global(code) {
 		display: inline-block;
 		max-width: 100%;

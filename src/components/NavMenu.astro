@@ -1,0 +1,124 @@
+---
+import { mainNavItems } from '../lib/config/docs';
+import { MenuIcon } from '../lib/icons/index';
+
+interface Props {
+	class?: string;
+}
+const { class: className } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\.html$/, '');
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<details class:list={['nav-menu', className]} data-nav-menu>
+	<summary aria-label="Site navigation">
+		<MenuIcon class="nav-menu-icon" />
+	</summary>
+	<div class="nav-menu-panel">
+		<nav aria-label="Site">
+			{mainNavItems.map((item) => (
+				<a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+					{item.label}
+				</a>
+			))}
+		</nav>
+		{Astro.slots.has('default') && (
+			<div class="nav-menu-extras">
+				<slot />
+			</div>
+		)}
+	</div>
+</details>
+
+<script>
+	document.querySelectorAll<HTMLDetailsElement>('[data-nav-menu]').forEach((menu) => {
+		document.addEventListener('click', (event) => {
+			if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+		});
+		menu.addEventListener('keydown', (event) => {
+			if (event.key !== 'Escape' || !menu.open) return;
+			menu.open = false;
+			menu.querySelector('summary')?.focus();
+		});
+	});
+</script>
+
+<style>
+	.nav-menu {
+		position: relative;
+	}
+	.nav-menu summary {
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 999px;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+		list-style: none;
+		transition:
+			background-color 0.15s ease,
+			color 0.15s ease;
+	}
+	.nav-menu summary::-webkit-details-marker {
+		display: none;
+	}
+	.nav-menu summary:hover,
+	.nav-menu[open] summary {
+		background-color: var(--surface-muted);
+		color: var(--sl-color-white);
+	}
+	.nav-menu :global(.nav-menu-icon) {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+	.nav-menu-panel {
+		position: absolute;
+		inset-inline-end: 0;
+		top: calc(100% + 0.75rem);
+		z-index: 50;
+		display: grid;
+		gap: 0.25rem;
+		width: min(16rem, calc(100vw - 2rem));
+		padding: 0.375rem;
+		border: 1px solid var(--surface-border);
+		border-radius: var(--sl-radius, 0.75rem);
+		background-color: var(--sl-color-bg-nav);
+		box-shadow: var(--surface-shadow-lg);
+	}
+	.nav-menu-panel nav {
+		display: grid;
+		gap: 0.125rem;
+	}
+	.nav-menu-panel a {
+		display: flex;
+		align-items: center;
+		min-height: 2.75rem;
+		padding: 0 0.875rem;
+		border-radius: 0.5rem;
+		color: var(--sl-color-gray-2);
+		font-size: 0.9375rem;
+		font-weight: 500;
+		text-decoration: none;
+	}
+	.nav-menu-panel a:hover {
+		background-color: var(--surface-muted);
+		color: var(--sl-color-white);
+	}
+	.nav-menu-panel a[aria-current='page'] {
+		background-color: color-mix(in oklch, var(--sl-color-accent), transparent 88%);
+		color: var(--sl-color-accent-high);
+	}
+	:global([data-theme='light']) .nav-menu-panel a[aria-current='page'] {
+		color: var(--sl-color-accent);
+	}
+	.nav-menu-extras {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding: 0.375rem 0.25rem 0;
+		border-top: 1px solid var(--sl-color-hairline);
+	}
+</style>

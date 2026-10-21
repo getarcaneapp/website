@@ -20,7 +20,7 @@ import {
 	CheckIcon,
 	ExternalLinkIcon
 } from '../lib/icons/index';
-import { MANAGER_IMAGES } from '../lib/utils/docker-compose-generator';
+import { MANAGER_IMAGES } from '../lib/utils/instance-generator';
 import { PLAUSIBLE_INIT, PLAUSIBLE_SRC, sharedHead } from '../sharedHead';
 
 const title = 'Arcane - Modern Docker Management, Designed for Everyone';
@@ -98,7 +98,7 @@ const MOBILE_BETA_URL = '/docs/settings/mobile-app';
 
 			<div class="mx-auto w-full max-w-screen-2xl px-4 pt-6 sm:pt-10 lg:px-6">
 				<section
-					class="relative grid items-center gap-12 pt-10 pb-16 md:pt-14 md:pb-20 lg:min-h-screen-70 lg:grid-cols-2 lg:gap-16"
+					class="relative grid grid-cols-1 items-center gap-12 pt-10 pb-16 md:pt-14 md:pb-20 lg:min-h-screen-70 lg:grid-cols-2 lg:gap-16"
 					aria-labelledby="hero-title"
 				>
 					<div class="pointer-events-none absolute inset-0 hero-dot-grid" aria-hidden="true"></div>
@@ -188,7 +188,7 @@ const MOBILE_BETA_URL = '/docs/settings/mobile-app';
 								<span class="font-mono text-xs text-muted-foreground/70">compose.yaml</span>
 								<button
 									type="button"
-									class="ml-auto grid size-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+									class="ml-auto grid size-7 place-items-center rounded-md extend-touch-target text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
 									aria-label="Copy compose.yaml"
 									data-compose-copy
 								>

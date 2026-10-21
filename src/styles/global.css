@@ -95,17 +95,9 @@
 	--grid-template-columns-content-aside-60: minmax(0, 1fr) 15rem;
 	--grid-template-columns-auto-fit-45: repeat(auto-fit, minmax(11.25rem, 1fr));
 	--grid-template-columns-content-action: minmax(0, 1fr) auto;
-	--grid-template-columns-wizard: minmax(0, 1fr) minmax(0, 16.25rem);
 
 	--spacing-below-header: calc(var(--sl-nav-height, 4rem) + var(--spacing) * 6);
 	--max-height-below-header: calc(100vh - var(--sl-nav-height, 4rem) - var(--spacing) * 6);
-
-	--shadow-wizard:
-		0 24px 50px -45px oklch(0 0 0 / 0.6),
-		0 0 0 1px color-mix(in oklab, var(--border) 25%, transparent);
-	--shadow-wizard-hover:
-		0 28px 60px -45px oklch(0 0 0 / 0.65),
-		0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent);
 
 	--animate-fade-in-up: fade-in-up 0.5s ease-out both;
 	--animate-slide-in-right: slide-in-right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;

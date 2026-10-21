@@ -3,6 +3,7 @@ import { getEntry } from 'astro:content';
 import {
 	ArrowRightIcon,
 	BookOpenIcon,
+	BoxIcon,
 	CodeIcon,
 	ContainersIcon,
 	EnvironmentsIcon,
@@ -22,6 +23,10 @@ const SECTION_META = {
 	'Managing Docker': {
 		icon: ContainersIcon,
 		description: 'Projects, containers, images, volumes, backups, and auto updates.'
+	},
+	Podman: {
+		icon: BoxIcon,
+		description: 'Run Arcane on Podman and manage pods, Quadlets, Kubernetes YAML, and secrets.'
 	},
 	'Remote Hosts & Swarm': {
 		icon: EnvironmentsIcon,

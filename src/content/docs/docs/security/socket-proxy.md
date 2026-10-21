@@ -10,7 +10,7 @@ This page assumes you've read [Installation](/docs/get-started/installation), wh
 
 ## Set up the proxy
 
-1. Create a `compose.yaml` with one of the examples below. **wollomatic/socket-proxy** is recommended and is what the [compose generator](/generator) produces. Use **Tecnativa** only if you already run it.
+1. Create a `compose.yaml` with one of the examples below. **wollomatic/socket-proxy** is recommended and is what the [Instance Generator](/generator) produces. Use **Tecnativa** only if you already run it.
 2. Replace `<your-encryption-key>` with your key and `/opt/docker` with your projects folder.
 3. Run `docker compose up -d`. The proxy starts first, then Arcane connects to it.
 
