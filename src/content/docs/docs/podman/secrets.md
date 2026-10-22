@@ -3,6 +3,19 @@ title: 'Podman Secrets'
 description: 'Create, replace, and delete Podman secrets.'
 ---
 
-**Podman → Secrets** manages Podman secrets, which containers mount with `--secret`. Podman secrets are separate from [Swarm secrets](/docs/remote/swarm-configs-secrets).
+These are Podman secrets (mounted with `--secret`), separate from [Swarm secrets](/docs/remote/swarm-configs-secrets).
 
-To create one, click **Create Secret**, enter a name and value, and optionally a driver, driver options, and labels. The value can't be viewed after it's saved. To change it, open the secret and enter a new value; Podman replaces the whole secret. Delete secrets from the row menu once nothing uses them.
+## Create a secret
+
+1. Open **Podman → Secrets**.
+2. Click **Create Secret**.
+3. Enter a name and value.
+4. Optional: set a driver, driver options, and labels.
+5. Save.
+
+You can't view the value after saving.
+
+## Change or delete a secret
+
+- **Change:** enter a new value. Podman replaces the whole secret.
+- **Delete:** use the row menu, once nothing uses the secret.

@@ -1,14 +1,10 @@
 ---
 import { envConfig } from '../../lib/config/pages/runtime-config';
-import TableFilter from './TableFilter.astro';
+
+const rowId = (name: string) => `var-${name.toLowerCase()}`;
 ---
 
-<TableFilter
-	label="Search environment variables"
-	noun="variables"
-	total={envConfig.length}
-	empty="No variables match. Try a shorter name or clear the search."
->
+<div class="filter-table not-content" data-filter-target="env">
 	<table>
 		<thead>
 			<tr>
@@ -18,9 +14,11 @@ import TableFilter from './TableFilter.astro';
 		</thead>
 		<tbody>
 			{envConfig.map((env) => (
-				<tr data-search={`${env.name} ${env.description}`.toLowerCase()}>
+				<tr id={rowId(env.name)} data-search={`${env.name} ${env.description}`.toLowerCase()}>
 					<td>
-						<code>{env.name}</code>
+						<a class="env-anchor" href={`#${rowId(env.name)}`}>
+							<code>{env.name}</code>
+						</a>
 					</td>
 					<td>
 						<div class="env-details">
@@ -46,4 +44,4 @@ import TableFilter from './TableFilter.astro';
 			))}
 		</tbody>
 	</table>
-</TableFilter>
+</div>

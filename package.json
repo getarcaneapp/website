@@ -13,9 +13,10 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"prepare": "vp config",
-		"check": "astro check && vp check && prettier --check \"src/**/*.astro\"",
-		"format": "vp fmt && prettier --write \"src/**/*.astro\"",
-		"lint": "vp lint",
+		"check": "astro check && biome check",
+		"format": "biome format --write",
+		"lint": "biome lint",
+		"fix": "biome check --write",
 		"screenshots": "node scripts/screenshots.ts"
 	},
 	"dependencies": {
@@ -27,6 +28,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.12",
+		"@biomejs/biome": "2.6.5",
 		"@iconify/json": "^2.2.553",
 		"@iconify/utils": "^3.1.7",
 		"@shikijs/langs": "^4.6.0",
@@ -37,8 +39,6 @@
 		"clsx": "^2.1.1",
 		"isomorphic-dompurify": "^4.6.0",
 		"playwright": "1.65.0",
-		"prettier": "^3.9.10",
-		"prettier-plugin-astro": "^1.1.2",
 		"runed": "^0.38.0",
 		"sharp": "^0.35.5",
 		"shiki": "^4.6.0",

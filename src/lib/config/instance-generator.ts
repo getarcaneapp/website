@@ -9,8 +9,6 @@ import type {
 	GeneratorValues
 } from '#lib/types/instance-generator.type.js';
 
-export type AgentMode = 'direct' | 'edge';
-
 const MANAGER_TARGETS: DeploymentTargetId[] = [
 	'docker',
 	'podman-rootless',
@@ -22,7 +20,7 @@ const PODMAN_TARGETS: DeploymentTargetId[] = [
 	'podman-rootful',
 	'podman-quadlet'
 ];
-const AGENT_CONTAINER_TARGETS: DeploymentTargetId[] = ['agent-direct', 'agent-edge'];
+const AGENT_CONTAINER_TARGETS: DeploymentTargetId[] = ['agent-container'];
 const AGENT_TARGETS: DeploymentTargetId[] = [...AGENT_CONTAINER_TARGETS, 'agent-binary'];
 
 function validatePort(value: string): string | undefined {
@@ -54,6 +52,51 @@ function validateIssuerUrl(value: string): string | undefined {
 
 function validatePath(value: string): string | undefined {
 	return !value.trim() || value.trim().startsWith('/') ? undefined : 'Use an absolute path.';
+}
+
+function validateVolumeName(value: string): string | undefined {
+	return !value.trim() || /^[a-zA-Z0-9][a-zA-Z0-9_.-]+$/.test(value.trim())
+		? undefined
+		: 'Use 2+ letters, numbers, _, . or -.';
+}
+
+const IPV4 = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+
+/** Mirrors Arcane's ARCANE_TRUSTED_PROXIES parsing: comma-separated, each entry must pass Go's net.ParseCIDR. */
+function isCidr(entry: string): boolean {
+	const [address, bits, ...rest] = entry.split('/');
+	if (!address || !bits || rest.length > 0 || !/^\d+$/.test(bits)) return false;
+	if (IPV4.test(address)) return Number(bits) <= 32;
+	return address.includes(':') && URL.canParse(`http://[${address}]`) && Number(bits) <= 128;
+}
+
+function validateCidrList(value: string): string | undefined {
+	return value
+		.split(',')
+		.map((entry) => entry.trim())
+		.filter(Boolean)
+		.every(isCidr)
+		? undefined
+		: 'Use CIDR notation, e.g. 10.0.0.5/32 (IPv6: /128).';
+}
+
+/** Mirrors Arcane's key parsing (kit sys/crypto ParseKey) and its production length check. */
+function validateEncryptionKey(value: string): string | undefined {
+	const key = value.trim();
+	if (!key) return undefined;
+	if (key.startsWith('hex:')) {
+		return /^[\da-f]{64}$/i.test(key.slice(4).trim())
+			? undefined
+			: 'A hex: key needs exactly 64 hex characters.';
+	}
+	if (key.startsWith('base64:')) {
+		return /^[A-Za-z\d+/]{43}=$/.test(key.slice(7).trim())
+			? undefined
+			: 'A base64: key needs 32 bytes: 44 characters ending in =.';
+	}
+	return new TextEncoder().encode(key.replace(/^raw:/, '')).length >= 32
+		? undefined
+		: 'Use at least 32 characters, or click Generate.';
 }
 
 export const deploymentGroups: DeploymentGroup[] = [
@@ -106,19 +149,10 @@ export const deploymentGroups: DeploymentGroup[] = [
 			'Connects another host to an existing Manager as a remote environment. Create the environment in Arcane first to get its token.',
 		targets: [
 			{
-				id: 'agent-direct',
-				label: 'Direct agent',
+				id: 'agent-container',
+				label: 'Agent container',
 				description:
-					'The Manager connects to the agent on port 3553. Use it on the same LAN or VPN.',
-				resultDescription: 'Save the Compose file on the remote host, then start the agent.',
-				docsHref: '/docs/remote/environments',
-				docsLabel: 'Remote environments guide'
-			},
-			{
-				id: 'agent-edge',
-				label: 'Edge agent',
-				description:
-					"The agent connects out to the Manager. Use it when the host can't accept inbound connections.",
+					'Run the agent with Docker Compose. It connects out to the Manager and opens no ports.',
 				resultDescription: 'Save the Compose file on the remote host, then start the agent.',
 				docsHref: '/docs/remote/environments',
 				docsLabel: 'Remote environments guide'
@@ -126,7 +160,7 @@ export const deploymentGroups: DeploymentGroup[] = [
 			{
 				id: 'agent-binary',
 				label: 'Agent binary',
-				description: 'Run a Direct or Edge agent as a standalone binary instead of a container.',
+				description: 'Run the agent as a standalone binary instead of a container.',
 				resultDescription:
 					'Download the arcane-agent binary for your platform from GitHub Releases, put the .env file next to it, then start it.',
 				docsHref: '/docs/remote/environments#run-the-agent-as-a-standalone-binary',
@@ -142,12 +176,6 @@ export const deploymentTargets: DeploymentTarget[] = deploymentGroups.flatMap(
 
 export function getDeploymentTarget(id: DeploymentTargetId): DeploymentTarget {
 	return deploymentTargets.find((target) => target.id === id) ?? deploymentTargets[0];
-}
-
-export function getAgentMode({ target, config }: FieldContext): AgentMode {
-	if (target === 'agent-edge') return 'edge';
-	if (target === 'agent-binary' && config.agentMode === 'edge') return 'edge';
-	return 'direct';
 }
 
 export const generatorConfig: GeneratorConfig = [
@@ -167,7 +195,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'registry',
 						envName: '',
 						label: 'Image registry',
-						description: 'Where to pull the Arcane manager image from',
+						description: 'Registry to pull the Manager image from.',
 						type: 'select',
 						defaultValue: 'ghcr',
 						options: [
@@ -178,9 +206,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'appUrl',
-						envName: 'APP_URL',
+						envName: 'ARCANE_APP_URL',
 						label: 'App URL',
-						description: 'The URL your browser uses to open Arcane',
+						description: 'The address you open Arcane at, with http:// or https://.',
 						type: 'text',
 						defaultValue: 'http://localhost:3552',
 						placeholder: 'http://localhost:3552',
@@ -191,7 +219,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'port',
 						envName: '',
 						label: 'Port',
-						description: 'The host port Arcane is published on',
+						description: 'Host port that serves Arcane.',
 						type: 'text',
 						defaultValue: '3552',
 						placeholder: '3552',
@@ -201,7 +229,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'localOnly',
 						envName: '',
 						label: 'Listen on localhost only',
-						description: 'Publish the port on 127.0.0.1, for use behind a local reverse proxy',
+						description: 'Bind to 127.0.0.1. Use with a reverse proxy on the same host.',
 						type: 'checkbox',
 						defaultValue: false,
 						targets: ['podman-quadlet']
@@ -210,18 +238,18 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'dataPath',
 						envName: '',
 						label: 'Data volume',
-						description: 'Volume name for Arcane data',
+						description: "Named volume for Arcane's data.",
 						type: 'text',
 						defaultValue: 'arcane-data',
 						placeholder: 'arcane-data',
-						advanced: true
+						advanced: true,
+						validate: validateVolumeName
 					},
 					{
 						key: 'puid',
 						envName: 'PUID',
 						label: 'PUID',
-						description:
-							'Host user ID that owns files Arcane creates. On rootless Podman, use your own ID (id -u).',
+						description: 'User ID that owns files Arcane creates. Rootless Podman: run id -u.',
 						type: 'text',
 						defaultValue: '1000',
 						placeholder: '1000',
@@ -234,8 +262,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'pgid',
 						envName: 'PGID',
 						label: 'PGID',
-						description:
-							'Host group ID that owns files Arcane creates. On rootless Podman, use your own group ID (id -g).',
+						description: 'Group ID that owns files Arcane creates. Rootless Podman: run id -g.',
 						type: 'text',
 						defaultValue: '1000',
 						placeholder: '1000',
@@ -261,40 +288,24 @@ export const generatorConfig: GeneratorConfig = [
 				icon: 'settings',
 				fields: [
 					{
-						key: 'agentMode',
+						key: 'agentTransport',
 						envName: '',
-						label: 'Agent mode',
-						description: 'Direct if the Manager can reach this host, Edge if it cannot',
+						label: 'Transport',
+						description: 'How the agent reaches the Manager.',
 						type: 'select',
-						defaultValue: 'direct',
+						defaultValue: 'auto',
 						options: [
-							{ label: 'Direct', value: 'direct' },
-							{ label: 'Edge', value: 'edge' }
-						],
-						targets: ['agent-binary']
-					},
-					{
-						key: 'edgeTransport',
-						envName: '',
-						label: 'Edge transport',
-						description:
-							"How the agent keeps in touch with the Manager. Poll is what Arcane's own snippets use.",
-						type: 'select',
-						defaultValue: 'poll',
-						options: [
-							{ label: 'Poll', value: 'poll' },
 							{ label: 'Auto (gRPC, then WebSocket)', value: 'auto' },
 							{ label: 'WebSocket', value: 'websocket' },
 							{ label: 'gRPC', value: 'grpc' }
 						],
-						visibleWhen: (context) => getAgentMode(context) === 'edge',
 						advanced: true
 					},
 					{
 						key: 'agentToken',
 						envName: '',
 						label: 'Agent token',
-						description: 'Shown when you create the environment in Arcane',
+						description: 'Copy it from the new environment in Arcane.',
 						type: 'password',
 						defaultValue: '',
 						placeholder: 'arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
@@ -304,35 +315,12 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'managerUrl',
 						envName: '',
 						label: 'Manager URL',
-						description: 'The address of your Arcane Manager',
+						description: 'Address the agent uses to reach the Manager.',
 						type: 'text',
 						defaultValue: '',
 						placeholder: 'http://10.1.1.4:3552',
 						required: true,
 						validate: validateUrl
-					},
-					{
-						key: 'agentPort',
-						envName: '',
-						label: 'Agent port',
-						description: 'The port the Manager connects to on this host',
-						type: 'text',
-						defaultValue: '3553',
-						placeholder: '3553',
-						visibleWhen: (context) => getAgentMode(context) === 'direct',
-						validate: validatePort
-					},
-					{
-						key: 'listen',
-						envName: '',
-						label: 'Listen address',
-						description: 'Interface the agent binds to. Leave empty to bind all interfaces.',
-						type: 'text',
-						defaultValue: '',
-						placeholder: '127.0.0.1',
-						targets: ['agent-binary'],
-						visibleWhen: (context) => getAgentMode(context) === 'direct',
-						advanced: true
 					}
 				]
 			}
@@ -354,13 +342,13 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'dockerSocket',
 						envName: '',
 						label: 'Docker socket',
-						description:
-							'Path to the Docker socket on the host. On a Podman host, use the Podman socket path.',
+						description: 'Host path to the Docker socket. On Podman, use the Podman socket.',
 						type: 'text',
 						defaultValue: '/var/run/docker.sock',
 						placeholder: '/var/run/docker.sock',
 						targets: ['docker', ...AGENT_CONTAINER_TARGETS],
-						visibleWhen: ({ config }) => config.useSocketProxy !== true,
+						visibleWhen: ({ target, config }) =>
+							!(target === 'docker' && config.useSocketProxy === true),
 						validate: validatePath
 					},
 					{
@@ -368,7 +356,7 @@ export const generatorConfig: GeneratorConfig = [
 						envName: '',
 						label: 'Use a socket proxy',
 						description:
-							'Use a Docker socket proxy container instead of mounting the Docker socket directly',
+							'Send Docker API calls through a filtering proxy instead of mounting the socket.',
 						type: 'checkbox',
 						defaultValue: false,
 						targets: ['docker']
@@ -377,8 +365,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'socketProxyProvider',
 						envName: '',
 						label: 'Socket proxy',
-						description:
-							'wollomatic is recommended. Tecnativa is still available if you already use it.',
+						description: 'Pick wollomatic unless you already run Tecnativa.',
 						type: 'select',
 						defaultValue: 'wollomatic',
 						options: [
@@ -391,9 +378,8 @@ export const generatorConfig: GeneratorConfig = [
 					{
 						key: 'enableSelinux',
 						envName: '',
-						label: 'Enable SELinux compatibility',
-						description:
-							'Relabel the projects folder mount, and turn off SELinux labelling when the socket is mounted directly',
+						label: 'SELinux compatibility',
+						description: 'Relabel bind mounts and turn off labeling for the socket mount.',
 						type: 'checkbox',
 						defaultValue: false,
 						targets: ['docker']
@@ -402,8 +388,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'systemdAccess',
 						envName: '',
 						label: 'Manage Quadlets and auto-update',
-						description:
-							'Mount the systemd D-Bus socket so Arcane can start and stop Quadlets and run Podman auto-update. On rootful Podman this runs Arcane as root.',
+						description: 'Mounts the systemd D-Bus socket. On rootful Podman, Arcane runs as root.',
 						type: 'checkbox',
 						defaultValue: true,
 						targets: PODMAN_TARGETS
@@ -411,9 +396,8 @@ export const generatorConfig: GeneratorConfig = [
 					{
 						key: 'lxc',
 						envName: '',
-						label: 'Running inside LXC',
-						description:
-							'Add the mounts Arcane needs to read host metrics inside an LXC container, such as on Proxmox',
+						label: 'Running in LXC',
+						description: 'Adds the mounts Arcane needs for host metrics in LXC, such as Proxmox.',
 						type: 'checkbox',
 						defaultValue: false,
 						targets: ['docker', ...AGENT_CONTAINER_TARGETS],
@@ -423,7 +407,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'healthcheck',
 						envName: '',
 						label: 'Health check',
-						description: 'Add a health check that runs the built-in arcane health command',
+						description: 'Runs arcane health every 10 seconds.',
 						type: 'checkbox',
 						defaultValue: true,
 						targets: ['docker'],
@@ -450,7 +434,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'projectsHostPath',
 						envName: '',
 						label: 'Projects host path',
-						description: 'Absolute host path to the folder that holds your Compose projects',
+						description: 'Absolute host path to your Compose projects folder.',
 						type: 'text',
 						defaultValue: '',
 						placeholder: '/opt/docker',
@@ -473,9 +457,9 @@ export const generatorConfig: GeneratorConfig = [
 				fields: [
 					{
 						key: 'logLevel',
-						envName: 'LOG_LEVEL',
+						envName: 'ARCANE_LOG_LEVEL',
 						label: 'Log level',
-						description: 'Logging verbosity',
+						description: 'How much Arcane logs. Default: Info.',
 						type: 'select',
 						defaultValue: 'info',
 						options: [
@@ -488,9 +472,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'logJson',
-						envName: 'LOG_JSON',
-						label: 'JSON logging',
-						description: 'Enable JSON formatted logs',
+						envName: 'ARCANE_LOG_JSON',
+						label: 'JSON logs',
+						description: 'Write logs as JSON, for log collectors.',
 						type: 'checkbox',
 						defaultValue: false,
 						includeInEnv: true
@@ -499,12 +483,179 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'tz',
 						envName: 'TZ',
 						label: 'Timezone',
-						description: 'IANA timezone for scheduled jobs. The container default is UTC.',
+						description: 'IANA timezone for scheduled jobs. Default: UTC.',
 						type: 'text',
 						defaultValue: '',
 						placeholder: 'America/New_York',
 						includeInEnv: true,
 						targets: MANAGER_TARGETS
+					},
+					{
+						key: 'githubToken',
+						envName: 'ARCANE_GITHUB_TOKEN',
+						label: 'GitHub token',
+						description: 'Raises the GitHub rate limit for image release notes.',
+						type: 'password',
+						defaultValue: '',
+						placeholder: 'github_pat_...',
+						includeInEnv: true,
+						targets: MANAGER_TARGETS,
+						advanced: true
+					}
+				]
+			}
+		]
+	},
+	{
+		id: 'telemetry',
+		label: 'OpenTelemetry',
+		icon: 'chart',
+		sections: [
+			{
+				id: 'telemetry',
+				title: 'OpenTelemetry',
+				description: 'Send metrics, traces, and logs to an OTLP collector.',
+				icon: 'chart',
+				hasToggle: true,
+				toggleKey: 'enableOtel',
+				fields: [
+					{
+						key: 'enableOtel',
+						envName: '',
+						label: 'Enable OpenTelemetry export',
+						type: 'checkbox',
+						defaultValue: false
+					},
+					{
+						key: 'otelEndpoint',
+						envName: 'OTEL_EXPORTER_OTLP_ENDPOINT',
+						label: 'Collector endpoint',
+						description: 'Collector URL. HTTP uses port 4318, gRPC 4317.',
+						type: 'text',
+						defaultValue: '',
+						placeholder: 'http://otel-collector:4318',
+						dependsOn: 'enableOtel',
+						includeInEnv: true,
+						required: true,
+						validate: validateUrl
+					},
+					{
+						key: 'otelProtocol',
+						envName: 'OTEL_EXPORTER_OTLP_PROTOCOL',
+						label: 'Protocol',
+						type: 'select',
+						defaultValue: 'http/protobuf',
+						options: [
+							{ label: 'HTTP/protobuf', value: 'http/protobuf' },
+							{ label: 'gRPC', value: 'grpc' }
+						],
+						dependsOn: 'enableOtel',
+						includeInEnv: true
+					},
+					{
+						key: 'otelMetrics',
+						envName: 'OTEL_METRICS_EXPORTER',
+						envValue: 'otlp',
+						label: 'Metrics',
+						type: 'checkbox',
+						defaultValue: true,
+						dependsOn: 'enableOtel',
+						includeInEnv: true
+					},
+					{
+						key: 'otelTraces',
+						envName: 'OTEL_TRACES_EXPORTER',
+						envValue: 'otlp',
+						label: 'Traces',
+						type: 'checkbox',
+						defaultValue: true,
+						dependsOn: 'enableOtel',
+						includeInEnv: true
+					},
+					{
+						key: 'otelLogs',
+						envName: 'OTEL_LOGS_EXPORTER',
+						envValue: 'otlp',
+						label: 'Logs',
+						type: 'checkbox',
+						defaultValue: true,
+						dependsOn: 'enableOtel',
+						includeInEnv: true
+					},
+					{
+						key: 'otelHeaders',
+						envName: 'OTEL_EXPORTER_OTLP_HEADERS',
+						label: 'Headers',
+						description: 'Comma-separated key=value pairs, such as an auth header.',
+						type: 'password',
+						defaultValue: '',
+						placeholder: 'authorization=Bearer <token>',
+						dependsOn: 'enableOtel',
+						includeInEnv: true,
+						advanced: true
+					}
+				]
+			}
+		]
+	},
+	{
+		id: 'network',
+		label: 'Network',
+		icon: 'globe',
+		targets: MANAGER_TARGETS,
+		sections: [
+			{
+				id: 'network',
+				title: 'Network',
+				description: 'Reverse proxy trust and direct HTTPS.',
+				icon: 'globe',
+				fields: [
+					{
+						key: 'trustedProxies',
+						envName: 'ARCANE_TRUSTED_PROXIES',
+						label: 'Trusted proxies',
+						description:
+							'Comma-separated CIDR ranges of your proxies. Arcane trusts their forwarded headers.',
+						type: 'text',
+						defaultValue: '',
+						placeholder: '172.18.0.0/16',
+						includeInEnv: true,
+						validate: validateCidrList
+					},
+					{
+						key: 'enableTls',
+						envName: 'ARCANE_TLS_ENABLED',
+						label: 'Serve HTTPS directly',
+						description: 'Use your own certificate instead of a reverse proxy.',
+						type: 'checkbox',
+						defaultValue: false,
+						includeInEnv: true
+					},
+					{
+						key: 'tlsCertFile',
+						envName: 'ARCANE_TLS_CERT_FILE',
+						label: 'Certificate file',
+						description: 'Absolute host path, mounted read-only at the same path',
+						type: 'text',
+						defaultValue: '',
+						placeholder: '/etc/arcane/tls/cert.pem',
+						dependsOn: 'enableTls',
+						includeInEnv: true,
+						required: true,
+						validate: validatePath
+					},
+					{
+						key: 'tlsKeyFile',
+						envName: 'ARCANE_TLS_KEY_FILE',
+						label: 'Private key file',
+						description: 'Absolute host path, mounted read-only at the same path',
+						type: 'text',
+						defaultValue: '',
+						placeholder: '/etc/arcane/tls/key.pem',
+						dependsOn: 'enableTls',
+						includeInEnv: true,
+						required: true,
+						validate: validatePath
 					}
 				]
 			}
@@ -524,15 +675,17 @@ export const generatorConfig: GeneratorConfig = [
 				fields: [
 					{
 						key: 'encryptionKey',
-						envName: 'ENCRYPTION_KEY',
+						envName: 'ARCANE_ENCRYPTION_KEY',
 						label: 'Encryption key',
 						description:
-							'Encryption key for secure stored sensitive data (auto-generated if empty)',
+							"Encrypts stored secrets. Save a copy: Arcane can't decrypt them without it.",
 						type: 'password',
 						defaultValue: '',
-						placeholder: 'Auto-generated if empty',
+						placeholder: 'Click Generate to create one',
 						canGenerate: true,
-						includeInEnv: true
+						includeInEnv: true,
+						required: true,
+						validate: validateEncryptionKey
 					}
 				]
 			}
@@ -581,6 +734,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'dbPassword',
 						envName: '',
 						label: 'Database password',
+						description: 'Any characters work. They are escaped for you.',
 						type: 'password',
 						defaultValue: '',
 						placeholder: 'your_secure_password',
@@ -591,6 +745,7 @@ export const generatorConfig: GeneratorConfig = [
 						key: 'dbPort',
 						envName: '',
 						label: 'Database port',
+						description: 'Host port for PostgreSQL.',
 						type: 'text',
 						defaultValue: '5432',
 						placeholder: '5432',
@@ -618,7 +773,7 @@ export const generatorConfig: GeneratorConfig = [
 				fields: [
 					{
 						key: 'enableOIDC',
-						envName: 'OIDC_ENABLED',
+						envName: 'ARCANE_OIDC_ENABLED',
 						label: 'Enable OIDC sign-in',
 						type: 'checkbox',
 						defaultValue: false,
@@ -626,9 +781,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcClientId',
-						envName: 'OIDC_CLIENT_ID',
+						envName: 'ARCANE_OIDC_CLIENT_ID',
 						label: 'Client ID',
-						description: 'Client ID from your OIDC provider',
+						description: 'From your OIDC provider.',
 						type: 'text',
 						defaultValue: '',
 						placeholder: 'your-client-id',
@@ -638,9 +793,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcClientSecret',
-						envName: 'OIDC_CLIENT_SECRET',
+						envName: 'ARCANE_OIDC_CLIENT_SECRET',
 						label: 'Client secret',
-						description: 'Client secret from your OIDC provider',
+						description: 'From your OIDC provider.',
 						type: 'password',
 						defaultValue: '',
 						placeholder: 'your-client-secret',
@@ -650,9 +805,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcIssuerUrl',
-						envName: 'OIDC_ISSUER_URL',
+						envName: 'ARCANE_OIDC_ISSUER_URL',
 						label: 'Issuer URL',
-						description: 'OIDC provider issuer URL (no trailing slash)',
+						description: "Your provider's issuer URL, without a trailing slash.",
 						type: 'text',
 						defaultValue: '',
 						placeholder: 'https://sso.example.com',
@@ -663,9 +818,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcScopes',
-						envName: 'OIDC_SCOPES',
+						envName: 'ARCANE_OIDC_SCOPES',
 						label: 'Scopes',
-						description: 'OAuth scopes to request',
+						description: 'Space-separated scopes to request.',
 						type: 'text',
 						defaultValue: 'openid email profile',
 						placeholder: 'openid email profile',
@@ -674,32 +829,10 @@ export const generatorConfig: GeneratorConfig = [
 						advanced: true
 					},
 					{
-						key: 'oidcAdminClaim',
-						envName: 'OIDC_ADMIN_CLAIM',
-						label: 'Admin claim',
-						description: 'Token claim to check for admin access',
-						type: 'text',
-						defaultValue: '',
-						placeholder: 'groups',
-						dependsOn: 'enableOIDC',
-						includeInEnv: true
-					},
-					{
-						key: 'oidcAdminValue',
-						envName: 'OIDC_ADMIN_VALUE',
-						label: 'Admin value',
-						description: 'Value(s) that grant admin access (comma-separated)',
-						type: 'text',
-						defaultValue: '',
-						placeholder: 'arcane-admins',
-						dependsOn: 'enableOIDC',
-						includeInEnv: true
-					},
-					{
 						key: 'oidcSkipTlsVerify',
-						envName: 'OIDC_SKIP_TLS_VERIFY',
-						label: 'Skip TLS verify',
-						description: 'Skip TLS verification for the OIDC provider (use with caution)',
+						envName: 'ARCANE_OIDC_SKIP_TLS_VERIFY',
+						label: 'Skip TLS verification',
+						description: "Don't check the provider's certificate. Use only for testing.",
 						type: 'checkbox',
 						defaultValue: false,
 						dependsOn: 'enableOIDC',
@@ -708,9 +841,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcAutoRedirectToProvider',
-						envName: 'OIDC_AUTO_REDIRECT_TO_PROVIDER',
+						envName: 'ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER',
 						label: 'Auto redirect',
-						description: 'Automatically redirect users to the OIDC provider on login',
+						description: 'Send users straight to the provider from the login page.',
 						type: 'checkbox',
 						defaultValue: false,
 						dependsOn: 'enableOIDC',
@@ -719,9 +852,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcMergeAccounts',
-						envName: 'OIDC_MERGE_ACCOUNTS',
+						envName: 'ARCANE_OIDC_MERGE_ACCOUNTS',
 						label: 'Merge accounts',
-						description: 'Link OIDC logins to existing local accounts by email',
+						description: 'Link OIDC logins to local accounts with the same email.',
 						type: 'checkbox',
 						defaultValue: false,
 						dependsOn: 'enableOIDC',
@@ -730,9 +863,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcProviderName',
-						envName: 'OIDC_PROVIDER_NAME',
+						envName: 'ARCANE_OIDC_PROVIDER_NAME',
 						label: 'Provider name',
-						description: 'Display name shown on the login screen',
+						description: 'Name shown on the login screen.',
 						type: 'text',
 						defaultValue: '',
 						placeholder: 'Arcane SSO',
@@ -742,9 +875,9 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcProviderLogoUrl',
-						envName: 'OIDC_PROVIDER_LOGO_URL',
+						envName: 'ARCANE_OIDC_PROVIDER_LOGO_URL',
 						label: 'Provider logo URL',
-						description: 'Logo URL shown on the login screen',
+						description: 'Logo shown on the login screen.',
 						type: 'text',
 						defaultValue: '',
 						placeholder: 'https://example.com/logo.svg',
@@ -775,13 +908,15 @@ export function getTabsForTarget(target: DeploymentTargetId): GeneratorTab[] {
 
 export function isFieldVisible(field: GeneratorField, context: FieldContext): boolean {
 	if (!appliesTo(field.targets, context.target)) return false;
-	if (field.dependsOn && context.config[field.dependsOn] !== true) return false;
+	if (field.dependsOn) {
+		// A toggle left on under another target must not reveal its dependents here.
+		const dependency = getAllFields().find((f) => f.key === field.dependsOn);
+		if (context.config[field.dependsOn] !== true) return false;
+		if (dependency && !isFieldVisible(dependency, context)) return false;
+	}
 	return field.visibleWhen?.(context) ?? true;
 }
 
-/**
- * Get default values for all fields in the config
- */
 export function getDefaultConfigValues(): GeneratorValues {
 	return Object.fromEntries(
 		getAllFields().map((field) => [field.key, field.defaultValue] as const)
@@ -795,9 +930,6 @@ export function getActiveFields(context: FieldContext): GeneratorField[] {
 		.filter((field) => isFieldVisible(field, context));
 }
 
-/**
- * Get all fields from the config as a flat array
- */
 export function getAllFields(): GeneratorField[] {
 	return generatorConfig.flatMap((tab) => tab.sections).flatMap((section) => section.fields);
 }

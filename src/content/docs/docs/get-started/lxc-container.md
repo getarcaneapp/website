@@ -3,29 +3,27 @@ title: 'LXC Container Setup'
 description: 'Run Arcane inside an LXC container, such as on Proxmox, with host metrics visible.'
 ---
 
-If you run Arcane inside an LXC container, such as on Proxmox, it needs a few extra mounts to read system metrics. This page covers the container settings and the Compose files for the Manager and an agent.
+You need an LXC container with Docker installed and access to the LXC host's configuration. The container can be privileged, or unprivileged and configured for Docker.
 
-You need an LXC container with Docker installed (privileged, or unprivileged and configured to run Docker) and access to its configuration on the LXC host.
+## 1. Enable nesting
 
-## Enable nesting for Docker
+Docker needs nesting to run inside the container.
 
-Docker inside LXC usually needs nesting enabled. Add it to the container's configuration on the host.
+- **Proxmox:** enable **Nesting** under the container's **Options → Features**, or add this line to `/etc/pve/lxc/<CTID>.conf`:
 
-On plain LXC, add this to the container's config file:
+  ```ini
+  features: nesting=1
+  ```
 
-```ini
-lxc.include = /usr/share/lxc/config/nesting.conf
-```
+- **Plain LXC:** add this line to the container's config file:
 
-On Proxmox, add this to `/etc/pve/lxc/<CTID>.conf`, or enable **Nesting** under the container's **Options → Features**:
+  ```ini
+  lxc.include = /usr/share/lxc/config/nesting.conf
+  ```
 
-```ini
-features: nesting=1
-```
+## 2. Run the Manager
 
-## Run the Manager
-
-Mount the cgroup filesystem read-only so Arcane can read system metrics:
+Mount `/sys/fs/cgroup` read-only so Arcane can read system metrics:
 
 ```yaml
 services:
@@ -39,21 +37,21 @@ services:
       - arcane-data:/app/data
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     environment:
-      - APP_URL=http://localhost:3552
+      - ARCANE_APP_URL=http://localhost:3552
       - PUID=1000
       - PGID=1000
-      - ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
     restart: unless-stopped
 
 volumes:
   arcane-data:
 ```
 
-See [Installation](/docs/get-started/installation) for generating the encryption key and mounting your projects folder.
+To generate the encryption key and mount your projects folder, see [Installation](/docs/get-started/installation).
 
 ## Run an agent
 
-An agent inside LXC also needs the host PID namespace (`pid: host`) and `/proc` mounted so it can see process information:
+To use the LXC as a remote environment, run an agent. Set `pid: host` and mount `/proc` so the agent can read host process metrics:
 
 ```yaml
 services:
@@ -61,20 +59,19 @@ services:
     image: ghcr.io/getarcaneapp/agent:latest
     container_name: arcane-agent
     pid: host
-    ports:
-      - '3553:3553'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - agent-data:/app/data
       - /proc:/proc
     environment:
-      - AGENT_MODE=true
-      - AGENT_TOKEN=<your-agent-token>
-      - MANAGER_API_URL=http://<manager-host>:3552
+      - ARCANE_AGENT=true
+      - ARCANE_AGENT_TOKEN=<your-agent-token>
+      - ARCANE_MANAGER_API_URL=http://<manager-host>:3552
     restart: unless-stopped
 
 volumes:
   agent-data:
 ```
 
-`MANAGER_API_URL` is the address of your Arcane Manager, and `AGENT_TOKEN` comes from the environment you create for this host. See [Remote Environments](/docs/remote/environments).
+- `ARCANE_MANAGER_API_URL`: your Arcane Manager URL.
+- `ARCANE_AGENT_TOKEN`: the API key from [Remote Environments](/docs/remote/environments).

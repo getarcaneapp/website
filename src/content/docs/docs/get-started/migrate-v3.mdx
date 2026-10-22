@@ -1,0 +1,239 @@
+---
+title: 'Migrate to 3.0'
+description: 'Upgrade an Arcane 2.x installation to Arcane 3.0.'
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Collapsible from '#components/content/Collapsible.astro';
+
+> [!CAUTION]
+> Arcane 3.0 won't start if your database is older than 2.17.1, or if you set an old variable name without its `ARCANE_` replacement. The Manager, every agent, and `arcane-cli` must all run 3.0. Follow these steps in order before you change your image tag.
+
+## Upgrade
+
+<Steps>
+
+1. **Upgrade to `2.17.1` first.** Start the Manager and every agent on it once.
+2. **Resolve job runs** marked **Needs attention**. Older databases stop 3.0 with `upgrade to Arcane v2.17.1 first`.
+3. **Back up your data.** Back up the Arcane database, `/app/data`, your Compose and env files, and your projects directory.
+4. **Update your Compose files.** Apply the [Compose changes](#compose-changes) below.
+5. **Update your scripts.** Upgrade `arcane-cli` to 3.0 and update any scripts for [CLI changes](#cli-changes) and [API changes](#api-changes).
+6. **Restart the Manager.** Run `docker compose down`, then `docker compose up -d`.
+7. **Upgrade every agent.** Update every agent's variables and re-enroll former direct agents. See [Agents](#agents).
+
+</Steps>
+
+## Compose changes
+
+Update your Compose files before starting 3.0:
+
+1. If you pull from GHCR as `ghcr.io/getarcaneapp/arcane` or `ghcr.io/getarcaneapp/arcane-headless`, switch to `ghcr.io/getarcaneapp/manager` and `ghcr.io/getarcaneapp/agent`. Those two names were GHCR-only aliases. Docker Hub (`getarcaneapp/manager`) and Quay (`quay.io/getarcaneapp/manager`) already use the new names, so only the tag changes there.
+2. Add the `ARCANE_` prefix to all Arcane environment variables. See [Environment variables](#environment-variables-are-renamed).
+3. Remove `JWT_SECRET` and `EDGE_MUX_DISABLED`.
+
+Manager:
+
+```diff
+services:
+  arcane:
+-   image: ghcr.io/getarcaneapp/arcane:latest
++   image: ghcr.io/getarcaneapp/manager:v3
+    environment:
+-     - APP_URL=https://arcane.example.com
+-     - ENCRYPTION_KEY=<your-encryption-key>
+-     - PROJECTS_DIRECTORY=/opt/docker
+-     - JWT_SECRET=<your-jwt-secret>
+-     - EDGE_MUX_DISABLED=true
++     - ARCANE_APP_URL=https://arcane.example.com
++     - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
++     - ARCANE_PROJECTS_DIRECTORY=/opt/docker
+      - PUID=1000
+      - PGID=1000
+```
+
+Agent:
+
+```diff
+services:
+  arcane-agent:
+-   image: ghcr.io/getarcaneapp/arcane-headless:latest
++   image: ghcr.io/getarcaneapp/agent:v3
+    environment:
+-     - EDGE_AGENT=true
+-     - EDGE_TRANSPORT=poll
+-     - MANAGER_API_URL=https://arcane.example.com
+-     - AGENT_TOKEN=arc_xxxxxxxx
++     - ARCANE_AGENT=true
++     - ARCANE_MANAGER_API_URL=https://arcane.example.com
++     - ARCANE_AGENT_TOKEN=arc_xxxxxxxx
+```
+
+Former direct agents (`AGENT_MODE=true`) need a new install command. See [Agents](#agents).
+
+## After upgrading
+
+- **Remove `JWT_SECRET`.** Arcane now signs session tokens with its own ML-DSA-87 key. `JWT_SECRET` is ignored and logs a startup warning until you remove it.
+- **Check custom roles.** Saved roles and API keys migrate on startup. Review them if you script against permission names or relied on the built-in **Deployer** role. See [Permissions](#permissions).
+- **Set up notifications again** under **System → Notifications**. Providers are now global to the Manager.
+
+## Breaking changes
+
+Everything that changed in 3.0, for reference. The steps above cover what you must do.
+
+| What breaks                                                         | Details                                                     |
+| ------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Arcane variables need the `ARCANE_` prefix. Old names stop startup. | [Environment variables](#environment-variables-are-renamed) |
+| GHCR's `arcane` and `arcane-headless` image aliases are gone. Use `manager` and `agent`. | [Other removals](#other-removals) |
+| Direct agents are gone. Every remote host is an agent.              | [Agents](#agents)                                           |
+| Edge agents are now just agents. `EDGE_*` variables are renamed.    | [Agents](#agents)                                           |
+| The polling transport is gone.                                      | [Agents](#agents)                                           |
+| The legacy edge tunnel and `EDGE_MUX_DISABLED` are gone.            | [Agents](#agents)                                           |
+| **Resolve after review** on job runs is gone.                       | [Other removals](#other-removals)                           |
+| Cron schedules use five fields. Seconds are gone.                   | [Job schedules](#job-schedules)                             |
+| The environment switcher is gone. Pages show every environment.     | [All environments](#every-page-covers-all-environments)     |
+| Old detail-page bookmarks don't resolve.                            | [All environments](#every-page-covers-all-environments)     |
+| CLI flags, commands, and config keys were removed.                  | [CLI changes](#cli-changes)                                 |
+| API actions, updates, routes, and totals changed.                   | [API changes](#api-changes)                                 |
+| Permissions are renamed and split. Saved roles migrate on startup.  | [Permissions](#permissions)                                 |
+| Manager, agents, and CLI must all run 3.0.                          | [Upgrade](#upgrade)                                         |
+| Databases older than 2.17.1 stop startup.                           | [Upgrade](#upgrade)                                         |
+
+## Details
+
+<Collapsible id="environment-variables-are-renamed" title="Environment variables are renamed" description="Every Arcane variable now starts with ARCANE_.">
+
+| 2.x                                            | 3.0                                                            |
+| ---------------------------------------------- | -------------------------------------------------------------- |
+| `APP_URL`                                      | `ARCANE_APP_URL`                                               |
+| `ENCRYPTION_KEY_FILE`                          | `ARCANE_ENCRYPTION_KEY_FILE`                                   |
+| `EDGE_AGENT`, `MANAGER_API_URL`, `AGENT_TOKEN` | `ARCANE_AGENT`, `ARCANE_MANAGER_API_URL`, `ARCANE_AGENT_TOKEN` |
+| `EDGE_*` (transport, reconnect, mTLS)          | `ARCANE_AGENT_*`                                               |
+| `ANALYTICS_DISABLED=true`                      | `ARCANE_ANALYTICS_ENABLED=false`                               |
+| `UPDATE_CHECK_DISABLED=true`                   | `ARCANE_UPDATE_CHECK_ENABLED=false`                            |
+
+- `_FILE` variants also require the `ARCANE_` prefix.
+- Setting a legacy variable without its `ARCANE_` replacement stops startup with `legacy environment variables are no longer read` and lists each variable to rename (`rename X to ARCANE_X`).
+- Third-party and standard variables are unchanged: `PUID`, `PGID`, `TZ`, `DOCKER_HOST`, `DOCKER_CONFIG`, `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`, and `OTEL_*`.
+- `JWT_SECRET` is ignored and logs a startup warning until removed.
+- Any variable you set locks its corresponding UI setting automatically, replacing `ARCANE_UI_CONFIGURATION_DISABLED=true`. Invalid values stop startup. See [Settings overrides](/docs/reference/environment-variables#settings-overrides).
+
+</Collapsible>
+
+<Collapsible id="agents" title="Agents" description="Edge agents are now just agents. Direct agents and polling are gone.">
+
+Change these on every agent:
+
+| 2.x                          | 3.0                               |
+| ---------------------------- | --------------------------------- |
+| `EDGE_AGENT=true`            | `ARCANE_AGENT=true`               |
+| `EDGE_TRANSPORT`             | `ARCANE_AGENT_TRANSPORT`          |
+| `EDGE_RECONNECT_INTERVAL`    | `ARCANE_AGENT_RECONNECT_INTERVAL` |
+| `EDGE_MTLS_*`                | `ARCANE_AGENT_MTLS_*`             |
+| `EDGE_TRANSPORT=poll`        | Remove it. Use `auto` (default).  |
+| `EDGE_MUX_DISABLED`          | Remove it.                        |
+| Health checks on port `3553` | Remove them.                      |
+
+- `ARCANE_EDGE_*` and `EDGE_*` names stop startup with `rename X to ARCANE_AGENT_*`.
+- `ARCANE_AGENT_TRANSPORT` accepts `auto`, `grpc`, or `websocket`. Anything else stops startup.
+- `AGENT_MODE=true` or `ARCANE_AGENT_MODE=true` without `ARCANE_AGENT=true` stops startup with `direct agents were removed in v3`.
+- Existing `edge://` environments become `agent://` automatically. Nothing to re-enroll.
+
+Former direct agents convert to **Pending** environments with the same ID, keeping webhooks, Git syncs, settings, and jobs. Re-enroll each one:
+
+<Steps>
+
+1. Open **Environments** and select the environment.
+2. Open **Connection & Agent** and click **Regenerate API Key**.
+3. Copy the install command.
+4. On the agent host, remove the old container and run the new command.
+
+</Steps>
+
+</Collapsible>
+
+<Collapsible id="every-page-covers-all-environments" title="Every page covers all environments" description="The environment switcher is gone.">
+
+Lists, the dashboard, topology, Swarm, Security, Git Syncs, and Podman Auto Update show resources across every readable environment, with an **Environment** column and filter. See [Work across environments](/docs/remote/environments#work-across-environments).
+
+- Detail URLs require `?env=<id>`, breaking 2.x bookmarks.
+- Git Syncs moved from `/environments/{id}/gitops` to `/gitops`.
+- Per-environment settings moved from the environment page to **Settings** pages, with an **Applying settings for** picker. See [Environment settings](/docs/remote/environments#environment-settings).
+- Users, roles, API keys, authentication, notifications, webhooks, backups, and diagnostics moved to **System**.
+- Notification providers are global to the Manager instead of per environment. Set them up again under **System → Notifications**.
+- Editing those pages requires `environments:list` or `environments:read` in addition to `settings:*`, `environment-settings:*`, or `notifications:*`.
+- **System → Webhooks** lists webhooks from all environments.
+- Environment colors moved to **Account → Preferences**.
+- New projects no longer get an empty `.env`, and the default Compose template no longer has `env_file: .env`.
+- The Security overview shows a single patch-priority score across all environments.
+
+</Collapsible>
+
+<Collapsible id="cli-changes" title="CLI changes" description="Removed flags and commands, and their replacements.">
+
+| Removed                                                                  | Use instead                                    |
+| ------------------------------------------------------------------------ | ---------------------------------------------- |
+| `--env` on `containers create`                                           | `--env-var`                                    |
+| `--config` on `admin notifications settings set`                         | `--provider-config`                            |
+| `--output` on `templates download`                                       | `--output-file`                                |
+| `--disabled`                                                             | `--enabled=false`                              |
+| `jwt_token` and `refresh_token` in the config file                       | `arcane-cli auth login`                        |
+| `default_environment`, `config set environment`, `environments switch`   | `--env <id>` on each command                   |
+| `--api-url`, `--access-token`, `--edge`, `--use-api-key` on environments | Nothing. `environments create` needs `--name`. |
+
+Commands run across all environments by default. Mutating commands without `--env` prompt for confirmation. See [CLI Configuration](/docs/reference/cli/config#work-across-environments).
+
+</Collapsible>
+
+<Collapsible id="api-changes" title="API changes" description="Actions, PATCH updates, renamed routes, and totals.">
+
+- Actions use the `?action=` query parameter.
+- Resource updates use `PATCH` instead of `PUT`.
+- Some list endpoints return `-1` for totals unless you pass `includeTotal=true`.
+- Notification settings moved from `/api/environments/{id}/notifications/settings` to `/api/notifications/settings`.
+- Check the [API reference](/docs/reference/api) for other renamed routes.
+
+</Collapsible>
+
+<Collapsible id="permissions" title="Permissions" description="Renamed and split permissions, and what migrates automatically.">
+
+Saved roles and API keys migrate on startup. Nothing to do unless you script against permission names.
+
+Every resource now uses the same verbs: `list`, `read`, `create`, `update`, `delete`. Resources keep extra verbs where they have extra actions, like `containers:restart`.
+
+| 2.x                                           | 3.0                                                                  |
+| --------------------------------------------- | -------------------------------------------------------------------- |
+| `settings:read`, `settings:write`             | `settings:*` (Manager) and `environment-settings:*` (per environment) |
+| `containers:edit`                             | `containers:update`                                                  |
+| `swarm:services`, `swarm:stacks`, `swarm:nodes`, `swarm:configs`, `swarm:secrets` | `swarm-services:*`, `swarm-stacks:*`, `swarm-nodes:*`, `swarm-configs:*`, `swarm-secrets:*` |
+| `podman:pods`, `podman:quadlets`, `podman:kube`, `podman:secrets` | `podman-pods:*`, `podman-quadlets:*`, `podman-kube:*`, `podman-secrets:*` |
+| `jobs:manage`, `notifications:manage`, `system-backups:manage`, `build-workspaces:manage`, `vulnerabilities:manage` | One permission per action, like `jobs:run` or `notifications:test` |
+| `image-updates:check` (also applied updates)  | `image-updates:check` and `image-updates:apply`                      |
+| `customize:manage`                            | Removed. Use `templates:*`.                                          |
+| `dashboard:read`                              | Removed. Saved roles and API keys drop it on startup.                |
+
+- Picking a permission also adds the ones it needs. For example, `containers:update` adds `containers:read` and `containers:list`.
+- Built-in roles changed. **Deployer** loses `containers:update`.
+- Authentication settings and the backup recovery key need a global admin.
+- Remote environments check every permission on the agent, the same as local. The Manager and every agent must run 3.0.
+- `arcane permissions` prints every permission and the endpoints it covers as JSON.
+
+</Collapsible>
+
+<Collapsible id="job-schedules" title="Job schedules" description="Five-field cron instead of six.">
+
+- Schedules use standard five-field cron: `minute hour day month weekday`.
+- Saved six-field schedules convert automatically. The seconds field is dropped.
+- Update scripts and settings overrides: `0 0 2 * * *` becomes `0 2 * * *`.
+- Descriptors like `@daily` and `@every 6h` still work.
+- A run missed while Arcane was down runs once on startup.
+- Overlapping runs of the same job wait their turn instead of being skipped.
+
+</Collapsible>
+
+<Collapsible id="other-removals" title="Other removals" description="Image aliases, job run resolution, and the Previews tab.">
+
+- The GHCR-only image aliases `ghcr.io/getarcaneapp/arcane` and `ghcr.io/getarcaneapp/arcane-headless`. Use `ghcr.io/getarcaneapp/manager` and `ghcr.io/getarcaneapp/agent`. Docker Hub and Quay never had these aliases.
+- **Resolve after review** on job runs.
+- The **Previews** tab.
+
+</Collapsible>

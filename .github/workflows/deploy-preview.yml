@@ -71,7 +71,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'arcane-github-automation[bot]'
+          comment-author: "arcane-github-automation[bot]"
           body-includes: Preview deployed successfully!
 
       - name: Comment preview URL

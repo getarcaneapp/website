@@ -31,7 +31,7 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 		items: [
 			doc('get-started/installation'),
 			doc('get-started/lxc-container'),
-			doc('get-started/migrate-v2'),
+			doc('get-started/migrate-v3'),
 			doc('get-started/preview-builds'),
 			doc('get-started/preview-features'),
 			doc('get-started/downgrading')
@@ -121,6 +121,7 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 			doc('reference/environment-variables'),
 			doc('reference/compose-labels'),
 			doc('reference/api'),
+			doc('reference/permissions'),
 			parent('CLI', 'reference/cli/install', [
 				doc('reference/cli/config'),
 				doc('reference/cli/commands')
@@ -137,10 +138,12 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 	}
 ];
 
+// Groups start collapsed; Starlight still opens the group holding the current page.
 export const sidebar: SidebarItem[] = [
-	...docSections,
+	...docSections.map((section) => ({ ...section, collapsed: true })),
 	{
 		label: 'Community',
+		collapsed: true,
 		items: [{ label: 'Discord', link: DISCORD_URL, attrs: { target: '_blank' } }]
 	}
 ];

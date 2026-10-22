@@ -5,9 +5,9 @@ description: 'Optional Arcane features compiled in with a Go build tag.'
 
 import BuildablesTable from '#components/content/BuildablesTable.astro';
 
-Buildables are optional Arcane features that are only compiled in when you build with the Go `buildables` build tag. They're for developers and people who build their own Arcane binaries or images, usually for testing, CI, or demos.
+Buildables are optional features compiled in only when you build with the Go `buildables` build tag. They're for testing, CI, or demos. Official images don't include them.
 
-Prerequisites: a clone of the [Arcane repository](https://github.com/getarcaneapp/arcane), Go, `just`, and [Vite+](https://viteplus.dev) for the frontend build. See [Contributing to Arcane](/docs/development/contribute).
+You need a clone of the [Arcane repository](https://github.com/getarcaneapp/arcane), Go, `just`, and [Vite+](https://viteplus.dev) for the frontend build. See [Contributing to Arcane](/docs/development/contribute).
 
 ## Build Arcane with buildables
 
@@ -15,50 +15,47 @@ Run these from the repository root.
 
 1. Build the frontend. It's written to `backend/frontend/dist` and embedded in the binary:
 
-```bash
-just build single frontend
-```
+   ```bash
+   just build single frontend
+   ```
 
 2. Build the backend with the `buildables` tag and the features you want in `EnabledFeatures`:
 
-```bash
-cd backend
-CGO_ENABLED=0 go build \
-  -tags buildables \
-  -ldflags "-X github.com/getarcaneapp/arcane/backend/v2/buildables.EnabledFeatures=autologin" \
-  -trimpath \
-  -o arcane \
-  ./cmd/main.go
-```
+   ```bash
+   cd backend
+   CGO_ENABLED=0 go build \
+     -tags buildables \
+     -ldflags "-X github.com/getarcaneapp/arcane/backend/v2/buildables.EnabledFeatures=autologin" \
+     -trimpath \
+     -o arcane \
+     ./cmd/main.go
+   ```
 
-To build for a Linux container from another OS or architecture, add `GOOS=linux GOARCH=amd64` (or `arm64`) before `go build`.
+   To build for a Linux container from another OS or architecture, add `GOOS=linux GOARCH=amd64` (or `arm64`) before `go build`.
 
 ## Build a Docker image
 
 1. Build a Linux binary as above.
 2. Create `backend/Dockerfile.buildables` that copies it over the binary in the official image:
 
-```dockerfile
-FROM ghcr.io/getarcaneapp/manager:latest
-COPY arcane /app/arcane
-```
+   ```dockerfile
+   FROM ghcr.io/getarcaneapp/manager:latest
+   COPY arcane /app/arcane
+   ```
 
-3. Build the image from the `backend` directory:
+3. Build the image:
 
-```bash
-docker build -f backend/Dockerfile.buildables -t arcane:buildables backend
-```
+   ```bash
+   docker build -f backend/Dockerfile.buildables -t arcane:buildables backend
+   ```
 
 For an agent image, use `ghcr.io/getarcaneapp/agent:latest` as the base and copy the binary to `/app/arcane-agent` instead.
-
-> [!NOTE]
-> Official images don't include buildables. If you need them, use a custom image like the one above.
 
 ## Choose features
 
 `EnabledFeatures` is a comma-separated list, for example `autologin` or `feature-a,feature-b`. Names are case-insensitive and surrounding spaces are ignored.
 
-Some buildables read extra environment variables at runtime. These only exist in buildables builds; the table below lists them.
+Some buildables read extra environment variables at runtime. These only exist in buildables builds.
 
 <BuildablesTable />
 

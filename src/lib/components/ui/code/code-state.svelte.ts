@@ -64,7 +64,7 @@ class CodeRootState {
 					},
 					line: (node, line) => {
 						if (within(line, this.opts.highlight.current)) {
-							node.properties.class = node.properties.class + ' line--highlighted';
+							node.properties.class = `${node.properties.class} line--highlighted`;
 						}
 
 						return node;

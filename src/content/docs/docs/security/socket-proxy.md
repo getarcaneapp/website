@@ -3,25 +3,28 @@ title: 'Socket Proxy'
 description: 'Limit what Arcane can do through the Docker socket by putting a proxy in front of it.'
 ---
 
-> [!NOTE]
-> A Docker socket proxy is a small container that sits between Arcane and the Docker socket and only forwards the Docker API calls you allow. Mounting `/var/run/docker.sock` directly gives Arcane full control of Docker; with a proxy, Arcane gets only what it needs, and the socket itself is mounted read-only in the proxy.
+A socket proxy is a small container that sits between Arcane and `/var/run/docker.sock`. It forwards only the Docker API routes you allow and blocks the rest.
 
-This page assumes you've read [Installation](/docs/get-started/installation), which covers the encryption key, the projects folder, starting Arcane, and the first login.
+## What it does and does not protect
+
+- It filters **which API routes** Arcane can call. Blocked routes (for example plugins) fail.
+- The `:ro` on the socket mount does **not** make API calls read-only. It only stops the proxy from changing the socket file. Allowed `POST` and `DELETE` calls still change Docker.
+- Both configs below allow creating and starting containers, and running `exec` in them. Arcane needs that to manage your stacks.
+
+> [!WARNING]
+> Anyone who can create containers can mount the host's root filesystem or run a privileged container. If Arcane is compromised, the attacker can still take over the host, even with a proxy. Treat Arcane's login and API keys like root access.
 
 ## Set up the proxy
 
-1. Create a `compose.yaml` with one of the examples below. **wollomatic/socket-proxy** is recommended and is what the [Instance Generator](/generator) produces. Use **Tecnativa** only if you already run it.
-2. Replace `<your-encryption-key>` with your key and `/opt/docker` with your projects folder.
-3. Run `docker compose up -d`. The proxy starts first, then Arcane connects to it.
+1. Read [Installation](/docs/get-started/installation) for the encryption key, projects folder, and first login.
+2. Create a `compose.yaml` from an example below. Use **wollomatic/socket-proxy** (what the [Instance Generator](/generator) produces). Use **Tecnativa** only if you already run it.
+3. Replace `<your-encryption-key>` with your key and `/opt/docker` with your projects folder.
+4. Run `docker compose up -d`.
 
-Arcane uses the proxy because of this one setting:
-
-```bash
-DOCKER_HOST=tcp://docker-socket-proxy:2375
-```
+The proxy starts first. Arcane connects to it through `DOCKER_HOST=tcp://docker-socket-proxy:2375`.
 
 > [!NOTE]
-> On SELinux hosts, add `:z` to bind mounts that Arcane manages on the host, such as the projects, builds, and backups folders. You don't need `label:disable` with a proxy; that is only for mounting the socket directly.
+> On SELinux hosts, add `:z` to host bind mounts Arcane manages, such as the projects, builds, and backups folders. `label:disable` is only needed when mounting the socket directly.
 
 ### wollomatic/socket-proxy
 
@@ -103,8 +106,8 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker:z
     environment:
-      - ENCRYPTION_KEY=<your-encryption-key>
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
     networks:
       - arcane-internal
@@ -128,22 +131,12 @@ volumes:
     name: arcane-data
 ```
 
-wollomatic blocks every request unless its HTTP method and path are allowed. This allowlist is the minimum Arcane needs, including Swarm, image builds, commits, and image update checks:
+wollomatic blocks any request whose method and path aren't allowed. The allowlist above is the minimum Arcane needs, including Swarm, builds, commits, BuildKit, registry auth, and image update checks.
 
-| Method   | Allowed paths                                                                                                                                       |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`    | ping, events, version, info, `/system/df`, containers, exec, images, networks, volumes, distribution, swarm, nodes, services, tasks, secrets, configs |
-| `HEAD`   | ping, version                                                                                                                                       |
-| `POST`   | containers, exec, images, networks, volumes, commit, build, BuildKit (`/session`, `/grpc`), registry auth, swarm, nodes, services, secrets, configs |
-| `PUT`    | container archives                                                                                                                                  |
-| `DELETE` | containers, images, networks, volumes, nodes, services, secrets, configs                                                                            |
-
-`-allowfrom=arcane,arcane-upgrader` accepts connections from Arcane and its self-upgrade helper. `arcane-upgrader` is a temporary alias on the helper's user-defined Docker network, independent of Arcane's container name. It keeps the helper authorized while Arcane is replaced. `-allowhealthcheck` is needed for the proxy's healthcheck.
-
-If you rename the Arcane container, replace `arcane` in the allowlist with its name and keep `arcane-upgrader`. The proxy and helper must share a user-defined network, as in the example above.
+`-allowfrom=arcane,arcane-upgrader` accepts Arcane and its self-upgrade helper. `arcane-upgrader` is a temporary alias on the helper's user-defined network, so the helper stays authorized while Arcane is replaced. `-allowhealthcheck` enables the proxy's healthcheck. If you rename the Arcane container, replace `arcane` with its name and keep `arcane-upgrader`; the proxy and helper must share a user-defined network.
 
 > [!IMPORTANT]
-> Existing installations using `-allowfrom=arcane` must add `arcane-upgrader` and recreate the proxy. Install the Arcane release containing this fix once through Docker Compose by pulling and recreating the Arcane service. Older Arcane versions create helpers without the alias, even when they pull a newer helper image. Subsequent self-upgrades can use the updated allowlist; no subnet-wide access is needed.
+> Existing installs using `-allowfrom=arcane` must add `arcane-upgrader` and recreate the proxy. Install the Arcane release with this fix once via Docker Compose (pull and recreate the Arcane service), because older versions create helpers without the alias, even with a newer helper image. Later self-upgrades use the updated allowlist; no subnet-wide access is needed.
 
 ### Tecnativa docker-socket-proxy
 
@@ -193,8 +186,8 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker:z
     environment:
-      - ENCRYPTION_KEY=<your-encryption-key>
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
     networks:
       - arcane-internal
@@ -218,7 +211,7 @@ volumes:
     name: arcane-data
 ```
 
-Tecnativa uses environment variables as switches: `1` allows an API section, `0` blocks it.
+Tecnativa switches API sections with environment variables: `1` allows, `0` blocks.
 
 | Variable                                                            | Value | Why                                                                         |
 | ------------------------------------------------------------------- | ----- | --------------------------------------------------------------------------- |

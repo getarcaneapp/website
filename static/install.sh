@@ -683,21 +683,21 @@ create_arcane_config() {
     log_info "Detected host IP: $HOST_IP"
     
     if [[ -f "$ENV_FILE" ]]; then
-        if grep -q '^APP_URL=' "$ENV_FILE"; then
-            CURRENT_APP_URL=$(grep '^APP_URL=' "$ENV_FILE" | head -1 | cut -d= -f2-)
+        if grep -q '^ARCANE_APP_URL=' "$ENV_FILE"; then
+            CURRENT_APP_URL=$(grep '^ARCANE_APP_URL=' "$ENV_FILE" | head -1 | cut -d= -f2-)
             if [[ "$CURRENT_APP_URL" == http://localhost* || "$CURRENT_APP_URL" == http://127.0.0.1* ]]; then
                 if [[ "$OS" == "macos" ]]; then
-                    sed -i '' "s|^APP_URL=.*|APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
+                    sed -i '' "s|^ARCANE_APP_URL=.*|ARCANE_APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
                 else
-                    sed -i "s|^APP_URL=.*|APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
+                    sed -i "s|^ARCANE_APP_URL=.*|ARCANE_APP_URL=http://${HOST_IP}:${ARCANE_PORT}|" "$ENV_FILE"
                 fi
-                log_info "Updated APP_URL in existing environment file"
+                log_info "Updated ARCANE_APP_URL in existing environment file"
             else
-                log_info "Environment file already exists, leaving APP_URL unchanged"
+                log_info "Environment file already exists, leaving ARCANE_APP_URL unchanged"
             fi
         else
-            echo "APP_URL=http://${HOST_IP}:${ARCANE_PORT}" >> "$ENV_FILE"
-            log_info "Added APP_URL to existing environment file"
+            echo "ARCANE_APP_URL=http://${HOST_IP}:${ARCANE_PORT}" >> "$ENV_FILE"
+            log_info "Added ARCANE_APP_URL to existing environment file"
         fi
         if ! grep -q '^DOCKER_CONFIG=' "$ENV_FILE"; then
             echo "DOCKER_CONFIG=${ARCANE_INSTALL_DIR}/.docker" >> "$ENV_FILE"
@@ -709,8 +709,8 @@ create_arcane_config() {
     
     # Generate secure random keys using arcane's built-in generator
     log_info "Generating cryptographic secrets using arcane..."
-    SECRETS=$("$ARCANE_INSTALL_DIR/arcane" generate secret --format env 2>/dev/null | grep -E '^ENCRYPTION_KEY=')
-    ENCRYPTION_KEY=$(echo "$SECRETS" | grep '^ENCRYPTION_KEY=' | cut -d= -f2)
+    SECRETS=$("$ARCANE_INSTALL_DIR/arcane" generate secret --format env 2>/dev/null | grep -E '^ARCANE_ENCRYPTION_KEY=')
+    ENCRYPTION_KEY=$(echo "$SECRETS" | grep '^ARCANE_ENCRYPTION_KEY=' | cut -d= -f2)
 
     # Fallback to openssl if arcane generate fails
     if [[ -z "$ENCRYPTION_KEY" ]]; then
@@ -724,46 +724,46 @@ create_arcane_config() {
 # Documentation: https://github.com/getarcaneapp/arcane
 
 # Application Settings
-ENVIRONMENT=production
-PORT=${ARCANE_PORT}
-APP_URL=http://${HOST_IP}:${ARCANE_PORT}
+ARCANE_ENVIRONMENT=production
+ARCANE_PORT=${ARCANE_PORT}
+ARCANE_APP_URL=http://${HOST_IP}:${ARCANE_PORT}
 
 # Database Configuration
 # SQLite (default) - stores data in the data directory
-DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate
+ARCANE_DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate
 
 # Security Settings (auto-generated, keep these secret!)
-ENCRYPTION_KEY=${ENCRYPTION_KEY}
+ARCANE_ENCRYPTION_KEY=${ENCRYPTION_KEY}
 
 # Docker Configuration
 DOCKER_HOST=unix:///var/run/docker.sock
 DOCKER_CONFIG=${ARCANE_INSTALL_DIR}/.docker
 
 # Projects
-PROJECTS_DIRECTORY=/opt/arcane/projects
-DISK_USAGE_PATH=/opt/arcane/projects
+ARCANE_PROJECTS_DIRECTORY=/opt/arcane/projects
+ARCANE_DISK_USAGE_PATH=/opt/arcane/projects
 
 # Logging
-LOG_LEVEL=info
-LOG_JSON=false
+ARCANE_LOG_LEVEL=info
+ARCANE_LOG_JSON=false
 
-# Feature Flags
-UPDATE_CHECK_DISABLED=false
-UI_CONFIGURATION_DISABLED=false
-ANALYTICS_DISABLED=false
+# Feature Flags (setting one locks it in the UI)
+# ARCANE_UPDATE_CHECK_ENABLED=true
+# ARCANE_ANALYTICS_ENABLED=true
+ARCANE_UI_CONFIGURATION_DISABLED=false
 
 # OIDC Authentication (uncomment and configure to enable)
-# OIDC_ENABLED=true
-# OIDC_CLIENT_ID=your-client-id
-# OIDC_CLIENT_SECRET=your-client-secret
-# OIDC_ISSUER_URL=https://your-idp.example.com
-# OIDC_SCOPES=openid email profile
-# OIDC_ADMIN_CLAIM=groups
-# OIDC_ADMIN_VALUE=arcane-admins
+# ARCANE_OIDC_ENABLED=true
+# ARCANE_OIDC_CLIENT_ID=your-client-id
+# ARCANE_OIDC_CLIENT_SECRET=your-client-secret
+# ARCANE_OIDC_ISSUER_URL=https://your-idp.example.com
+# ARCANE_OIDC_SCOPES=openid email profile
+# ARCANE_OIDC_GROUPS_CLAIM=groups
 
-# Agent Mode (for remote Docker host management)
-# AGENT_MODE=false
-# AGENT_TOKEN=your-secure-agent-token
+# Agent (run this host as a remote agent of another Arcane Manager)
+# ARCANE_AGENT=true
+# ARCANE_MANAGER_API_URL=https://manager.example.com
+# ARCANE_AGENT_TOKEN=your-agent-api-key
 EOF
     
     chown "$ARCANE_USER:$ARCANE_GROUP" "$ENV_FILE"
