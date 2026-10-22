@@ -4,12 +4,12 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'src/**'
-      - 'static/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'astro.config.mjs'
-      - 'wrangler.jsonc'
+      - "src/**"
+      - "static/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "astro.config.mjs"
+      - "wrangler.jsonc"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -79,7 +79,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'arcane-github-automation[bot]'
+          comment-author: "arcane-github-automation[bot]"
           body-includes: Preview deployed successfully!
 
       - name: Comment preview URL

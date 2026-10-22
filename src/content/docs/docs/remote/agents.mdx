@@ -1,0 +1,182 @@
+---
+title: "Remote Agents"
+description: "Connect Arcane to remote Docker hosts using the Arcane Agent."
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+Manage other Docker hosts from one Arcane Manager. Each remote host runs a small **Arcane Agent** that connects out to the Manager and relays requests to its local Docker engine. The agent opens no ports, so the host can sit behind NAT or a firewall.
+
+## Requirements
+
+- The Arcane Manager is running and the agent host can reach its URL.
+- Docker or Podman is on the agent host, and the agent can mount its socket at `/var/run/docker.sock`. For Podman, mount the Podman socket there as in [Run Arcane on Podman](/docs/podman/setup).
+- You have an enrollment token from the Manager. Create one per agent ([Add an agent](#add-an-agent)) or one for many hosts ([Enroll many hosts with one token](#enroll-many-hosts-with-one-token)).
+- You use the agent image `ghcr.io/getarcaneapp/agent` (or `getarcaneapp/agent` on Docker Hub, `quay.io/getarcaneapp/agent` on Quay). Arcane 3.0 no longer publishes the old GHCR-only `ghcr.io/getarcaneapp/arcane-headless` alias.
+
+## Add an agent
+
+<Steps>
+
+1. Open **Agents → Add Agent**.
+2. Enter a name. Arcane derives the address from it.
+3. Optional: turn on **Enable manager mTLS** for client-certificate security. See [Agent mTLS](/docs/security/edge-mtls).
+4. Click **Generate Agent Configuration**. Arcane issues a single-use enrollment token bound to this agent.
+5. Copy the token or a snippet now. The token isn't shown again.
+6. Run the generated `docker run` command or Compose file on the remote host.
+
+</Steps>
+
+The generated Compose file looks like this:
+
+```yaml
+services:
+  arcane-agent:
+    image: ghcr.io/getarcaneapp/agent:latest
+    container_name: arcane-agent
+    restart: unless-stopped
+    environment:
+      - ARCANE_AGENT=true
+      - ARCANE_AGENT_TRANSPORT=auto
+      - ARCANE_AGENT_TOKEN=arc_etkn_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      - ARCANE_MANAGER_API_URL=https://your-manager.example.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+
+volumes:
+  arcane-data:
+```
+
+The agent won't start without `ARCANE_MANAGER_API_URL` and `ARCANE_AGENT_TOKEN`. On first start it trades the enrollment token for its own agent key and stores that key, encrypted, in `/app/data`. Keep `/app/data` on a persistent volume. Without it, the agent enrolls again on every restart: a used single-use token is refused, and a multi-use token creates another agent.
+
+An existing agent API key (`arc_…`, not `arc_etkn_…`) in `ARCANE_AGENT_TOKEN` still works as-is.
+
+The agent listens on no port, so HTTP health checks like the old `curl http://localhost:3553/api/health` no longer work. Watch the agent's status in Arcane instead.
+
+### Choose a transport
+
+`ARCANE_AGENT_TRANSPORT` sets how the agent connects to the Manager. Behind Traefik, see [Reverse Proxy Setup → Traefik](/docs/networking/reverse-proxy#traefik) for tunnel routes.
+
+| Value                | Behaviour                                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| `auto`               | Continuous tunnel, gRPC where possible with WebSocket fallback. The default; generated snippets use it. |
+| `websocket` / `grpc` | Continuous WebSocket or gRPC tunnel. `grpc` has no WebSocket fallback.                                  |
+
+### Status meanings
+
+| Status              | Meaning                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| **Online**          | A tunnel is active right now.                                                                    |
+| **Pending**         | No agent has enrolled yet. Generate an enrollment token to get the install command, then run it. |
+| **Offline / Error** | The Manager can't currently use this agent.                                                      |
+
+## Enroll many hosts with one token
+
+Use this to add several hosts without creating each agent first. Each agent that enrolls creates its own agent, named after the host. On a Swarm node whose cluster Arcane already manages, the new agent is linked to that node.
+
+<Steps>
+
+1. Open **Agents → Enrollment Tokens**. Needs `environments:create`.
+2. Click **Create Enrollment Token**.
+3. Enter a name. Leave **Unlimited** on, or turn it off and set **Max Uses** (1–10000).
+4. Copy the token. Copy it again later with the row's copy button.
+5. On each host, run the agent with `ARCANE_AGENT_TOKEN` set to that token, as in the Compose file above.
+
+</Steps>
+
+The list shows each token's uses, creation date, and last use. Deleting a token stops new enrollments with it. Agents that already enrolled keep working.
+
+## Run the agent as a standalone binary
+
+1. Download the latest `arcane-agent` release for your platform onto the host.
+2. Create a `.env` file next to it:
+
+   ```env
+   ARCANE_AGENT=true
+   ARCANE_AGENT_TRANSPORT=auto
+   ARCANE_AGENT_TOKEN=arc_etkn_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   ARCANE_MANAGER_API_URL=http://10.1.1.4:3552
+   ARCANE_ENVIRONMENT=production
+   ```
+
+3. Run `./arcane-agent`.
+
+## Re-enroll an agent
+
+Do this to replace an agent, move it to a new host, or recover a former direct agent that shows **Pending** after upgrading to 3.0. The agent keeps its ID, so webhooks, Git syncs, settings, jobs, and color stay attached. Needs `environments:pair`.
+
+<Steps>
+
+1. Open the agent under **Agents**.
+2. On the **Connection & Agent** tab, click **Generate Enrollment Token** and confirm. Any unused token for this agent stops working.
+3. Copy the token or a snippet. It isn't shown again.
+4. Run the shown install command on the agent host, replacing the old agent container.
+
+</Steps>
+
+When the new agent enrolls, the agent gets a new agent key and the old agent disconnects. Until then, the old agent keeps working.
+
+To cut off an agent right away, turn off the **Enabled** switch in the agent header and save. Arcane closes the tunnel and rejects the agent key until you turn it back on. Deleting the agent also works.
+
+## Work across agents
+
+Arcane shows every agent you can read. Lists, the dashboard, the **Activity Center**, network topology, Swarm, Security, Git Syncs, and Podman pages combine them all, with an **Agent** column and filter. Row actions run in that row's agent; create forms have an **Agent** field. Lists and the dashboard update live when any agent changes. Detail pages carry the agent in the URL, like `/containers/<id>?env=2`, so shared links open the right host.
+
+An admin can set **Agent limit** from the settings button on the **Agents** page to cap how many agents any list includes, from 2 to 256, default 64; extras are reported as not included. Under **Account → Preferences → Agents**, each user can color agents and show either the name or a color dot in lists.
+
+## Edit an agent
+
+Click an agent under **Agents** to open it. Click the header name to rename it; the local agent can't be renamed. Arcane names the local agent after its host on first creation, and renames one still called **Local Docker** from an older version.
+
+The header has:
+
+- The address, with a copy button.
+- **Test Connection** and **Sync**.
+- **Restart Tunnel** for a connected agent. It closes the tunnel and waits for the agent to reconnect. Open logs, terminals, and streams for that agent disconnect. Needs `environments:restart`.
+- **Easy Join** when the agent can join a Swarm. The agent then serves the Swarm node without a new token. See [Swarm Cluster](/docs/remote/swarm-cluster).
+
+| Tab                    | What it contains                                                                                                                                                                                                                          |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Connection & Agent** | Remote only. Tunnel status and stats (round trip, data sent and received, streams, reconnects), agent host details (hostname, public IP, OS, kernel, CPUs, memory, Docker and agent versions), mTLS files, **Generate Enrollment Token**. |
+| **Features**           | Turn Swarm and vulnerability management on or off for this agent.                                                                                                                                                                         |
+| **Engine**             | Docker or Podman engine details. Needs `system:read`.                                                                                                                                                                                     |
+| **History**            | Job run history for this agent. Needs `jobs:list`.                                                                                                                                                                                        |
+
+Everything else lives under [**Settings**](#agent-settings). Notifications are under **System → Notifications**.
+
+A disabled agent shows only **Connection & Agent** and **Features**. Offline agents keep their tabs, but details can't load until they reconnect.
+
+## Agent settings
+
+Per-agent settings live under **Settings**: **Storage & Limits**, **Docker**, **Security**, **Timeouts**, **Activity**, **Builds**, **Automations**, and **Agent Tunnel**.
+
+Pick an agent under **Applying settings for** at the top of each page, or choose all agents to edit them together. Offline agents are left out.
+
+When agents disagree on a value, the field shows **Mixed**. Click it to see each value and which agents have it, then **Use for all** to apply one everywhere.
+
+**Agent Tunnel** sets buffer windows. Raise them for faster transfers over high-latency links, at the cost of memory:
+
+| Setting                                  | Default        | Applies                                                                       |
+| ---------------------------------------- | -------------- | ----------------------------------------------------------------------------- |
+| **Agent Tunnel Stream Window**           | 16 MiB (1–64)  | Per transfer on that agent's tunnel. Takes effect when the tunnel reconnects. |
+| **HTTP/2 Receive Window (Manager Only)** | 32 MiB (1–256) | Per stream on the Manager's server. Takes effect after a Manager restart.     |
+
+## Update all agents
+
+This upgrades Arcane itself on the Manager and every agent. It needs the `system:upgrade` permission. To update containers and projects, use [Updates](/docs/docker/auto-updates).
+
+1. Open **Agents**.
+2. Click **Update All**.
+3. Confirm in the **Update all agents** dialog.
+4. Watch each row for old and new versions, the current stage, and live logs.
+
+Agents update first, 4 at a time by default. Change that with **Parallel agent upgrades** (1–16) in the **Agents** settings. The Manager updates last and restarts only if its image changed. Offline agents are skipped.
+
+| Status                                      | Meaning                                                                  |
+| ------------------------------------------- | ------------------------------------------------------------------------ |
+| **Pending** / **Updating…**                 | Waiting in the queue, or upgrade in progress.                            |
+| **Updated**                                 | The new version was applied and confirmed.                               |
+| **Update requested; version not confirmed** | The agent took the upgrade, but Arcane couldn't confirm the new version. |
+| **Up to Date** / **Offline — skipped**      | Nothing to do, or the agent was unreachable.                             |
+| **Failed**                                  | The upgrade didn't complete. The error is shown inline.                  |

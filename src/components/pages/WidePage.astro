@@ -15,12 +15,12 @@ const { title, description } = Astro.props;
 </StarlightPage>
 
 <style is:global>
-	:root:has(.wide-page) .content-panel .sl-container {
-		max-width: 94rem;
+:root:has(.wide-page) .content-panel .sl-container {
+	max-width: 94rem;
+}
+@media (min-width: 64rem) {
+	:root:has(.wide-page) .page-title h1 {
+		font-size: 2.25rem;
 	}
-	@media (min-width: 64rem) {
-		:root:has(.wide-page) .page-title h1 {
-			font-size: 2.25rem;
-		}
-	}
+}
 </style>

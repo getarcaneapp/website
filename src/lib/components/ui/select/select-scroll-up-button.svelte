@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { ArrowUpIcon } from '#lib/icons/index.js';
-	import { Select as SelectPrimitive } from 'bits-ui';
-	import { cn, type WithoutChildrenOrChild } from '#lib/utils.js';
+import { Select as SelectPrimitive } from 'bits-ui';
+import { ArrowUpIcon } from '#lib/icons/index.js';
+import { cn, type WithoutChildrenOrChild } from '#lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: WithoutChildrenOrChild<SelectPrimitive.ScrollUpButtonProps> = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	...restProps
+}: WithoutChildrenOrChild<SelectPrimitive.ScrollUpButtonProps> = $props();
 </script>
 
 <SelectPrimitive.ScrollUpButton

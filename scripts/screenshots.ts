@@ -2,16 +2,24 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium, type Browser, type BrowserContext, type Locator, type Page } from 'playwright';
+import { type Browser, type BrowserContext, chromium, type Locator, type Page } from 'playwright';
 
 const site = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = path.join(site, 'src/assets/screenshots');
 const image = process.env.ARCANE_IMAGE ?? 'ghcr.io/getarcaneapp/manager:latest';
 const port = Number(process.env.ARCANE_PORT ?? 13552);
 const base = `http://localhost:${port}`;
-const container = 'arcane-docs-screenshots';
+// Lives inside the dind daemon, so a plain name is safe and reads naturally in the shots.
+const container = 'arcane';
 const volume = 'arcane-docs-screenshots-data';
 const buildsVolume = 'arcane-docs-screenshots-builds';
+// Everything (Arcane included) runs inside a throwaway Docker-in-Docker daemon, so the shots
+// show only the demo project and never the host's containers, images, networks or hostname.
+// Arcane must run inside it too: it finds its own container to launch the Trivy scanner.
+const dind = 'arcane-docs-screenshots-dind';
+// Per-step limit so one stuck step can't hang the run; the scan step gets longer.
+const stepTimeoutMs = 4 * 60_000;
+const scanTimeoutMs = 12 * 60_000;
 const apiKey = 'arc_docsscreenshots0000000000000000000000000000';
 const password = 'Docs-screenshots-2026!';
 const themes = ['light', 'dark'] as const;
@@ -64,16 +72,46 @@ volumes:
 function docker(...args: string[]) {
 	return execFileSync('docker', args, {
 		encoding: 'utf8',
-		stdio: ['ignore', 'pipe', 'pipe']
+		stdio: ['ignore', 'pipe', 'pipe'],
+		timeout: 10 * 60_000
 	}).trim();
 }
 
-async function start() {
-	try {
-		docker('rm', '-f', container);
-	} catch {}
-	docker('volume', 'create', buildsVolume);
+// Runs a docker command against the daemon inside the dind container.
+function inner(...args: string[]) {
+	return docker('exec', dind, 'docker', ...args);
+}
+
+async function startDind() {
 	docker(
+		'run',
+		'-d',
+		'--privileged',
+		// Pin runc: `docker exec` into a privileged container fails under youki as the host default.
+		'--runtime',
+		'runc',
+		'--name',
+		dind,
+		'-p',
+		`${port}:${port}`,
+		'-e',
+		'DOCKER_TLS_CERTDIR=',
+		'docker:dind'
+	);
+	for (let i = 0; i < 120; i++) {
+		try {
+			docker('exec', dind, 'docker', 'info');
+			return;
+		} catch {}
+		await new Promise((r) => setTimeout(r, 500));
+	}
+	throw new Error(`Docker-in-Docker did not start:\n${docker('logs', '--tail', '40', dind)}`);
+}
+
+async function start() {
+	await startDind();
+	inner('volume', 'create', buildsVolume);
+	inner(
 		'run',
 		'--rm',
 		'-v',
@@ -84,13 +122,16 @@ async function start() {
 		'echo "FROM alpine:3.20" > /builds/Dockerfile && chown -R 65532:65532 /builds'
 	);
 	const env = {
-		APP_URL: base,
-		ENCRYPTION_KEY: 'docs-screenshots-encryption-key!',
-		ADMIN_STATIC_API_KEY: apiKey,
-		ANALYTICS_DISABLED: 'true',
-		UPDATE_CHECK_DISABLED: 'true'
+		ARCANE_APP_URL: base,
+		ARCANE_ENCRYPTION_KEY: 'docs-screenshots-encryption-key!',
+		ARCANE_ADMIN_STATIC_API_KEY: apiKey,
+		ARCANE_DEFAULT_ADMIN_PASSWORD: password,
+		ARCANE_ANALYTICS_ENABLED: 'false',
+		ARCANE_UPDATE_CHECK_ENABLED: 'false',
+		// Preview images (:next) show a dev icon by default; docs should show the real logo.
+		ARCANE_DEVELOPMENT_BRANDING_ENABLED: 'false'
 	};
-	docker(
+	inner(
 		'run',
 		'-d',
 		'--name',
@@ -114,23 +155,14 @@ async function start() {
 		} catch {}
 		await new Promise((r) => setTimeout(r, 500));
 	}
-	throw new Error(`Arcane did not become healthy:\n${docker('logs', '--tail', '40', container)}`);
+	throw new Error(`Arcane did not become healthy:\n${inner('logs', '--tail', '40', container)}`);
 }
 
 function stop() {
+	// Arcane, the demo project and every volume live inside the dind daemon and go with it.
 	try {
-		docker('rm', '-f', container);
+		docker('rm', '-f', '-v', dind);
 	} catch {}
-	for (const name of ['demo-web', 'demo-cache', 'demo-worker']) {
-		try {
-			docker('rm', '-f', name);
-		} catch {}
-	}
-	for (const name of [volume, buildsVolume, 'demo_demo-html', 'demo_demo-cache']) {
-		try {
-			docker('volume', 'rm', '-f', name);
-		} catch {}
-	}
 }
 
 type ApiOptions = { form?: FormData; token?: string };
@@ -161,33 +193,27 @@ async function api(
 	}
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: untyped Arcane API responses
 const data = (res: any) => res?.data ?? res;
 
 async function seed(): Promise<Seeded> {
-	const login = await api('POST', '/auth/login', { username: 'arcane', password: 'arcane-admin' });
-	const token = data(login).token;
-	await api(
-		'POST',
-		'/auth/password',
-		{ currentPassword: 'arcane-admin', newPassword: password },
-		{ token }
-	);
+	// v3 names the local environment after the Docker host; keep real hostnames out of the docs.
+	await api('PATCH', '/agents/0', { name: 'Local Docker' });
 
 	const form = new FormData();
 	form.append('project', JSON.stringify(demoProject));
 	form.append('manifest', JSON.stringify({ fileChanges: [] }));
-	const created = data(await api('POST', '/environments/0/projects', undefined, { form }));
+	const created = data(await api('POST', '/agents/0/projects', undefined, { form }));
 	const projectId = created.id ?? created.projectId ?? created.name;
-	await api('POST', `/environments/0/projects/${projectId}/up`, {});
+	await api('POST', `/agents/0/projects/${projectId}/deploy?action=up`, {});
 
 	let worker: { id: string } | undefined;
 	for (let i = 0; i < 60 && !worker; i++) {
-		const containers = data(
-			await api('GET', '/environments/0/containers?search=demo-worker&limit=50')
-		);
+		const containers = data(await api('GET', '/agents/0/containers?search=demo-worker&limit=50'));
 		const list = containers.items ?? containers.data ?? containers;
 		worker = Array.isArray(list)
-			? list.find((c: any) =>
+			? // biome-ignore lint/suspicious/noExplicitAny: untyped Arcane API responses
+				list.find((c: any) =>
 					(c.names ?? [c.name]).some((n: unknown) => String(n).includes('demo-worker'))
 				)
 			: undefined;
@@ -220,6 +246,48 @@ async function context(
 async function settle(page: Page) {
 	await page.waitForLoadState('load');
 	await page.evaluate(() => document.fonts.ready);
+	// The sidebar logo is an <img> of an animated SVG (1.7s trace + 18 × 55ms stagger), which
+	// document.getAnimations() can't see. Wait for images to load, then for the trace to finish.
+	await page
+		.waitForFunction(() => [...document.images].every((img) => img.complete), undefined, {
+			timeout: 10_000
+		})
+		.catch(() => {});
+	// The logo's src can change after settings load (which restarts the trace), so wait until
+	// the sidebar images have been unchanged and loaded for 3.5s (max 15s).
+	const logoState = () =>
+		page.evaluate(() =>
+			[...document.querySelectorAll('aside img, [data-sidebar] img')]
+				.map(
+					(img) => `${(img as HTMLImageElement).currentSrc}|${(img as HTMLImageElement).complete}`
+				)
+				.join(',')
+		);
+	let last = await logoState();
+	let stableSince = Date.now();
+	for (const deadline = Date.now() + 15_000; Date.now() < deadline; ) {
+		await page.waitForTimeout(250);
+		const now = await logoState();
+		if (now !== last) {
+			last = now;
+			stableSince = Date.now();
+		} else if (Date.now() - stableSince >= 3500) break;
+	}
+	// Wait for other finite animations so nothing is captured mid-transition.
+	// Infinite ones (spinners, pulses) are ignored.
+	await page
+		.waitForFunction(
+			() =>
+				document
+					.getAnimations()
+					.every(
+						(a) =>
+							a.playState !== 'running' || a.effect?.getComputedTiming().iterations === Infinity
+					),
+			undefined,
+			{ timeout: 10_000 }
+		)
+		.catch(() => {});
 	await page.waitForTimeout(800);
 }
 
@@ -266,12 +334,23 @@ async function shoot(page: Page, name: string, theme: string, target?: Locator) 
 	console.log(`screenshots: ${path.relative(site, file)}`);
 }
 
-async function attempt(name: string, fn: () => Promise<void>) {
+async function attempt(name: string, fn: () => Promise<void>, timeoutMs = stepTimeoutMs) {
+	let timer: ReturnType<typeof setTimeout> | undefined;
 	try {
-		await fn();
+		await Promise.race([
+			fn(),
+			new Promise<never>((_, reject) => {
+				timer = setTimeout(
+					() => reject(new Error(`timed out after ${timeoutMs / 60_000} min`)),
+					timeoutMs
+				);
+			})
+		]);
 	} catch (error) {
 		console.error(`screenshots: ${name} failed: ${error instanceof Error ? error.message : error}`);
 		process.exitCode = 1;
+	} finally {
+		clearTimeout(timer);
 	}
 }
 
@@ -308,16 +387,23 @@ function steps(page: Page, theme: 'light' | 'dark', { projectId, workerId }: See
 	return [
 		full('dashboard', '/dashboard'),
 		full('containers-page', '/containers'),
-		full('container-logs', `/containers/${workerId}`, async () => {
-			await page.getByRole('tab', { name: 'Logs' }).click();
-			await page.waitForTimeout(2500);
-		}),
+		full('container-logs', `/containers/${workerId}?env=0&tab=logs`, () =>
+			page.waitForTimeout(2500)
+		),
 		full('images-page', '/images'),
 		full('projects-page', '/projects'),
-		full('project-workspace', `/projects/${projectId}?tab=compose`),
+		full('project-workspace', `/projects/${projectId}?env=0&tab=compose`),
 		full('volumes-page', '/volumes'),
-		full('volume-workspace', '/volumes/demo_demo-html?tab=workspace', async () => {
-			await page.getByText('index.html', { exact: true }).first().click();
+		full('volume-workspace', '/volumes/demo_demo-html?env=0&tab=workspace', async () => {
+			const file = page.getByText('index.html', { exact: true }).first();
+			// The file tree loads lazily in v3; open the file when it shows up, else shoot the tree.
+			if (
+				await file.waitFor({ timeout: 10000 }).then(
+					() => true,
+					() => false
+				)
+			)
+				await file.click();
 			await page.waitForTimeout(1500);
 		}),
 		full('networks-page', '/networks'),
@@ -326,10 +412,10 @@ function steps(page: Page, theme: 'light' | 'dark', { projectId, workerId }: See
 		full('event-log-page', '/events'),
 		full('activity-center', '/settings/activity'),
 		full('templates-registry-page', '/customize/templates', () => page.waitForTimeout(2000)),
-		dialog('environments-page', '/environments', () =>
-			page.getByRole('button', { name: 'Add Environment', exact: true }).click()
+		dialog('environments-page', '/agents', () =>
+			page.getByRole('button', { name: 'Add Agent', exact: true }).click()
 		),
-		dialog('backup-schedule', '/settings/backups', async () => {
+		dialog('backup-schedule', '/system/backups', async () => {
 			await page.getByRole('button', { name: 'Create', exact: true }).first().click();
 			await page.getByRole('menuitem', { name: 'Schedule' }).click();
 		}),
@@ -342,31 +428,45 @@ function steps(page: Page, theme: 'light' | 'dark', { projectId, workerId }: See
 			await page.getByRole('option').first().waitFor();
 		}),
 		full('image-builds', '/images/builds', async () => {
-			await page.getByRole('button', { name: 'Workspace', exact: true }).first().click();
+			// The workspace folder is the default build source.
 			await page.locator('#image-tags').fill('docs/demo:latest');
 			await page.getByRole('button', { name: 'Build', exact: true }).first().click();
 			await page.getByText('Build completed').first().waitFor({ timeout: 180_000 });
 		}),
 		full('vulnerabilities', '/security?tab=vulnerabilities', async () => {
 			await page.getByRole('button', { name: 'Scan all images', exact: true }).first().click();
-			for (let i = 0; i < 300; i++) {
-				const summary = data(await api('GET', '/environments/0/vulnerabilities/summary'));
+			// The first scan pulls the scanner image and vulnerability DB. Give up if no image
+			// finishes scanning for 3 minutes instead of polling blindly.
+			let scanned = -1;
+			let lastProgress = Date.now();
+			for (;;) {
+				const summary = data(await api('GET', '/agents/0/vulnerabilities/summary'));
 				if (summary.scannedImages >= summary.totalImages && summary.summary?.total > 0) break;
-				await page.waitForTimeout(1000);
+				if (summary.scannedImages !== scanned) {
+					scanned = summary.scannedImages;
+					lastProgress = Date.now();
+				} else if (summary.summary?.total > 0 && Date.now() - lastProgress > 60_000) {
+					// Some images (e.g. a scratch base) never report; enough findings to show.
+					break;
+				} else if (Date.now() - lastProgress > 3 * 60_000) {
+					throw new Error(
+						`scan stalled at ${scanned}/${summary.totalImages} images:\n${inner('logs', '--tail', '20', container)}`
+					);
+				}
+				await page.waitForTimeout(2000);
 			}
 			await page.reload();
 			await settle(page);
-			await page.getByRole('row').filter({ hasText: /CVE-/ }).first().waitFor();
+			await page.getByRole('row').filter({ hasText: /CVE-/ }).first().waitFor({ timeout: 120_000 });
 		})
 	];
 }
 
 async function main() {
 	fs.mkdirSync(outDir, { recursive: true });
-	if (only.length === 0)
-		for (const file of fs.readdirSync(outDir)) fs.rmSync(path.join(outDir, file));
 	stop();
 	await start();
+	// Shots overwrite in place; a failed step keeps its previous image so the docs build never breaks.
 	const browser = await chromium.launch({ args: ['--disable-gpu'] });
 
 	try {
@@ -386,7 +486,12 @@ async function main() {
 			const ctx = await context(browser, theme, session);
 			const p = await ctx.newPage();
 			for (const [name, run] of steps(p, theme, ids)) {
-				if (wanted(name)) await attempt(`${name} (${theme})`, run);
+				if (wanted(name))
+					await attempt(
+						`${name} (${theme})`,
+						run,
+						name === 'vulnerabilities' ? scanTimeoutMs : stepTimeoutMs
+					);
 			}
 			await ctx.close();
 		}

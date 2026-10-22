@@ -1,50 +1,160 @@
 ---
-title: 'Environment Variables'
-description: 'Every environment variable Arcane reads, and which settings you can override from the environment.'
+title: "Environment Variables"
+description: "Every environment variable Arcane reads, and which settings you can override from the environment."
 ---
 
-import EnvTable from '#components/content/EnvTable.astro';
-import EnvOverridesTable from '#components/content/EnvOverridesTable.astro';
+import EnvTable from "#components/content/EnvTable.astro";
+import EnvOverridesTable from "#components/content/EnvOverridesTable.astro";
+import TableFilter from "#components/content/TableFilter.astro";
+import { envConfig, envSettingsOverrides } from "#lib/config/pages/runtime-config.js";
 
-This page lists the environment variables Arcane reads at startup. Most settings can also be changed in the Settings UI; use these when you configure Arcane from your Compose file or need a value in place before first start.
+Set these variables on the Arcane container in your Compose file. Most settings can also be changed later in the Settings UI.
+
+<p data-jump-links>
+  Jump to: [Manager](#manager-variables) [Settings overrides](#settings-overrides)
+  [Agent](#agent-variables)
+</p>
+
+> [!IMPORTANT]
+> Since 3.0, Arcane's own variables start with `ARCANE_`. `PUID`, `PGID`, `TZ`, `DOCKER_HOST`, `DOCKER_CONFIG`, the proxy variables, and `OTEL_*` keep their names. See [Migrate to 3.0](/docs/get-started/migrate-v3#environment-variables-are-renamed).
+
+<TableFilter
+  label="Search all variables"
+  noun="variables"
+  scope="env"
+  total={envConfig.length + envSettingsOverrides.length + 3}
+  empty="No variables match. Try a shorter name or clear the search."
+/>
+
+## Manager variables
 
 <div id="environment-variables" class="scroll-m-28">
-
-<EnvTable />
-
+  <EnvTable />
 </div>
 
 > [!NOTE]
 > Arcane also accepts the lowercase proxy variables `http_proxy`, `https_proxy`, and `no_proxy`.
 
-To use an external Postgres database through `DATABASE_URL`, see [Installation](/docs/get-started/installation), which has the connection string format.
+For the `ARCANE_DATABASE_URL` Postgres format, see [External Postgres database](/docs/get-started/installation#external-postgres).
 
 ## Settings overrides
 
-The overrides below only take effect when `UI_CONFIGURATION_DISABLED=true` or `AGENT_MODE=true` is set. Otherwise Arcane ignores them.
+Set a variable below to override that setting. The UI locks the setting and shows **Set by** with the variable name.
+
+- An invalid value stops Arcane at startup.
+- `ARCANE_UI_CONFIGURATION_DISABLED=true` makes every setting read-only in the UI.
 
 <EnvOverridesTable />
 
+## Agent variables
+
+An Arcane Agent needs these three variables. The install command from [Add an agent](/docs/remote/agents#add-an-agent) fills them in.
+
+<div class="filter-table not-content" data-filter-target="env">
+  <table>
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id="agent-arcane_agent">
+        <td>
+          <a class="env-anchor" href="#agent-arcane_agent">
+            <code>ARCANE_AGENT</code>
+          </a>
+        </td>
+        <td>
+          <code>true</code> runs Arcane as an agent.
+        </td>
+      </tr>
+      <tr id="agent-arcane_manager_api_url">
+        <td>
+          <a class="env-anchor" href="#agent-arcane_manager_api_url">
+            <code>ARCANE_MANAGER_API_URL</code>
+          </a>
+        </td>
+        <td>URL of your Arcane Manager.</td>
+      </tr>
+      <tr id="agent-arcane_agent_token">
+        <td>
+          <a class="env-anchor" href="#agent-arcane_agent_token">
+            <code>ARCANE_AGENT_TOKEN</code>
+          </a>
+        </td>
+        <td>
+          An enrollment token (<code>arc_etkn_...</code>) or the environment's API key. With an
+          enrollment token, the agent registers on first start and keeps the API key it receives. To
+          read it from a file, set <code>ARCANE_AGENT_TOKEN_FILE</code> instead.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+- Missing `ARCANE_MANAGER_API_URL` or `ARCANE_AGENT_TOKEN` stops the agent at startup.
+- `AGENT_MODE=true` or `ARCANE_AGENT_MODE=true` without `ARCANE_AGENT=true` stops startup.
+- Optional: `ARCANE_AGENT_TRANSPORT`. See [Remote Agents](/docs/remote/agents#choose-a-transport).
+- Optional: `ARCANE_AGENT_MTLS_*`. See [Agent mTLS](/docs/security/edge-mtls).
+
 ## Container runtime user
 
-When Arcane runs inside a container, it drops to the built-in non-root user (`65532:65532`) unless `PUID` and `PGID` are set. Arcane treats itself as containerized when `ARCANE_IN_CONTAINER=true` (set by the official images), when the `container` variable is non-empty, or when `/.dockerenv` or `/run/.containerenv` exists. Outside a container, the process keeps the user it was started as.
+Set `PUID` and `PGID` to make mounted files belong to a specific host user and group.
 
-Set `PUID` and `PGID` if mounted files should belong to a specific host user and group. If you point `DOCKER_HOST` at a custom Unix socket, Arcane uses that socket path when it adds the runtime user to the socket's group.
+Without them, Arcane drops to its built-in non-root user (`65532:65532`) inside a container. Outside a container, it keeps the user it started as.
+
+Arcane treats itself as containerized when any of these is true:
+
+- `ARCANE_IN_CONTAINER=true` (the official images set this).
+- The `container` variable is non-empty.
+- `/.dockerenv` or `/run/.containerenv` exists.
+
+If `DOCKER_HOST` points at a custom Unix socket, Arcane adds the runtime user to that socket's group.
 
 ## Timezone and scheduled jobs
 
-Arcane's recurring jobs (image update checks, auto-updates, vulnerability scans, scheduled pruning, GitOps sync, and environment health checks) run on cron-style schedules evaluated in the timezone set by `TZ`. Set it to an [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) so jobs run at the local times you expect:
+Set `TZ` to an [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) so recurring jobs run on your local time:
 
 ```bash
 TZ=America/New_York
 ```
 
-If `TZ` is unset, Arcane uses the container's local time, which is UTC on the official images. Job intervals and cron expressions are set in the Settings UI, or through the environment when [settings overrides](#settings-overrides) are enabled.
+This covers image update checks, auto-updates, vulnerability scans, scheduled pruning, GitOps sync, and environment health checks. Without `TZ`, Arcane uses the container's local time (UTC on the official images). Schedule dialogs show the timezone in use.
 
-## Admin API key bootstrap
+Set job intervals and cron expressions in the Settings UI or with [settings overrides](#settings-overrides).
 
-Set `ADMIN_STATIC_API_KEY` when automation needs a known API key from the first start. At startup, Arcane creates or updates a protected admin API key with this value, so you don't have to create it in the UI. See the [API Reference](/docs/reference/api) for usage and webhook examples.
+## Default admin account
 
-## Observability
+On first start with an empty database, Arcane creates an admin named `arcane` with a random password, writes the password to `/app/data/initial-admin-password`, and asks for a new password at first sign-in. These variables change that. They are read only when the admin is created, so they never change an existing account.
 
-Arcane exports metrics, traces, and logs when the standard `OTEL_*` exporter variables are set. See [OpenTelemetry](/docs/settings/opentelemetry) for setup.
+| Variable                        | Default  | Description                                                                                       |
+| ------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `ARCANE_DEFAULT_ADMIN_USERNAME` | `arcane` | Username of the admin created on first start.                                                     |
+| `ARCANE_DEFAULT_ADMIN_PASSWORD` | Random   | Password of that admin. To read it from a file, set `ARCANE_DEFAULT_ADMIN_PASSWORD_FILE` instead. |
+| `ARCANE_DEFAULT_ADMIN_DISABLED` | `false`  | Set to `true` to create no default admin.                                                         |
+
+A password you set is not written to that file, and Arcane does not ask you to change it. It must meet the [password policy](/docs/access/account-recovery#password-policy); otherwise Arcane logs a warning and creates no admin until you fix the value and restart.
+
+```yaml
+services:
+  arcane:
+    environment:
+      - ARCANE_DEFAULT_ADMIN_USERNAME=ops-admin
+      - ARCANE_DEFAULT_ADMIN_PASSWORD_FILE=/run/secrets/arcane_admin_password
+    secrets:
+      - arcane_admin_password
+
+secrets:
+  arcane_admin_password:
+    file: ./secrets/arcane_admin_password.txt
+```
+
+> [!WARNING]
+> With `ARCANE_DEFAULT_ADMIN_DISABLED=true`, nobody can sign in until [SSO](/docs/access/sso) is configured from the environment and maps a user to the Admin role.
+
+## Admin API key and observability
+
+Set `ARCANE_ADMIN_STATIC_API_KEY` when automation needs a known API key from first start. At startup, Arcane creates or updates a protected admin API key with this value. The key belongs to the [default admin](#default-admin-account). See the [API Reference](/docs/reference/api) for examples.
+
+Set the standard `OTEL_*` exporter variables to export metrics, traces, and logs. See [OpenTelemetry](/docs/settings/opentelemetry).

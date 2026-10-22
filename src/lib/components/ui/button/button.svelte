@@ -3,96 +3,94 @@
 -->
 
 <script lang="ts" module>
-	import type { WithChildren, WithoutChildren } from 'bits-ui';
-	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
-	import { tv, type VariantProps } from 'tailwind-variants';
+import type { WithChildren, WithoutChildren } from 'bits-ui';
+import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
+import { tv, type VariantProps } from 'tailwind-variants';
 
-	export const buttonVariants = tv({
-		base: "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 relative inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl text-sm font-medium whitespace-nowrap outline-hidden transition-all duration-200 select-none active:scale-[0.97] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-		variants: {
-			variant: {
-				default:
-					'bg-primary text-primary-foreground shadow-xs shadow-primary/20 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30',
-				destructive:
-					'bg-destructive shadow-xs shadow-destructive/20 hover:bg-destructive/90 hover:shadow-md hover:shadow-destructive/30 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-white',
-				outline:
-					'border border-border bg-background/60 text-foreground backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary',
-				secondary:
-					'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/70 hover:shadow-sm',
-				ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-				link: 'text-primary underline-offset-4 hover:underline active:scale-100',
-				/** Search-field look for buttons that open a search palette. */
-				search:
-					'border border-border bg-background pl-3 font-normal text-muted-foreground shadow-none transition-colors duration-150 hover:bg-muted hover:text-foreground sm:pr-12',
-				brand:
-					'bg-primary text-primary-foreground shadow-xs shadow-primary/20 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30',
-				flat: 'bg-card/60 text-foreground border border-border backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
-			},
-			size: {
-				default: 'h-10 px-5 py-2.5 has-[>svg]:px-4',
-				xs: 'h-8 gap-1.5 px-4 text-xs font-semibold has-[>svg]:px-3',
-				sm: 'h-9 gap-1.5 px-4 has-[>svg]:px-3',
-				lg: 'h-11 px-7 text-base has-[>svg]:px-5',
-				icon: 'size-10'
-			}
+export const buttonVariants = tv({
+	base: "relative inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl text-sm font-medium whitespace-nowrap outline-hidden transition-all duration-200 select-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+	variants: {
+		variant: {
+			default: 'bg-button text-button-foreground shadow-xs hover:bg-button-hover',
+			destructive:
+				'bg-destructive text-white shadow-xs shadow-destructive/20 hover:bg-destructive/90 hover:shadow-md hover:shadow-destructive/30 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+			outline:
+				'border border-border bg-background/60 text-foreground backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary',
+			secondary:
+				'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/70 hover:shadow-sm',
+			ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+			link: 'text-primary underline-offset-4 hover:underline active:scale-100',
+			/** Search-field look for buttons that open a search palette. */
+			search:
+				'border border-border bg-background pl-3 font-normal text-muted-foreground shadow-none transition-colors duration-150 hover:bg-muted hover:text-foreground sm:pr-12',
+			brand: 'bg-button text-button-foreground shadow-xs hover:bg-button-hover',
+			flat: 'border border-border bg-card/60 text-foreground backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary'
 		},
-		defaultVariants: {
-			variant: 'default',
-			size: 'default'
+		size: {
+			default: 'h-10 px-5 py-2.5 has-[>svg]:px-4',
+			xs: 'h-8 gap-1.5 px-4 text-xs font-semibold has-[>svg]:px-3',
+			sm: 'h-9 gap-1.5 px-4 has-[>svg]:px-3',
+			lg: 'h-11 px-7 text-base has-[>svg]:px-5',
+			icon: 'size-10'
 		}
-	});
+	},
+	defaultVariants: {
+		variant: 'default',
+		size: 'default'
+	}
+});
 
-	export type ButtonVariant = VariantProps<typeof buttonVariants>['variant'];
-	export type ButtonSize = VariantProps<typeof buttonVariants>['size'];
+export type ButtonVariant = VariantProps<typeof buttonVariants>['variant'];
+export type ButtonSize = VariantProps<typeof buttonVariants>['size'];
 
-	export type ButtonPropsWithoutHTML = WithChildren<{
-		ref?: HTMLElement | null;
-		variant?: ButtonVariant;
-		size?: ButtonSize;
-		loading?: boolean;
-		onClickPromise?: (
-			e: MouseEvent & {
-				currentTarget: EventTarget & HTMLButtonElement;
-			}
-		) => Promise<void>;
-	}>;
+export type ButtonPropsWithoutHTML = WithChildren<{
+	ref?: HTMLElement | null;
+	variant?: ButtonVariant;
+	size?: ButtonSize;
+	loading?: boolean;
+	onClickPromise?: (
+		e: MouseEvent & {
+			currentTarget: EventTarget & HTMLButtonElement;
+		}
+	) => Promise<void>;
+}>;
 
-	export type AnchorElementProps = ButtonPropsWithoutHTML &
-		WithoutChildren<Omit<HTMLAnchorAttributes, 'href' | 'type'>> & {
-			href: HTMLAnchorAttributes['href'];
-			type?: never;
-			disabled?: HTMLButtonAttributes['disabled'];
-		};
+export type AnchorElementProps = ButtonPropsWithoutHTML &
+	WithoutChildren<Omit<HTMLAnchorAttributes, 'href' | 'type'>> & {
+		href: HTMLAnchorAttributes['href'];
+		type?: never;
+		disabled?: HTMLButtonAttributes['disabled'];
+	};
 
-	export type ButtonElementProps = ButtonPropsWithoutHTML &
-		WithoutChildren<Omit<HTMLButtonAttributes, 'type' | 'href'>> & {
-			type?: HTMLButtonAttributes['type'];
-			href?: never;
-			disabled?: HTMLButtonAttributes['disabled'];
-		};
+export type ButtonElementProps = ButtonPropsWithoutHTML &
+	WithoutChildren<Omit<HTMLButtonAttributes, 'type' | 'href'>> & {
+		type?: HTMLButtonAttributes['type'];
+		href?: never;
+		disabled?: HTMLButtonAttributes['disabled'];
+	};
 
-	export type ButtonProps = AnchorElementProps | ButtonElementProps;
+export type ButtonProps = AnchorElementProps | ButtonElementProps;
 </script>
 
 <script lang="ts">
-	import { cn } from '#lib/utils.js';
-	import { LoadingSpinnerIcon } from '#lib/icons/index.js';
+import { LoadingSpinnerIcon } from '#lib/icons/index.js';
+import { cn } from '#lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		variant = 'default',
-		size = 'default',
-		href = undefined,
-		type = 'button',
-		loading = false,
-		disabled = false,
-		tabindex = 0,
-		onclick,
-		onClickPromise,
-		class: className,
-		children,
-		...rest
-	}: ButtonProps = $props();
+let {
+	ref = $bindable(null),
+	variant = 'default',
+	size = 'default',
+	href = undefined,
+	type = 'button',
+	loading = false,
+	disabled = false,
+	tabindex = 0,
+	onclick,
+	onClickPromise,
+	class: className,
+	children,
+	...rest
+}: ButtonProps = $props();
 </script>
 
 <!-- This approach to disabled links is inspired by bits-ui see: https://github.com/huntabyte/bits-ui/pull/1055 -->
@@ -108,6 +106,7 @@
 	tabindex={href && disabled ? -1 : tabindex}
 	class={cn(buttonVariants({ variant, size }), className)}
 	bind:this={ref}
+	// biome-ignore lint/suspicious/noExplicitAny: the handler is shared by the <a> and <button> branches
 	onclick={async (e: any) => {
 		onclick?.(e);
 

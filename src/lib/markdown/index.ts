@@ -1,6 +1,7 @@
 import type { AstroIntegration } from 'astro';
 import { calloutsPlugin } from './callouts';
 import { changelogPlugins } from './changelog';
+import { tablesPlugin } from './tables';
 
 export const arcaneMarkdown = (): AstroIntegration => ({
 	name: 'arcane-markdown',
@@ -11,7 +12,7 @@ export const arcaneMarkdown = (): AstroIntegration => ({
 				| undefined;
 			if (!options?.mdastPlugins)
 				throw new Error('Arcane Markdown plugins need the Satteri Markdown processor');
-			options.mdastPlugins.push(calloutsPlugin, ...changelogPlugins);
+			options.mdastPlugins.push(calloutsPlugin, tablesPlugin, ...changelogPlugins);
 		}
 	}
 });

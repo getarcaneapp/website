@@ -1,0 +1,186 @@
+---
+title: "OIDC Single Sign-On"
+description: "Let users sign in to Arcane through your OpenID Connect provider."
+---
+
+import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
+
+Works with any OpenID Connect provider, such as Authentik, Keycloak, Pocket ID, or Azure AD.
+
+## Before you start
+
+<Steps>
+
+1. Register an OIDC application with your provider.
+2. Add `https://<your-arcane-url>/auth/oidc/callback` as its redirect URI.
+3. Copy its client ID, client secret, and issuer URL. Remove any trailing slash from the issuer URL.
+
+</Steps>
+
+Arcane finds the provider's endpoints from `<issuer-url>/.well-known/openid-configuration`. If your provider doesn't publish that page, see [Manual endpoints](#manual-endpoints).
+
+## Configure OIDC
+
+<Tabs>
+<TabItem label="UI">
+
+<Steps>
+
+1. Go to **System → Authentication**.
+2. Turn on **OIDC Authentication**.
+3. Click **Show Configuration**.
+4. Enter the **Client ID**, **Client Secret**, and **Issuer URL**.
+5. Check that the redirect URI shown on the page matches the one in your provider.
+6. Click **Save**.
+7. Sign out, then click **Sign in with …** on the login page to check that SSO works.
+
+</Steps>
+
+</TabItem>
+<TabItem label="Compose">
+
+<Steps>
+
+1. Add these variables to the Arcane service:
+
+   ```yaml
+   services:
+     arcane:
+       environment:
+         - ARCANE_OIDC_ENABLED=true
+         - ARCANE_OIDC_CLIENT_ID=your_arcane_client_id_from_provider
+         - ARCANE_OIDC_CLIENT_SECRET=your_super_secret_client_secret_from_provider
+         - ARCANE_OIDC_ISSUER_URL=https://auth.example.com
+         - ARCANE_OIDC_SCOPES=openid email profile groups
+         - ARCANE_OIDC_GROUPS_CLAIM=groups
+   ```
+
+2. Recreate the container.
+
+</Steps>
+
+In list-form `environment:` entries, don't wrap values in quotes. The quotes become part of the value.
+
+</TabItem>
+</Tabs>
+
+Arcane creates an OIDC user the first time someone signs in. You can disable local login so everyone signs in through your provider.
+
+## Skip the login screen
+
+Turn on **Auto Redirect to Provider** in **System → Authentication**, or set `ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER=true`. Users go straight to your provider instead of Arcane's login page.
+
+If the provider is down or misconfigured, open `https://<your-arcane-url>/login/backup`. It never redirects, so you can sign in with a local account or passkey and fix OIDC.
+
+> [!NOTE]
+> The backup login page only shows the password form while local login is enabled. If you disabled it, sign in with a passkey or see [Account Recovery](/docs/access/account-recovery).
+
+## Map provider groups to roles
+
+A mapping grants a role when a value in the user's groups claim matches. It can apply globally or to one agent. Arcane re-checks the claim on every login, so removing a user from a provider group removes the role at their next sign-in.
+
+First, get groups into the user's token:
+
+1. Configure your provider to include groups. See the provider notes below.
+2. Sign in once and decode the ID token, for example with your provider's token preview or a JWT decoder.
+3. Find the claim that lists the groups. Note its path, such as `groups` or `resource_access.arcane.roles`.
+4. If the path isn't `groups`, enter it in **Groups Claim** in **System → Authentication**, or set `ARCANE_OIDC_GROUPS_CLAIM`. Use dots for nested claims.
+
+Arcane reads the claim from the userinfo response first, then from the ID token. It accepts a list or a comma- or space-separated string.
+
+Provider notes:
+
+- **Microsoft Entra ID**: in the app registration, open **Token configuration** and select **Add groups claim**. Entra sends group object IDs, not names, so map those IDs.
+- **Keycloak**: in the client's dedicated scope, add a **Group Membership** mapper with **Token Claim Name** `groups`. Turn off **Full group path** to get `docker-admins` instead of `/docker-admins`.
+- **Authentik**, **Authelia**, **Pocket ID**: request the scope that carries groups (`groups` for Authelia and Pocket ID; Authentik's default `profile` scope includes it). The claim is `groups`.
+
+Then add mappings with one of these methods:
+
+<Tabs>
+<TabItem label="UI">
+
+<Steps>
+
+1. Go to **System → Authentication**.
+2. Select **Create Mapping**.
+3. Set **Claim value** to the exact string from the claim, such as `docker-admins`.
+4. Pick the role it grants.
+5. Optional: pick one agent to limit the role to it.
+6. Save. Repeat for each claim value.
+
+</Steps>
+
+</TabItem>
+<TabItem label="CLI">
+
+<Steps>
+
+1. Create a mapping for each claim value:
+
+   ```bash
+   arcane-cli admin oidc create --claim docker-admins --role role_admin
+   ```
+
+2. Optional: add `--agent <agent-id>` to grant the role on one agent only.
+
+</Steps>
+
+The CLI must be signed in first. See [CLI Configuration](/docs/reference/cli/config).
+
+</TabItem>
+<TabItem label="Compose">
+
+<Steps>
+
+1. Set `ARCANE_OIDC_ROLE_MAPPINGS` to a JSON array:
+
+   ```yaml
+   services:
+     arcane:
+       environment:
+         - 'ARCANE_OIDC_ROLE_MAPPINGS=[{"claimValue":"docker-admins","roleId":"role_admin"}]'
+   ```
+
+2. Optional: add `"environmentId"` to an entry to limit it to one agent.
+3. Recreate the container.
+
+</Steps>
+
+- On every startup, Arcane replaces all environment-managed mappings with this list. They're read-only in the UI.
+- Set it to `[]` to remove all environment-managed mappings. Leaving it unset keeps them.
+- Use `ARCANE_OIDC_ROLE_MAPPINGS_FILE` to read the list from a Docker secret.
+
+</TabItem>
+</Tabs>
+
+## Reference
+
+### Environment variables
+
+| Variable                                | What it does                                                                                        |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `ARCANE_OIDC_ENABLED`                   | Turn on OIDC login. Default `false`.                                                                |
+| `ARCANE_OIDC_CLIENT_ID`                 | Client ID from your provider.                                                                       |
+| `ARCANE_OIDC_CLIENT_SECRET`             | Client secret from your provider.                                                                   |
+| `ARCANE_OIDC_ISSUER_URL`                | Provider issuer URL, such as `https://auth.example.com`. No trailing slash.                         |
+| `ARCANE_OIDC_SCOPES`                    | Scopes to request. Default `openid email profile`. Add `groups` for role mappings.                  |
+| `ARCANE_OIDC_GROUPS_CLAIM`              | Claim holding the user's groups. Default `groups`. Dotted paths work, such as `realm_access.roles`. |
+| `ARCANE_OIDC_ROLE_MAPPINGS`             | Claim-to-role mappings as a JSON array. Also `ARCANE_OIDC_ROLE_MAPPINGS_FILE`.                      |
+| `ARCANE_OIDC_MERGE_ACCOUNTS`            | Link OIDC logins to existing local accounts by email. Default `false`. While on, no one can change a user's email in Arcane. |
+| `ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER` | Send users straight to the provider on login. Default `false`.                                      |
+| `ARCANE_OIDC_PROVIDER_NAME`             | Provider name shown on the login screen.                                                            |
+| `ARCANE_OIDC_PROVIDER_LOGO_URL`         | Provider logo URL shown on the login screen.                                                        |
+| `ARCANE_OIDC_SKIP_TLS_VERIFY`           | Skip TLS verification for the provider. Default `false`. Use with caution.                          |
+
+Register the exact redirect URI shown under **System → Authentication → Redirect URI Configuration**. Open that page at the address users sign in with, because the URI follows that address. Arcane builds it from the browser's `Origin` header, then `X-Forwarded-Host`/`X-Forwarded-Proto`, then `Host`, and only then `ARCANE_APP_URL`. Behind a proxy, the forwarded headers decide it. See [Reverse proxy](/docs/networking/reverse-proxy).
+
+### Manual endpoints
+
+Set these only if your provider doesn't support discovery from the issuer URL.
+
+| Variable                             | Example                                               |
+| ------------------------------------ | ----------------------------------------------------- |
+| `ARCANE_OIDC_AUTHORIZATION_ENDPOINT` | `https://provider.com/auth`                           |
+| `ARCANE_OIDC_TOKEN_ENDPOINT`         | `https://provider.com/token`                          |
+| `ARCANE_OIDC_USERINFO_ENDPOINT`      | `https://provider.com/userinfo`                       |
+| `ARCANE_OIDC_JWKS_ENDPOINT`          | `https://provider.com/jwks` (token verification keys) |

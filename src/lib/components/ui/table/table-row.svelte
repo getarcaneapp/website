@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn, type WithElementRef } from '#lib/utils.js';
+import type { HTMLAttributes } from 'svelte/elements';
+import { cn, type WithElementRef } from '#lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		variant = 'default',
-		children,
-		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLTableRowElement>> & {
-		/** `static` rows (headers, embedded tables) don't react to hover; `surface` tints a header row. */
-		variant?: 'default' | 'static' | 'surface';
-	} = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	variant = 'default',
+	children,
+	...restProps
+}: WithElementRef<HTMLAttributes<HTMLTableRowElement>> & {
+	/** `static` rows (headers, embedded tables) don't react to hover; `surface` tints a header row. */
+	variant?: 'default' | 'static' | 'surface';
+} = $props();
 </script>
 
 <tr

@@ -1,0 +1,32 @@
+---
+interface Props {
+	permission: string;
+}
+const { permission } = Astro.props;
+const separator = permission.lastIndexOf(':');
+const resource = separator === -1 ? permission : permission.slice(0, separator);
+const action = separator === -1 ? '' : permission.slice(separator + 1);
+---
+
+<code class="perm-code">
+	<span class="perm-resource">{resource}</span>
+	{action && (
+		<>
+			<span class="perm-sep">:</span>
+			<span class="perm-action">{action}</span>
+		</>
+	)}
+</code>
+
+<style>
+.perm-resource {
+	color: var(--info);
+}
+.perm-sep {
+	color: var(--sl-color-gray-3);
+}
+.perm-action {
+	color: var(--sl-color-accent);
+	font-weight: 600;
+}
+</style>

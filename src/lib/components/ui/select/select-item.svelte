@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { CheckIcon } from '#lib/icons/index.js';
-	import { Select as SelectPrimitive } from 'bits-ui';
-	import { cn, type WithoutChild } from '#lib/utils.js';
+import { Select as SelectPrimitive } from 'bits-ui';
+import { CheckIcon } from '#lib/icons/index.js';
+import { cn, type WithoutChild } from '#lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		value,
-		label,
-		children: childrenProp,
-		...restProps
-	}: WithoutChild<SelectPrimitive.ItemProps> = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	value,
+	label,
+	children: childrenProp,
+	...restProps
+}: WithoutChild<SelectPrimitive.ItemProps> = $props();
 </script>
 
 <SelectPrimitive.Item

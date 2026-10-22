@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { SVGAttributes } from 'svelte/elements';
+import type { SVGAttributes } from 'svelte/elements';
 
-	let { class: className, ...restProps }: SVGAttributes<SVGElement> = $props();
+let { class: className, ...restProps }: SVGAttributes<SVGElement> = $props();
 </script>
 
 <svg
@@ -12,6 +12,7 @@
 	class="transition-all duration-300 hover:drop-shadow-glow {className}"
 	{...restProps}
 >
+	<title>Arcane</title>
 	<g transform="translate(-457.5,-292.86667)" stroke-width="2">
 		<path
 			class="logo-trace"

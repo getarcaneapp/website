@@ -13,7 +13,7 @@ export const codeVariants = tv({
 	variants: {
 		variant: {
 			default: 'border-border bg-code',
-			secondary: 'bg-secondary/50 border-transparent',
+			secondary: 'border-transparent bg-secondary/50',
 			/** Borderless, square — for code embedded in another framed surface. */
 			embedded: 'rounded-none border-0 bg-code'
 		}

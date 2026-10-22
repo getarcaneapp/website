@@ -1,8 +1,6 @@
 ---
-import { button } from '../components/landing/button';
 import WidePage from '../components/pages/WidePage.astro';
 import InstanceGenerator from '../lib/components/instance-generator.svelte';
-import { BookOpenIcon, SettingsIcon } from '../lib/icons/index';
 ---
 
 <WidePage
@@ -10,22 +8,22 @@ import { BookOpenIcon, SettingsIcon } from '../lib/icons/index';
 	description="Pick a deployment, set your options, and copy the Compose file, Quadlet, or agent config Arcane needs."
 >
 	<div class="arcane-ui not-content">
-		<p class="max-w-2xl text-base text-muted-foreground">
-			Pick a deployment, set your options, and copy the files Arcane needs. The output updates as
-			you go.
+		<p class="max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground">
+			Choose where Arcane runs, fill in the fields, then copy or download the files. See the{' '}
+			<a
+				href="/docs/get-started/installation"
+				class="rounded-sm font-medium text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring dark:text-primary-tint"
+				>installation guide</a
+			>{' '}
+			or the{' '}
+			<a
+				href="/docs/reference/environment-variables"
+				class="rounded-sm font-medium text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring dark:text-primary-tint"
+				>environment variables</a
+			>.
 		</p>
-		<div class="mt-4 flex flex-wrap gap-2">
-			<a href="/docs/get-started/installation" class:list={[button.outlineSm, 'group']}>
-				<BookOpenIcon class="h-4 w-4" />
-				Setup Guide
-			</a>
-			<a href="/docs/reference/environment-variables" class:list={[button.outlineSm, 'group']}>
-				<SettingsIcon class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
-				Environment Docs
-			</a>
-		</div>
-		<section id="configure" class="mt-8">
+		<div id="configure" class="mt-6">
 			<InstanceGenerator client:load />
-		</section>
+		</div>
 	</div>
 </WidePage>

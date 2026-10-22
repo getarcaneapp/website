@@ -1,34 +1,35 @@
 ---
 import { envSettingsOverrides } from '../../lib/config/pages/runtime-config';
-import TableFilter from './TableFilter.astro';
+
+const rowId = (env: string) => `setting-${env.toLowerCase()}`;
 ---
 
-<TableFilter
-	label="Search setting overrides"
-	noun="setting overrides"
-	total={envSettingsOverrides.length}
-	empty="No setting overrides match. Try a shorter name or clear the search."
->
+<div class="filter-table not-content" data-filter-target="env">
 	<table>
 		<thead>
 			<tr>
-				<th>Env Var</th>
+				<th>Variable</th>
 				<th>Details</th>
 			</tr>
 		</thead>
 		<tbody>
 			{envSettingsOverrides.map((item) => (
-				<tr data-search={`${item.env} ${item.settingKey} ${item.description}`.toLowerCase()}>
+				<tr
+					id={rowId(item.env)}
+					data-search={`${item.env} ${item.settingKey} ${item.description}`.toLowerCase()}
+				>
 					<td>
-						<code>{item.env}</code>
+						<a class="env-anchor" href={`#${rowId(item.env)}`}>
+							<code>{item.env}</code>
+						</a>
 					</td>
 					<td>
 						<div class="env-details">
+							<p>{item.description}</p>
 							<div class="env-meta">
 								<span class="env-label">Setting</span>
 								<code>{item.settingKey}</code>
 							</div>
-							<p>{item.description}</p>
 							{item.requires && (
 								<p class="env-note">
 									<span class="env-label">Requires:</span> {item.requires}
@@ -47,4 +48,4 @@ import TableFilter from './TableFilter.astro';
 			))}
 		</tbody>
 	</table>
-</TableFilter>
+</div>

@@ -3,31 +3,31 @@
 -->
 
 <script lang="ts">
-	import { CheckIcon, CloseIcon, CopyIcon } from '#lib/icons/index.js';
-	import { scale } from 'svelte/transition';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { UseClipboard } from '#lib/hooks/use-clipboard.svelte.js';
-	import { cn } from '#lib/utils.js';
-	import type { CopyButtonProps } from './types.js';
+import { scale } from 'svelte/transition';
+import { Button } from '#lib/components/ui/button/index.js';
+import { UseClipboard } from '#lib/hooks/use-clipboard.svelte.js';
+import { CheckIcon, CloseIcon, CopyIcon } from '#lib/icons/index.js';
+import { cn } from '#lib/utils.js';
+import type { CopyButtonProps } from './types.js';
 
-	let {
-		ref = $bindable(null),
-		text,
-		icon,
-		animationDuration = 500,
-		variant = 'ghost',
-		size: sizeProp = 'icon',
-		onCopy,
-		class: className,
-		tabindex = -1,
-		children,
-		...rest
-	}: CopyButtonProps = $props();
+let {
+	ref = $bindable(null),
+	text,
+	icon,
+	animationDuration = 500,
+	variant = 'ghost',
+	size: sizeProp = 'icon',
+	onCopy,
+	class: className,
+	tabindex = -1,
+	children,
+	...rest
+}: CopyButtonProps = $props();
 
-	// this way if the user passes text then the button will be the default size
-	const size = $derived(sizeProp === 'icon' && children ? 'default' : sizeProp);
+// this way if the user passes text then the button will be the default size
+const size = $derived(sizeProp === 'icon' && children ? 'default' : sizeProp);
 
-	const clipboard = new UseClipboard();
+const clipboard = new UseClipboard();
 </script>
 
 <Button

@@ -1,10 +1,10 @@
 ---
-title: 'Announcing the Arcane blog'
-description: 'A home for deprecations, migrations, and other notable changes.'
+title: "Announcing the Arcane blog"
+description: "A home for deprecations, migrations, and other notable changes."
 date: 2026-08-25
 kind: news
 featured: false
-banner: 'Deprecations and other notable changes now live on the blog.'
+banner: "Deprecations and other notable changes now live on the blog."
 ---
 
 We're starting a blog to share deeper context on major Arcane updates, upcoming deprecations, and migrations.

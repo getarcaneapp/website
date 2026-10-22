@@ -1,10 +1,10 @@
 ---
-title: 'OpenTelemetry in Arcane 2.16.0'
-description: 'Arcane 2.16.0 can export metrics, traces, and logs to any OpenTelemetry collector.'
+title: "OpenTelemetry in Arcane 2.16.0"
+description: "Arcane 2.16.0 can export metrics, traces, and logs to any OpenTelemetry collector."
 date: 2026-10-10
 kind: update
 featured: false
-banner: 'Arcane 2.16.0 adds OpenTelemetry metrics, traces, and logs.'
+banner: "Arcane 2.16.0 adds OpenTelemetry metrics, traces, and logs."
 ---
 
 Arcane 2.16.0 can export metrics, traces, and logs with [OpenTelemetry](https://opentelemetry.io), so you can send them to a collector and view them alongside the rest of your monitoring.

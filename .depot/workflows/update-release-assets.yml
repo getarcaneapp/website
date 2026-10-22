@@ -233,11 +233,11 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
-          committer: 'arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>'
-          author: 'arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>'
+          commit-message: "chore(release): update assets for ${{ steps.check.outputs.version }}"
+          committer: "arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>"
+          author: "arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>"
           signoff: true
-          title: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
+          title: "chore(release): update assets for ${{ steps.check.outputs.version }}"
           body: |
             Updates Arcane release assets for ${{ steps.check.outputs.version }}.
 
@@ -248,9 +248,9 @@ jobs:
 
             ---
             *This PR was automatically generated.*
-          branch: 'chore/release-assets-${{ steps.check.outputs.version }}'
+          branch: "chore/release-assets-${{ steps.check.outputs.version }}"
           base: main
-          labels: 'docs(changelog),chore(config),chore(sbom)'
+          labels: "docs(changelog),chore(config),chore(sbom)"
           add-paths: |
             src/content/changelog/
             static/config.json

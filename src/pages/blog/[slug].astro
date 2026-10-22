@@ -1,10 +1,10 @@
 ---
+import { render } from 'astro:content';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import type { GetStaticPaths } from 'astro';
-import { render } from 'astro:content';
 import KindBadge from '../../components/blog/KindBadge.astro';
 import RssLink from '../../components/blog/RssLink.astro';
-import { findPostNeighbors, getPublishedPosts, type BlogPost } from '../../lib/blog';
+import { type BlogPost, findPostNeighbors, getPublishedPosts } from '../../lib/blog';
 
 export const getStaticPaths = (async () => {
 	const posts = await getPublishedPosts();
@@ -42,17 +42,17 @@ const { previous, next } = findPostNeighbors(posts, post.slug);
 </StarlightPage>
 
 <style>
-	.post-meta {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.75rem;
-	}
-	.post-meta time {
-		font-size: var(--sl-text-sm);
-		color: var(--sl-color-gray-3);
-	}
-	.post-meta :global(.rss-link) {
-		margin-inline-start: auto;
-	}
+.post-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem;
+}
+.post-meta time {
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+.post-meta :global(.rss-link) {
+	margin-inline-start: auto;
+}
 </style>
