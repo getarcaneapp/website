@@ -7,6 +7,6 @@ export const buildables: BuildableConfig[] = [
 		description: 'Automatically sign in using build-time enabled credentials.',
 		docsHref: '/docs/development/buildables/autologin',
 		source: 'Official',
-		envVars: ['AUTO_LOGIN_USERNAME', 'AUTO_LOGIN_PASSWORD']
+		envVars: ['ARCANE_AUTO_LOGIN_USERNAME', 'ARCANE_AUTO_LOGIN_PASSWORD']
 	}
 ];

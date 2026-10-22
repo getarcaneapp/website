@@ -1,27 +1,21 @@
 ---
 title: 'CLI Configuration'
-description: 'Point arcane-cli at your server, sign in, and set defaults.'
+description: 'Point arcane-cli at your server, sign in, and choose which environments a command covers.'
 ---
 
-import { Badge } from '@astrojs/starlight/components';
+import { Badge, Steps } from '@astrojs/starlight/components';
 
 `arcane-cli` keeps its server URL, credentials, and defaults in a YAML config file. Set it up once after you [install the CLI](/docs/reference/cli/install), and change values later with `arcane-cli config set <key> <value>`.
 
 ## Set up the CLI
 
-1. Create a starter config file:
+<Steps>
 
-```bash
-arcane-cli config init
-```
-
-2. Set your server URL:
-
-```bash
-arcane-cli config set server-url http://localhost:3552
-```
-
+1. Create a starter config file with `arcane-cli config init`.
+2. Set your server URL with `arcane-cli config set server-url http://localhost:3552`.
 3. Sign in with one of the methods below.
+
+</Steps>
 
 ## Sign in
 
@@ -68,47 +62,22 @@ You can also edit `pagination` in the config file directly (see the example belo
 
 For `doctor`, shell completion, and other commands, see [CLI Commands](/docs/reference/cli/commands).
 
-## Preview every environment
+## Work across environments
 
-<Badge text="Preview" variant="caution" />
-
-> [!IMPORTANT]
-> All-environments mode is a preview feature. Its behavior, output, and JSON format are subject to change at any time.
-
-Enable all-environments preview to list resources and perform actions without setting a default environment:
+Every command covers all the enabled environments your server shows you, including local Docker. Pass `--env <id>` to limit a read to one environment or to choose where a create goes:
 
 ```bash
-arcane-cli config set previews.allEnvironments true
 arcane-cli containers list
-arcane-cli containers start nginx
+arcane-cli --env 2 containers list
 ```
 
-Preview includes the visible, enabled environments returned by your server, including local Docker. Text lists use one combined table with an `ENVIRONMENT` column containing each environment's name, followed by a combined total. Structured details retain environment headings. Resources with identical names or IDs in different environments remain separate. List filters, sorting, limits, and `--start` apply separately to each environment. `--all` requests every matching item per environment and keeps its existing flag restrictions.
+Authentication, config, environments, registries, repositories, templates, variables, and system backups aren't tied to an environment, so `--env` doesn't change them.
 
-An explicit `--env <id>` overrides preview for one command. Your saved default environment is preserved; disabling preview restores it:
+### Lists
 
-```bash
-arcane-cli --env 0 containers list
-arcane-cli config set previews.allEnvironments false
-```
+Container, image, volume, network, project, and vulnerability lists print one table with an `ENVIRONMENT` column. They read up to the server's **Environment limit** (64 by default) in one request and report any environment beyond it, or any that failed, on stderr. With `--json` they print the server's merged response, with failures in `failedEnvironments`.
 
-Authentication, environments, registries, repositories, templates, variables, and system backups retain their existing global scope.
-
-### Choose a resource or destination
-
-Resource actions search every enabled environment. A unique confirmed match is selected automatically. Multiple matches open a Bubble Tea picker showing resource and environment details. If any search fails, even a single confirmed match requires explicit picker selection. Dependent resources, uploads, downloads, and restores stay in the selected environment.
-
-Creation, imports, builds, image pulls and uploads, and conversion require a destination picker. JSON and noninteractive commands require `--env` whenever selection is necessary. `--yes` and `--force` never choose a resource or destination. Cancelling a picker sends no mutation.
-
-### Confirm a fleet operation
-
-Environment-wide mutations run sequentially across enabled environments after one confirmation showing the operation and environment names. This covers prune, update checks, updater runs, bulk container start/stop, settings and schedule updates, and activity-history clearing. `--yes` and applicable existing confirmation-skip flags bypass confirmation.
-
-Individual failures do not stop later environments, but the command exits nonzero if any operation fails. Cancellation prevents remaining operations from starting. Preview system upgrades use the existing fleet upgrade endpoint once; explicit `--all` retains its existing behavior.
-
-### Read aggregate JSON
-
-Preview reads and fleet operations emit one JSON document. Each `result` retains that command's existing JSON payload, including pagination and extra response fields:
+Other reads run in each environment in turn. With `--json` they print one document that wraps each environment's result:
 
 ```json
 {
@@ -117,17 +86,25 @@ Preview reads and fleet operations emit one JSON document. Each `result` retains
     {
       "environmentId": "0",
       "environmentName": "Local Docker",
-      "result": {
-        "success": true,
-        "data": [],
-        "pagination": { "totalItems": 0 }
-      }
+      "result": { "success": true, "data": [] }
     }
   ]
 }
 ```
 
-Failed entries contain `error` instead of `result`; aggregate `success` is `false` and the exit status is nonzero. Discovery failure stops the command. An empty enabled-environment list produces an empty successful read. Single-resource actions retain their existing JSON payload and announce the selected environment on stderr.
+A failed environment has `error` instead of `result`, `success` is `false`, and the command exits nonzero.
+
+### Actions on one resource
+
+Commands that take a resource name or ID, such as `containers restart nginx`, search every environment. A single match runs right away and the CLI prints which environment it picked on stderr. Several matches open a picker. Without a terminal, or with `--json`, several matches fail until you pass `--env`.
+
+Creates, imports, builds, image pulls and uploads, and conversions need a destination. In a terminal the CLI asks you to pick one; otherwise pass `--env`.
+
+### Changes in every environment
+
+Prune, update checks, updater runs, settings and schedule updates, and similar changes ask `<command> in all N environments?` once, then run in each environment in turn. `--yes` or `--force` skips the question. A failure in one environment doesn't stop the others, but the command exits nonzero.
+
+If your credentials can't list environments, for example an API key limited to one environment, the CLI stops with `these credentials cannot list environments; pass --env <id> to choose one`.
 
 ## Verify self-update signatures
 
@@ -176,11 +153,9 @@ A typical config file:
 
 ```yaml
 previews:
-  allEnvironments: false
   newSelfUpdater: false
 api_key: ''
 cli_update_channel: stable
-default_environment: '0'
 federated_audience: ''
 log_level: info
 pagination:
@@ -208,7 +183,7 @@ server_url: http://localhost:3552
 ```
 
 > [!WARNING]
-> Older versions saved `jwt_token` and `refresh_token` in the config file. These keys are deprecated and stop working in v3. The CLI still reads them and prints a warning. Run `arcane-cli auth refresh` to move the session to `auth.json`.
+> Older versions saved `jwt_token` and `refresh_token` in the config file. Since 3.0 the CLI ignores these keys and only reads sessions from `auth.json`. If your session only lives in those keys, sign in again with `arcane-cli auth login`.
 
 If `auth.json` is damaged, the CLI ignores it with a warning but can't save new sessions. Run `arcane-cli config backup --auth` to move it to `auth.json.bak`, then sign in again.
 
@@ -221,7 +196,7 @@ These flags work on every command.
 | Flag                           | Purpose                                                                  |
 | ------------------------------ | ------------------------------------------------------------------------ |
 | `--output <mode>`              | Output mode, `text` or `json`. `--json` is an alias for `--output json`. |
-| `--env <id>`                   | Select one environment, overriding preview and the configured default.   |
+| `--env <id>`                   | Limit the command to one environment. Without it, commands cover all environments. |
 | `--yes`, `-y`                  | Auto-confirm destructive prompts.                                        |
 | `--no-color`                   | Disable ANSI color output.                                               |
 | `--request-timeout <duration>` | Override the HTTP timeout for one command.                               |

@@ -63,11 +63,11 @@ Arcane Mobile also supports Home Screen and Lock Screen widgets, plus Siri and S
 
 ## Set up push notifications
 
-1. On the server, turn on **Mobile push notifications** under **Settings → Notifications → Mobile Push**. This needs the `settings:write` permission.
+1. On the server, turn on **Mobile push notifications** under **Settings → Notifications**. This needs the `settings:write` permission.
 2. In the app, open **Settings** and enable push notifications to pair your device.
 3. Choose which events and environments the device should be notified about. Each device has its own selection, so two phones on the same server can get different alerts.
 
-Paired devices appear under **Your mobile devices** on the server's **Mobile Push** tab, where you can send a test notification to a device or remove it.
+Paired devices appear under **Your mobile devices** on the server's **Settings → Notifications** page, where you can send a test notification to a device or remove it.
 
 Notification titles and messages travel through Arcane's hosted push relay (`apns.getarcane.app`) and Apple's push servers. Your server address, users, and credentials are never sent.
 
@@ -77,4 +77,4 @@ Notification titles and messages travel through Arcane's hosted push relay (`apn
 - Long-press a bottom tab to replace it with another frequently used area.
 - If you manage more than one environment, check the active environment before running actions.
 
-Tab visibility depends on your role and the features your server supports. If a tab is missing, ask an Arcane admin to check your role assignments. See [Roles & Permissions](/docs/access/roles) for permission details.
+Tab visibility depends on your role and the features your server supports. If a tab is missing, ask an Arcane admin to check your role bindings. See [Roles & Permissions](/docs/access/roles) for permission details.

@@ -5,7 +5,6 @@ export type DeploymentTargetId =
 	| 'podman-rootless'
 	| 'podman-rootful'
 	| 'podman-quadlet'
-	| 'agent-direct'
 	| 'agent-edge'
 	| 'agent-binary';
 

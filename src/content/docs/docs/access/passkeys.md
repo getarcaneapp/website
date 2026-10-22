@@ -11,7 +11,7 @@ A passkey authenticates you through your phone, computer, or hardware key. Arcan
 Registering a passkey does not turn on MFA. Enabling MFA is a separate switch.
 
 > [!IMPORTANT]
-> Set `APP_URL` to your public HTTPS URL before registering passkeys. Its hostname becomes the WebAuthn relying party ID; the full URL supplies the origin. A missing hostname prevents startup, and passkeys won't work at a different hostname. See [Environment Variables](/docs/reference/environment-variables).
+> Set `ARCANE_APP_URL` to your public HTTPS URL before registering passkeys. Its hostname becomes the WebAuthn relying party ID; the full URL supplies the origin. A missing hostname prevents startup, and passkeys won't work at a different hostname. See [Environment Variables](/docs/reference/environment-variables).
 
 Browsers only expose the WebAuthn API in a secure context, so passkeys need HTTPS (or `localhost`). On a plain-HTTP deployment Arcane shows _"Passkeys require a supported browser and a secure HTTPS connection."_ and hides the controls. See [TLS](/docs/networking/tls) or put Arcane behind a [reverse proxy](/docs/networking/reverse-proxy) that terminates HTTPS.
 

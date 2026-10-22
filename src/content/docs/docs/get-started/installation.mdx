@@ -18,7 +18,7 @@ Arcane runs as a single container that manages Docker on the same host through t
 
 ## 1. Generate an encryption key
 
-Arcane needs an `ENCRYPTION_KEY` that is 32 bytes long (raw, base64, or hex). Generate one with any of these commands and copy the output.
+Arcane needs an `ARCANE_ENCRYPTION_KEY` that is 32 bytes long (raw, base64, or hex). Generate one with any of these commands and copy the output.
 
 With a temporary Arcane container:
 
@@ -57,11 +57,11 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker
     environment:
-      - APP_URL=http://localhost:3552
+      - ARCANE_APP_URL=http://localhost:3552
       - PUID=1000
       - PGID=1000
-      - ENCRYPTION_KEY=<your-encryption-key>
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
     cgroup: host
     restart: unless-stopped
 
@@ -75,9 +75,9 @@ volumes:
 ### Projects folder
 
 > [!IMPORTANT]
-> Mount your projects folder at the same path inside the container and set `PROJECTS_DIRECTORY` to that path, as in the example above. The path must be absolute (`/opt/docker`, not `opt/docker`). With matching paths, relative mounts such as `./config` resolve the same way for Arcane and Docker, and Arcane can manage the Compose projects already in that folder.
+> Mount your projects folder at the same path inside the container and set `ARCANE_PROJECTS_DIRECTORY` to that path, as in the example above. The path must be absolute (`/opt/docker`, not `opt/docker`). With matching paths, relative mounts such as `./config` resolve the same way for Arcane and Docker, and Arcane can manage the Compose projects already in that folder.
 >
-> A different container path, such as `/opt/docker:/app/data/projects`, also works. Arcane reads its own container mounts and translates project paths to host paths for Compose. To state the mapping yourself, set `PROJECTS_DIRECTORY=<containerPath>:<hostPath>`. If you don't set `PROJECTS_DIRECTORY`, Arcane uses `/app/data/projects`.
+> A different container path, such as `/opt/docker:/app/data/projects`, also works. Arcane reads its own container mounts and translates project paths to host paths for Compose. To state the mapping yourself, set `ARCANE_PROJECTS_DIRECTORY=<containerPath>:<hostPath>`. If you don't set `ARCANE_PROJECTS_DIRECTORY`, Arcane uses `/app/data/projects`.
 
 ## 3. Start Arcane
 
@@ -137,7 +137,7 @@ arcane-admin
 <ScreenshotFrame
   name="dashboard"
   alt="Arcane dashboard showing running containers, images, volumes, and host resource usage."
-  caption="After signing in, the dashboard summarizes your environment and its resource usage."
+  caption="After signing in, the dashboard summarizes your environments and their resource usage."
   loading="lazy"
   decoding="async"
 />
@@ -191,7 +191,7 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker:z
     environment:
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
 ```
 
 </Collapsible>
@@ -219,7 +219,7 @@ services:
 
 <Collapsible id="external-postgres" title="External Postgres database" description="Store Arcane's data in Postgres instead of the built-in SQLite file.">
 
-Arcane stores its data in a SQLite file inside `arcane-data` by default, which works well for most setups. To use Postgres instead, set `DATABASE_URL`:
+Arcane stores its data in a SQLite file inside `arcane-data` by default, which works well for most setups. To use Postgres instead, set `ARCANE_DATABASE_URL`:
 
 ```bash
 postgres://<db_username>:<db_password>@<postgres_url>:<postgres_port>/<postgres_db_name>

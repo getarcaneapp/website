@@ -34,7 +34,7 @@ If the host joined the Swarm some other way, open **Swarm → Nodes**. Arcane ch
 
 1. Open **Swarm → Nodes** and find the node.
 2. Open its Agent dialog and choose **Create environment**.
-3. Arcane creates an Edge Remote Environment and shows a `docker run` command and a Compose snippet for `ghcr.io/getarcaneapp/agent`.
+3. Arcane creates a Remote Environment and shows a `docker run` command and a Compose snippet for `ghcr.io/getarcaneapp/agent`.
 4. Run one of them on that node.
 5. Click **Refresh Status**.
 
@@ -47,10 +47,10 @@ The Agent dialog shows how a node is covered:
 | Coverage                 | Meaning                                                                      |
 | ------------------------ | ---------------------------------------------------------------------------- |
 | **Local manager**        | Covered by the Arcane Manager's own Docker socket.                           |
-| **Remote Environment**   | Covered by a Direct or Edge environment whose agent reported this node's ID. |
+| **Remote Environment**   | Covered by a Remote Environment whose agent reported this node's ID.         |
 | **Dedicated node Agent** | Covered by a hidden registration that exists only for this node.             |
 
-When a Remote Environment covers the node, the dialog links to its **Containers**, **Images**, **Volumes**, and **Networks** pages if you have permission to open them. Those pages show only that host's resources; Arcane doesn't merge every node's resources into one cluster-wide list.
+When a Remote Environment covers the node, the dialog links to the **Containers**, **Images**, **Volumes**, and **Networks** pages if you have permission to open them. Filter those lists by the node's environment to see only that host's resources.
 
 ### Change which environment covers a node
 
@@ -76,5 +76,3 @@ Older dedicated node agents keep working and are labelled **Legacy dedicated reg
 - **Stays pending**: check that the command ran on the intended node, that the node can reach the Manager URL, and that the token is still current.
 - **mismatched** on a Remote Environment: detach it, or rebind the correct environment.
 - **mismatched** on a dedicated agent: regenerate its API key and redeploy on the intended node.
-
-The agent image is also published as `arcane-headless`; see [Remote Environments](/docs/remote/environments).

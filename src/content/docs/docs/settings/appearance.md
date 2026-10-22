@@ -3,7 +3,7 @@ title: 'Appearance & Preferences'
 description: 'Personalize themes, navigation, and display options for your Arcane account.'
 ---
 
-Preferences control how Arcane looks and behaves for you: language, theme, navigation, and your profile picture. They belong to your account and follow you to any browser where you sign in, so changing them doesn't affect other users.
+Preferences control how Arcane looks and behaves for you: language, theme, navigation, environment colors, and your profile picture. They belong to your account and follow you to any browser where you sign in, so changing them doesn't affect other users.
 
 Open **Account → Preferences** to change the options below. The only server-wide settings on this page are the [profile picture limits](#set-profile-picture-limits-admins) that admins control.
 
@@ -45,6 +45,11 @@ OLED mode applies to the Default theme. If you switch to one of the alternate pr
 - **Enable Hover Expansion** — expand the collapsed sidebar when you hover it.
 - **Keyboard Shortcuts** — enable or disable Arcane's keyboard shortcuts.
 
+## Environments
+
+- **Environment labels**: show each row's environment by **Name**, or as a **Color dot** with the name on hover.
+- **Environment colors**: pick a color for each environment's name in lists. Two environments can't share a color; **Reset** goes back to the defaults.
+
 ## Mobile appearance
 
 - **Navigation Mode** — **Floating** or **Docked** mobile navigation bar.
@@ -58,5 +63,5 @@ Upload a custom profile picture from **Account**. Arcane accepts PNG, JPEG, and 
 
 These settings apply to every user and are under **Settings → Users**:
 
-- **Enable Gravatar** — use Gravatar as the fallback source for users without an uploaded photo. Off by default on new installations; upgraded installations keep their current value. Setting `ENABLE_GRAVATAR=true` or `false` on the Arcane container overrides this setting and locks it in the UI.
+- **Enable Gravatar** — use Gravatar as the fallback source for users without an uploaded photo. Off by default on new installations; upgraded installations keep their current value. Setting `ARCANE_ENABLE_GRAVATAR=true` or `false` on the Arcane container overrides this setting and locks it in the UI.
 - **Profile Picture Upload Size (MB)** — maximum cropped image size users can upload. The default is 2 MB, and the allowed range is 1–50 MB.

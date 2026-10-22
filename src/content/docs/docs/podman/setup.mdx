@@ -80,10 +80,10 @@ On Windows 11 with Podman Desktop, mount `/run/podman/podman.sock` instead. It's
    Volume=arcane-data:/app/data
    Secret=arcane-encryption-key,type=mount,target=/run/secrets/arcane-key,mode=0444
 
-   Environment=APP_URL=http://localhost:3552
+   Environment=ARCANE_APP_URL=http://localhost:3552
    Environment=PUID=1000
    Environment=PGID=1000
-   Environment=ENCRYPTION_KEY_FILE=/run/secrets/arcane-key
+   Environment=ARCANE_ENCRYPTION_KEY_FILE=/run/secrets/arcane-key
 
    HealthCmd=["./arcane","health","--timeout","2s"]
    HealthInterval=10s
@@ -101,7 +101,7 @@ On Windows 11 with Podman Desktop, mount `/run/podman/podman.sock` instead. It's
    WantedBy=default.target
    ```
 
-   Set `APP_URL` to the URL your browser uses, and `PUID`/`PGID` to your user's IDs (`id -u`, `id -g`). To keep Arcane private behind a local reverse proxy, publish on `127.0.0.1:3552:3552`.
+   Set `ARCANE_APP_URL` to the URL your browser uses, and `PUID`/`PGID` to your user's IDs (`id -u`, `id -g`). To keep Arcane private behind a local reverse proxy, publish on `127.0.0.1:3552:3552`.
 
 4. Start Arcane and Podman's auto-update timer:
 
@@ -121,7 +121,7 @@ To manage projects from a host folder, add a matching mount and path, as describ
 
 ```ini
 Volume=/opt/docker:/opt/docker
-Environment=PROJECTS_DIRECTORY=/opt/docker
+Environment=ARCANE_PROJECTS_DIRECTORY=/opt/docker
 ```
 
 </TabItem>

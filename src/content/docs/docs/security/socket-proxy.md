@@ -103,8 +103,8 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker:z
     environment:
-      - ENCRYPTION_KEY=<your-encryption-key>
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
     networks:
       - arcane-internal
@@ -193,8 +193,8 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker:z
     environment:
-      - ENCRYPTION_KEY=<your-encryption-key>
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
       - DOCKER_HOST=tcp://docker-socket-proxy:2375
     networks:
       - arcane-internal

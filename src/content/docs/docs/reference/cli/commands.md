@@ -25,21 +25,23 @@ arcane-cli auth me
 arcane-cli auth logout
 ```
 
-For CI, use an API key or a federated credential instead of an interactive login — see [Federated Credentials](/docs/access/federated-credentials).
-
-## Choose an environment
-
-Most resource commands act on your default environment. Set it once:
+List every permission you hold in each environment, with any resource scopes and the bindings that grant them:
 
 ```bash
-arcane-cli environments switch
+arcane-cli auth me --effective
 ```
 
-Or override it for a single command with `--env`:
+For CI, use an API key or a federated credential instead of an interactive login — see [Federated Credentials](/docs/access/federated-credentials).
+
+## Environments
+
+Commands cover every environment by default. Limit one to a single environment with `--env`:
 
 ```bash
 arcane-cli containers list --env 2
 ```
+
+Changes without `--env` ask for confirmation before they run in all environments. See [Work across environments](/docs/reference/cli/config#work-across-environments).
 
 List environments and check one is reachable:
 
@@ -49,6 +51,12 @@ arcane-cli environments list
 
 ```bash
 arcane-cli environments test 2
+```
+
+Add an environment. The CLI prints its API key once, followed by the `docker run` and Compose commands to start the agent on the remote host:
+
+```bash
+arcane-cli environments create --name production
 ```
 
 ## Containers
@@ -155,7 +163,7 @@ arcane-cli gitops sync my-sync
 
 ## System
 
-Free up space across the environment:
+Free up space in every environment, or pass `--env` for one:
 
 ```bash
 arcane-cli system prune
@@ -204,6 +212,56 @@ Silence a CVE you've reviewed (and list or undo ignores with `ignored` / `unigno
 ```bash
 arcane-cli images vulnerabilities ignore CVE-2026-1234
 ```
+
+## Users and access
+
+Bind a role to a user or group, globally or in one environment, optionally limited by a [resource scope](/docs/access/resource-scopes):
+
+```bash
+arcane-cli admin bindings create --user <user-id> --role role_deployer --environment <env-id> --project shop
+```
+
+List bindings with `--user`, `--group`, `--role`, or `--environment` filters, show a user's effective access, or remove a binding:
+
+```bash
+arcane-cli admin bindings list --user <user-id>
+```
+
+```bash
+arcane-cli admin bindings access <user-id>
+```
+
+```bash
+arcane-cli admin bindings delete <binding-id>
+```
+
+Manage [groups](/docs/access/groups) and their members:
+
+```bash
+arcane-cli admin groups create --name platform-team
+```
+
+```bash
+arcane-cli admin groups members add <group-id> <user-id>
+```
+
+Map an OIDC claim value to a group:
+
+```bash
+arcane-cli admin oidc create --claim docker-admins --group <group-id>
+```
+
+Read and export the [audit log](/docs/access/audit-log):
+
+```bash
+arcane-cli admin audit list --outcome denied --since 24h
+```
+
+```bash
+arcane-cli admin audit export --format csv -o audit.csv
+```
+
+Custom roles live under `admin roles` (`list`, `get`, `create`, `update`, `delete`, `permissions`). See [Roles & Permissions](/docs/access/roles).
 
 ## System backups
 
@@ -391,11 +449,11 @@ arcane-cli containers list --all --json
 
 ## Renamed flags
 
-Some flags were renamed so they no longer clash with the global `--env`, `--config`, and `--output` flags, or to replace a separate off switch. The old names still work but print a deprecation warning, and they will be removed in v3. Update your scripts to the new names:
+Some flags were renamed so they no longer clash with the global `--env`, `--config`, and `--output` flags, or to replace a separate off switch. Arcane 3.0 removed the old names, so a script that still passes one fails with `unknown flag`. Use the new names:
 
-| Command                                                                                                                                                                          | Old flag     | New flag              |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
-| `containers create`                                                                                                                                                              | `--env`      | `--env-var`, `-e`     |
-| `admin notifications settings set`                                                                                                                                               | `--config`   | `--provider-config`   |
-| `templates download`                                                                                                                                                             | `--output`   | `--output-file`, `-o` |
-| `environments create`, `environments update`, `registries create`, `registries update`, `templates registries update`, `admin federated update`, `admin backups policies update` | `--disabled` | `--enabled=false`     |
+| Command                                                                                                                                                                                                  | Old flag     | New flag              |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
+| `containers create`                                                                                                                                                                                      | `--env`      | `--env-var`, `-e`     |
+| `admin notifications settings set`                                                                                                                                                                       | `--config`   | `--provider-config`   |
+| `templates download`                                                                                                                                                                                     | `--output`   | `--output-file`, `-o` |
+| `environments create`, `environments update`, `registries create`, `registries update`, `templates registries update`, `admin federated create`, `admin federated update`, `admin backups policies update` | `--disabled` | `--enabled=false`     |

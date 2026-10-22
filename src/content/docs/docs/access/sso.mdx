@@ -1,0 +1,167 @@
+---
+title: 'OIDC Single Sign-On'
+description: 'Let users sign in to Arcane through your OpenID Connect provider.'
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Register `https://<your-arcane-url>/auth/oidc/callback` as a redirect URI in your identity provider. Users can then sign in to Arcane with their provider account instead of a local password.
+
+- Works with Authentik, Keycloak, Pocket ID, Azure AD, and so on.
+- From the provider you need a client ID, a client secret, and the issuer URL.
+
+## Configure OIDC
+
+<Tabs>
+<TabItem label="UI">
+
+<Steps>
+
+1. Go to **Settings → Authentication**.
+2. Enter your provider's client ID, client secret, and issuer URL.
+3. Copy the redirect URI shown on the page into your provider.
+4. Save and test the connection.
+
+</Steps>
+
+</TabItem>
+<TabItem label="Compose">
+
+```yaml
+services:
+  arcane:
+    environment:
+      - ARCANE_OIDC_ENABLED=true
+      - ARCANE_OIDC_CLIENT_ID=your_arcane_client_id_from_provider
+      - ARCANE_OIDC_CLIENT_SECRET=your_super_secret_client_secret_from_provider
+      - ARCANE_OIDC_ISSUER_URL=https://auth.example.com
+      - ARCANE_OIDC_SCOPES=openid email profile groups
+      - ARCANE_OIDC_GROUPS_CLAIM=groups
+```
+
+In list-form `environment:` entries, don't wrap values in quotes. The quotes become part of the value.
+
+</TabItem>
+</Tabs>
+
+- Arcane finds the provider's endpoints from the issuer URL and its `.well-known/openid-configuration` page.
+- The issuer URL must not end with a trailing slash.
+- Arcane creates an OIDC user the first time they sign in.
+- You can disable local login if you want everyone to sign in through your provider.
+
+## Skip the login screen
+
+Turn on **Auto Redirect to Provider** in **Settings → Authentication**, or set `ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER=true`. Users go straight to your provider instead of Arcane's login page.
+
+If the provider is down or misconfigured, open `https://<your-arcane-url>/login/backup`. This backup login page never redirects, so you can still sign in with a local account or a passkey and fix the OIDC settings.
+
+> [!NOTE]
+> The backup login page only shows the password form while local login is enabled. If you disabled it, sign in with a passkey or see [Account Recovery](/docs/access/account-recovery).
+
+## Map provider groups to Arcane groups
+
+OIDC mappings turn values from the user's groups claim into memberships in Arcane [groups](/docs/access/groups). Access comes from the [role bindings](/docs/access/roles#role-bindings) on those groups, not from the mapping.
+
+<Steps>
+
+1. Add the groups scope, for example `openid email profile groups`.
+2. Under **Settings → Authentication**, set the **Groups Claim** if it isn't `groups` (Keycloak: `realm_access.roles`, Azure AD: `memberOf`).
+3. Create the Arcane groups under **Settings → Groups** and bind roles to them.
+4. Under **Group Mappings** in **Settings → Authentication**, use **Create Mapping** for each claim value. Set the **Claim value** to the exact string from the claim, such as `docker-admins`, and the **Group** it grants.
+
+   ```bash
+   arcane-cli admin oidc create --claim docker-admins --group <group-id>
+   ```
+
+</Steps>
+
+- The **Group Mappings** table lists each **Claim value** and its **Group**, with edit and delete in each row's menu.
+- One claim value can map to several groups, and several claim values can map to the same group.
+- Managing mappings needs `oidcmappings:list`, `create`, `update`, or `delete`.
+- You must be able to create every binding on the target group. See [Delegation](/docs/access/roles#delegation).
+
+### What happens at login
+
+On every OIDC login, Arcane:
+
+1. Reads the groups claim and finds the groups mapped from its values.
+2. Adds the user to those groups as `oidc` members and removes `oidc` memberships for groups that no longer match. Manual memberships aren't touched.
+3. Applies the [default user role](/docs/access/roles#default-role-for-new-users) if the user ends up with no group memberships and no bindings.
+
+If removing stale memberships would leave no admin, Arcane:
+
+- keeps the user's existing OIDC memberships for that login
+- still adds new ones
+- logs `OIDC group sync would remove the last global admin; keeping existing memberships`
+- writes `group.oidc_sync.admin_kept` to the [audit log](/docs/access/audit-log)
+
+Bind Admin to another user, then sign in again to finish the removal.
+
+If an OIDC user loses access after login, check their groups in the provider. Look for a mapping whose claim value no longer matches.
+
+### Manage mappings from the environment
+
+Set `ARCANE_OIDC_GROUP_MAPPINGS` to a comma-separated list of `claim=GroupName` pairs:
+
+```yaml
+services:
+  arcane:
+    environment:
+      - ARCANE_OIDC_GROUP_MAPPINGS=arcane-admins=Admins,arcane-devops=DevOps
+```
+
+On every startup, Arcane replaces all environment-managed mappings with this list and creates any group that doesn't exist yet.
+
+- New groups have no bindings. Bind roles to them before users rely on them.
+- Environment-managed mappings are read-only in the UI and API. In **Group Mappings** they carry an `ENV` badge and can't be edited or deleted.
+- An empty or unset `ARCANE_OIDC_GROUP_MAPPINGS` skips the reconcile and leaves existing environment-managed mappings in place.
+- If an entry is malformed, Arcane logs `Failed to reconcile ARCANE_OIDC_GROUP_MAPPINGS` and keeps the previous mappings.
+- `ARCANE_OIDC_GROUP_MAPPINGS_FILE` works for Docker secrets.
+
+`OIDC_ROLE_MAPPINGS` from 2.x is no longer read. See [Migrate to 3.0](/docs/get-started/migrate-v3#access-control-changes).
+
+## Access control settings
+
+The **Access control** section of **Settings → Authentication** holds the access defaults that also apply to OIDC users:
+
+| Setting | What it does |
+| --- | --- |
+| **Default role** | Role bound globally to new users and to OIDC users who end a login with no group or binding. **No default role** leaves them without access. See [Default role for new users](/docs/access/roles#default-role-for-new-users). |
+| **Audit retention days** | Days to keep [audit log](/docs/access/audit-log#retention) entries. `0` keeps them forever. |
+| **Record permission denials** | Writes an `authz.denied` entry to the audit log when a request is rejected for a missing permission. See [Permission denials](/docs/access/audit-log#permission-denials). |
+
+## Reference
+
+### Primary Configuration
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `ARCANE_OIDC_ENABLED` | `false` | Enable OIDC login. |
+| `ARCANE_OIDC_CLIENT_ID` | — | Client ID from your OIDC provider. |
+| `ARCANE_OIDC_CLIENT_SECRET` | — | Client secret from your OIDC provider. |
+| `ARCANE_OIDC_ISSUER_URL` | — | Issuer URL of your OIDC provider, such as `https://your-provider.com`. No trailing slash. |
+| `ARCANE_OIDC_SCOPES` | `openid email profile` | Scopes to request. Include the groups claim if you use OIDC group mappings. |
+| `ARCANE_OIDC_MERGE_ACCOUNTS` | `false` | Link OIDC logins to existing local accounts based on email address. |
+| `ARCANE_OIDC_SKIP_TLS_VERIFY` | `false` | Skip TLS verification for the OIDC provider. Use with caution. |
+| `ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER` | `false` | Automatically redirect users to the OIDC provider on login. |
+| `ARCANE_OIDC_PROVIDER_NAME` | — | Provider display name shown on the login screen. |
+| `ARCANE_OIDC_PROVIDER_LOGO_URL` | — | Provider logo URL shown on the login screen. |
+| `ARCANE_OIDC_GROUPS_CLAIM` | `groups` | Claim that holds the user's groups. Supports dotted paths such as `realm_access.roles`. |
+| `ARCANE_OIDC_GROUP_MAPPINGS` | — | OIDC claim→group mappings as `claim=GroupName` pairs separated by commas, for example `docker-admins=Admins,devs=Developers`. Missing groups are created. Reconciled at every startup; rows are read-only in the UI. Supports `ARCANE_OIDC_GROUP_MAPPINGS_FILE` for Docker secrets. |
+
+### Manual Endpoint Overrides (Advanced)
+
+Use these if your OIDC provider does not support standard discovery via the Issuer URL.
+
+| Variable | Description |
+| --- | --- |
+| `ARCANE_OIDC_AUTHORIZATION_ENDPOINT` | Manual authorization URL, such as `https://provider.com/auth`. |
+| `ARCANE_OIDC_TOKEN_ENDPOINT` | Manual token URL, such as `https://provider.com/token`. |
+| `ARCANE_OIDC_USERINFO_ENDPOINT` | Manual userinfo URL, such as `https://provider.com/userinfo`. |
+| `ARCANE_OIDC_JWKS_ENDPOINT` | Manual JWKS URL for token verification, such as `https://provider.com/jwks`. |
+
+### Arcane Configuration Values
+
+| Type | Value | Description |
+| --- | --- | --- |
+| **Redirect URI** | `{ARCANE_APP_URL}/auth/oidc/callback` | The URL to register with your OIDC provider |

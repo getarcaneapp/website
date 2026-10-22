@@ -5,7 +5,7 @@ description: 'Deploy projects from a Git repository, or commit project changes b
 
 Git Sync connects a project to a Git repository in one of two directions. A **Pull** sync deploys from the repository: you edit files in Git, and Arcane copies them into the project and can redeploy it. A **Push** sync backs up to the repository: you edit the project in Arcane, and Arcane commits its files to Git.
 
-A project can have one sync; to change direction, disconnect it and create a new one. Repositories live under **Customization → Git Repositories**, and syncs on each environment's **Git Syncs** page (**Environments → Git Syncs**).
+A project can have one sync; to change direction, disconnect it and create a new one. Repositories live under **Customization → Git Repositories**, and syncs from every environment on the **Git Syncs** page in the sidebar, with an **Environment** column and filter.
 
 ## Connect a repository
 
@@ -30,7 +30,7 @@ For **Push**, the credentials need write access to the branch.
 
 ### Create a Git-synced project
 
-1. On the **Projects** page, open the dropdown next to **Create Project** and choose **From Git Repo**. You can also click **Add Sync** on the **Git Syncs** page.
+1. On the **Projects** page, open the dropdown next to **Create Project** and choose **From Git Repo**. You can also click **Add Sync** on the **Git Syncs** page and pick the **Environment** to deploy to.
 2. Choose **Pull** and enter a **Sync Name**. This becomes the project name in Arcane.
 3. Leave **Target Type** set to **Project**. (**Stack** deploys to a Swarm stack instead.)
 4. Leave **Project** set to **Create a new project**, or pick an existing project to link it.
@@ -64,7 +64,7 @@ The Compose file is read-only for **Pull** projects. Use **Open Project in Git**
 
 ### Import multiple syncs from JSON
 
-On the **Git Syncs** page, click **Import .JSON**, then paste or upload a JSON array to create several **Pull** syncs at once:
+On the **Git Syncs** page, click **Import .JSON**, pick the **Environment**, then paste or upload a JSON array to create several **Pull** syncs at once:
 
 ```json
 [

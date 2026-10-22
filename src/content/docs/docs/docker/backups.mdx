@@ -61,10 +61,10 @@ Arcane keeps a copy for scheduled jobs. To use a key from another installation, 
 > [!WARNING]
 > Losing the recovery key makes the snapshots unrecoverable. Arcane refuses to reset the key while system backups made with the current key still exist, because they can only be opened with the key that created them.
 
-Volume backups made before any recovery key was set use a password derived from `ENCRYPTION_KEY`. When you set a recovery key, Arcane tries to move its existing volume backup repositories to the new key. Repositories that belong to another Arcane instance must be moved by that instance.
+Volume backups made before any recovery key was set use a password derived from `ARCANE_ENCRYPTION_KEY`. When you set a recovery key, Arcane tries to move its existing volume backup repositories to the new key. Repositories that belong to another Arcane instance must be moved by that instance.
 
 > [!WARNING]
-> Keep your original `ENCRYPTION_KEY` until you've confirmed older volume backups open with the recovery key. A recovery key imported on a fresh installation can't unlock a repository that still uses the old password.
+> Keep your original `ARCANE_ENCRYPTION_KEY` until you've confirmed older volume backups open with the recovery key. A recovery key imported on a fresh installation can't unlock a repository that still uses the old password.
 
 ## Volume backups
 

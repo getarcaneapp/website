@@ -27,7 +27,7 @@ GitOps lifecycle hooks run a script from your repository before Arcane deploys a
 
 ## Configure a pre-deploy hook on a sync
 
-1. Open the environment's **Git Syncs** page.
+1. Open **Git Syncs** in the sidebar.
 2. Create or edit a **Pull** sync with **Target Type** set to **Project**.
 3. Expand **Pre-deploy script**.
 4. Set **Script path** to a file in the synced directory, e.g. `scripts/pre-deploy.sh`.

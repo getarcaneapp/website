@@ -1,0 +1,173 @@
+---
+title: 'Migrate to 3.0'
+description: 'Prepare an Arcane 2.x installation for Arcane 3.0 and upgrade it.'
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+> [!CAUTION]
+> Arcane 3.0 is a breaking release. Work through the steps below before you change the image tag on a 2.x installation.
+
+## Breaking changes at a glance
+
+- You must be on 2.17.0 before upgrading. The Manager, agents, and CLI must all run 3.0.
+- The `arcane` and `arcane-headless` image aliases are removed. Use `manager` and `agent`.
+- Environment variables start with `ARCANE_`. See [Environment variables are renamed](#environment-variables-are-renamed).
+- Direct agents are removed. See [Direct agents become edge agents](#direct-agents-become-edge-agents).
+- The environment switcher is gone. See [Every page covers all environments](#every-page-covers-all-environments).
+- Role assignments become role bindings and groups. See [Access control changes](#access-control-changes).
+- Several CLI flags, commands, and config keys are removed. See [CLI changes](#cli-changes).
+- The legacy edge tunnel protocol and `EDGE_MUX_DISABLED` are removed.
+- **Resolve after review** on job runs is removed.
+- API changes:
+  - actions use an `?action=` query parameter
+  - updates use `PATCH` instead of `PUT`
+  - several routes are renamed
+  - some lists return `-1` totals unless you pass `includeTotal=true`
+
+## Environment variables are renamed
+
+Add `ARCANE_` to the front of every Arcane variable in your Compose and env files, including `_FILE` variants:
+
+| 2.x                                            | 3.0                                                                 |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
+| `APP_URL`                                      | `ARCANE_APP_URL`                                                    |
+| `ENCRYPTION_KEY_FILE`                          | `ARCANE_ENCRYPTION_KEY_FILE`                                        |
+| `EDGE_AGENT`, `MANAGER_API_URL`, `AGENT_TOKEN` | `ARCANE_EDGE_AGENT`, `ARCANE_MANAGER_API_URL`, `ARCANE_AGENT_TOKEN` |
+| `ANALYTICS_DISABLED=true`                      | `ARCANE_ANALYTICS_ENABLED=false`                                    |
+| `UPDATE_CHECK_DISABLED=true`                   | `ARCANE_UPDATE_CHECK_ENABLED=false`                                 |
+
+- An old name set without its new name stops startup with `legacy environment variables are no longer read` and one `rename X to ARCANE_X` line per variable.
+- `PUID`, `PGID`, `TZ`, `DOCKER_HOST`, `DOCKER_CONFIG`, `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`, and `OTEL_*` keep their names.
+- `JWT_SECRET` is no longer read. Arcane logs a warning until you remove it.
+- A setting set through its variable always overrides the UI and is locked there. You no longer need `ARCANE_UI_CONFIGURATION_DISABLED=true`. An invalid value stops startup. See [Settings overrides](/docs/reference/environment-variables#settings-overrides).
+
+## Direct agents become edge agents
+
+Every remote environment is now an edge agent that connects out to the Manager. The Manager no longer dials agents on port `3553`.
+
+- An agent needs `ARCANE_EDGE_AGENT=true`, `ARCANE_MANAGER_API_URL`, and `ARCANE_AGENT_TOKEN`.
+- `AGENT_MODE=true` without `ARCANE_EDGE_AGENT` stops startup with `direct agents were removed in v3`. The built-in upgrader and system recovery refuse these containers too.
+- Agent images expose no port, so health checks on port `3553` no longer work.
+- Creating an environment only needs a name.
+
+On first start, 3.0 converts each direct environment into a **Pending** edge environment. Its ID stays the same, so webhooks, Git syncs, settings, jobs, and colors stay attached. Re-enroll each one:
+
+<Steps>
+
+1. Open **Environments** and click the environment.
+2. On the **Connection & Edge** tab, click **Regenerate API Key** and confirm.
+3. Copy the new key and the install command Arcane shows.
+4. On the agent host, remove the old agent container and run the new command.
+
+</Steps>
+
+## Every page covers all environments
+
+Every list, the dashboard, network topology, Swarm, Security, Git Syncs, and Podman Auto Update show every environment you can read, with an **Environment** column and filter. Create forms have an **Environment** field. See [Work across environments](/docs/remote/environments#work-across-environments).
+
+- Detail page URLs carry `?env=<id>`. Old bookmarks no longer resolve.
+- Git Syncs moved from `/environments/{id}/gitops` to `/gitops`.
+- **Timeouts**, **Activity**, **Builds**, and notification providers moved to tabs on each environment's page. Jobs are on the **Automations** tab.
+- Editing those settings also needs `environments:list` or `environments:read`. Add one to roles that only had `settings:*` or `notifications:manage`.
+- Webhooks from every environment are in one list under **Settings → Webhooks**.
+- Environment colors moved to **Account → Preferences**. The **Previews** tab is removed.
+- The Security overview shows one patch-priority score for all environments.
+
+## Access control changes
+
+After the first 3.0 start, follow [Update roles from 2.x](/docs/access/upgrade-roles). It covers admins, new permissions, `OIDC_ROLE_MAPPINGS`, and default roles. Otherwise, users keep the same access.
+
+### Data migration
+
+| 2.x                                   | 3.0                                                                                                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Manual and federated role assignments | User role bindings with the same role and environment.                                                                     |
+| OIDC role mappings                    | One group per claim value, named after it, with the old roles bound to it. Environment-managed mappings stay that way.     |
+| OIDC-sourced role assignments         | Membership in the claim's group. Anything else becomes a user binding until the user's next login replaces it with groups. |
+
+### Other changes
+
+- Built-in roles can't be edited.
+- `images:push` is removed from custom roles.
+- Resources Arcane creates get the `com.getarcaneapp.arcane.owner` label, replacing any value you set.
+- A resource outside a scoped user's read scope returns `404`.
+- `/api/users/{userId}/roles` is removed. Use `/api/roles/bindings`.
+
+## CLI changes
+
+| Removed                                                                  | Use instead                                    |
+| ------------------------------------------------------------------------ | ---------------------------------------------- |
+| `--env` on `containers create`                                           | `--env-var`                                    |
+| `--config` on `admin notifications settings set`                         | `--provider-config`                            |
+| `--output` on `templates download`                                       | `--output-file`                                |
+| `--disabled`                                                             | `--enabled=false`                              |
+| `jwt_token` and `refresh_token` in the config file                       | `arcane-cli auth login`                        |
+| `default_environment`, `config set environment`, `environments switch`   | `--env <id>` on each command                   |
+| `--api-url`, `--access-token`, `--edge`, `--use-api-key` on environments | Nothing. `environments create` needs `--name`. |
+| `admin roles assign`, `admin roles assignments`                          | `admin bindings`, `admin groups`               |
+| `--role`, `--environment` on `admin oidc`                                | `--group`                                      |
+
+Commands now cover every environment. Changes without `--env` ask for confirmation first. See [CLI Configuration](/docs/reference/cli/config#work-across-environments).
+
+## Update your Compose file
+
+The minimum changes Arcane needs to start on 3.0. Keep everything else as it is.
+
+Manager:
+
+```diff
+services:
+  arcane:
+-   image: ghcr.io/getarcaneapp/arcane:latest
++   image: ghcr.io/getarcaneapp/manager:v3
+    environment:
+-     - APP_URL=https://arcane.example.com
+-     - ENCRYPTION_KEY=<your-encryption-key>
+-     - PROJECTS_DIRECTORY=/opt/docker
+-     - JWT_SECRET=<your-jwt-secret>
+-     - EDGE_MUX_DISABLED=true
+-     - OIDC_ROLE_MAPPINGS=...
++     - ARCANE_APP_URL=https://arcane.example.com
++     - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
++     - ARCANE_PROJECTS_DIRECTORY=/opt/docker
++     - ARCANE_OIDC_GROUP_MAPPINGS=docker-admins=docker-admins
+      - PUID=1000
+      - PGID=1000
+```
+
+Edge agent:
+
+```diff
+services:
+  arcane-agent:
+-   image: ghcr.io/getarcaneapp/arcane-headless:latest
++   image: ghcr.io/getarcaneapp/agent:v3
+    environment:
+-     - EDGE_AGENT=true
+-     - MANAGER_API_URL=https://arcane.example.com
+-     - AGENT_TOKEN=arc_xxxxxxxx
++     - ARCANE_EDGE_AGENT=true
++     - ARCANE_MANAGER_API_URL=https://arcane.example.com
++     - ARCANE_AGENT_TOKEN=arc_xxxxxxxx
+```
+
+For a former direct agent (`AGENT_MODE=true`), replace its Compose service with the install command from [re-enrolling](#direct-agents-become-edge-agents).
+
+## Upgrade
+
+<Steps>
+
+1. Upgrade the Manager and all agents to `2.17.0` and start them once. On 1.x, upgrade to 2.x first. Resolve any job runs marked **Needs attention**.
+2. Back up the Arcane database, the `/app/data` folder or volume, your Compose and env files, and your projects directory.
+3. [Update your Compose files](#update-your-compose-file).
+4. Update API scripts (see the [API reference](/docs/reference/api)), and upgrade `arcane-cli` to 3.0.
+5. Run `docker compose down`, then `docker compose up -d`.
+6. Upgrade every edge agent, and [re-enroll](#direct-agents-become-edge-agents) every former direct agent.
+7. Follow [Update roles from 2.x](/docs/access/upgrade-roles).
+
+</Steps>
+
+## Roll back
+
+Stop Arcane, restore your backup, then start the `2.17.0` images. Don't start 2.x against a database that 3.0 has already used. Rolling back loses resource-scoped bindings, groups, manual group memberships, and the audit log. See [Downgrading](/docs/get-started/downgrading).

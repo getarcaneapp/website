@@ -27,56 +27,56 @@ Arcane can create the certificate authority (CA) and agent certificates for you 
 2. On the Manager, set:
 
    ```bash
-   EDGE_MTLS_MODE=required
+   ARCANE_EDGE_MTLS_MODE=required
    ```
 
    ```bash
-   EDGE_MTLS_ASSETS_DIR=/app/data/edge-mtls
+   ARCANE_EDGE_MTLS_ASSETS_DIR=/app/data/edge-mtls
    ```
 
 3. On the agent, set:
 
    ```bash
-   EDGE_AGENT=true
+   ARCANE_EDGE_AGENT=true
    ```
 
    ```bash
-   MANAGER_API_URL=https://manager.example.com
+   ARCANE_MANAGER_API_URL=https://manager.example.com
    ```
 
    ```bash
-   AGENT_TOKEN=arc_xxxxxxxxxxxxxxxx
+   ARCANE_AGENT_TOKEN=arc_xxxxxxxxxxxxxxxx
    ```
 
    ```bash
-   EDGE_MTLS_MODE=required
+   ARCANE_EDGE_MTLS_MODE=required
    ```
 
    ```bash
-   EDGE_MTLS_ASSETS_DIR=/app/data/edge-mtls-agent
+   ARCANE_EDGE_MTLS_ASSETS_DIR=/app/data/edge-mtls-agent
    ```
 
    ```bash
-   EDGE_MTLS_CA_FILE=/etc/ssl/manager-ca.crt
+   ARCANE_EDGE_MTLS_CA_FILE=/etc/ssl/manager-ca.crt
    ```
 
-4. Mount the agent's `EDGE_MTLS_ASSETS_DIR` on a persistent volume, so the certificate survives restarts. Otherwise the agent enrolls again on every restart.
+4. Mount the agent's `ARCANE_EDGE_MTLS_ASSETS_DIR` on a persistent volume, so the certificate survives restarts. Otherwise the agent enrolls again on every restart.
 
-`MANAGER_API_URL` must use `https://`. `EDGE_MTLS_CA_FILE` on the agent is the certificate the agent trusts for the Manager's HTTPS. Point it at the Manager's certificate if that is self-signed; leave it unset for a public CA such as Let's Encrypt to use the system trust store.
+`ARCANE_MANAGER_API_URL` must use `https://`. `ARCANE_EDGE_MTLS_CA_FILE` on the agent is the certificate the agent trusts for the Manager's HTTPS. Point it at the Manager's certificate if that is self-signed; leave it unset for a public CA such as Let's Encrypt to use the system trust store.
 
 If a reverse proxy terminates HTTPS, Arcane can receive plain HTTP from that trusted proxy, but the proxy must then require client certificates on the edge tunnel routes.
 
 ### Where certificates are stored
 
-`EDGE_MTLS_ASSETS_DIR` on the Manager holds the CA and issued certificates. If `EDGE_MTLS_CA_FILE` is not set on the Manager, Arcane creates the edge CA there as `ca.crt` and `ca.key`, with the private key encrypted using your `ENCRYPTION_KEY`.
+`ARCANE_EDGE_MTLS_ASSETS_DIR` on the Manager holds the CA and issued certificates. If `ARCANE_EDGE_MTLS_CA_FILE` is not set on the Manager, Arcane creates the edge CA there as `ca.crt` and `ca.key`, with the private key encrypted using your `ARCANE_ENCRYPTION_KEY`.
 
 ### How enrollment works
 
 On first start:
 
-1. The agent calls `POST /api/tunnel/mtls/enroll` over HTTPS, presenting only its `AGENT_TOKEN`.
+1. The agent calls `POST /api/tunnel/mtls/enroll` over HTTPS, presenting only its `ARCANE_AGENT_TOKEN`.
 2. The Manager issues a client certificate valid for about a year and returns it with the edge CA.
-3. The agent saves them in `EDGE_MTLS_ASSETS_DIR` as `agent.crt`, `agent.key`, and `ca.crt`, and reconnects using them.
+3. The agent saves them in `ARCANE_EDGE_MTLS_ASSETS_DIR` as `agent.crt`, `agent.key`, and `ca.crt`, and reconnects using them.
 
 On later starts, the agent reuses the saved files. If the certificate has expired or is close to expiry, it enrolls again.
 
@@ -88,7 +88,7 @@ An ML-DSA client certificate needs **TLS 1.3** on every hop of the edge connecti
 
 ## Modes
 
-| `EDGE_MTLS_MODE` | Behaviour                                                                                                                                                                          |
+| `ARCANE_EDGE_MTLS_MODE` | Behaviour                                                                                                                                                                          |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `disabled`       | No mTLS; agents authenticate with their token only. This is the default.                                                                                                           |
 | `optional`       | The Manager accepts both mTLS and token-only connections.                                                                                                                          |
@@ -104,11 +104,11 @@ To use certificates from your own certificate authority, set the paths explicitl
 Manager:
 
 ```bash
-EDGE_MTLS_MODE=required
+ARCANE_EDGE_MTLS_MODE=required
 ```
 
 ```bash
-EDGE_MTLS_CA_FILE=/etc/arcane/edge-ca.crt
+ARCANE_EDGE_MTLS_CA_FILE=/etc/arcane/edge-ca.crt
 ```
 
 Arcane still signs new agent certificates with its own internal key unless you also issue agent certificates yourself.
@@ -116,22 +116,22 @@ Arcane still signs new agent certificates with its own internal key unless you a
 Agent:
 
 ```bash
-EDGE_MTLS_MODE=required
+ARCANE_EDGE_MTLS_MODE=required
 ```
 
 ```bash
-EDGE_MTLS_CERT_FILE=/etc/arcane/agent.crt
+ARCANE_EDGE_MTLS_CERT_FILE=/etc/arcane/agent.crt
 ```
 
 ```bash
-EDGE_MTLS_KEY_FILE=/etc/arcane/agent.key
+ARCANE_EDGE_MTLS_KEY_FILE=/etc/arcane/agent.key
 ```
 
 ```bash
-EDGE_MTLS_CA_FILE=/etc/arcane/manager-ca.crt
+ARCANE_EDGE_MTLS_CA_FILE=/etc/arcane/manager-ca.crt
 ```
 
-When both `EDGE_MTLS_CERT_FILE` and `EDGE_MTLS_KEY_FILE` are set, the agent skips enrollment.
+When both `ARCANE_EDGE_MTLS_CERT_FILE` and `ARCANE_EDGE_MTLS_KEY_FILE` are set, the agent skips enrollment.
 
 ## Download certificates from the UI
 
@@ -155,8 +155,8 @@ Downloading all three as a `.zip` is also admin-only. Every download is recorded
 
 | Error or symptom                                                   | Fix                                                                                                                                         |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `EDGE_MTLS_MODE requires MANAGER_API_URL to use https`             | The agent won't enroll or connect over plain HTTP. Serve the Manager over HTTPS and use an `https://` URL.                                  |
-| `x509: certificate signed by unknown authority`                    | The agent doesn't trust the Manager's certificate. For a self-signed certificate, set `EDGE_MTLS_CA_FILE` on the agent to that certificate. |
-| Enrollment fails                                                   | Check that `EDGE_MTLS_CERT_FILE` and `EDGE_MTLS_KEY_FILE` are unset on the agent, the agent token is valid, and mTLS is on for the Manager. |
-| Agent enrolls again after every restart                            | `EDGE_MTLS_ASSETS_DIR` on the agent isn't on a persistent volume.                                                                           |
+| `ARCANE_EDGE_MTLS_MODE requires ARCANE_MANAGER_API_URL to use https`             | The agent won't enroll or connect over plain HTTP. Serve the Manager over HTTPS and use an `https://` URL.                                  |
+| `x509: certificate signed by unknown authority`                    | The agent doesn't trust the Manager's certificate. For a self-signed certificate, set `ARCANE_EDGE_MTLS_CA_FILE` on the agent to that certificate. |
+| Enrollment fails                                                   | Check that `ARCANE_EDGE_MTLS_CERT_FILE` and `ARCANE_EDGE_MTLS_KEY_FILE` are unset on the agent, the agent token is valid, and mTLS is on for the Manager. |
+| Agent enrolls again after every restart                            | `ARCANE_EDGE_MTLS_ASSETS_DIR` on the agent isn't on a persistent volume.                                                                           |
 | Manager logs `tunnel request failed: unsupported edge command ...` | That UI action has no handler on the edge tunnel. File a bug with the HTTP method and path from the error.                                  |

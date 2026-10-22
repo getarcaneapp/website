@@ -17,7 +17,7 @@ A **project** is a folder with a Compose file and its related files, such as `.e
 
 ## Where projects live
 
-Each project is a folder inside the **Projects Directory**: `/app/data/projects` by default, or the absolute path you set with `PROJECTS_DIRECTORY` or on the environment's **Storage & Limits** tab. Arcane saves the Compose file and `.env` there, and scans the directory, including nested folders, for Compose files, so projects created outside Arcane show up too. Folders with the same name are told apart by their full paths.
+Each project is a folder inside the **Projects Directory**: `/app/data/projects` by default, or the absolute path you set with `ARCANE_PROJECTS_DIRECTORY` or on the environment's **Storage & Limits** tab. Arcane saves the Compose file and `.env` there, and scans the directory, including nested folders, for Compose files, so projects created outside Arcane show up too. Folders with the same name are told apart by their full paths.
 
 Mounting the folder at the same path on the host and in the container is the simplest setup. [Installation](/docs/get-started/installation) explains the mount and how Arcane translates paths when they differ.
 
@@ -62,7 +62,7 @@ Deploys pull service `image:` references, lifecycle hook images such as `pre_sta
 
 ### Set the deploy wait timeout
 
-A deploy waits for `depends_on` conditions such as `service_healthy` and `service_completed_successfully`. If slow healthchecks or initialization cause timeouts, raise **Deploy Wait Timeout** in **Settings → Timeouts**. The default is 600 seconds; the range is 30–14400. Dependencies using `service_healthy` must define a healthcheck.
+A deploy waits for `depends_on` conditions such as `service_healthy` and `service_completed_successfully`. If slow healthchecks or initialization cause timeouts, raise **Deploy Wait Timeout** on the environment's **Timeouts** tab (**Environments →** your environment **→ Timeouts**). The default is 600 seconds; the range is 30–14400. Dependencies using `service_healthy` must define a healthcheck.
 
 ### Watch deploy output live
 
@@ -202,9 +202,9 @@ Set these on the Arcane container to change the workspace limits:
 
 | Variable                             | Default | Sets                                            |
 | ------------------------------------ | ------- | ----------------------------------------------- |
-| `PROJECT_WORKSPACE_MAX_FILE_SIZE_MB` | `10`    | Maximum size of a single workspace file, in MiB |
-| `PROJECT_WORKSPACE_MAX_DEPTH`        | `20`    | Maximum folder depth                            |
-| `PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders             |
+| `ARCANE_PROJECT_WORKSPACE_MAX_FILE_SIZE_MB` | `10`    | Maximum size of a single workspace file, in MiB |
+| `ARCANE_PROJECT_WORKSPACE_MAX_DEPTH`        | `20`    | Maximum folder depth                            |
+| `ARCANE_PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders             |
 
 > [!IMPORTANT]
-> Use `PROJECT_WORKSPACE_MAX_DEPTH` to set the folder depth. Arcane doesn't read `PROJECT_FILE_TREE_MAX_DEPTH`, so rename it if your environment still sets it.
+> Use `ARCANE_PROJECT_WORKSPACE_MAX_DEPTH` to set the folder depth. Arcane doesn't read `PROJECT_FILE_TREE_MAX_DEPTH`, so rename it if your environment still sets it.
