@@ -9,28 +9,46 @@ const labels = { news: 'News', update: 'Update', deprecation: 'Deprecation', rel
 <span class:list={['kind-badge', kind]}>{labels[kind]}</span>
 
 <style>
-	.kind-badge {
-		--badge: var(--primary);
-		display: inline-flex;
-		align-items: center;
-		padding: 0.125rem 0.5rem;
-		border: 1px solid color-mix(in oklab, var(--badge) 25%, transparent);
-		border-radius: 0.375rem;
-		background-color: color-mix(in oklab, var(--badge) 10%, transparent);
-		color: var(--badge);
-		font-size: 0.625rem;
-		font-weight: 500;
-		letter-spacing: 0.04em;
-		line-height: 1.5;
-		text-transform: uppercase;
-	}
-	.kind-badge.deprecation {
-		--badge: var(--warning);
-	}
-	.kind-badge.release {
-		--badge: var(--chart-2);
-	}
-	.kind-badge.update {
-		--badge: var(--info);
-	}
+/* Text/tint pairs are AA (≥5:1) in both themes. */
+.kind-badge {
+	--badge-text: #6d28d9;
+	--badge-tint: #f5f3ff;
+	display: inline-flex;
+	align-items: center;
+	padding: 0.125rem 0.5rem;
+	border-radius: 0.25rem;
+	background-color: var(--badge-tint);
+	color: var(--badge-text);
+	font-size: 0.75rem;
+	font-weight: 500;
+	line-height: 1.5;
+}
+.kind-badge.deprecation {
+	--badge-text: #92400e;
+	--badge-tint: #fffbeb;
+}
+.kind-badge.release {
+	--badge-text: #0f766e;
+	--badge-tint: #f0fdfa;
+}
+.kind-badge.update {
+	--badge-text: #0369a1;
+	--badge-tint: #f0f9ff;
+}
+:global([data-theme="dark"]) .kind-badge {
+	--badge-text: #c4b5fd;
+	--badge-tint: #241a3d;
+}
+:global([data-theme="dark"]) .kind-badge.deprecation {
+	--badge-text: #fcd34d;
+	--badge-tint: #3a2508;
+}
+:global([data-theme="dark"]) .kind-badge.release {
+	--badge-text: #5eead4;
+	--badge-tint: #0b2e2b;
+}
+:global([data-theme="dark"]) .kind-badge.update {
+	--badge-text: #7dd3fc;
+	--badge-tint: #0b2536;
+}
 </style>

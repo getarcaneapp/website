@@ -3,14 +3,15 @@ import {
 	BoxIcon,
 	ChartIcon,
 	ClockIcon,
+	ContainersIcon,
+	EnvironmentsIcon,
+	FolderIcon,
 	GlobeIcon,
 	ShieldCheckIcon,
-	SparklesIcon,
-	VolumesIcon,
-	WrenchIcon
+	VolumesIcon
 } from '#lib/icons/index.js';
 
-type IconComponent = typeof SparklesIcon;
+type IconComponent = typeof BoxIcon;
 
 export interface Feature {
 	icon: IconComponent;
@@ -20,48 +21,53 @@ export interface Feature {
 
 export const features: Feature[] = [
 	{
-		icon: SparklesIcon,
-		title: 'Modern UI Interface',
-		description: 'Clean, intuitive design that makes Docker management a breeze.'
+		icon: ContainersIcon,
+		title: 'Containers',
+		description: 'Start, stop, restart, and inspect containers.'
 	},
 	{
-		icon: ClockIcon,
-		title: 'Real-time Monitoring',
-		description: 'Live updates of container status, resource usage, and logs.'
-	},
-	{
-		icon: WrenchIcon,
-		title: 'Container Management',
-		description: 'Start, stop, restart, and inspect containers with ease.'
+		icon: FolderIcon,
+		title: 'Compose projects',
+		description: 'Create, edit, and deploy Compose projects from the browser.'
 	},
 	{
 		icon: BoxIcon,
-		title: 'Image Management',
-		description: 'Pull, and manage Docker images.'
-	},
-	{
-		icon: GlobeIcon,
-		title: 'Network Configuration',
-		description: 'Create and configure Docker networks.'
+		title: 'Images',
+		description: 'Pull and manage Docker images.'
 	},
 	{
 		icon: VolumesIcon,
-		title: 'Volume Management',
-		description: 'Create and manage persistent data with Docker volumes.'
+		title: 'Volumes',
+		description: 'Create and manage volumes for persistent data.'
+	},
+	{
+		icon: GlobeIcon,
+		title: 'Networks',
+		description: 'Create and configure Docker networks.'
+	},
+	{
+		icon: EnvironmentsIcon,
+		title: 'Remote hosts',
+		description: 'Manage other Docker hosts through an agent.'
+	},
+	{
+		icon: ClockIcon,
+		title: 'Live status and logs',
+		description: 'See container status, resource usage, and logs as they change.'
 	},
 	{
 		icon: ChartIcon,
-		title: 'Resource Visualization',
-		description: 'Visual graphs for CPU, memory, and network usage.'
+		title: 'Resource graphs',
+		description: 'Graph CPU, memory, and network usage.'
 	},
 	{
 		icon: ShieldCheckIcon,
-		title: 'Vulnerability Scanning',
-		description: 'Scan images for known vulnerabilities right from the dashboard.'
+		title: 'Vulnerability scans',
+		description: 'Scan images for known vulnerabilities from the dashboard.'
 	},
 	{
 		icon: BookOpenIcon,
-		title: 'Fully Documented API',
-		description: 'RESTful API built with Huma on Gin, featuring built-in OpenAPI 3.1 documentation.'
+		title: 'REST API',
+		description: 'Automate tasks with the REST API and OpenAPI schema.'
 	}
 ];

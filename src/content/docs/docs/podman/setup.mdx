@@ -1,45 +1,143 @@
 ---
-title: 'Run Arcane on Podman'
-description: 'Use Arcane with rootless Podman through Compose or a systemd Quadlet.'
+title: "Run Arcane on Podman"
+description: "Run Arcane on rootless or rootful Podman with Podman Compose or a systemd Quadlet."
 ---
 
-import { Steps, TabItem, Tabs } from '@astrojs/starlight/components';
+import { Steps, TabItem, Tabs } from "@astrojs/starlight/components";
 
-Arcane can manage Podman instead of Docker by talking to Podman's Docker-compatible API socket. When that socket belongs to a rootless Podman user, Arcane and every container it creates stay rootless.
+Arcane connects through Podman's Docker-compatible API socket. With a rootless user's socket, Arcane and every container it creates stay rootless. Arcane detects Podman on its own and adds a **Podman** section. See [Podman Overview](/docs/podman/overview).
 
-Arcane detects Podman on its own. Containers, images, volumes, networks, and Compose projects work as they do on Docker, and a **Podman** section adds pods, Quadlets, Kubernetes YAML, Podman secrets, and Podman auto-update. See [Podman Overview](/docs/podman/overview).
+## Before you start
+
+You need:
+
+- **Podman.** Check with `podman --version`.
+- **A Compose provider** for the Compose path: [podman-compose](https://github.com/containers/podman-compose) or Docker Compose. `podman compose` runs whichever one is installed. Check with `podman compose version`.
+- **The Podman socket**, turned on as shown below.
 
 ## Enable the Podman socket
 
-```bash
-systemctl --user enable --now podman.socket
-loginctl enable-linger "$USER"
-```
+Pick rootless (recommended) or rootful.
 
-Lingering starts your user's systemd manager at boot, so your user services run without an interactive login.
+- **Rootless.** Run as the user that will own Arcane's containers:
 
-The socket is at `/run/user/<UID>/podman/podman.sock`. In a user systemd unit you can write this as `%t/podman/podman.sock`, where `%t` expands to the user's runtime directory.
+  ```bash
+  systemctl --user enable --now podman.socket
+  loginctl enable-linger "$USER"
+  ```
+
+  Lingering starts your user's systemd manager at boot, without an interactive login. The socket is at `/run/user/<UID>/podman/podman.sock`, or `%t/podman/podman.sock` in a user systemd unit (`%t` is the user's runtime directory).
+
+- **Rootful.** Run:
+
+  ```bash
+  sudo systemctl enable --now podman.socket
+  ```
+
+  The socket is at `/run/podman/podman.sock`.
 
 ## Install Arcane
 
-Run Arcane with Compose, or as a Quadlet so your user's systemd manager starts it at boot and restarts it if it exits.
+Use Compose, or a Quadlet so systemd starts Arcane at boot and restarts it if it exits.
 
 <Tabs>
 <TabItem label="Compose">
 
-Follow the [Installation](/docs/get-started/installation) guide, then replace the Docker socket mount with your rootless Podman socket:
+<Steps>
 
-```diff
-services:
-  arcane:
-    volumes:
--     - /var/run/docker.sock:/var/run/docker.sock
-+     - /run/user/<UID>/podman/podman.sock:/var/run/docker.sock
-```
+1. **Generate an encryption key.** Run this and copy the output:
 
-Replace `<UID>` with your numeric user ID (`id -u`).
+   ```bash
+   podman run --rm ghcr.io/getarcaneapp/manager:latest /app/arcane generate secret
+   ```
 
-On Windows 11 with Podman Desktop, mount `/run/podman/podman.sock` instead. It's the socket inside the Podman VM.
+2. **Create `compose.yaml`** with the file for your setup.
+
+   Rootless (replace `<UID>` and `<GID>` with the output of `id -u` and `id -g`):
+
+   ```yaml
+   services:
+     arcane:
+       image: ghcr.io/getarcaneapp/manager:latest
+       container_name: arcane
+       user: "0:0"
+       userns_mode: keep-id
+       ports:
+         - "3552:3552"
+       volumes:
+         - /run/user/<UID>/podman/podman.sock:/var/run/docker.sock
+         - arcane-data:/app/data
+       environment:
+         - ARCANE_APP_URL=http://localhost:3552
+         - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+         - PUID=<UID>
+         - PGID=<GID>
+       security_opt:
+         - label=disable
+       cgroup: host
+       healthcheck:
+         test: ["CMD", "./arcane", "health", "--timeout", "2s"]
+         interval: 10s
+         timeout: 3s
+         retries: 5
+         start_period: 15s
+       restart: unless-stopped
+
+   volumes:
+     arcane-data:
+   ```
+
+   Rootful:
+
+   ```yaml
+   services:
+     arcane:
+       image: ghcr.io/getarcaneapp/manager:latest
+       container_name: arcane
+       ports:
+         - "3552:3552"
+       volumes:
+         - /run/podman/podman.sock:/var/run/docker.sock
+         - arcane-data:/app/data
+       environment:
+         - ARCANE_APP_URL=http://localhost:3552
+         - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+         - PUID=0
+         - PGID=0
+       security_opt:
+         - label=disable
+       cgroup: host
+       healthcheck:
+         test: ["CMD", "./arcane", "health", "--timeout", "2s"]
+         interval: 10s
+         timeout: 3s
+         retries: 5
+         start_period: 15s
+       restart: unless-stopped
+
+   volumes:
+     arcane-data:
+   ```
+
+3. **Paste your key.** Replace `<your-encryption-key>` with the key from step 1.
+
+4. **Set the address.** Change `ARCANE_APP_URL` to the address you will open, for example `http://<host-ip>:3552`.
+
+5. **Start Arcane.** In the folder with `compose.yaml`, run:
+
+   ```bash
+   podman compose up -d
+   ```
+
+   For rootful, run it with `sudo`.
+
+6. **Open Arcane** at the `ARCANE_APP_URL` address and sign in as `arcane`. Arcane generates the password on first start and writes it to `/app/data/initial-admin-password`. Run `podman compose cp arcane:/app/data/initial-admin-password .` to copy the file out. Set a new password when asked.
+
+</Steps>
+
+`label=disable` lets Arcane use the socket on SELinux hosts. `cgroup: host` helps Arcane find its own container. Rootless uses `keep-id` so Arcane starts as root, then switches to your `PUID`/`PGID` to own the socket. To manage a projects folder, add its mount and `ARCANE_PROJECTS_DIRECTORY` as in [Installation](/docs/get-started/installation).
+
+On Windows 11 with Podman Desktop, use the rootful file: `/run/podman/podman.sock` is the socket inside the Podman VM.
 
 </TabItem>
 <TabItem label="Quadlet">
@@ -80,10 +178,10 @@ On Windows 11 with Podman Desktop, mount `/run/podman/podman.sock` instead. It's
    Volume=arcane-data:/app/data
    Secret=arcane-encryption-key,type=mount,target=/run/secrets/arcane-key,mode=0444
 
-   Environment=APP_URL=http://localhost:3552
+   Environment=ARCANE_APP_URL=http://localhost:3552
    Environment=PUID=1000
    Environment=PGID=1000
-   Environment=ENCRYPTION_KEY_FILE=/run/secrets/arcane-key
+   Environment=ARCANE_ENCRYPTION_KEY_FILE=/run/secrets/arcane-key
 
    HealthCmd=["./arcane","health","--timeout","2s"]
    HealthInterval=10s
@@ -101,7 +199,7 @@ On Windows 11 with Podman Desktop, mount `/run/podman/podman.sock` instead. It's
    WantedBy=default.target
    ```
 
-   Set `APP_URL` to the URL your browser uses, and `PUID`/`PGID` to your user's IDs (`id -u`, `id -g`). To keep Arcane private behind a local reverse proxy, publish on `127.0.0.1:3552:3552`.
+   Set `ARCANE_APP_URL` to your browser's URL and `PUID`/`PGID` to your IDs (`id -u`, `id -g`). Behind a local reverse proxy, publish on `127.0.0.1:3552:3552`. `SecurityLabelDisable=true` allows socket use on SELinux hosts, `--cgroupns=host` helps Arcane find its own container, and `HealthCmd` uses exec form because the image has no shell.
 
 4. Start Arcane and Podman's auto-update timer:
 
@@ -111,31 +209,34 @@ On Windows 11 with Podman Desktop, mount `/run/podman/podman.sock` instead. It's
    systemctl --user enable --now podman-auto-update.timer
    ```
 
-   The `[Install]` section already adds the service to `default.target`, so it starts at boot without `enable`.
+   `[Install]` already adds the service to `default.target`, so it starts at boot without `enable`.
 
 </Steps>
 
-`SecurityLabelDisable=true` lets the container use the Podman socket on SELinux hosts, and `--cgroupns=host` helps Arcane find its own container. The Arcane image has no shell, so `HealthCmd` uses the exec form.
-
-To manage projects from a host folder, add a matching mount and path, as described in [Installation](/docs/get-started/installation):
+To manage projects from a host folder, add a matching mount and path (see [Installation](/docs/get-started/installation)):
 
 ```ini
 Volume=/opt/docker:/opt/docker
-Environment=PROJECTS_DIRECTORY=/opt/docker
+Environment=ARCANE_PROJECTS_DIRECTORY=/opt/docker
 ```
 
 </TabItem>
 </Tabs>
 
-The Podman socket gives Arcane control of every container owned by that Linux user. Run Arcane under a dedicated unprivileged user with no unrelated workloads or files.
+> [!WARNING]
+> The Podman socket gives Arcane control of every container owned by that Linux user. Run Arcane under a dedicated unprivileged user with no unrelated workloads or files.
 
 ## Give Arcane access to systemd
 
-Starting and stopping Quadlets from Arcane, and running Podman auto-update on Podman versions before 6.2, go through systemd. Arcane reaches it over D-Bus, so the bus has to be mounted into the container and Arcane has to run as a user that's allowed to use it. Everything else works without this step.
+Only needed for starting and stopping Quadlets, and Podman auto-update before 6.2. Everything else works without it.
 
-For rootless Podman that's the user's session bus at `/run/user/<UID>/bus`. Rootless Podman normally maps container users to subordinate IDs, which the bus won't accept, so `keep-id` maps your own UID into the container unchanged. Arcane starts as root inside the container and then switches to `PUID`/`PGID`, reaching the socket and the bus as their owner.
+1. Mount the systemd D-Bus socket into Arcane.
+2. Run Arcane as a user allowed to use it.
 
-Rootful Podman's units are system services, which only root can manage, so mount the system bus and run Arcane as root.
+Pick the example for your setup below.
+
+- **Rootless**: mount the session bus at `/run/user/<UID>/bus`. `keep-id` maps your UID into the container unchanged, since the bus rejects subordinate IDs. Arcane starts as root, then switches to `PUID`/`PGID` to own the socket and bus.
+- **Rootful**: units are system services only root can manage, so mount the system bus and run Arcane as root.
 
 <Tabs>
 <TabItem label="Rootless Compose">
@@ -143,7 +244,7 @@ Rootful Podman's units are system services, which only root can manage, so mount
 ```yaml
 services:
   arcane:
-    user: '0:0'
+    user: "0:0"
     userns_mode: keep-id
     volumes:
       - /run/user/<UID>/podman/podman.sock:/var/run/docker.sock
@@ -185,9 +286,7 @@ services:
 </TabItem>
 </Tabs>
 
-Run `arcane-cli podman status` to check. It reports the Podman version, whether Arcane runs rootless, and whether systemd is reachable. If it isn't, the reason also shows on each Quadlet's page and on **Podman → Auto Update**.
-
-When `DOCKER_HOST` points to a Podman engine on another machine, Arcane won't use its local bus. Run an [Arcane Agent](/docs/remote/environments) on that machine instead.
+With [`arcane-cli`](/docs/reference/cli/install) installed, run `arcane-cli podman status` to check the Podman version, whether Arcane runs rootless, and whether systemd is reachable. If not, the reason also shows on each Quadlet's page and **Podman → Auto Update**. When `DOCKER_HOST` points to a Podman engine on another machine, Arcane won't use its local bus; run an [Arcane Agent](/docs/remote/agents) there instead.
 
 ## Restart containers after a reboot
 
@@ -201,32 +300,57 @@ Arcane doesn't redeploy stopped Compose projects when it starts, so set a restar
 
 ## Check that it's working
 
+Run the commands for how you installed Arcane. The health check needs about 15 seconds after start; until then it shows `starting`.
+
+<Tabs>
+<TabItem label="Rootless Compose">
+
+```bash
+podman info --format '{{.Host.Security.Rootless}}'
+systemctl --user is-active podman.socket
+podman inspect arcane --format '{{.State.Health.Status}}'
+```
+
+Expect `true`, then `active`, then `healthy`.
+
+</TabItem>
+<TabItem label="Rootful Compose">
+
+```bash
+sudo systemctl is-active podman.socket
+sudo podman inspect arcane --format '{{.State.Health.Status}}'
+```
+
+Expect `active`, then `healthy`.
+
+</TabItem>
+<TabItem label="Quadlet">
+
 ```bash
 podman info --format '{{.Host.Security.Rootless}}'
 systemctl --user is-active podman.socket arcane.service podman-auto-update.timer
 podman inspect arcane --format '{{.State.Health.Status}}'
 ```
 
-The first command prints `true` for rootless Podman, every unit should be `active`, and the Arcane container should be `healthy`.
+Expect `true`, then `active` three times, then `healthy`.
+
+</TabItem>
+</Tabs>
 
 ## Updating Arcane
 
-With Compose, update Arcane as you would on Docker.
-
-With a Quadlet, Podman auto-update handles it. `AutoUpdate=registry` makes Podman check the image tag once a day and restart `arcane.service` when the image changes, rolling back if the new one doesn't become healthy. Arcane's own update action is turned off in this setup, because recreating the container would take it out of systemd's control. To check for an update or apply one now:
+With Compose, update as on Docker. With a Quadlet, `AutoUpdate=registry` makes Podman check the image tag daily and restart `arcane.service` when it changes, rolling back if the new one isn't healthy. Arcane's own update action is off here, since recreating the container would take it out of systemd's control. To check or apply now:
 
 ```bash
 podman auto-update --dry-run
 systemctl --user start podman-auto-update.service
 ```
 
-If you pin `Image` to a version tag, change the tag in the Quadlet and restart the service yourself.
-
-Arcane's updater skips the containers it finds running from Quadlets for the same reason. Update those with [Podman auto-update](/docs/podman/auto-update).
+If you pin `Image` to a version tag, change it in the Quadlet and restart the service. Arcane's updater also skips other Quadlet containers; update them with [Podman auto-update](/docs/podman/auto-update).
 
 ## Use ports 80 and 443 without root
 
-Linux only lets root bind ports below 1024. To let rootless containers publish HTTP and HTTPS directly, lower the threshold for every unprivileged user on the host:
+Only root can bind ports below 1024. To let rootless containers publish HTTP and HTTPS, lower the threshold for every unprivileged user:
 
 ```bash
 echo 'net.ipv4.ip_unprivileged_port_start=80' |

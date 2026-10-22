@@ -1,124 +1,129 @@
 ---
-title: 'Projects'
-description: 'Create, deploy, and edit Docker Compose projects in Arcane.'
+title: "Projects"
+description: "Create, deploy, and edit Docker Compose projects in Arcane."
 ---
 
-import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
+import ScreenshotFrame from "#components/content/ScreenshotFrame.astro";
 
-A **project** is a folder with a Compose file and its related files, such as `.env` and config files, that Arcane deploys and manages as one unit. Use a project whenever you would otherwise run `docker compose up`: for an app made of several services, or for any container you want defined in a file you can edit, version, and redeploy. The [Containers](/docs/docker/containers) page manages individual containers, including ones started outside Arcane.
+A **project** is a folder with a Compose file and its related files (`.env`, config files) that Arcane deploys as one unit. To manage single containers, including ones started outside Arcane, use [Containers](/docs/docker/containers).
+
+## Create a project
+
+1. Open **Projects** and click **Create Project**.
+2. Enter a name, and pick the agent from the name field.
+3. Paste or write the Compose YAML.
+4. Optional: click **Add .env file** to add project variables. In **Workspace** view, right-click empty space in the file tree instead. They're saved to `.env` next to the Compose file. Without it, no `.env` is created.
+5. Click **Create Project**, or press `Ctrl/Cmd+S`. Arcane saves the project, stopped, and opens it.
+6. Click **Up** to deploy it. If the Compose file has a `build:` section, the button reads **Build & Deploy**.
 
 <ScreenshotFrame
   name="projects-page"
-  alt="A running Compose project with three services."
-  caption="Manage related services together as a Compose project."
+  alt="The Projects list showing the demo project as Running with 3 services."
+  caption="After Up, the project shows as Running in the Projects list."
   loading="lazy"
   decoding="async"
 />
 
-## Where projects live
+How Arcane picks the folder:
 
-Each project is a folder inside the **Projects Directory**: `/app/data/projects` by default, or the absolute path you set with `PROJECTS_DIRECTORY` or on the environment's **Storage & Limits** tab. Arcane saves the Compose file and `.env` there, and scans the directory, including nested folders, for Compose files, so projects created outside Arcane show up too. Folders with the same name are told apart by their full paths.
-
-Mounting the folder at the same path on the host and in the container is the simplest setup. [Installation](/docs/get-started/installation) explains the mount and how Arcane translates paths when they differ.
-
-## Browse projects
-
-Open **Projects** in the sidebar. The list shows project name, status (running, partially running, stopped), service count, and the project directory.
-
-Use the **Labels** filter to find projects with a container label. Enter a key such as `com.example.team`, or an exact match such as `com.example.team=media`. A project matches when at least one of its existing service containers has that label. This is separate from the project's colored tags.
-
-## Create a project
-
-1. Click **Create Project**.
-2. Enter a name.
-3. Paste or write the Compose YAML.
-4. Optional: open the **Environment Configuration (.env)** editor and add variables. Arcane saves them to a `.env` file next to the Compose file.
-5. Click **Create Project**, or press `Ctrl/Cmd+S`. Arcane saves the project and tries to start it.
-
-Arcane creates the project folder from the name. If the Projects Directory already has a folder with that name that contains no Compose file and isn't used by another project, Arcane creates the project in it and keeps the files already there. An existing `.env` is kept if you leave the `.env` editor empty; different content is rejected. Otherwise Arcane adds a number to the folder name, such as `myapp-1`.
+- The folder is named after the project.
+- If a folder with that name already exists, has no Compose file, and no other project uses it, Arcane reuses it and keeps its files.
+- When it reuses a folder with a `.env`, an empty `.env` editor keeps the existing file. Different `.env` content is rejected.
+- Otherwise, Arcane adds a number to the name, such as `myapp-1`.
 
 ## Control a project
 
-- **Up**: start all services.
-- **Down**: stop and remove all containers.
-- **Restart**: stop and start without recreating containers.
-- **Redeploy**: pull the latest images and restart.
-- **Destroy**: remove the project and its resources. You choose whether to keep or delete volumes and project files.
+| Action       | What it does                                                                         |
+| ------------ | ------------------------------------------------------------------------------------ |
+| **Up**       | Starts all services.                                                                 |
+| **Down**     | Stops and removes all containers.                                                    |
+| **Restart**  | Stops and starts without recreating containers.                                      |
+| **Redeploy** | Pulls the latest images and restarts.                                                |
+| **Destroy**  | Removes the project and its resources. You choose whether to keep volumes and files. |
 
 ### Set deploy options
 
-Open the **Deploy** dropdown to set:
+Open the **Deploy** dropdown:
 
-- **Pull policy**: pull if not present, always pull latest, or never pull. It starts from the environment's **Default Deploy Pull Policy** (**Environments → the environment → Docker**) until you change it here.
-- **Force recreate containers**: recreate every container even if nothing about it changed.
-- **Recreate changed volumes (data loss)**: allow Compose to recreate a volume whose configuration no longer matches the Compose file.
+- **Pull policy**: pull if not present, always pull latest, or never pull. Defaults to the agent's **Default Deploy Pull Policy** (**Settings → Docker**).
+- **Force recreate containers**: recreate every container, even unchanged ones.
+- **Recreate changed volumes (data loss)**: let Compose recreate a volume whose configuration no longer matches the Compose file.
 
-Arcane remembers pull policy and force recreate. **Recreate changed volumes** resets after each deploy because it destroys data. For bulk **Up**, it applies to the whole batch.
+Arcane remembers pull policy and force recreate. **Recreate changed volumes** resets after each deploy. For a bulk **Up**, it applies to the whole batch.
 
 > [!WARNING]
-> Applying a changed volume configuration destroys and rebuilds the volume, losing its data. Arcane refuses unless **Recreate changed volumes** is checked. The deploy log explains a refusal with `Declined; enable volume recreation on deploy to apply this change.`
-
-Deploys pull service `image:` references, lifecycle hook images such as `pre_start`, and `type: image` volume sources. Hook and volume images are also pulled for services with `build:`. Hook and volume images follow the service's pull policy, except `type: image` volume sources, which are pulled only if missing.
-
-### Set the deploy wait timeout
-
-A deploy waits for `depends_on` conditions such as `service_healthy` and `service_completed_successfully`. If slow healthchecks or initialization cause timeouts, raise **Deploy Wait Timeout** in **Settings → Timeouts**. The default is 600 seconds; the range is 30–14400. Dependencies using `service_healthy` must define a healthcheck.
+> Applying a changed volume configuration destroys and rebuilds the volume. Its data is lost. Arcane refuses unless **Recreate changed volumes** is checked, and the deploy log shows `Declined; enable volume recreation on deploy to apply this change.`
 
 ### Watch deploy output live
 
-**Deploy**, **Redeploy**, and **Pull** are split buttons. Open the dropdown next to any of them and choose **Watch output** to run that action in an attached terminal window instead of in the background. The window streams Docker output. **Deploy** and **Redeploy** keep streaming container logs after startup, like an attached `docker compose up`.
+1. Open the dropdown on **Deploy**, **Redeploy**, or **Pull**.
+2. Choose **Watch output**.
+
+A terminal window streams Docker output. **Deploy** and **Redeploy** keep streaming container logs after startup, like an attached `docker compose up`. Without **Watch output**, actions run in the background under [Activity & Events](/docs/docker/activity).
 
 > [!WARNING]
-> Closing the watch window for **Deploy** or **Redeploy** stops the project and all its containers, like `Ctrl-C` on an attached `docker compose up`. Arcane asks **Stop project?** before doing so. To keep the project running, leave the window open; you can also follow the operation in the Activity Center.
+> Closing the watch window for **Deploy** or **Redeploy** stops the project and all its containers, like `Ctrl-C` on an attached `docker compose up`. Arcane asks **Stop project?** first. To keep it running, leave the window open, or follow the operation in the Activity Center instead.
 
-Choose **Watch output** per run. Otherwise, actions run in the background under [Activity & Events](/docs/docker/activity).
+### Fix deploy timeouts
+
+Deploys wait for `depends_on` conditions such as `service_healthy` and `service_completed_successfully`. If slow startups time out, raise **Deploy Wait Timeout** under **Settings → Timeouts**.
+
+- Default: 600 seconds. Range: 30 to 14400.
+- Dependencies using `service_healthy` must define a healthcheck.
+
+## Browse projects
+
+Open **Projects** in the sidebar. The list shows name, status (running, partially running, stopped), service count, and directory.
+
+To filter by Docker label, use the **Labels** filter:
+
+- Enter a key, such as `com.example.team`, or an exact match, such as `com.example.team=media`.
+- A project matches when any of its service containers has that label.
+- Labels are separate from colored [tags](#tag-projects).
 
 ## Manage project files
 
-Turn on **Workspace** to browse project files in a tree and edit them in tabs. It's also available on **Create Project** for adding files before the first deploy.
-
-From the workspace panel you can:
-
-- **New File** / **New Folder**: create files and folders anywhere in the project, including nested paths.
-- **Upload File**: add a file from your computer, including binary files, up to 10 MiB by default.
-- **Edit**: open any UTF-8 text file in its own tab. Binary files can be uploaded but not edited.
-- **Rename**, **Move**, and **Delete**: reorganize the folder. Non-empty folders can be deleted recursively.
-
-All file changes are staged until you **Save** the project or press `Ctrl/Cmd+S`. Middle-click a tab to close it. Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden from the tree. For projects using Git **Pull**, files managed by the sync are read-only; other workspace files stay editable.
-
-> [!NOTE]
-> The Compose file, `.env`, `.env.git`, and `project.env` are protected. They show a lock icon and can't be renamed, moved, or deleted from the tree. Edit them through their own editors instead.
-
-The file size, depth, and entry limits are set by environment variables listed under [Reference](#reference).
+1. Turn on **Workspace**. It also works on **Create Project**, before the first deploy. It's on by default; change the default with **Default project editor layout** in [Preferences](/docs/settings/appearance#editor).
+2. Right-click a file or folder to act on it. Right-click empty space to create or upload. All file actions live in these menus.
+3. Click **Save**, or press `Ctrl/Cmd+S`. Changes stay staged until you save.
 
 <ScreenshotFrame
   name="project-workspace"
   alt="The Compose editor for a running project with web, cache, and worker services."
-  caption="Review and edit the Compose configuration alongside its environment file."
+  caption="The project workspace with the Compose file open."
   loading="lazy"
   decoding="async"
 />
 
-## Sync from Git
+| Action                           | Notes                                                        |
+| -------------------------------- | ------------------------------------------------------------ |
+| **New File** / **New Folder**    | Anywhere, including nested paths.                            |
+| **Upload File**                  | Any file, including binary. Up to 10 MiB by default.         |
+| **Edit**                         | UTF-8 text files open in tabs. Binary files can't be edited. |
+| **Rename**, **Move**, **Delete** | Non-empty folders delete recursively.                        |
 
-A Git sync connects a project to a repository in one of two directions. **Pull** deploys from Git: you edit files in the repository, and Arcane pulls them in and can redeploy the project. **Push** backs up to Git: you keep editing in Arcane, and Arcane commits the project's files to the repository without deploying or restarting anything.
+- Right-click in the editor for cut, copy, paste, select all, and editor commands. Middle-click a tab to close it.
+- The tab strip shows the open file's validation errors, schema, and cursor position.
+- Indentation follows **Editor tab width** in [Preferences](/docs/settings/appearance#editor).
+- A project without a `.env` gets **Add .env file** in the tree's menu. Saving an empty `.env` removes the file.
+- Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden.
+- The Compose and override files show a lock icon. You can't rename, move, or delete them from the tree.
+- Delete `.env` from its own menu.
+- For Git **Pull** projects, sync-managed files are read-only.
 
-A project can have one Git sync. To change its direction, disconnect the existing sync and create a new one. [Git Sync](/docs/docker/git-sync) covers connecting a repository, setting up each direction, and resolving conflicts.
-
-## Build images from a project
-
-If a service in the Compose file has a `build:` directive, the project page shows **Build** and **Build & Deploy**. [Image Builds](/docs/docker/image-builds) covers build providers, history, and the build API.
-
-> [!NOTE]
-> If you use Depot or push images, services should set explicit `image:` names. Arcane blocks generated local-only tags in that case.
+The tree loads a folder's contents when you open it. Size and per-folder entry limits: see [Workspace limits](#workspace-limits).
 
 ## Tag projects
 
-Add colored tags when creating a project or from its table row or detail header. Click **+**, then use **Search or create a tag…** to select an existing tag or create one with a color. Click a selected tag to remove it. Extra tags appear under **+N** after the first three.
+1. Open **Create Project**, a project's table row, or its detail header.
+2. Click **+**.
+3. In **Search or create a tag…**, pick a tag, or type a new name and choose a color.
 
-Filter the **Tags** column to match any selected tag, or search by tag name.
+- To remove a tag, click it.
+- More than three tags collapse under **+N**.
+- To filter, use the **Tags** column, or search by tag name.
 
-Tags can also be declared in the Compose file itself, under the `x-arcane` extension block:
+You can also declare tags in the Compose file's `x-arcane` block. They apply on deploy and sync, show a lock icon, and can only be changed in the Compose file.
 
 ```yaml
 x-arcane:
@@ -127,61 +132,107 @@ x-arcane:
       color: purple
 ```
 
-Compose-defined tags are applied on deploy and sync, and are read-only in Arcane. They show a lock icon and can only be changed by editing the Compose file.
+Tag rules:
 
-- Tag names are trimmed and lowercased, up to 64 characters, with no commas.
-- A tag name's color is shared everywhere it's used; attaching an existing name keeps its stored color.
+- Names are trimmed and lowercased, up to 64 characters, with no commas.
+- A tag name has one color everywhere. Attaching an existing name keeps its stored color.
 - Each project holds up to 50 UI tags and 50 Compose tags.
-- The tag catalog is per environment.
-- Editing tags requires the `projects:update` permission. Discovered (unmanaged) projects can't be tagged.
+- The tag catalog is per agent.
+- Editing tags needs `projects:update`. Discovered (unmanaged) projects can't be tagged.
 
 ## Rename a project with managed volumes
 
-Renaming a stopped project copies its Compose-managed volumes to their new names, updates the project, then removes the old volumes. Volumes with an explicit `name:` or `external: true` are left alone.
+Stop the project first. When you rename it, Arcane:
 
-The rename is blocked if:
+1. Copies its Compose-managed volumes to new names.
+2. Updates the project.
+3. Removes the old volumes.
 
-- the project is still running
-- the target volume name already exists
-- a source volume is still attached to a container
-- Docker reports insufficient space to copy the volume data
+Volumes with an explicit `name:` or `external: true` are left alone.
 
-## Nested folders and symlinks
+Renaming is blocked when:
 
-For symlinked layouts (for example GNU Stow), turn on **Follow Project Symlinks** on the environment's **Storage & Limits** tab so Arcane follows child-directory symlinks.
+- The project is running.
+- A target volume name already exists.
+- A source volume is attached to a container.
+- Docker reports there isn't enough space for the copy.
+
+## Sync from Git
+
+A project can have one sync. To change direction, disconnect it and create a new one. See [Git Sync](/docs/docker/git-sync).
+
+- **Pull** deploys from Git. You edit in the repository; Arcane pulls the files and can redeploy.
+- **Push** backs up to Git. You edit in Arcane; it commits the files without deploying or restarting.
+
+## Build images from a project
+
+If a service has a `build:` directive, the project page shows **Build** and **Build & Deploy**. See [Image Builds](/docs/docker/image-builds) for providers, history, and the build API.
 
 > [!NOTE]
-> On Linux, deeply nested project trees consume extra inotify watches because Arcane monitors them recursively. For very large trees, raise `fs.inotify.max_user_watches`.
-
-A folder Arcane can't read appears empty. Other folders remain accessible.
-
-Compose files that reference paths outside the projects mount with a relative path (such as `../../data:/app/data`) are resolved against the host projects directory, so they behave the same as running `docker compose up` yourself. `include:` entries may also point outside the project directory, for example a shared fragment kept next to several projects (`include: [../shared.yaml]`).
+> If you use Depot or push images, give services explicit `image:` names. Arcane blocks generated local-only tags in that case.
 
 ## Reference
 
-### Supported Compose filenames
+### Where projects live
 
-Arcane recognizes any of these as the project's Compose file:
+Each project is a folder in the **Projects Directory**. The default is `/app/data/projects`. Change it with `ARCANE_PROJECTS_DIRECTORY` or under **Settings → Storage & Limits**.
+
+- Arcane scans the folder, including nested folders, for Compose files. Projects created outside Arcane show up too.
+- Same-named folders are told apart by full path.
+- Mounting the folder at the same path on host and container is simplest. [Installation](/docs/get-started/installation) covers the mount, and path translation when they differ.
+
+### Additional projects directories
+
+Arcane can scan more folders for projects. Add them under **Settings → Storage & Limits → Additional Project Directories**, or set `ARCANE_PROJECTS_DIRECTORIES` to a JSON array:
+
+```yaml
+environment:
+  - 'ARCANE_PROJECTS_DIRECTORIES=[{"path":"/opt/stacks","enabled":true}]'
+```
+
+- Mount each folder into the Arcane container. The settings page flags paths it can't find in the container.
+- Paths must be absolute. Each entry also accepts the `<containerPath>:<hostPath>` form.
+- Entries can't repeat, sit inside one another, or overlap the **Projects Directory** or the Templates Directory.
+- A disabled entry is kept but not scanned.
+- New projects go in the **Projects Directory**. When more than one directory is enabled, pick another with the folder selector next to the project name, or pass `--directory <containerPath>` to `arcane-cli projects create`. Git syncs always create projects in the **Projects Directory**.
+- When projects come from more than one directory, the projects list shows each project's directory in its path.
+
+### Nested folders and symlinks
+
+- For symlinked layouts (for example GNU Stow), turn on **Follow Project Symlinks** under **Settings → Storage & Limits**. Arcane then follows child-directory symlinks.
+- A folder Arcane can't read appears empty. Other folders stay accessible.
+- Relative paths outside the projects mount (such as `../../data:/app/data`) resolve against the host projects directory, as with `docker compose up`.
+- `include:` entries can point outside the project, such as a shared fragment (`include: [../shared.yaml]`).
+- On Linux, Arcane watches project trees recursively, so deep trees use extra inotify watches. For very large trees, raise `fs.inotify.max_user_watches`.
+
+### What deploys pull
+
+Deploys pull service `image:` references, lifecycle hook images such as `pre_start`, and `type: image` volume sources. This includes services with `build:`.
+
+- Hook images follow the service's pull policy.
+- `type: image` volume sources are pulled only if missing.
+
+### Supported Compose filenames
 
 - `compose.yaml` / `compose.yml`
 - `docker-compose.yaml` / `docker-compose.yml`
 - `podman-compose.yaml` / `podman-compose.yml`
-- a single custom `.yaml` / `.yml` file in the project folder, when it's unambiguous
+- One unambiguous custom `.yaml` / `.yml` file in the project folder
 
 ### How Arcane picks a Compose file
 
-When a folder has more than one YAML file, Arcane chooses in this order:
+When a folder has more than one YAML file, Arcane picks in this order:
 
-1. A name from the list above.
-2. A custom file whose name matches the folder name (for example `radarr.yaml` in `Radarr-3/`).
+1. A standard name from above.
+2. A custom file named after the folder (for example `radarr.yaml` in `Radarr-3/`).
 3. A single custom file with `compose` in its name.
 4. Any single visible `.yaml` / `.yml` file.
 
-If two or more custom files are equally plausible, Arcane reports the directory as ambiguous instead of guessing.
+If two or more custom files are equally likely, Arcane reports the folder as ambiguous instead of guessing.
 
 ### Compose environment variables
 
-Arcane honors these Docker Compose [pre-defined environment variables](https://docs.docker.com/compose/how-tos/environment-variables/envvars/) when they are set in the project's `.env` file:
+Arcane honors these Docker Compose [pre-defined environment variables](https://docs.docker.com/compose/how-tos/environment-variables/envvars/) in the project's `.env`:
 
 | Variable                                            | Effect                                                                                                                                                              |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -192,19 +243,17 @@ Arcane honors these Docker Compose [pre-defined environment variables](https://d
 | `COMPOSE_REMOVE_ORPHANS` / `COMPOSE_IGNORE_ORPHANS` | Control how containers left over from removed services are handled.                                                                                                 |
 | `COMPOSE_PARALLEL_LIMIT`                            | Cap how many operations Compose runs at once.                                                                                                                       |
 
-Paths in `COMPOSE_FILE` and `COMPOSE_ENV_FILES` resolve relative to the project folder and must stay inside it; an entry that points outside the project is rejected.
-
-When `COMPOSE_FILE` selects more than one file, the project detail view shows a **Multiple compose files** card listing them. The base file opens in the Compose editor; edit the others in **Workspace**.
+- Paths in `COMPOSE_FILE` and `COMPOSE_ENV_FILES` resolve relative to the project folder. Entries outside it are rejected.
+- With several files, the detail view lists them in a **Multiple compose files** card. The base file opens in the Compose editor. Edit the others in **Workspace**.
 
 ### Workspace limits
 
-Set these on the Arcane container to change the workspace limits:
+Set these on the Arcane container:
 
-| Variable                             | Default | Sets                                            |
-| ------------------------------------ | ------- | ----------------------------------------------- |
-| `PROJECT_WORKSPACE_MAX_FILE_SIZE_MB` | `10`    | Maximum size of a single workspace file, in MiB |
-| `PROJECT_WORKSPACE_MAX_DEPTH`        | `20`    | Maximum folder depth                            |
-| `PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders             |
+| Variable                                    | Default | Sets                                            |
+| ------------------------------------------- | ------- | ----------------------------------------------- |
+| `ARCANE_PROJECT_WORKSPACE_MAX_FILE_SIZE_MB` | `10`    | Maximum size of a single workspace file, in MiB |
+| `ARCANE_PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders per folder  |
+| `ARCANE_PROJECT_WORKSPACE_MAX_DEPTH`        | `20`    | Maximum folder depth in the Build Workspace     |
 
-> [!IMPORTANT]
-> Use `PROJECT_WORKSPACE_MAX_DEPTH` to set the folder depth. Arcane doesn't read `PROJECT_FILE_TREE_MAX_DEPTH`, so rename it if your environment still sets it.
+A folder with more entries than the limit shows only its first entries. The workspace tells you when that happens. The project workspace has no depth limit.

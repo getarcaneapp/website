@@ -5,8 +5,7 @@ export type DeploymentTargetId =
 	| 'podman-rootless'
 	| 'podman-rootful'
 	| 'podman-quadlet'
-	| 'agent-direct'
-	| 'agent-edge'
+	| 'agent-container'
 	| 'agent-binary';
 
 export type GeneratorValues = Record<string, string | boolean>;
@@ -33,63 +32,45 @@ export interface DeploymentGroup {
 }
 
 export interface GeneratorField {
-	/** The key used in the config state object */
 	key: string;
-	/** Environment variable name (for output) */
 	envName: string;
-	/** Display label */
 	label: string;
-	/** Helper description */
 	description?: string;
-	/** Field input type */
 	type: FieldType;
-	/** Default value */
 	defaultValue: string | boolean;
-	/** Placeholder text */
+	envValue?: string;
 	placeholder?: string;
-	/** Whether this field can be auto-generated (for secrets) */
+	/** Secrets only. */
 	canGenerate?: boolean;
-	/** Whether the generated output uses a placeholder until this is filled in */
+	/** Output shows a placeholder until this is filled in. */
 	required?: boolean;
-	/** Whether to tuck this field into the section's advanced options */
+	/** Shown under the section's advanced options. */
 	advanced?: boolean;
-	/** Returns an error message when the value is invalid */
+	/** Returns an error message, or undefined when valid. */
 	validate?: (value: string) => string | undefined;
-	/** Options for select fields */
 	options?: { label: string; value: string }[];
-	/** Only show when parent toggle is enabled */
+	/** Hidden until this toggle key is enabled. */
 	dependsOn?: string;
-	/** Whether to include in the generated environment (false = internal use only) */
+	/** false = internal only, left out of the generated env. */
 	includeInEnv?: boolean;
 	targets?: DeploymentTargetId[];
 	visibleWhen?: (context: FieldContext) => boolean;
 }
 
 export interface GeneratorSection {
-	/** Unique section ID */
 	id: string;
-	/** Display title */
 	title: string;
-	/** Section description */
 	description: string;
-	/** Icon name (Iconify) */
 	icon: string;
-	/** Whether this section has a toggle to enable/disable */
 	hasToggle?: boolean;
-	/** The key for the toggle field */
 	toggleKey?: string;
-	/** Fields in this section */
 	fields: GeneratorField[];
 }
 
 export interface GeneratorTab {
-	/** Unique tab ID */
 	id: string;
-	/** Display label */
 	label: string;
-	/** Icon name */
 	icon: string;
-	/** Sections within this tab */
 	sections: GeneratorSection[];
 	targets?: DeploymentTargetId[];
 }

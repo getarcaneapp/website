@@ -1,27 +1,34 @@
 {
-	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"editor.defaultFormatter": "biomejs.biome",
 	"[javascript]": {
-		"editor.defaultFormatter": "oxc.oxc-vscode"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"[javascriptreact]": {
-		"editor.defaultFormatter": "oxc.oxc-vscode"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"[typescript]": {
-		"editor.defaultFormatter": "oxc.oxc-vscode"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"[typescriptreact]": {
-		"editor.defaultFormatter": "oxc.oxc-vscode"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
-	"oxc.fmt.configPath": "./vite.config.ts",
+	"[svelte]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[astro]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
 	"editor.formatOnSave": true,
 	"editor.formatOnSaveMode": "file",
 	"editor.codeActionsOnSave": {
-		"source.fixAll.oxc": "explicit"
+		"source.fixAll.biome": "explicit",
+		"source.organizeImports.biome": "explicit"
 	},
-	"[svelte]": {
-		"editor.defaultFormatter": "oxc.oxc-vscode"
-	},
-	"js/ts.tsdk.path": "node_modules/@typescript/native-preview",
-	"oxc.disableNestedConfig": true,
-	"oxc.fmt.disableNestedConfig": true
+	"js/ts.tsdk.path": "node_modules/@typescript/native-preview"
 }

@@ -11,24 +11,30 @@ const showLead = entry.data.template !== 'splash';
 </div>
 
 <style>
-	.page-title {
-		margin-top: 1rem;
-	}
+.page-title {
+	margin-top: 1rem;
+}
+h1 {
+	margin: 0;
+	max-width: 68ch;
+	font-size: 1.875rem;
+	font-weight: 650;
+	line-height: 1.2;
+	letter-spacing: -0.025em;
+	color: var(--sl-color-white);
+	text-wrap: balance;
+}
+@media (min-width: 50rem) {
 	h1 {
-		margin: 0;
-		font-size: 1.875rem;
-		font-weight: 600;
-		line-height: 1.2;
-		letter-spacing: -0.025em;
-		color: var(--sl-color-white);
-		text-wrap: balance;
+		font-size: 2.25rem;
 	}
-	.page-lead {
-		margin: 0.75rem 0 0;
-		max-width: 42rem;
-		font-size: 1rem;
-		line-height: 1.625;
-		color: var(--sl-color-gray-3);
-		text-wrap: balance;
-	}
+}
+.page-lead {
+	margin: 0.75rem 0 0;
+	max-width: 42rem;
+	font-size: 1rem;
+	line-height: 1.625;
+	color: var(--sl-color-gray-3);
+	text-wrap: balance;
+}
 </style>

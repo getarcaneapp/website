@@ -1,0 +1,107 @@
+---
+title: "Dashboard"
+description: "Arrange, add, and configure widgets on the Arcane dashboard."
+---
+
+import { Steps } from "@astrojs/starlight/components";
+import ScreenshotFrame from "#components/content/ScreenshotFrame.astro";
+
+The Dashboard is a grid of widgets covering every agent you can see. Each user has their own layout, saved to their account.
+
+<ScreenshotFrame
+  name="dashboard"
+  alt="The Arcane dashboard with summary tiles, agents, and attention items."
+  caption="The default dashboard layout."
+  loading="lazy"
+  decoding="async"
+/>
+
+## Edit the layout
+
+<Steps>
+
+1. On the Dashboard, select **Edit layout**.
+2. Change the widgets:
+   - Drag a widget to move it. Drag its bottom-right corner to resize it. Both also work with the arrow keys after focusing the widget or its corner.
+   - Select the eye icon on a built-in widget to hide it.
+   - Select the gear icon on a custom widget to configure it, or the trash icon to remove it.
+3. Select **Save** to keep the changes, or **Cancel** to discard them.
+
+</Steps>
+
+- Moving and resizing with the mouse only works on wide screens. On narrow screens, widgets stack in one column.
+- **Reset to default** restores the default layout. **Reset** discards unsaved changes.
+- A dashboard holds up to 50 widgets.
+
+## Add a widget
+
+<Steps>
+
+1. In edit mode, select **Add widget**.
+2. Pick a hidden built-in widget to show it again, or select **New widget…** to create a custom one.
+3. For a new widget, choose the **Widget type**, then fill in its fields and create it.
+
+</Steps>
+
+Creating a new widget saves the layout right away.
+
+### Built-in widgets
+
+Each built-in widget appears once. It can be hidden but not removed.
+
+| Widget                | Shows                                                                             |
+| --------------------- | --------------------------------------------------------------------------------- |
+| **Online agents**     | How many agents are online, out of the total.                                     |
+| **Attention count**   | How many items need attention, and how many are critical.                         |
+| **Updates**           | Containers and projects with an update available.                                 |
+| **Risk score**        | The vulnerability risk score, its 7-day change, and known exploited findings.     |
+| **Reclaimable**       | Total reclaimable disk space across agents. Hidden by default.                    |
+| **Agents**            | Every agent, as cards or a table (**Card view** / **Table view**).                |
+| **Needs attention**   | Problems across agents, with an action for each.                                  |
+| **Recent activity**   | Recent activity across agents.                                                    |
+| **Upcoming jobs**     | Scheduled jobs that run next.                                                     |
+| **Reclaimable space** | Space held by unused images, build cache, unused volumes, and stopped containers. |
+| **Top memory**        | Running containers using the most memory.                                         |
+
+### Custom widgets
+
+Custom widgets can be added more than once.
+
+| Widget                 | Shows                                                  |
+| ---------------------- | ------------------------------------------------------ |
+| **Filtered Resources** | A count or list of resources that match filters.       |
+| **Resource**           | Status and quick actions for one container or project. |
+| **Container Stats**    | Live CPU and memory usage for one container.           |
+| **Container Logs**     | Live log tail for one container.                       |
+| **Agent**              | Status and live stats for one agent.                   |
+
+**Resource**, **Container Stats**, and **Container Logs** need an **Agent** and a **Resource**. **Resource** also needs a **Resource type** (containers or projects). The **Agent** widget needs only an **Agent**. Every custom widget has an optional **Title**.
+
+### Filtered Resources fields
+
+| Field                           | What it does                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------- |
+| **Resource type**               | Containers, projects, images, volumes, or networks.                              |
+| **Agents**                      | The agents to include. Leave all off to include every agent.                     |
+| **Search**                      | Text search, as on the list page.                                                |
+| **Label**                       | A Docker label: `key` matches any value, `key=value` matches that value exactly. |
+| **Status**                      | Containers and projects only.                                                    |
+| **Usage**                       | **In Use** or **Unused**. Images, volumes, and networks only.                    |
+| **Only with updates available** | Containers, projects, and images only.                                           |
+| **Display**                     | **Count** or **List**.                                                           |
+| **Limit**                       | How many items to list. Default 5, up to 50.                                     |
+
+## Pin from other pages
+
+- **Pin this view** on the Containers, Projects, Images, Volumes, and Networks lists adds a **Filtered Resources** widget with the current search and filters.
+- **Pin to Dashboard** on a container, project, or agent page adds a **Resource** or **Agent** widget.
+- A container page also has **Pin Stats to Dashboard** and **Pin Logs to Dashboard**.
+
+## Permissions
+
+Widgets only show data you can read.
+
+- **Filtered Resources** skips agents where you lack the list permission for that resource type, such as `containers:list`.
+- **Resource**, **Container Stats**, and **Container Logs** show **Access denied** without read permission on the agent (`containers:read` or `projects:read`). **Container Logs** also needs `containers:logs`.
+- **Resource** shows only the start, stop, and restart actions you have permission for.
+- A widget for an offline agent shows **Unavailable**.
