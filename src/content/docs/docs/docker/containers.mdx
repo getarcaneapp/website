@@ -5,7 +5,7 @@ description: 'Manage Docker containers from Arcane.'
 
 import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
 
-The **Containers** page lists every container on the host and lets you create, inspect, edit, and remove them one at a time. To manage Compose services as a group, use [Projects](/docs/docker/projects).
+Use the **Containers** page to create, inspect, edit, and remove individual containers on the host. To manage Compose services as a group, use [Projects](/docs/docker/projects).
 
 <ScreenshotFrame
 	name="containers-page"
@@ -17,22 +17,18 @@ The **Containers** page lists every container on the host and lets you create, i
 
 ## Browse containers
 
-Open **Containers** in the sidebar. The table shows name, ID, image, and status for containers on the host.
-
-If you have a lot of published ports, the table collapses long port lists behind a `+N` expander. The view options menu can also hide exposed-only ports so you only see published host mappings.
-
-Select a row checkbox, then hold **Shift** and select another to select the rows between them on the current page.
+Open **Containers** in the sidebar. The table shows name, ID, image, and status. Long port lists collapse behind a `+N` expander, and the view options menu can hide exposed-only ports to show only published host mappings. Select a row checkbox, then **Shift**-select another to select the rows between them on the current page.
 
 ### Filter by Docker label
 
-Use the **Labels** filter to enter a label key, such as `com.example.team`, or an exact key and value, such as `com.example.team=media`. A key on its own matches containers that have that label, regardless of its value.
+In the **Labels** filter, enter a key such as `com.example.team` (matches any value) or a key and value such as `com.example.team=media`.
 
-To keep a container out of the default list and dashboard counts, give it the `com.getarcaneapp.arcane.hidden=true` label or set `x-arcane.hidden` in Compose. [Hide containers](/docs/reference/compose-labels#hide-containers) has examples, project-wide defaults, and how to show hidden containers again.
+To keep a container out of the default list and dashboard counts, add the `com.getarcaneapp.arcane.hidden=true` label or set `x-arcane.hidden` in Compose. See [Hide containers](/docs/reference/compose-labels#hide-containers) for examples, project-wide defaults, and unhiding.
 
 ## Create a container
 
 1. Click **Create Container**.
-2. Fill in name and image. The other fields (ports, volumes, environment variables, restart policy, and so on) are optional.
+2. Fill in name and image. Ports, volumes, environment variables, restart policy, and other fields are optional.
 3. Click **Create**.
 
 ## Start, stop, restart, pause, kill
@@ -40,70 +36,49 @@ To keep a container out of the default list and dashboard counts, give it the `c
 - **Start** / **Stop** / **Restart** — change the running state.
 - **Pause** / **Unpause** — suspend and resume all processes in the container. Requires `containers:pause`.
 - **Kill** — send a signal to the container's main process. Requires `containers:kill`.
-- **Redeploy** — pull the latest image and recreate the container with the same name, mounts, labels, networks, and restart policy. Use this to update a single container in place.
+- **Redeploy** — pull the latest image and recreate the container with the same name, mounts, labels, networks, and restart policy, updating it in place.
 
-On Podman, containers started by a Quadlet show a **Quadlet** badge. Start, stop, and restart go to their systemd unit, and Arcane refuses to edit, redeploy, or remove them. See [Quadlets](/docs/podman/quadlets#containers-that-belong-to-a-quadlet).
+On Podman, Quadlet containers show a **Quadlet** badge. Start, stop, and restart go to their systemd unit; Arcane won't edit, redeploy, or remove them. See [Quadlets](/docs/podman/quadlets#containers-that-belong-to-a-quadlet).
 
 ## Edit a container
 
 Choose **Edit** from a container's detail page or row menu to change its image, ports, mounts, variables, restart policy, networks, resource limits, or Linux capabilities. Network options include static IPv4 addresses and aliases. Editing requires `containers:edit`; network connections also require `networks:connect` / `networks:disconnect`.
 
-Applying changes **recreates** the container. Arcane asks you to confirm, then stops it, recreates it with the new configuration, and starts it with a new container ID. If recreation fails, Arcane restores the original container. Containers that use auto-remove can't be restored this way.
-
-- Options of existing mounts are preserved.
-- The new image is only pulled if it is not already present locally.
+Applying changes **recreates** the container after confirmation, giving it a new container ID. Existing mount options are preserved, and the new image is pulled only if missing locally. If recreation fails, Arcane restores the original, except for auto-remove containers.
 
 ## Convert a container to a Compose project
 
-This is an experimental feature. To turn it on, click the version number at the bottom of the sidebar and switch on **Experimental Features** (requires `settings:write`). Standalone containers then offer **Convert to Compose** on their detail page, row menu, or in bulk from the table. Converting requires `projects:create`.
+This feature is experimental. Click the version number at the bottom of the sidebar and switch on **Experimental Features** (requires `settings:write`). Standalone containers then offer **Convert to Compose** on their detail page, row menu, or in bulk (requires `projects:create`).
 
-The action opens the new-project page with a generated Compose file in the editor. Check the bind mounts, networks, and environment values, make any changes you need, then click **Create Project**.
+It opens the new-project page with a generated Compose file. Check bind mounts, networks, and environment values, edit as needed, then click **Create Project**.
 
-Original containers keep running by default. Stop them before deploying to avoid name and port conflicts. With `containers:delete`, select **Remove original container(s) after creation** to delete them at project creation, before deployment. Deletion can't be undone.
+Original containers keep running; stop them before deploying to avoid name and port conflicts. With `containers:delete`, select **Remove original container(s) after creation** to delete them at project creation, before deployment. Deletion can't be undone.
 
 ## Commit a container to an image
 
-Open a container detail page and click **Commit** to create a new image from the container's current filesystem. You can set:
-
-- repository and tag
-- commit comment
-- author
-- whether Docker should skip its default pause during commit
-
-The new image appears on the **Images** page after the commit finishes. Committing requires `images:commit`.
+On a container detail page, click **Commit** to create an image from its current filesystem (requires `images:commit`). You can set repository and tag, comment, author, and whether Docker skips its default pause. The image then appears on **Images**.
 
 ## Inspect a container
 
-Click a container's name or its **Inspect** button to open the detail view. Tabs cover configuration, network settings, mounts, and logs.
-
-The **Overview** tab's volume and network counts open their respective tabs. Network details show both IPv4 and IPv6 addresses when assigned.
+Click a container's name or **Inspect** to open the detail view, with tabs for configuration, network settings, mounts, and logs. **Overview** volume and network counts open their tabs. Network details show assigned IPv4 and IPv6 addresses.
 
 ### Compose tab
 
-If the container belongs to an Arcane-managed Compose project, the detail view also shows a **Compose** tab with the source compose file:
-
-- the root compose file when the service is defined there
-- an included compose file when the service comes from a Compose `include`
-
-For Git-synced projects, this tab is read-only.
+Containers in an Arcane-managed Compose project get a **Compose** tab with the source file: the root compose file, or the included file when the service comes from a Compose `include`. It's read-only for Git-synced projects.
 
 ### Updates
 
-The **Overview** tab's **Auto Update** toggle turns automatic installation on or off for this container; it is still checked for updates either way. Labels that control this, and how to stop checks too, are covered in [Per-container labels](/docs/docker/auto-updates#per-container-labels).
+The **Overview** tab's **Auto Update** toggle turns automatic installation on or off; checks continue either way. For the labels, and stopping checks too, see [Per-container labels](/docs/docker/auto-updates#per-container-labels).
 
-When a newer image is available, the detail header shows an **Update available** badge and an **Update** action to apply it on the spot (requires the `containers:autoupdate` permission). If the container belongs to a project, the header links to that project too.
+When a newer image exists, the header shows an **Update available** badge and an **Update** action (requires `containers:autoupdate`). Project containers also link to their project.
 
 ## Open a shell
 
-With `containers:exec`, a running container's detail view has a **Shell** tab. Pick `sh`, `bash`, `ash`, `zsh`, or a custom path. Your browser remembers the choice per Compose service, or per container name for standalone containers, so it survives recreating the container. Otherwise the tab uses the environment's **Default Shell** (**Environments → the environment → Docker**), `/bin/sh` by default.
+With `containers:exec`, a running container's detail view has a **Shell** tab. Pick `sh`, `bash`, `ash`, `zsh`, or a custom path. Your browser remembers it per Compose service (or container name), so it survives recreation. Otherwise the environment's **Default Shell** (**Environments → the environment → Docker**) is used, `/bin/sh` by default.
 
 ## View logs
 
-Open a container's detail view and switch to the **Logs** tab. The viewer:
-
-- detects JSON and logfmt logs and renders them as structured rows
-- groups multiline messages so a stack trace stays together
-- shows small CPU and memory monitors alongside the log stream
+Open the container's **Logs** tab. The viewer renders JSON and logfmt logs as structured rows, keeps multiline messages such as stack traces together, and shows small CPU and memory monitors.
 
 <ScreenshotFrame
   name="container-logs"
@@ -115,7 +90,7 @@ Open a container's detail view and switch to the **Logs** tab. The viewer:
 
 ### Download logs
 
-Click **Download** in the log viewer to save a plain-text `.log` file. The download includes timestamps and all stdout and stderr output Docker still retains for the container, regardless of the viewer's current filters or line limit. Logs already removed by Docker's rotation policy aren't included.
+Click **Download** to save a plain-text `.log` file with timestamps and all stdout and stderr Docker still retains, ignoring the viewer's filters and line limit. Logs removed by Docker's rotation aren't included.
 
 ## Remove a container
 

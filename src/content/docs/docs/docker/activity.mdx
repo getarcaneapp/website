@@ -5,7 +5,7 @@ description: 'Follow running operations in the Activity Center and review past a
 
 import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
 
-The **Activity Center** lists operations Arcane runs in the background, such as image pulls and deploys, so you can follow them and read their output from anywhere. The **Event Log** is the long-term audit trail for an environment.
+Use the **Activity Center** to follow background operations, such as image pulls and deploys, and read their output from anywhere. Use the **Event Log** as the long-term audit trail for an environment.
 
 ## Follow an activity
 
@@ -22,44 +22,32 @@ Open the Activity Center from the sidebar or mobile navigation bar and select an
   decoding="async"
 />
 
-Arcane tracks these operations:
+Arcane tracks image pulls, [builds](/docs/docker/image-builds), and update checks; project pull, build, deploy, redeploy, down, restart, and destroy; container start, stop, restart, redeploy, and delete; vulnerability scans and system prunes.
 
-- image pulls, [builds](/docs/docker/image-builds), and update checks
-- project pull, build, deploy, redeploy, down, restart, and destroy
-- container start, stop, restart, redeploy, and delete
-- vulnerability scans and system prunes
+| Status        | Meaning                                       |
+| ------------- | --------------------------------------------- |
+| **Queued**    | Waiting for a free slot.                      |
+| **Running**   | In progress.                                  |
+| **Completed** | Finished successfully.                        |
+| **Failed**    | Finished with an error; the output says why.  |
+| **Cancelled** | Stopped before it finished.                   |
 
-Each activity has one of these statuses:
-
-- **Queued**: waiting for a free slot.
-- **Running**: in progress.
-- **Completed**: finished successfully.
-- **Failed**: finished with an error; the output explains why.
-- **Cancelled**: stopped before it finished.
-
-If an activity is interrupted, for example by an Arcane restart, a background check marks it **Failed** so it doesn't stay stuck in **Running**.
-
-For projects, you can also attach to an operation as it runs with **Watch output**. See [Projects](/docs/docker/projects).
+If an activity is interrupted, for example by an Arcane restart, a background check marks it **Failed** so it doesn't stay stuck in **Running**. For projects, you can also attach to a running operation with **Watch output**; see [Projects](/docs/docker/projects).
 
 ## Set retention and concurrency
 
-Go to **Settings → Activity**:
+These settings are per environment. Open **Settings → Activity** and pick the environment under **Applying settings for**:
 
 - **Retention Days**: how long finished activities are kept.
 - **Maximum Entries**: a hard cap on stored activity history.
-- **Concurrent Activity Limit**: how many activities may run at once. Activities beyond the limit wait in **Queued**.
-- **Upgrade Log Retention**: how many days Arcane keeps the log files written by self-upgrades. Cleanup runs hourly. The default is `3`; set `0` to keep them indefinitely.
+- **Concurrent Activity Limit**: how many activities run at once. Extra ones wait in **Queued**.
+- **Upgrade Log Retention**: days to keep self-upgrade log files. Cleanup runs hourly. Default `3`; `0` keeps them indefinitely.
 
 ## Review automation runs
 
-With the `jobs:manage` permission:
+With the `jobs:manage` permission, open **Settings → Automations** and open **Run history** for a job, or open the environment's **History** tab under **Environments**. You see each run's attempts, errors, per-target results, and operation output when it has an activity. Image update checks, auto updates, vulnerability scans, image patching, GitOps syncs, and backups also list their **Steps** with status, progress, and failure count.
 
-1. Open the environment's **Automations** tab.
-2. Open **Run history** for a job to see each run's attempts, errors, and per-target results, plus its operation output when it has an activity. Runs of image update checks, auto updates, vulnerability scans, image patching, GitOps syncs, and backups also list their **Steps** with each step's status, progress, and failure count.
-
-A queued run on a remote environment shows **Waiting for environment** until the agent is reachable. Agents running an older Arcane version must be upgraded to report run history.
-
-Depending on its state, a run offers **Retry run** or **Cancel pending run**. A run marked **Needs attention** blocks later runs of the same job. Check its output and the affected resources, then choose **Resolve after review**. Resolving keeps the history and lets scheduled work continue; it doesn't rerun the operation or mark it successful.
+A queued run on a remote environment shows **Waiting for environment** until the agent is reachable. Agents on an older Arcane version must be upgraded to report run history. Depending on its state, a run offers **Retry run** or **Cancel pending run**; for a failed, partial, or **Needs attention** run, check its output and the affected resources before you retry.
 
 ## Review the Event Log
 
@@ -75,4 +63,6 @@ Open **Events** to view the audit trail. Events outlive the Activity Center's hi
 
 Each row shows **Severity**, **Type**, **User** when known, and **Timestamp**. Search or filter by type and severity, then select a row for details.
 
-The log also records Docker daemon events, including container exits, out-of-memory kills, unhealthy status changes, and image, network, and volume changes. This includes actions taken outside Arcane, such as starting a container from the Docker CLI. New events appear as they arrive.
+The log also records Docker daemon events as they arrive: container exits, out-of-memory kills, unhealthy status changes, and image, network, and volume changes. This includes actions outside Arcane, such as starting a container from the Docker CLI.
+
+Users with `audit:read` also see [audit events](/docs/access/audit-log): access changes and permission denials. Use **Export CSV** or **Export NDJSON** to download the events matching your current filters.

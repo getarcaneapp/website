@@ -7,10 +7,10 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 import Collapsible from '#components/content/Collapsible.astro';
 import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
 
-Arcane runs as a single container that manages Docker on the same host through the Docker socket. Install it with Docker Compose, or on Linux run the install script, which also sets up Docker.
+Install Arcane to manage Docker on your host through a single container. Use Docker Compose, or run the Linux install script to set up both Docker and Arcane.
 
 > [!NOTE]
-> To manage other Docker hosts later, add them as [remote environments](/docs/remote/environments). To restrict Docker access, see [Socket Proxy](/docs/security/socket-proxy).
+> To manage other hosts later, add [remote environments](/docs/remote/environments). To restrict Docker socket access, use a [socket proxy](/docs/security/socket-proxy).
 
 <Tabs syncKey="install-method">
 
@@ -18,7 +18,7 @@ Arcane runs as a single container that manages Docker on the same host through t
 
 ## 1. Generate an encryption key
 
-Arcane needs an `ENCRYPTION_KEY` that is 32 bytes long (raw, base64, or hex). Generate one with any of these commands and copy the output.
+Generate a 32-byte `ARCANE_ENCRYPTION_KEY` (raw, base64, or hex) with one of these commands and copy the output.
 
 With a temporary Arcane container:
 
@@ -26,7 +26,7 @@ With a temporary Arcane container:
 docker run --rm ghcr.io/getarcaneapp/manager:latest /app/arcane generate secret
 ```
 
-With the Arcane CLI, if you already have it installed:
+With the Arcane CLI:
 
 ```bash
 arcane-cli generate secret
@@ -39,11 +39,11 @@ openssl rand -hex 32
 ```
 
 > [!NOTE]
-> Arcane doesn't use `JWT_SECRET`. Session tokens are signed with an ML-DSA-87 key that Arcane generates and stores itself. If `JWT_SECRET` is still set, Arcane logs a warning at startup; remove it from your environment.
+> Arcane signs session tokens with a self-managed ML-DSA-87 key instead of `JWT_SECRET`. Remove `JWT_SECRET` from your environment to silence startup warnings.
 
 ## 2. Create `compose.yaml`
 
-Paste your key in place of `<your-encryption-key>`, and replace `/opt/docker` with the folder where your Compose projects live (or where you want Arcane to create them):
+Replace `<your-encryption-key>` with your key and `/opt/docker` with the folder for your Compose projects:
 
 ```yaml
 services:
@@ -57,11 +57,11 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker
     environment:
-      - APP_URL=http://localhost:3552
+      - ARCANE_APP_URL=http://localhost:3552
       - PUID=1000
       - PGID=1000
-      - ENCRYPTION_KEY=<your-encryption-key>
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
     cgroup: host
     restart: unless-stopped
 
@@ -70,14 +70,14 @@ volumes:
 ```
 
 > [!NOTE]
-> The official images start as root only to prepare the container, then run as a non-root user. `PUID` and `PGID` set the host UID and GID that Arcane-created files belong to. If you leave them out, Arcane uses its built-in user `65532:65532`.
+> The official images start as root to prepare the container, then drop to a non-root user. `PUID` and `PGID` set the host UID and GID for files Arcane creates, or default to `65532:65532` if omitted.
 
 ### Projects folder
 
 > [!IMPORTANT]
-> Mount your projects folder at the same path inside the container and set `PROJECTS_DIRECTORY` to that path, as in the example above. The path must be absolute (`/opt/docker`, not `opt/docker`). With matching paths, relative mounts such as `./config` resolve the same way for Arcane and Docker, and Arcane can manage the Compose projects already in that folder.
->
-> A different container path, such as `/opt/docker:/app/data/projects`, also works. Arcane reads its own container mounts and translates project paths to host paths for Compose. To state the mapping yourself, set `PROJECTS_DIRECTORY=<containerPath>:<hostPath>`. If you don't set `PROJECTS_DIRECTORY`, Arcane uses `/app/data/projects`.
+> Mount your projects folder at the same absolute path inside the container (such as `/opt/docker`, not `opt/docker`) and set `ARCANE_PROJECTS_DIRECTORY` to match. Matching paths let relative mounts like `./config` resolve identically for Arcane and Docker, and let Arcane manage existing projects in that folder.
+
+If you mount a different container path (such as `/opt/docker:/app/data/projects`), Arcane translates container paths to host paths automatically. You can also set the mapping explicitly with `ARCANE_PROJECTS_DIRECTORY=<containerPath>:<hostPath>`. If omitted, `ARCANE_PROJECTS_DIRECTORY` defaults to `/app/data/projects`.
 
 ## 3. Start Arcane
 
@@ -91,7 +91,7 @@ docker compose up -d
 
 ## Run the install script
 
-On Linux, the install script sets up Docker and Arcane for you:
+Run the Linux install script to install Docker and Arcane:
 
 ```bash
 curl -fsSL https://getarcane.app/install.sh | sudo bash
@@ -99,7 +99,7 @@ curl -fsSL https://getarcane.app/install.sh | sudo bash
 
 ### Uninstall
 
-The recommended uninstall asks before it removes Arcane data, the Arcane user and group, or Docker:
+Run the interactive uninstaller to choose whether to keep Arcane data, the Arcane user and group, and Docker:
 
 ```bash
 curl -fsSL https://getarcane.app/uninstall.sh -o /tmp/arcane-uninstall.sh && sudo bash /tmp/arcane-uninstall.sh
@@ -108,7 +108,7 @@ curl -fsSL https://getarcane.app/uninstall.sh -o /tmp/arcane-uninstall.sh && sud
 To remove everything without prompting:
 
 > [!WARNING]
-> This removes Arcane, its data, the Arcane user and group, and the Docker packages. Only use it if you want Docker gone from the machine too.
+> This removes Arcane, its data, the Arcane user and group, and Docker packages. Run it only if you want to remove Docker from the machine too.
 
 ```bash
 curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove-all
@@ -120,7 +120,7 @@ curl -fsSL https://getarcane.app/uninstall.sh | sudo bash -s -- --force --remove
 
 ## Open Arcane
 
-Open [localhost:3552](http://localhost:3552) in your browser and sign in with the default credentials below. Arcane asks you to change the password the first time you sign in.
+Open [localhost:3552](http://localhost:3552), sign in with the default credentials, and set a new password when prompted.
 
 Username:
 
@@ -137,45 +137,41 @@ arcane-admin
 <ScreenshotFrame
   name="dashboard"
   alt="Arcane dashboard showing running containers, images, volumes, and host resource usage."
-  caption="After signing in, the dashboard summarizes your environment and its resource usage."
+  caption="After signing in, the dashboard summarizes your environments and their resource usage."
   loading="lazy"
   decoding="async"
 />
 
 ## More setup options
 
-You don't need any of these to get started. Expand a section if it applies to your setup.
+Expand any section that applies to your environment.
 
 <Collapsible id="folders-and-volumes" title="Folders and volumes" description="What each mount is for, plus optional build and backup folders.">
 
-| Mount                  | Purpose                                                                                                                                 |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `/var/run/docker.sock` | Gives Arcane access to Docker. To limit what Arcane can do, use a [socket proxy](/docs/security/socket-proxy) instead. |
-| `arcane-data`          | Stores Arcane's database and data.                                                                                                      |
-| Projects folder        | Holds your Compose projects. See [Projects folder](#projects-folder).                                                                   |
-| `/builds`              | Optional. Build contexts for the Build Workspace. See [Image Builds](/docs/docker/image-builds).                       |
-| `/backups`             | Optional. Where exported backups are stored. See [Backups](/docs/docker/backups).                                      |
+| Mount                  | Purpose                                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `/var/run/docker.sock` | Connects Arcane to Docker. Use a [socket proxy](/docs/security/socket-proxy) to restrict access.           |
+| `arcane-data`          | Stores Arcane's database and application data.                                                             |
+| Projects folder        | Holds your Compose projects. See [Projects folder](#projects-folder).                                      |
+| `/builds`              | Optional. Stores Dockerfiles and build contexts for [Image Builds](/docs/docker/image-builds).             |
+| `/backups`             | Optional. Stores exported volume [Backups](/docs/docker/backups).                                          |
 
 > [!TIP]
-> To use the optional folders, add them to the `volumes:` list in your `compose.yaml`:
+> To use the optional folders, add them to `volumes:` in your `compose.yaml`:
 >
-> - `/builds`: used by the **Build Workspace** for Dockerfiles and build contexts.
->   - Host path example: `/srv/arcane/builds:/builds`
->   - Docker volume example: `arcane-builds:/builds`
-> - `/backups`: used to store exported volume backups somewhere predictable.
->   - Host path example: `/srv/arcane/backups:/backups`
->   - Docker volume example: `arcane-backups:/backups`
+> - `/builds` — host path `/srv/arcane/builds:/builds` or named volume `arcane-builds:/builds`.
+> - `/backups` — host path `/srv/arcane/backups:/backups` or named volume `arcane-backups:/backups`.
 >
-> If you use named Docker volumes, remember to declare them under the top-level `volumes:` section too.
+> Declare any named Docker volumes under the top-level `volumes:` section too.
 
 </Collapsible>
 
 <Collapsible id="selinux-hosts" title="SELinux hosts" description="Use a socket proxy or relabel the Docker socket mount.">
 
-On SELinux hosts, pick one of these:
+On SELinux hosts, choose one of two options:
 
-- **Use a socket proxy (recommended).** Run a Docker socket proxy, point Arcane at it with `DOCKER_HOST`, and add `:z` to the projects folder mount (`/opt/docker:/opt/docker:z`). [Socket Proxy](/docs/security/socket-proxy) has the full Compose file.
-- **Mount the socket directly.** If you can't run a proxy, disable SELinux labelling for the Arcane container and relabel the projects mount:
+- **Use a socket proxy (recommended).** Run a proxy, set `DOCKER_HOST`, and add `:z` to the projects mount (`/opt/docker:/opt/docker:z`). See [Socket Proxy](/docs/security/socket-proxy).
+- **Mount the socket directly.** Disable SELinux labeling on the Arcane container and relabel the projects mount:
 
 ```yaml
 services:
@@ -191,14 +187,14 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker:z
     environment:
-      - PROJECTS_DIRECTORY=/opt/docker
+      - ARCANE_PROJECTS_DIRECTORY=/opt/docker
 ```
 
 </Collapsible>
 
 <Collapsible id="container-health-check" title="Container health check" description="Add a Docker health check using the built-in arcane health command.">
 
-The Arcane image includes an `arcane health` command for Docker health checks. It calls Arcane's local `/api/health` endpoint and exits non-zero if the server isn't responding. Add it to your `compose.yaml`:
+Add a Docker health check using the built-in `arcane health` command, which checks `/api/health`:
 
 ```yaml
 services:
@@ -213,21 +209,19 @@ services:
       start_period: 15s
 ```
 
-`start_period` gives Arcane time to run database migrations on first boot before failed checks count against `retries`.
+`start_period` gives Arcane time to finish first-boot database migrations before failed checks count toward `retries`.
 
 </Collapsible>
 
 <Collapsible id="external-postgres" title="External Postgres database" description="Store Arcane's data in Postgres instead of the built-in SQLite file.">
 
-Arcane stores its data in a SQLite file inside `arcane-data` by default, which works well for most setups. To use Postgres instead, set `DATABASE_URL`:
+Set `ARCANE_DATABASE_URL` to store Arcane's data in Postgres instead of the default SQLite file in `arcane-data`:
 
 ```bash
 postgres://<db_username>:<db_password>@<postgres_url>:<postgres_port>/<postgres_db_name>
 ```
 
-Replace each placeholder with your database's username, password, server address, port, and database name.
-
-The default SQLite value, if you need to set it back, is:
+To switch back to the default SQLite database, set:
 
 ```bash
 file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate
@@ -238,31 +232,31 @@ file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock
 <Collapsible id="reverse-proxy" title="Reverse proxy" description="Enable WebSocket support when Arcane is behind a proxy or custom domain.">
 
 > [!NOTE]
-> Arcane uses WebSockets for live updates, so a reverse proxy in front of it must pass WebSocket connections through. [Reverse Proxy](/docs/networking/reverse-proxy) has setup steps for Nginx, Apache, and other proxies.
+> Forward WebSocket connections when running Arcane behind a reverse proxy so live updates work. See [Reverse Proxy](/docs/networking/reverse-proxy) for Nginx, Apache, and other configurations.
 
 </Collapsible>
 
 <Collapsible id="outbound-http-proxy" title="Outbound HTTP proxy" description="Route Arcane's outbound traffic through an HTTP proxy.">
 
-If Arcane has to reach the internet through a proxy, for example to download templates or check for updates, see [Outbound Proxy](/docs/networking/outbound-proxy).
+Configure an outbound proxy if Arcane needs one to download templates or check for updates. See [Outbound Proxy](/docs/networking/outbound-proxy).
 
 </Collapsible>
 
 <Collapsible id="supported-architectures" title="Supported architectures" description="CPU architectures available for the images and binaries.">
 
-The `manager` and `agent` images are published for:
+Docker automatically pulls the matching `manager` or `agent` image for:
 
 - `linux/amd64`
 - `linux/arm64`
 - `linux/arm/v7`
 - `linux/riscv64`
 
-Docker picks your host's architecture automatically. CLI and agent binaries on [GitHub Releases](https://github.com/getarcaneapp/arcane/releases/latest) also cover Linux `386` and macOS (`amd64`, `arm64`).
+CLI and agent binaries on [GitHub Releases](https://github.com/getarcaneapp/arcane/releases/latest) also support Linux `386` and macOS (`amd64`, `arm64`).
 
 </Collapsible>
 
 <Collapsible id="preview-builds" title="Preview builds" description="Try features that haven't been released yet.">
 
-Preview builds are published from the `main` branch under the `:next` image tag. They're for testing, not production. See [Preview Builds](/docs/get-started/preview-builds).
+Use the `:next` image tag to test unreleased builds from the `main` branch on non-production instances. See [Preview Builds](/docs/get-started/preview-builds).
 
 </Collapsible>

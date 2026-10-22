@@ -1,41 +1,33 @@
 ---
 title: 'CLI Configuration'
-description: 'Point arcane-cli at your server, sign in, and set defaults.'
+description: 'Point arcane-cli at your server, sign in, and choose which environments a command covers.'
 ---
 
-import { Badge } from '@astrojs/starlight/components';
+import { Badge, Steps } from '@astrojs/starlight/components';
 
-`arcane-cli` keeps its server URL, credentials, and defaults in a YAML config file. Set it up once after you [install the CLI](/docs/reference/cli/install), and change values later with `arcane-cli config set <key> <value>`.
+Set up `arcane-cli` once after you [install it](/docs/reference/cli/install). It keeps its server URL, credentials, and defaults in a YAML config file; change values with `arcane-cli config set <key> <value>`.
 
 ## Set up the CLI
 
-1. Create a starter config file:
+<Steps>
 
-```bash
-arcane-cli config init
-```
-
-2. Set your server URL:
-
-```bash
-arcane-cli config set server-url http://localhost:3552
-```
-
+1. Create a starter config file with `arcane-cli config init`.
+2. Set your server URL with `arcane-cli config set server-url http://localhost:3552`.
 3. Sign in with one of the methods below.
+
+</Steps>
 
 ## Sign in
 
 ### With a device code
 
-Use this when your Arcane server has OIDC set up and you want to sign in through your identity provider in a browser.
+Use this to sign in through your identity provider in a browser. Your server needs OIDC set up.
 
 ```bash
 arcane-cli auth login
 ```
 
-The CLI saves the session to `~/.arcanecli/auth.json`, not the config file. See [Auth file](#auth-file).
-
-Device-code login can't complete an MFA challenge. If your account has passkey MFA turned on, use an API key instead. See [Passkeys & MFA](/docs/access/passkeys).
+The session is saved to `~/.arcanecli/auth.json`, not the config file (see [Auth file](#auth-file)). Device-code login can't complete an MFA challenge, so with passkey MFA on, use an API key. See [Passkeys & MFA](/docs/access/passkeys).
 
 ### With an API key
 
@@ -47,14 +39,7 @@ arcane-cli config set api-key arc_xxxxxxx
 
 ## Change list limits
 
-List commands are paginated. The page size is chosen in this order:
-
-1. `--limit` on the command
-2. `pagination.resources.<resource>.limit` in the config
-3. `pagination.default.limit` in the config
-4. The command's built-in default
-
-Set limits from the CLI:
+List commands are paginated. Page size comes from, in order: `--limit` on the command, `pagination.resources.<resource>.limit`, `pagination.default.limit`, then the command's built-in default. Set limits from the CLI:
 
 ```bash
 arcane-cli config set default-limit 25
@@ -64,51 +49,26 @@ arcane-cli config set default-limit 25
 arcane-cli config set pagination.resources.containers.limit 50 pagination.resources.images.limit 100
 ```
 
-You can also edit `pagination` in the config file directly (see the example below). The resource names are `containers`, `images`, `volumes`, `networks`, `projects`, `environments`, `registries`, `templates`, `repos`, `gitops-syncs`, `users`, `roles`, `events`, and `apikeys`.
+You can also edit `pagination` in the config file (see the example below). Resource names are `containers`, `images`, `volumes`, `networks`, `projects`, `environments`, `registries`, `templates`, `repos`, `gitops-syncs`, `users`, `roles`, `events`, and `apikeys`.
 
 For `doctor`, shell completion, and other commands, see [CLI Commands](/docs/reference/cli/commands).
 
-## Preview every environment
+## Work across environments
 
-<Badge text="Preview" variant="caution" />
-
-> [!IMPORTANT]
-> All-environments mode is a preview feature. Its behavior, output, and JSON format are subject to change at any time.
-
-Enable all-environments preview to list resources and perform actions without setting a default environment:
+Commands cover every enabled environment your server shows you, including local Docker. Pass `--env <id>` to limit a read to one environment or choose where a create goes:
 
 ```bash
-arcane-cli config set previews.allEnvironments true
 arcane-cli containers list
-arcane-cli containers start nginx
+arcane-cli --env 2 containers list
 ```
 
-Preview includes the visible, enabled environments returned by your server, including local Docker. Text lists use one combined table with an `ENVIRONMENT` column containing each environment's name, followed by a combined total. Structured details retain environment headings. Resources with identical names or IDs in different environments remain separate. List filters, sorting, limits, and `--start` apply separately to each environment. `--all` requests every matching item per environment and keeps its existing flag restrictions.
+Authentication, config, environments, registries, repositories, templates, variables, and system backups aren't tied to an environment, so `--env` doesn't change them.
 
-An explicit `--env <id>` overrides preview for one command. Your saved default environment is preserved; disabling preview restores it:
+### Lists
 
-```bash
-arcane-cli --env 0 containers list
-arcane-cli config set previews.allEnvironments false
-```
+Container, image, volume, network, project, and vulnerability lists print one table with an `ENVIRONMENT` column. They read up to the server's **Environment limit** (64 by default) in one request; environments beyond it or that failed are reported on stderr. With `--json` they print the server's merged response, with failures in `failedEnvironments`.
 
-Authentication, environments, registries, repositories, templates, variables, and system backups retain their existing global scope.
-
-### Choose a resource or destination
-
-Resource actions search every enabled environment. A unique confirmed match is selected automatically. Multiple matches open a Bubble Tea picker showing resource and environment details. If any search fails, even a single confirmed match requires explicit picker selection. Dependent resources, uploads, downloads, and restores stay in the selected environment.
-
-Creation, imports, builds, image pulls and uploads, and conversion require a destination picker. JSON and noninteractive commands require `--env` whenever selection is necessary. `--yes` and `--force` never choose a resource or destination. Cancelling a picker sends no mutation.
-
-### Confirm a fleet operation
-
-Environment-wide mutations run sequentially across enabled environments after one confirmation showing the operation and environment names. This covers prune, update checks, updater runs, bulk container start/stop, settings and schedule updates, and activity-history clearing. `--yes` and applicable existing confirmation-skip flags bypass confirmation.
-
-Individual failures do not stop later environments, but the command exits nonzero if any operation fails. Cancellation prevents remaining operations from starting. Preview system upgrades use the existing fleet upgrade endpoint once; explicit `--all` retains its existing behavior.
-
-### Read aggregate JSON
-
-Preview reads and fleet operations emit one JSON document. Each `result` retains that command's existing JSON payload, including pagination and extra response fields:
+Other reads run in each environment in turn. With `--json` they print one document that wraps each environment's result:
 
 ```json
 {
@@ -117,17 +77,25 @@ Preview reads and fleet operations emit one JSON document. Each `result` retains
     {
       "environmentId": "0",
       "environmentName": "Local Docker",
-      "result": {
-        "success": true,
-        "data": [],
-        "pagination": { "totalItems": 0 }
-      }
+      "result": { "success": true, "data": [] }
     }
   ]
 }
 ```
 
-Failed entries contain `error` instead of `result`; aggregate `success` is `false` and the exit status is nonzero. Discovery failure stops the command. An empty enabled-environment list produces an empty successful read. Single-resource actions retain their existing JSON payload and announce the selected environment on stderr.
+A failed environment has `error` instead of `result`, `success` is `false`, and the command exits nonzero.
+
+### Actions on one resource
+
+Commands that take a resource name or ID, such as `containers restart nginx`, search every environment. One match runs right away, and stderr shows which environment was picked. Several matches open a picker, or fail without a terminal or with `--json` until you pass `--env`.
+
+Creates, imports, builds, image pulls and uploads, and conversions need a destination. In a terminal the CLI asks you to pick one; otherwise pass `--env`.
+
+### Changes in every environment
+
+Prune, update checks, updater runs, settings and schedule updates, and similar changes ask `<command> in all N environments?` once, then run in each environment in turn. `--yes` or `--force` skips the question. A failure in one environment doesn't stop the others, but the command exits nonzero.
+
+If your credentials can't list environments, for example an API key limited to one environment, the CLI stops with `these credentials cannot list environments; pass --env <id> to choose one`.
 
 ## Verify self-update signatures
 
@@ -136,24 +104,24 @@ Failed entries contain `error` instead of `result`; aggregate `success` is `fals
 > [!IMPORTANT]
 > Signature verification is a preview feature. Its behavior and output are subject to change at any time.
 
-Every Arcane release signs its checksum file with the Arcane [cosign key](https://github.com/getarcaneapp/arcane/blob/main/cosign.pub) and records the signature in Sigstore's public transparency log. With this preview on, `arcane-cli self-update` checks that signature before it trusts any checksum:
+Turn this preview on so `arcane-cli self-update` checks the release signature before it trusts any checksum. Every release signs its checksum file with the Arcane [cosign key](https://github.com/getarcaneapp/arcane/blob/main/cosign.pub) and records it in Sigstore's public transparency log.
 
 ```bash
 arcane-cli config set previews.newSelfUpdater true
 arcane-cli self-update run
 ```
 
-The CLI downloads the checksum file and its `.sigstore.json` bundle, then confirms the checksum file was signed with the Arcane key, is recorded in the transparency log, and has not changed. Only then does it check the downloaded binary against that checksum. The cosign key is built into the CLI, so you don't need `cosign` installed.
+The CLI downloads the checksum file and its `.sigstore.json` bundle and confirms the file was signed with the Arcane key, is in the transparency log, and is unchanged. Only then does it check the binary against that checksum. The key is built in, so you don't need `cosign` installed.
 
-If verification fails, the update stops and your binary is left unchanged. The CLI does not fall back to an unverified update. Verification also runs with `--dry-run` and `--json`, and the JSON output reports `signatureVerified` and `bundleUrl`.
+If verification fails, the update stops and your binary is unchanged; there's no fallback to an unverified update. Verification also runs with `--dry-run` and `--json`, and the JSON output reports `signatureVerified` and `bundleUrl`.
 
 ### Network access and caching
 
-The first verified update downloads Sigstore's trust data from `tuf-repo-cdn.sigstore.dev`. The CLI caches it in `arcane-cli/sigstore` under your user cache directory, which is `~/.cache` on Linux and `~/Library/Caches` on macOS. Later updates use the cache, including offline, until the trust data expires. After that the CLI needs to reach `tuf-repo-cdn.sigstore.dev` again.
+The first verified update downloads Sigstore's trust data from `tuf-repo-cdn.sigstore.dev`. It's cached in `arcane-cli/sigstore` under your user cache directory (`~/.cache` on Linux, `~/Library/Caches` on macOS). Later updates use the cache, even offline, until the trust data expires; then the CLI must reach `tuf-repo-cdn.sigstore.dev` again.
 
 ### Older releases
 
-Releases before v1.18.0 are not signed, so you can't install them with this preview on. To install one, turn the preview off first:
+Releases before v1.18.0 are unsigned and can't be installed with this preview on. Turn it off first:
 
 ```bash
 arcane-cli config set previews.newSelfUpdater false
@@ -166,21 +134,18 @@ A signature proves Arcane published a release. It does not stop you from install
 
 ### Config file
 
-The config file is at `~/.config/arcanecli.yml` by default. Print the exact path on your system with:
+The config file is at `~/.config/arcanecli.yml` by default. Print the exact path, then see a typical file below:
 
 ```bash
 arcane-cli config path
 ```
 
-A typical config file:
 
 ```yaml
 previews:
-  allEnvironments: false
   newSelfUpdater: false
 api_key: ''
 cli_update_channel: stable
-default_environment: '0'
 federated_audience: ''
 log_level: info
 pagination:
@@ -208,10 +173,9 @@ server_url: http://localhost:3552
 ```
 
 > [!WARNING]
-> Older versions saved `jwt_token` and `refresh_token` in the config file. These keys are deprecated and stop working in v3. The CLI still reads them and prints a warning. Run `arcane-cli auth refresh` to move the session to `auth.json`.
+> Older versions saved `jwt_token` and `refresh_token` in the config file. Since 3.0 the CLI ignores these keys and only reads sessions from `auth.json`. If your session only lives in those keys, sign in again with `arcane-cli auth login`.
 
 If `auth.json` is damaged, the CLI ignores it with a warning but can't save new sessions. Run `arcane-cli config backup --auth` to move it to `auth.json.bak`, then sign in again.
-
 API keys set with `arcane-cli config set api-key` stay in the config file. A config with an API key ignores saved sessions and always authenticates with the key.
 
 ### Global flags
@@ -221,7 +185,7 @@ These flags work on every command.
 | Flag                           | Purpose                                                                  |
 | ------------------------------ | ------------------------------------------------------------------------ |
 | `--output <mode>`              | Output mode, `text` or `json`. `--json` is an alias for `--output json`. |
-| `--env <id>`                   | Select one environment, overriding preview and the configured default.   |
+| `--env <id>`                   | Limit the command to one environment. Without it, commands cover all environments. |
 | `--yes`, `-y`                  | Auto-confirm destructive prompts.                                        |
 | `--no-color`                   | Disable ANSI color output.                                               |
 | `--request-timeout <duration>` | Override the HTTP timeout for one command.                               |

@@ -5,7 +5,7 @@ description: 'Pull, inspect, tag, prune, and update Docker images, and save priv
 
 import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
 
-The **Images** page lists every Docker image on the selected host and lets you search registries, pull, tag, inspect, prune, and remove images. Arcane also flags images that have a newer release available.
+Use the **Images** page to search registries and pull, tag, inspect, prune, and remove images on the selected host. Arcane also flags images with a newer release.
 
 <ScreenshotFrame
   name="images-page"
@@ -17,42 +17,37 @@ The **Images** page lists every Docker image on the selected host and lets you s
 
 ## Browse images
 
-Open **Images** in the sidebar. The table shows tag, ID, size, and creation date for each image.
-
-When scan results are available, sort the **Vulnerabilities** column to order images by vulnerability count.
+Open **Images** in the sidebar. The table shows each image's tag, ID, size, and creation date. With scan results, sort **Vulnerabilities** to order by vulnerability count.
 
 ## Pull an image
 
 1. Click **Pull Image**.
 2. Enter the image reference, e.g. `redis:latest`.
-3. Click **Pull**. The image appears in the list once the download finishes.
+3. Click **Pull**. The image appears once the download finishes.
 
 ### Search a registry
 
-Use **Search Registry** from the pull dialog when you do not know the exact image name. Enter a search term, pick a result, choose a tag, and Arcane pulls the selected image.
+Don't know the exact name? Use **Search Registry** in the pull dialog: search, pick a result and a tag, and Arcane pulls it.
 
 ## Inspect an image
 
-Click the image's name, ID, or **Inspect** button to see its full details: tags, configuration, layer history, vulnerability results, and labels.
+Click the image's name, ID, or **Inspect** for tags, configuration, layer history, vulnerability results, and labels.
 
 ### Image history
 
-The **History** tab shows the Docker layer history for the image, including layer IDs, creation time, size, command, tags, and comments. Use it to inspect how a local image was built or to compare images after a rebuild.
+The **History** tab shows layer IDs, creation time, size, command, tags, and comments. Use it to see how an image was built or compare images after a rebuild.
 
 ### Attestations
 
-The **Attestations** tab shows in-toto attestations, which are signed statements published with an image, such as build provenance or an SBOM. They appear when Arcane can resolve the image to a usable registry tag or digest. Images that only exist as local IDs may not have a registry reference Arcane can query.
-
-You can filter attestations by platform and predicate type. Open an attestation to inspect its digest, media type, statement type, subject, platform, and size.
+The **Attestations** tab shows in-toto attestations: signed statements published with an image, such as build provenance or an SBOM. They need a registry tag or digest Arcane can resolve, so local-only images may have none. Filter by platform and predicate type; open one for its digest, media type, statement type, subject, platform, and size.
 
 ## Tag an image
 
-1. Open the image detail page.
-2. Click **Tag Image**.
-3. Enter the target repository and tag. If the tag is omitted, Docker uses `latest`.
-4. Save.
+With the `images:tag` permission:
 
-Tagging requires the `images:tag` permission.
+1. On the image detail page, click **Tag Image**.
+2. Enter the target repository and tag. Without a tag, Docker uses `latest`.
+3. Save.
 
 ## Remove an image
 
@@ -70,28 +65,25 @@ Tagging requires the `images:tag` permission.
 
 ## Check for image updates
 
-Click **Check Updates** in the toolbar to ask the registries whether newer images exist. The **Refresh** icon only reloads the list. Arcane also checks on the schedule described in [Auto Updates](/docs/docker/auto-updates).
-
-An image with an update shows one of two indicators:
+Click **Check Updates** to ask registries for newer images; **Refresh** only reloads the list. Arcane also checks on the [Auto Updates](/docs/docker/auto-updates) schedule. Updated images show:
 
 - **Version Update**: a newer version tag is available.
-- **Digest Update**: the tag is unchanged, but it now points to a different build, because its digest (the content hash the registry assigns to one exact image) has changed. This is common with tags like `latest`.
+- **Digest Update**: the same tag now points to a different build, because its digest (the registry's content hash for one exact image) changed. Common with tags like `latest`.
 
-Open the indicator to see the latest version or digest, update the containers that use the image, or select **Re-check Updates**. If updates don't appear, check that Arcane can reach the registry and that its credentials are saved.
+Open the indicator to see the latest version or digest, update the containers using the image, or select **Re-check Updates**. If updates don't appear, check that Arcane can reach the registry and has its credentials.
 
 ## Private registries
 
-Save registry credentials in Arcane so it can pull private images and check them for updates.
+Save registry credentials so Arcane can pull private images and check them for updates.
 
-1. In the sidebar, open **Customization → Container Registries**.
-2. Add the registry host, username, and password or token.
-3. Optionally fill in **Repository Names** (see below).
-4. Save.
+1. Open **Customization → Container Registries**.
+2. Add the registry host, username, and password or token, and optionally [**Repository Names**](#repository-names).
+3. Save.
 
-You can save several registries. Arcane picks the matching credentials from the hostname in each image reference.
+You can save several registries; Arcane matches credentials by each image reference's hostname.
 
 > [!NOTE]
-> If you change a registry's URL, enter its credentials again in the same save. Arcane rejects the change otherwise, so saved secrets are never sent to a new host. The same rule applies wherever a secret is tied to a URL, such as an environment's API URL, the OIDC issuer, the Trivy server, and notification provider hosts.
+> If you change a registry's URL, re-enter its credentials in the same save, or Arcane rejects it, so secrets never go to a new host. This applies wherever a secret is tied to a URL: an environment's API URL, the OIDC issuer, the Trivy server, and notification provider hosts.
 
 ### Repository names
 
@@ -102,25 +94,17 @@ team/api
 team/platform/api
 ```
 
-Arcane checks each entry against Docker's reference format and removes duplicates. These names fill the **Repository name** dropdown for builds that push images (see [Image Builds](/docs/docker/image-builds)). A registry without repository names still works for pulls and update checks, but can't be a push target.
+Arcane validates each against Docker's reference format and removes duplicates. They fill the **Repository name** dropdown for pushing [builds](/docs/docker/image-builds). Without them, a registry works for pulls and update checks but can't be a push target.
 
 ### Browse a registry
 
-Click **Browse** on a saved registry to see its repositories and tags. Each tag shows its digest, size, and platforms, and you can copy the full image reference.
+With `registries:read` and `registries:browse`, click **Browse** on a saved registry to see repositories and tags, each with digest, size, platforms, and a copyable image reference. With `registries:delete-tags`, you can delete tags singly or in bulk.
 
-Registries that publish a catalog, such as a self-hosted Distribution registry, list every repository. Docker Hub, GHCR, and similar registries do not, so Arcane shows the **Repository Names** saved on the registry instead. Type any other repository into **Open Repository** to load its tags.
-
-Browsing requires the `registries:read` and `registries:browse` permissions. Users with `registries:delete-tags` can also delete tags, one at a time or in bulk.
+Catalog registries, such as self-hosted Distribution, list every repository. Docker Hub, GHCR, and similar don't, so Arcane shows the saved **Repository Names**. Type any other repository into **Open Repository** to load its tags.
 
 > [!WARNING]
 > Arcane deletes a tag by its manifest digest, so every other tag pointing to the same manifest is removed too. The registry only frees the storage after it runs garbage collection.
 
 ### Amazon ECR
 
-ECR is a first-class registry type. When adding an ECR registry, provide:
-
-- AWS access key ID
-- AWS secret access key
-- AWS region
-
-Arcane exchanges those credentials for a temporary ECR authorization token, caches it, and refreshes it when needed, so you don't manage a Docker token yourself. When you change an ECR registry's URL, re-enter both the access key ID and the secret access key.
+ECR is a first-class registry type. Provide an AWS access key ID, secret access key, and region; Arcane exchanges them for a temporary ECR token and refreshes it as needed. When you change an ECR registry's URL, re-enter both the access key ID and the secret access key.

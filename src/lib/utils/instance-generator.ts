@@ -1,4 +1,4 @@
-import { getActiveFields, getAgentMode } from '#lib/config/instance-generator.js';
+import { getActiveFields } from '#lib/config/instance-generator.js';
 import type {
 	DeploymentTargetId,
 	FieldContext,
@@ -89,7 +89,7 @@ function buildEnvironment(context: FieldContext): string[] {
 }
 
 function projectsEnvironment(projectsPath: string): string[] {
-	return projectsPath ? [`PROJECTS_DIRECTORY=${projectsPath}`] : [];
+	return projectsPath ? [`ARCANE_PROJECTS_DIRECTORY=${projectsPath}`] : [];
 }
 
 function databaseSettings(config: GeneratorValues) {
@@ -149,7 +149,7 @@ function buildDockerCompose(config: GeneratorValues): ComposeDocument {
 			...(useSocketProxy ? ['DOCKER_HOST=tcp://docker-socket-proxy:2375'] : []),
 			...(useDatabase
 				? [
-						`DATABASE_URL=postgresql://${database.user}:${database.password}@postgres:5432/${database.name}`
+						`ARCANE_DATABASE_URL=postgresql://${database.user}:${database.password}@postgres:5432/${database.name}`
 					]
 				: [])
 		],
@@ -220,19 +220,14 @@ function buildPodmanCompose(
 	};
 }
 
-function buildAgentCompose(
-	target: 'agent-direct' | 'agent-edge',
-	config: GeneratorValues
-): ComposeDocument {
-	const context = { target, config };
-	const edge = getAgentMode(context) === 'edge';
+function buildAgentCompose(config: GeneratorValues): ComposeDocument {
+	const context = { target: 'agent-edge' as const, config };
 	const lxc = config.lxc === true;
 
 	const agent: ComposeRecord = {
 		image: AGENT_IMAGE,
-		container_name: edge ? 'arcane-edge-agent' : 'arcane-agent',
+		container_name: 'arcane-edge-agent',
 		...(lxc ? { pid: 'host' } : {}),
-		...(edge ? {} : { ports: [quoteYamlScalar(`${getString(config, 'agentPort', '3553')}:3553`)] }),
 		environment: [...agentConnectionEnvironment(context), ...buildEnvironment(context)],
 		volumes: [
 			`${getString(config, 'dockerSocket', '/var/run/docker.sock')}:/var/run/docker.sock`,
@@ -243,7 +238,7 @@ function buildAgentCompose(
 	};
 
 	return {
-		services: { [edge ? 'arcane-edge-agent' : 'arcane-agent']: agent },
+		services: { 'arcane-edge-agent': agent },
 		volumes: { 'arcane-data': {} },
 		networks: {}
 	};
@@ -251,19 +246,12 @@ function buildAgentCompose(
 
 function agentConnectionEnvironment(context: FieldContext): string[] {
 	const { config } = context;
-	const connection = [
-		`AGENT_TOKEN=${getString(config, 'agentToken', AGENT_TOKEN_PLACEHOLDER)}`,
-		`MANAGER_API_URL=${getString(config, 'managerUrl', MANAGER_URL_PLACEHOLDER)}`
+	return [
+		'ARCANE_EDGE_AGENT=true',
+		`ARCANE_EDGE_TRANSPORT=${getString(config, 'edgeTransport', 'auto')}`,
+		`ARCANE_AGENT_TOKEN=${getString(config, 'agentToken', AGENT_TOKEN_PLACEHOLDER)}`,
+		`ARCANE_MANAGER_API_URL=${getString(config, 'managerUrl', MANAGER_URL_PLACEHOLDER)}`
 	];
-
-	if (getAgentMode(context) === 'edge') {
-		return [
-			'EDGE_AGENT=true',
-			`EDGE_TRANSPORT=${getString(config, 'edgeTransport', 'poll')}`,
-			...connection
-		];
-	}
-	return ['AGENT_MODE=true', ...connection];
 }
 
 function appendYamlValue(lines: string[], key: string, value: unknown, indent: number): void {
@@ -329,7 +317,7 @@ function buildQuadlet(config: GeneratorValues): string {
 	const projectsPath = getString(config, 'projectsHostPath', '');
 	const environment = [
 		...buildEnvironment({ target: 'podman-quadlet', config }),
-		'ENCRYPTION_KEY_FILE=/run/secrets/arcane-key',
+		'ARCANE_ENCRYPTION_KEY_FILE=/run/secrets/arcane-key',
 		...(systemdAccess ? ['DBUS_SESSION_BUS_ADDRESS=unix:path=%t/bus'] : []),
 		...projectsEnvironment(projectsPath)
 	];
@@ -425,8 +413,6 @@ function quadletFiles(config: GeneratorValues): GeneratedFile[] {
 
 function agentBinaryFiles(config: GeneratorValues): GeneratedFile[] {
 	const context = { target: 'agent-binary' as const, config };
-	const direct = getAgentMode(context) === 'direct';
-	const listen = getString(config, 'listen', '');
 
 	return [
 		{
@@ -437,9 +423,7 @@ function agentBinaryFiles(config: GeneratorValues): GeneratedFile[] {
 			lang: 'dotenv',
 			code: [
 				...agentConnectionEnvironment(context),
-				'ENVIRONMENT=production',
-				...(direct ? [`PORT=${getString(config, 'agentPort', '3553')}`] : []),
-				...(direct && listen ? [`LISTEN=${listen}`] : []),
+				'ARCANE_ENVIRONMENT=production',
 				...buildEnvironment(context)
 			].join('\n')
 		},
@@ -481,10 +465,9 @@ export function generateInstance(
 			];
 		case 'podman-quadlet':
 			return quadletFiles(config);
-		case 'agent-direct':
 		case 'agent-edge':
 			return [
-				composeFile(buildAgentCompose(target, config)),
+				composeFile(buildAgentCompose(config)),
 				startFile('docker compose up -d', 'Start the agent')
 			];
 		case 'agent-binary':

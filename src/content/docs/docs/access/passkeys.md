@@ -3,56 +3,46 @@ title: 'Passkeys & MFA'
 description: 'Sign in without a password, or require a passkey as a second factor after your password or OIDC provider.'
 ---
 
-A passkey authenticates you through your phone, computer, or hardware key. Arcane supports:
+A passkey signs you in with your phone, computer, or hardware key. Arcane supports:
 
-- **Passwordless sign-in** — select **Passkey** on the login page and follow your device's prompt to sign in without a password.
+- **Passwordless sign-in** — select **Passkey** on the login page and follow your device's prompt.
 - **Passkey MFA** — sign in with your password or OIDC provider, then confirm with a passkey.
 
-Registering a passkey does not turn on MFA. Enabling MFA is a separate switch.
+Registering a passkey does not turn on MFA. That's a separate switch.
 
 > [!IMPORTANT]
-> Set `APP_URL` to your public HTTPS URL before registering passkeys. Its hostname becomes the WebAuthn relying party ID; the full URL supplies the origin. A missing hostname prevents startup, and passkeys won't work at a different hostname. See [Environment Variables](/docs/reference/environment-variables).
+> Set `ARCANE_APP_URL` to your public HTTPS URL before registering passkeys. Its hostname becomes the WebAuthn relying party ID; the full URL supplies the origin. A missing hostname prevents startup, and passkeys won't work at a different hostname. See [Environment Variables](/docs/reference/environment-variables).
 
-Browsers only expose the WebAuthn API in a secure context, so passkeys need HTTPS (or `localhost`). On a plain-HTTP deployment Arcane shows _"Passkeys require a supported browser and a secure HTTPS connection."_ and hides the controls. See [TLS](/docs/networking/tls) or put Arcane behind a [reverse proxy](/docs/networking/reverse-proxy) that terminates HTTPS.
+Passkeys need HTTPS (or `localhost`), because browsers only expose WebAuthn in a secure context. Over plain HTTP, Arcane shows _"Passkeys require a supported browser and a secure HTTPS connection."_ and hides the controls. See [TLS](/docs/networking/tls) or use a [reverse proxy](/docs/networking/reverse-proxy) that terminates HTTPS.
 
 ## Register a passkey
 
 1. Open **Account** from the sidebar user menu, on the **Account** tab.
-2. In the **Passkeys** section, select **Add passkey**.
-3. Give it a name you will recognize later — the device it lives on, usually.
-4. Complete the prompt your browser or operating system shows.
+2. In **Passkeys**, select **Add passkey**.
+3. Name it something recognizable, usually its device.
+4. Complete your browser or OS prompt.
 
-Each passkey is listed with its name and when it was last used. You can rename or delete any of them from the same section.
-
-Register more than one. A passkey lives on a single device; if that device is your only way in and you lose it, you are relying on recovery codes.
-
-Arcane prefers post-quantum ML-DSA keys when your authenticator supports them and falls back to classical algorithms otherwise.
+The list shows each passkey's name and last use; rename or delete them there. Register more than one: a passkey lives on one device, and losing your only one leaves you relying on recovery codes. Arcane prefers post-quantum ML-DSA keys when your authenticator supports them, otherwise classical algorithms.
 
 ## Turn on passkey MFA
 
-You need at least one registered passkey first — it becomes the second step.
+You need at least one registered passkey first.
 
-1. In the same **Passkeys** section, find **Passkey MFA** and select **Enable MFA**.
-2. Arcane generates **10 single-use recovery codes** and shows them once, immediately.
-3. Save them somewhere secure before closing the message. They are the only way back in if you lose your passkey.
+1. In **Passkeys**, find **Passkey MFA** and select **Enable MFA**.
+2. Arcane shows **10 single-use recovery codes** once.
+3. Save them securely before closing. They're your only way in if you lose your passkey.
 
-From then on, signing in with a password or through OIDC stops at an MFA step offering **Use passkey** or **Use recovery code**.
+Password and OIDC sign-ins then stop at an MFA step offering **Use passkey** or **Use recovery code**. The panel shows remaining codes; **Regenerate codes** issues 10 new ones (shown once) and invalidates the old ones.
 
-The panel shows how many recovery codes remain. **Regenerate codes** issues a fresh set of 10 and invalidates the old ones — the new codes are also shown only once.
-
-Disabling MFA deletes your remaining recovery codes and leaves your passkeys registered, so sign-in falls back to password or OIDC alone.
-
-If you lose both your passkeys and your recovery codes, an operator with shell access to the Arcane container can clear MFA for the account. See [Account Recovery](/docs/access/account-recovery).
+Disabling MFA deletes remaining recovery codes but keeps your passkeys, so sign-in falls back to password or OIDC alone. Lost both passkeys and codes? An operator with shell access to the container can clear MFA; see [Account Recovery](/docs/access/account-recovery).
 
 ## Confirm your identity before changes
 
-Changes to passkeys, MFA, or recovery codes require **Confirm your identity** with a passkey or current password. Confirmation and individual passkey prompts expire after 5 minutes.
-
-OIDC-only accounts need an accessible passkey for this step. Without one, use `arcane admin reset-mfa` as described in [Account Recovery](/docs/access/account-recovery).
+Changing passkeys, MFA, or recovery codes requires **Confirm your identity** with a passkey or current password. Confirmation and passkey prompts expire after 5 minutes. OIDC-only accounts need an accessible passkey here; without one, use `arcane admin reset-mfa` ([Account Recovery](/docs/access/account-recovery)).
 
 ## Use the CLI with MFA enabled
 
-`arcane-cli auth login` uses a browser device flow, which cannot carry an MFA challenge, so it fails on an account with MFA enabled. Create a personal API key from the **API keys** section of the same **Account** page instead, then run:
+`arcane-cli auth login` uses a browser device flow that can't carry an MFA challenge, so it fails with MFA on. Create a personal API key under **API keys** on the **Account** page, then run:
 
 ```bash
 arcane-cli config set api-key <key>

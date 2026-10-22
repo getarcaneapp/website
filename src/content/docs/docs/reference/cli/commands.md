@@ -3,9 +3,7 @@ title: 'CLI Commands'
 description: 'Practical arcane-cli invocations for everyday tasks.'
 ---
 
-The `arcane-cli` commands you'll use most often, grouped by task. For the full flag list run `arcane-cli <command> --help`, and for the complete command tree run `arcane-cli --help`.
-
-Set your server URL and sign in first. See [CLI Configuration](/docs/reference/cli/config).
+Find the `arcane-cli` commands you'll use most, grouped by task. First set your server URL and sign in (see [CLI Configuration](/docs/reference/cli/config)). Run `arcane-cli <command> --help` for all flags, or `arcane-cli --help` for the full command tree.
 
 ## Sign in
 
@@ -25,21 +23,23 @@ arcane-cli auth me
 arcane-cli auth logout
 ```
 
-For CI, use an API key or a federated credential instead of an interactive login — see [Federated Credentials](/docs/access/federated-credentials).
-
-## Choose an environment
-
-Most resource commands act on your default environment. Set it once:
+List every permission you hold in each environment and the bindings that grant them:
 
 ```bash
-arcane-cli environments switch
+arcane-cli auth me --effective
 ```
 
-Or override it for a single command with `--env`:
+For CI, use an API key or a federated credential instead. See [Federated Credentials](/docs/access/federated-credentials).
+
+## Environments
+
+Commands cover every environment by default. Use `--env` for just one:
 
 ```bash
 arcane-cli containers list --env 2
 ```
+
+Changes without `--env` ask for confirmation before they run in all environments. See [Work across environments](/docs/reference/cli/config#work-across-environments).
 
 List environments and check one is reachable:
 
@@ -49,6 +49,12 @@ arcane-cli environments list
 
 ```bash
 arcane-cli environments test 2
+```
+
+Add an environment. The CLI prints its API key once, then the `docker run` and Compose commands to start the agent on the remote host:
+
+```bash
+arcane-cli environments create --name production
 ```
 
 ## Containers
@@ -65,7 +71,7 @@ arcane-cli containers get my-container
 arcane-cli containers restart my-container
 ```
 
-Show which containers have a newer image available:
+List containers with a newer image available:
 
 ```bash
 arcane-cli containers updates
@@ -83,8 +89,6 @@ arcane-cli containers update my-container
 arcane-cli projects list
 ```
 
-Bring a project up, or take it down:
-
 ```bash
 arcane-cli projects up my-project
 ```
@@ -100,7 +104,7 @@ arcane-cli projects redeploy my-project
 ```
 
 > [!TIP]
-> `projects up`, `projects redeploy`, and `projects pull` print the raw Docker output line by line as the operation runs, so you see the same thing you would from `docker compose` directly. These commands allow up to 30 minutes for large pulls and builds.
+> `projects up`, `projects redeploy`, and `projects pull` print raw Docker output line by line, as `docker compose` would. They allow up to 30 minutes for large pulls and builds.
 
 Remove a project and its resources:
 
@@ -143,8 +147,6 @@ arcane-cli volumes usage my-volume
 arcane-cli gitops list
 ```
 
-Check a sync's state, then run it now:
-
 ```bash
 arcane-cli gitops status my-sync
 ```
@@ -155,7 +157,7 @@ arcane-cli gitops sync my-sync
 
 ## System
 
-Free up space across the environment:
+Free up space in every environment, or pass `--env` for one:
 
 ```bash
 arcane-cli system prune
@@ -179,7 +181,7 @@ arcane-cli system convert "docker run -d -p 8080:80 nginx"
 
 ## Vulnerabilities
 
-Get an overview of scan results, or the full findings list:
+Get a summary or the full findings list, scan an image now, or show one image's findings:
 
 ```bash
 arcane-cli images vulnerabilities summary
@@ -188,8 +190,6 @@ arcane-cli images vulnerabilities summary
 ```bash
 arcane-cli images vulnerabilities list
 ```
-
-Scan an image now, or show one image's findings:
 
 ```bash
 arcane-cli images vulnerabilities scan nginx:latest
@@ -204,6 +204,46 @@ Silence a CVE you've reviewed (and list or undo ignores with `ignored` / `unigno
 ```bash
 arcane-cli images vulnerabilities ignore CVE-2026-1234
 ```
+
+## Users and access
+
+Bind a role to a user, globally or in one environment:
+
+```bash
+arcane-cli admin bindings create --user <user-id> --role role_deployer --environment <env-id>
+```
+
+List bindings with `--user`, `--role`, or `--environment` filters, show a user's effective access, or remove a binding:
+
+```bash
+arcane-cli admin bindings list --user <user-id>
+```
+
+```bash
+arcane-cli admin bindings access <user-id>
+```
+
+```bash
+arcane-cli admin bindings delete <binding-id>
+```
+
+Map an OIDC claim value to a role:
+
+```bash
+arcane-cli admin oidc create --claim docker-admins --role role_admin
+```
+
+Read and export the Event Log, including [audit events](/docs/access/audit-log) if you hold `audit:read`. Filter with `--search`, `--severity`, and `--type` (exact types or categories, separated by commas):
+
+```bash
+arcane-cli admin events list --type authz.denied
+```
+
+```bash
+arcane-cli admin events export --format csv -o events.csv
+```
+
+Custom roles live under `admin roles` (`list`, `get`, `create`, `update`, `delete`, `permissions`). See [Roles & Permissions](/docs/access/roles).
 
 ## System backups
 
@@ -225,7 +265,7 @@ There are also subcommands for retention policies (`policies`), the recovery key
 
 ## Podman
 
-These commands work on environments that run Podman. Check what the host supports first:
+These commands work on Podman environments; see [Podman Overview](/docs/podman/overview) for host requirements. Check what the host supports first:
 
 ```bash
 arcane-cli podman status
@@ -289,11 +329,7 @@ Run Podman auto-update. `--dry-run` needs Podman 6.2 or later:
 arcane-cli podman autoupdate --dry-run
 ```
 
-See [Podman Overview](/docs/podman/overview) for what each feature needs on the host.
-
 ## Activities and webhooks
-
-Follow what the server is doing:
 
 ```bash
 arcane-cli activities list
@@ -315,7 +351,7 @@ arcane-cli webhooks trigger <token>
 
 ## Updater
 
-Inspect the automatic updater and trigger a run:
+Inspect the automatic updater, trigger a run, and view history:
 
 ```bash
 arcane-cli updater status
@@ -329,7 +365,7 @@ arcane-cli updater run
 arcane-cli updater history
 ```
 
-History shows one row per resource — resource, type, status, whether the update was applied, and when it started. Use `--limit` (`-n`) to change how many entries you get back; the default is 50.
+History shows one row per resource: resource, type, status, whether the update was applied, and start time. `--limit` (`-n`) sets how many entries return; the default is 50.
 
 ## Update the CLI
 
@@ -347,19 +383,15 @@ To check release signatures before updating, turn on the [signature verification
 
 ## Diagnose problems and set up your shell
 
-Diagnose connectivity and configuration problems:
+Diagnose connectivity and configuration problems, install shell completion, or generate secrets and certificates for a new install:
 
 ```bash
 arcane-cli doctor
 ```
 
-Install shell completion:
-
 ```bash
 arcane-cli completion zsh
 ```
-
-Generate secrets and certificates for a new install:
 
 ```bash
 arcane-cli generate secret
@@ -367,20 +399,20 @@ arcane-cli generate secret
 
 ## Scripting
 
-Every command accepts `--output json` (or the shorthand `--json`), which makes the CLI easy to pair with `jq`:
+Every command accepts `--output json` (or `--json`), so you can pair it with `jq`:
 
 ```bash
 arcane-cli containers list --json | jq -r ".data[].name"
 ```
 
-In JSON mode, stdout carries exactly one JSON document. Status messages and progress go to stderr. List commands print the server's paginated response with `data` and `pagination`. Other commands print only the resource or result. `images pull`, `images build`, and the streaming `projects` commands print an array of the server's progress frames once the operation finishes.
+In JSON mode, stdout carries exactly one JSON document; status and progress go to stderr. List commands print the paginated response with `data` and `pagination`; others print only the resource or result. `images pull`, `images build`, and streaming `projects` commands print an array of progress frames when done.
 
-Commands that remove or reset resources ask for confirmation first. Add `--yes` to skip confirmation prompts in unattended scripts. On delete commands, `--force` skips the prompt too.
+Commands that remove or reset resources ask for confirmation. Add `--yes` to skip prompts in unattended scripts; on delete commands, `--force` also works.
 
 > [!IMPORTANT]
 > Without a terminal, or with `--json`, a prompt fails with `confirmation required: re-run with --yes` instead of waiting for input. Piping `y` into the command does not answer it.
 
-List commands are paginated. `--all` (`-a`) returns every item, ignoring pagination — it cannot be combined with `--limit` or `--start`:
+`--all` (`-a`) returns every item, ignoring pagination. It can't be combined with `--limit` or `--start`:
 
 ```bash
 arcane-cli containers list --all --json
@@ -391,11 +423,11 @@ arcane-cli containers list --all --json
 
 ## Renamed flags
 
-Some flags were renamed so they no longer clash with the global `--env`, `--config`, and `--output` flags, or to replace a separate off switch. The old names still work but print a deprecation warning, and they will be removed in v3. Update your scripts to the new names:
+Arcane 3.0 removed these old flag names, so scripts using them fail with `unknown flag`. They clashed with the global `--env`, `--config`, and `--output` flags, or were separate off switches.
 
-| Command                                                                                                                                                                          | Old flag     | New flag              |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
-| `containers create`                                                                                                                                                              | `--env`      | `--env-var`, `-e`     |
-| `admin notifications settings set`                                                                                                                                               | `--config`   | `--provider-config`   |
-| `templates download`                                                                                                                                                             | `--output`   | `--output-file`, `-o` |
-| `environments create`, `environments update`, `registries create`, `registries update`, `templates registries update`, `admin federated update`, `admin backups policies update` | `--disabled` | `--enabled=false`     |
+| Command                                                                                                                                                                                                  | Old flag     | New flag              |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
+| `containers create`                                                                                                                                                                                      | `--env`      | `--env-var`, `-e`     |
+| `admin notifications settings set`                                                                                                                                                                       | `--config`   | `--provider-config`   |
+| `templates download`                                                                                                                                                                                     | `--output`   | `--output-file`, `-o` |
+| `environments create`, `environments update`, `registries create`, `registries update`, `templates registries update`, `admin federated create`, `admin federated update`, `admin backups policies update` | `--disabled` | `--enabled=false`     |

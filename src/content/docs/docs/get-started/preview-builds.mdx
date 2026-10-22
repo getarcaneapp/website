@@ -5,14 +5,14 @@ description: 'Try unreleased Arcane changes with the next image tags.'
 
 import BinaryDownloads from '#components/content/BinaryDownloads.astro';
 
-Preview builds, also called next builds, are built automatically from Arcane's `main` branch and include changes that haven't reached a stable release. Use them to try new features or confirm a fix before it ships, on a test instance rather than one you depend on.
+Run preview builds (also called `next` builds) on a test instance to try new features or verify fixes from the `main` branch before a stable release.
 
 > [!CAUTION]
-> Preview builds may contain bugs, unfinished features, or breaking changes. Don't use them in production.
+> Preview builds may contain bugs, unfinished features, or breaking changes. Do not run them in production.
 
 ## Use a preview build
 
-Change the image tag in your `compose.yaml` from `latest` (or your current tag) to `next`, then run `docker compose up -d`.
+1. Change the image tag in your `compose.yaml` to `next`.
 
 Manager:
 
@@ -26,7 +26,7 @@ Agent:
 ghcr.io/getarcaneapp/agent:next
 ```
 
-For example:
+Example `compose.yaml`:
 
 ```yaml
 services:
@@ -39,20 +39,26 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
     environment:
-      - APP_URL=http://localhost:3552
-      - ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_APP_URL=http://localhost:3552
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
     restart: unless-stopped
 
 volumes:
   arcane-data:
 ```
 
+2. Recreate the container:
+
+```bash
+docker compose up -d
+```
+
 > [!TIP]
-> To stay on one build instead of following `next`, use its versioned tag, for example `ghcr.io/getarcaneapp/manager:v2.4.0-next.1`.
+> Pin a specific preview build with its versioned tag, such as `ghcr.io/getarcaneapp/manager:v2.4.0-next.1`.
 
-## Development branding
+## Switch off development branding
 
-Preview builds, and any other build whose version isn't a plain release such as `v2.4.0`, use a development icon in place of the Arcane logo, favicon, and app icons. To show the standard logo instead, click the version number at the bottom of the sidebar and switch off **Development Branding** (requires `settings:write`).
+Non-release builds (any version other than a plain release like `v2.4.0`) display a development icon for the logo, favicon, and app icons. To restore the standard logo, click the version number at the bottom of the sidebar and turn off **Development Branding** (requires `settings:write`).
 
 ## Download a binary
 
@@ -60,16 +66,14 @@ Preview builds, and any other build whose version isn't a plain release such as 
 
 ## Report a problem
 
-Report problems with preview builds on [GitHub Issues](https://github.com/getarcaneapp/arcane/issues). Include the version shown on your dashboard so we can identify the build.
+Open an issue on [GitHub Issues](https://github.com/getarcaneapp/arcane/issues) and include the version number shown on your dashboard.
 
-## Reference
+## Image tags
 
-Preview images use static binaries on Arcane's distroless runtime base (a minimal image with no shell or package manager). Every build is published under three tags:
+Preview images run static binaries on Arcane's distroless base image (a minimal image without a shell or package manager).
 
-| Tag                        | Points to                                 |
-| -------------------------- | ----------------------------------------- |
-| `next`                     | The most recent build.                    |
-| `next-static`              | Same as `next`, kept for existing setups. |
-| Versioned, `v2.4.0-next.1` | That specific build, permanently.         |
-
-Versions count up toward the next release: `v2.4.0-next.1`, `v2.4.0-next.2`, and so on until `v2.4.0` ships.
+| Tag                        | Points to                                         |
+| -------------------------- | ------------------------------------------------- |
+| `next`                     | The latest build from `main`.                     |
+| `next-static`              | Alias for `next`, kept for existing setups.       |
+| Versioned, `v2.4.0-next.1` | That specific build (`v2.4.0-next.1`, `.2`, etc.). |
