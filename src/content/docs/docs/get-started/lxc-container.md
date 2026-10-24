@@ -39,10 +39,10 @@ services:
       - arcane-data:/app/data
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     environment:
-      - APP_URL=http://localhost:3552
+      - ARCANE_APP_URL=http://localhost:3552
       - PUID=1000
       - PGID=1000
-      - ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
     restart: unless-stopped
 
 volumes:
@@ -57,24 +57,22 @@ An agent inside LXC also needs the host PID namespace (`pid: host`) and `/proc` 
 
 ```yaml
 services:
-  arcane-agent:
+  arcane-edge-agent:
     image: ghcr.io/getarcaneapp/agent:latest
-    container_name: arcane-agent
+    container_name: arcane-edge-agent
     pid: host
-    ports:
-      - '3553:3553'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - agent-data:/app/data
       - /proc:/proc
     environment:
-      - AGENT_MODE=true
-      - AGENT_TOKEN=<your-agent-token>
-      - MANAGER_API_URL=http://<manager-host>:3552
+      - ARCANE_EDGE_AGENT=true
+      - ARCANE_AGENT_TOKEN=<your-agent-token>
+      - ARCANE_MANAGER_API_URL=http://<manager-host>:3552
     restart: unless-stopped
 
 volumes:
   agent-data:
 ```
 
-`MANAGER_API_URL` is the address of your Arcane Manager, and `AGENT_TOKEN` comes from the environment you create for this host. See [Remote Environments](/docs/remote/environments).
+`ARCANE_MANAGER_API_URL` is the address of your Arcane Manager, and `ARCANE_AGENT_TOKEN` is the API key Arcane shows when you create the environment for this host. See [Remote Environments](/docs/remote/environments).

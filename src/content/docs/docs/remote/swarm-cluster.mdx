@@ -5,21 +5,21 @@ description: 'Initialize, join, unlock, and update a Docker Swarm cluster.'
 
 import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
 
-Use the **Cluster** page to create, join, or leave a Swarm in the selected environment. It is also where you unlock the cluster, rotate join tokens, and update the live Swarm spec.
+The **Cluster** page lists every environment you can read with its Swarm role: **Manager**, **Worker**, or **Not initialized**, plus the cluster ID for managers. Click **Inspect** on a row to open that environment's cluster panel, where you create, join, or leave a Swarm, unlock the cluster, rotate join tokens, and update the live Swarm spec.
 
 <ScreenshotFrame
   name="swarm-setup"
   alt="The Swarm setup page before a cluster has been initialized."
-  caption="An engine outside a Swarm offers initialization and join options."
+  caption="An environment outside a Swarm offers initialization and join options."
   loading="lazy"
   decoding="async"
 />
 
 ## Initialize a Swarm
 
-Use this when the selected environment isn't part of a Swarm yet.
+Use this when an environment isn't part of a Swarm yet.
 
-1. Open **Swarm → Cluster**.
+1. Open **Swarm → Cluster** and click **Inspect** on the environment.
 2. Under **Initialize Cluster**, optionally open **Advanced settings** and fill in the fields below.
 3. Click **Initialize**.
 
@@ -33,21 +33,21 @@ The defaults suit a local or single-network cluster. Change the advanced setting
 | **Auto-lock managers** | Encrypts manager data so a restarted manager stays locked until you enter the unlock key.                                       |
 | **Force new cluster**  | Creates a new single-manager cluster from this node's existing Swarm state. Use it to recover a cluster that lost its managers. |
 
-Arcane then shows the rest of the Swarm workspace for that environment.
+Arcane then includes that environment in the rest of the Swarm workspace.
 
 ## Join an existing Swarm
 
-Use this to add the selected environment to a cluster that is already running, as a manager or a worker.
+Use this to add an environment to a cluster that is already running, as a manager or a worker.
 
-1. Open **Swarm → Cluster**.
+1. Open **Swarm → Cluster** and click **Inspect** on the environment.
 2. Under **Join Existing Cluster**, enter the remote manager addresses (comma separated), the join token, and optional listen and advertise addresses.
 3. Click **Join**.
 
 ## Easy Join remote environments
 
-When the selected environment is a Swarm manager, **Easy Join** adds other Remote Environments to its cluster without you copying manager addresses or join tokens.
+**Easy Join** adds other Remote Environments to a manager's cluster without you copying manager addresses or join tokens.
 
-Start it from **Swarm → Cluster → Easy Join**, or from a Remote Environment's detail page or row menu. Only enabled, online environments not already linked to a node of this cluster are offered.
+Start it from **Easy Join** on a manager's row under **Swarm → Cluster**, or from a Remote Environment's detail page or row menu. Only enabled, online environments not already linked to a node of this cluster are offered.
 
 1. Select each target environment.
 2. Choose **worker** or **manager** and an availability mode.
@@ -68,19 +68,19 @@ Easy Join needs `swarm:join` on the manager and on every target. The **Easy Join
 
 ## Leave a cluster
 
-Click **Leave Cluster** to remove the selected node from the Swarm. Select **Force leave** if a normal leave fails.
+In an environment's cluster panel, click **Leave Cluster** to remove that node from the Swarm. Select **Force leave** if a normal leave fails.
 
 ## Unlock a locked cluster
 
 If **Auto-lock managers** is on and a manager restarted, the cluster stays locked until you unlock it.
 
-1. Open **Swarm → Cluster**.
+1. Open **Swarm → Cluster** and click **Inspect** on a manager.
 2. Enter the unlock key.
 3. Click **Unlock**.
 
 ## Rotate join tokens and the unlock key
 
-The Cluster page shows the **worker join token**, the **manager join token**, and the **manager unlock key**, and can rotate each of them. Treat them like passwords. Rotating one invalidates the old value.
+A manager's cluster panel shows the **worker join token**, the **manager join token**, and the **manager unlock key**, and can rotate each of them. Treat them like passwords. Rotating one invalidates the old value.
 
 ## Update the cluster spec
 

@@ -326,19 +326,6 @@
       "sourceSymbol": "config.Config.EdgeMTLSServerName"
     },
     {
-      "env": "EDGE_MUX_DISABLED",
-      "field": "EdgeMuxDisabled",
-      "type": "bool",
-      "defaultValue": "false",
-      "description": "keeps the legacy edge message protocol; remove in v3",
-      "supportsFile": false,
-      "deprecated": false,
-      "conditional": false,
-      "source": "config.Config",
-      "sourceFile": "backend/internal/config/config.go",
-      "sourceSymbol": "config.Config.EdgeMuxDisabled"
-    },
-    {
       "env": "EDGE_RECONNECT_INTERVAL",
       "field": "EdgeReconnectInterval",
       "type": "int",
@@ -615,6 +602,20 @@
       "sourceSymbol": "config.Config.OidcGroupsClaim"
     },
     {
+      "env": "OIDC_GROUP_MAPPINGS",
+      "field": "OidcGroupMappings",
+      "type": "string",
+      "options": [
+        "file"
+      ],
+      "supportsFile": true,
+      "deprecated": false,
+      "conditional": false,
+      "source": "config.Config",
+      "sourceFile": "backend/internal/config/config.go",
+      "sourceSymbol": "config.Config.OidcGroupMappings"
+    },
+    {
       "env": "OIDC_ISSUER_URL",
       "field": "OidcIssuerURL",
       "type": "string",
@@ -658,20 +659,6 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcProviderName"
-    },
-    {
-      "env": "OIDC_ROLE_MAPPINGS",
-      "field": "OidcRoleMappings",
-      "type": "string",
-      "options": [
-        "file"
-      ],
-      "supportsFile": true,
-      "deprecated": false,
-      "conditional": false,
-      "source": "config.Config",
-      "sourceFile": "backend/internal/config/config.go",
-      "sourceSymbol": "config.Config.OidcRoleMappings"
     },
     {
       "env": "OIDC_SCOPES",
@@ -1051,6 +1038,36 @@
       "public": false
     },
     {
+      "env": "AUDIT_DENIALS_ENABLED",
+      "settingKey": "auditDenialsEnabled",
+      "description": "Record permission denials in the audit log",
+      "defaultValue": "true",
+      "type": "boolean",
+      "category": "authentication",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.AuditDenialsEnabled",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "AUDIT_RETENTION_DAYS",
+      "settingKey": "auditRetentionDays",
+      "description": "Delete audit log entries older than this many days. Cleanup runs daily. Default: 365 days. Set 0 to keep entries indefinitely.",
+      "defaultValue": "365",
+      "type": "number",
+      "category": "authentication",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.AuditRetentionDays",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
       "env": "AUTH_LOCAL_ENABLED",
       "settingKey": "authLocalEnabled",
       "description": "Enable local username/password authentication",
@@ -1091,6 +1108,20 @@
       "source": "settings.Settings + settings.DefaultSettingsConfig",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.AuthSessionTimeout",
+      "sensitive": false,
+      "deprecated": false,
+      "public": false
+    },
+    {
+      "env": "DEFAULT_USER_ROLE_ID",
+      "settingKey": "defaultUserRoleId",
+      "description": "Role bound globally to new users and to OIDC users without memberships or bindings",
+      "type": "text",
+      "category": "authentication",
+      "requires": "AGENT_MODE=true or UI_CONFIGURATION_DISABLED=true to manage this setting via env.",
+      "source": "settings.Settings + settings.DefaultSettingsConfig",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.DefaultUserRoleId",
       "sensitive": false,
       "deprecated": false,
       "public": false
@@ -1178,7 +1209,7 @@
     {
       "env": "OIDC_GROUPS_CLAIM",
       "settingKey": "oidcGroupsClaim",
-      "description": "Claim name to read group memberships from for role mapping (default: groups)",
+      "description": "Claim name to read group memberships from for group mapping (default: groups)",
       "defaultValue": "groups",
       "type": "text",
       "category": "authentication",

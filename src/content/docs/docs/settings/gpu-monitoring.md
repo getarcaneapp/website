@@ -25,8 +25,8 @@ services:
   arcane:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
-      - GPU_MONITORING_ENABLED=true
-      - GPU_TYPE=nvidia
+      - ARCANE_GPU_MONITORING_ENABLED=true
+      - ARCANE_GPU_TYPE=nvidia
     deploy:
       resources:
         reservations:
@@ -44,8 +44,8 @@ Pass the DRM devices into the container:
 services:
   arcane:
     environment:
-      - GPU_MONITORING_ENABLED=true
-      - GPU_TYPE=amd
+      - ARCANE_GPU_MONITORING_ENABLED=true
+      - ARCANE_GPU_TYPE=amd
     devices:
       - /dev/dri:/dev/dri
 ```
@@ -68,5 +68,5 @@ Intel GPUs aren't supported yet. Arcane can detect one when `intel_gpu_top` is a
 
 | Variable                 | Default | Description                                                                                                         |
 | ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------- |
-| `GPU_MONITORING_ENABLED` | `false` | Collect GPU stats.                                                                                                  |
-| `GPU_TYPE`               | `auto`  | `nvidia`, `amd`, `intel`, or `auto`. `auto` tries NVIDIA, then AMD, then Intel. Unknown values fall back to `auto`. |
+| `ARCANE_GPU_MONITORING_ENABLED` | `false` | Collect GPU stats.                                                                                                  |
+| `ARCANE_GPU_TYPE`               | `auto`  | `nvidia`, `amd`, `intel`, or `auto`. `auto` tries NVIDIA, then AMD, then Intel. Unknown values fall back to `auto`. |

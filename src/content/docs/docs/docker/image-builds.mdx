@@ -9,7 +9,7 @@ Arcane builds container images from a Dockerfile, for a Compose project's `build
 
 ## Configure build settings
 
-Open **Settings → Builds** and set:
+Build settings are per environment. Open **Environments**, click the environment, and set these on its **Builds** tab:
 
 1. **Builds Directory**: absolute path inside the Arcane container that the workspace opens.
 2. **Default Provider**: **Local Docker** or **Depot**.
@@ -77,7 +77,7 @@ The **Build History** tab lists every build with its status, provider, time, and
 | Local Docker | The Docker host running Arcane. | You choose. With neither selected, the image is loaded. |
 | Depot        | Depot's hosted build machines.  | Push is always on and Load is always off.               |
 
-The default provider comes from **Settings → Builds**, and you can override it for each manual build. If Depot isn't configured, Arcane uses Local Docker.
+The default provider comes from the environment's **Builds** tab, and you can override it for each manual build. If Depot isn't configured, Arcane uses Local Docker.
 
 ## Reference
 

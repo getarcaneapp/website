@@ -3,180 +3,134 @@ title: 'Remote Environments'
 description: 'Connect Arcane to remote Docker hosts using the Arcane Agent.'
 ---
 
-import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
+import { Steps } from '@astrojs/starlight/components';
 
-A remote environment is another Docker host that you manage from the same Arcane Manager. Each remote host runs a small **Arcane Agent** that talks to its local Docker and relays requests from the Manager.
-
-The agent connects in one of two modes:
-
-| Mode       | Who connects                                          | Use it when                                                                       |
-| ---------- | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
-| **Direct** | The Manager connects to the agent on TCP port `3553`. | The Manager can reach the remote host, for example on the same LAN or VPN.        |
-| **Edge**   | The agent connects outbound to the Manager.           | The remote host is behind NAT or a firewall and can't accept inbound connections. |
-
-<ScreenshotFrame
-  name="environments-page"
-  alt="The remote environment setup dialog with Direct and Edge connection options."
-  caption="Choose Direct or Edge mode and configure an agent for another Docker host."
-  loading="lazy"
-  decoding="async"
-/>
+A remote environment is another Docker host that you manage from the same Arcane Manager. Each remote host runs a small **Arcane Agent** that connects out to the Manager and relays its requests to the local Docker engine. The agent opens no ports, so the host can sit behind NAT or a firewall.
 
 ## Requirements
 
-- The Arcane Manager is running.
+- The Arcane Manager is running and the agent host can reach its URL.
 - Docker or Podman is installed on the agent host and the agent can mount its socket at `/var/run/docker.sock`. For Podman, mount the Podman socket there as described in [Run Arcane on Podman](/docs/podman/setup).
 - The environment is created in Arcane before you start the agent.
-- **Direct**: the Manager can reach the agent on port `3553`.
-- **Edge**: the agent can reach the Manager's URL.
 
-The agent image is `ghcr.io/getarcaneapp/agent`. `ghcr.io/getarcaneapp/arcane-headless` is a supported alias of the same image for existing installations.
+The agent image is `ghcr.io/getarcaneapp/agent`. Arcane 3.0 no longer publishes the old `ghcr.io/getarcaneapp/arcane-headless` alias.
 
-## Add a Direct environment
+## Add an environment
+
+<Steps>
 
 1. Open **Environments → Add Environment**.
-2. Enter a name.
-3. Enter the Agent API URL, for example `http://my-agent:3553` or `https://10.1.1.5:3553`.
-4. Create the environment.
-5. Copy the generated `docker run` or Docker Compose snippet and run it on the remote host.
+2. Enter a name and click **Generate Agent Configuration**. Arcane derives the environment's address from the name and issues an API key.
+3. Copy the API key now. It isn't shown again.
+4. Run the generated `docker run` command or Compose file on the remote host.
+
+</Steps>
+
+To secure the connection with client certificates, turn on **Enable manager mTLS** before you generate the configuration. See [Edge Agent mTLS](/docs/security/edge-mtls).
 
 The generated Compose file looks like this:
-
-```yaml
-services:
-  arcane-agent:
-    image: ghcr.io/getarcaneapp/agent:latest
-    container_name: arcane-agent
-    ports:
-      - '3553:3553'
-    environment:
-      - AGENT_MODE=true
-      - AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      - MANAGER_API_URL=http://10.1.1.4:3552
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - arcane-data:/app/data
-    restart: unless-stopped
-
-volumes:
-  arcane-data:
-```
-
-Start it with `docker compose up -d`.
-
-## Add an Edge environment
-
-1. Open **Environments → Add Environment**.
-2. Switch to the **Edge** tab.
-3. Enter a name and click **Generate Agent Configuration**.
-4. Copy the generated snippet and run it on the remote host.
-
-The generated Compose file looks like this. No ports are published because the agent connects out to the Manager.
 
 ```yaml
 services:
   arcane-edge-agent:
     image: ghcr.io/getarcaneapp/agent:latest
     container_name: arcane-edge-agent
+    restart: unless-stopped
     environment:
-      - EDGE_AGENT=true
-      - EDGE_TRANSPORT=poll
-      - AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      - MANAGER_API_URL=https://your-manager.example.com
+      - ARCANE_EDGE_AGENT=true
+      - ARCANE_EDGE_TRANSPORT=auto
+      - ARCANE_AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      - ARCANE_MANAGER_API_URL=https://your-manager.example.com
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - arcane-data:/app/data
-    restart: unless-stopped
 
 volumes:
   arcane-data:
 ```
 
-To secure the Edge connection with client certificates, see [Edge Agent mTLS](/docs/security/edge-mtls).
+The agent refuses to start without `ARCANE_MANAGER_API_URL` and `ARCANE_AGENT_TOKEN`. Because it listens on no port, health checks that call the agent over HTTP, such as an old `curl http://localhost:3553/api/health`, no longer work. Watch the environment's status in Arcane instead.
 
 ### Choose a transport
 
-`EDGE_TRANSPORT` sets how an Edge agent keeps in touch with the Manager. It has no effect on Direct agents.
+`ARCANE_EDGE_TRANSPORT` sets how the agent keeps in touch with the Manager.
 
-| Value       | Behaviour                                                                                                                                                                      |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `poll`      | Checks in periodically instead of holding a tunnel open. The first action on an idle environment can take a moment while the connection wakes up. Generated snippets use this. |
-| `auto`      | Keeps a continuous tunnel open, using gRPC where possible and falling back to WebSocket. This is the default when the variable is unset.                                       |
-| `websocket` | Keeps a continuous WebSocket tunnel open.                                                                                                                                      |
-| `grpc`      | Keeps a continuous gRPC tunnel open, with no WebSocket fallback.                                                                                                               |
+| Value       | Behaviour                                                                                                                                                |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `auto`      | Keeps a continuous tunnel open, using gRPC where possible and falling back to WebSocket. This is the default, and generated snippets use it.             |
+| `poll`      | Checks in periodically instead of holding a tunnel open. The first action on an idle environment can take a moment while the connection wakes up.        |
+| `websocket` | Keeps a continuous WebSocket tunnel open.                                                                                                                |
+| `grpc`      | Keeps a continuous gRPC tunnel open, with no WebSocket fallback.                                                                                         |
 
 Behind Traefik, see [Reverse Proxy Setup → Traefik](/docs/networking/reverse-proxy#traefik) for the tunnel routes.
 
-### Edge status meanings
+### Status meanings
 
-In poll mode, an Edge environment shows one of these statuses:
-
-| Status              | Meaning                                                           |
-| ------------------- | ----------------------------------------------------------------- |
-| **Online**          | A tunnel is active right now.                                     |
-| **Standby**         | The agent is checking in and waiting for demand. This is healthy. |
-| **Pending**         | The environment is created but not paired or fully connected yet. |
-| **Offline / Error** | The Manager can't currently use this environment.                 |
+| Status              | Meaning                                                                                  |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| **Online**          | A tunnel is active right now.                                                            |
+| **Standby**         | In poll mode, the agent is checking in and waiting for demand. This is healthy.          |
+| **Pending**         | No agent has enrolled yet. Regenerate the API key to get the install command, then run it. |
+| **Offline / Error** | The Manager can't currently use this environment.                                        |
 
 ## Run the agent as a standalone binary
 
-You can run the agent as a binary instead of a container.
-
-1. Download the latest release for your platform.
-2. Place the binary on the target host.
-3. Create a `.env` file next to it.
-
-Direct agent `.env`:
+Download the latest `arcane-agent` release for your platform, put it on the target host, and create a `.env` file next to it:
 
 ```env
-AGENT_MODE=true
-AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-MANAGER_API_URL=http://10.1.1.4:3552
-ENVIRONMENT=production
-PORT=3553
-LISTEN=127.0.0.1
+ARCANE_EDGE_AGENT=true
+ARCANE_EDGE_TRANSPORT=auto
+ARCANE_AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+ARCANE_MANAGER_API_URL=http://10.1.1.4:3552
+ARCANE_ENVIRONMENT=production
 ```
 
-Edge agent `.env`:
+Then start it with `./arcane-agent`.
 
-```env
-EDGE_AGENT=true
-EDGE_TRANSPORT=poll
-AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-MANAGER_API_URL=http://10.1.1.4:3552
-ENVIRONMENT=production
-```
+## Re-enroll an agent
 
-`LISTEN` sets the interface the agent binds to. Leave it empty to bind all interfaces.
+Use this when an agent's key is lost or leaked, or when an environment converted from a direct agent shows **Pending** after upgrading to 3.0.
 
-Start the agent:
+<Steps>
 
-```bash
-./arcane-agent
-```
+1. Open **Environments** and click the environment.
+2. On the **Connection & Edge** tab, click **Regenerate API Key** and confirm. The old key stops working immediately.
+3. Copy the new key and run the install command Arcane shows on the agent host, replacing the old agent container.
 
-Or pass everything inline:
+</Steps>
 
-```bash
-ENVIRONMENT=production PORT=3553 LISTEN=127.0.0.1 AGENT_MODE=true AGENT_TOKEN=arc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MANAGER_API_URL=http://10.1.1.4:3552 ./arcane-agent
-```
+The environment keeps its ID, so its webhooks, Git syncs, settings, jobs, and color stay attached.
+
+## Work across environments
+
+Arcane always shows every environment you can read. Lists, the dashboard, network topology, Swarm, Security, Git Syncs, and Podman pages combine all of them, with an **Environment** column and an **Environment** filter to narrow the list. Actions on a row run in that row's environment, and create forms have an **Environment** field for the destination. Lists and the dashboard update as soon as something changes in any environment.
+
+Detail pages carry the environment in the URL, for example `/containers/<id>?env=2`, so links you share open the right host.
+
+To keep lists fast with many hosts, an admin can set **Environment limit** on the **Settings** page. It caps how many environments a list includes for every user, from 2 to 256, and defaults to 64. Environments beyond the limit are reported as not included.
+
+Each user can give environments colors, and choose whether lists show the environment name or just a color dot, under **Account → Preferences → Environments**.
 
 ## Edit an environment
 
-Select an environment under **Environments**. Click its **name** or **API URL** in the header to edit them; both are read-only for the local environment. Arcane names the local environment after its host when the environment is first created, and renames one that's still called **Local Docker** from an older version. The header also has **Test Connection**, a button to copy the API URL, and **Regenerate API Key** for non-Edge environments.
+Click an environment under **Environments** to open its page. Click the name in the header to rename it; the local environment can't be renamed. Arcane names the local environment after its host when it's first created, and renames one that's still called **Local Docker** from an older version. The header also shows the environment's address with a copy button, **Test Connection**, **Sync**, and **Easy Join** when the environment can join a Swarm.
 
 The environment page has these tabs:
 
 | Tab                   | What it contains                                                                                                                                                                                                                                     |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Connection & Edge** | Edge environments only. Tunnel, control plane, and heartbeat status; the agent's mTLS certificate status, expiry, and common name; downloads for the mTLS **bundle**, **certificate**, and **key**; and **Regenerate API Key**.                      |
+| **Connection & Edge** | Remote environments only. Tunnel, control plane, and heartbeat status; the agent's mTLS certificate status, expiry, and common name; downloads for the mTLS **bundle**, **certificate**, and **key**; and **Regenerate API Key**.                    |
+| **Features**          | Turn Swarm and vulnerability management on or off for this environment.                                                                                                                                                                              |
 | **Storage & Limits**  | **Directories & Storage Paths** (Projects Directory, Templates Directory, Swarm Stack Sources Directory, Disk Usage Path, Follow Project Symlinks) and **Sync & Upload Limits** (Max Image Upload Size and the Git Sync file count and size limits). |
-| **Docker**            | Docker connection settings, including the **Base Server URL** used to build host links.                                                                                                                                                              |
-| **Security**          | **Trivy** and **Lifecycle** sub-tabs. See [Vulnerability Scans](/docs/security/vulnerability-scans) and [GitOps Lifecycle Hooks](/docs/docker/gitops-hooks).                                                       |
+| **Docker**            | Docker connection settings, including the **Base Server URL** used to build host links and the **Default Shell**.                                                                                                                                    |
+| **Security**          | **Vulnerability Scanning**, **Image Patching**, and **Lifecycle Hooks** sub-tabs. See [Vulnerability Scans](/docs/security/vulnerability-scans) and [GitOps Lifecycle Hooks](/docs/docker/gitops-hooks).                                             |
+| **Timeouts**          | Docker, Git, and network operation timeouts, in seconds.                                                                                                                                                                                             |
+| **Activity**          | Activity Center retention, the concurrent activity limit, and upgrade log retention. See [Activity](/docs/docker/activity#set-retention-and-concurrency).                                                                                             |
+| **Builds**            | Build workspace, timeout, history retention, and the default build provider. See [Image Builds](/docs/docker/image-builds).                                                                                                                          |
 | **Automations**       | Scheduled jobs for this environment, such as image polling and auto updates.                                                                                                                                                                         |
-| **Git Syncs**         | GitOps repository syncs.                                                                                                                                                                                                                             |
+| **Notifications**     | Notification providers and events for this environment. See [Notifications](/docs/settings/notifications).                                                                                                                                           |
 
-An offline or disabled environment shows only **Git Syncs**, and stays open so you can fix the connection from the header.
+A disabled environment shows only **Connection & Edge** and **Features**. When an environment is offline, its settings tabs stay in place but can't load until it reconnects.
 
 ## Update all environments
 

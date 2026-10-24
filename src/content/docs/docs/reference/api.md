@@ -43,7 +43,7 @@ To use the API, you'll need to create an API key:
 
 ## Static Admin API Key
 
-If you manage Arcane declaratively, you can provide a fixed admin API key at startup with `ADMIN_STATIC_API_KEY`.
+If you manage Arcane declaratively, you can provide a fixed admin API key at startup with `ARCANE_ADMIN_STATIC_API_KEY`.
 
 Arcane will reconcile that key for the built-in admin user automatically:
 
@@ -120,4 +120,4 @@ Important details:
 - disabled webhooks return `403`
 - unknown or invalid tokens return `404`
 
-Create and manage webhooks in **Settings → Webhooks**.
+Create and manage webhooks in **Settings → Webhooks**. The list includes webhooks from every environment, and **Environment** sets where a new webhook runs.

@@ -38,9 +38,9 @@ If the bus isn't reachable, everything else still works. The Quadlet start, stop
 
 When `DOCKER_HOST` points to a Podman engine on another machine (`tcp://` or `ssh://`), Arcane doesn't use its own local bus, because that would control services on the wrong host. Set `DBUS_SYSTEM_BUS_ADDRESS` or `DBUS_SESSION_BUS_ADDRESS` to that machine's bus if you want systemd actions there. For most remote hosts it's simpler to run an [Arcane Agent](/docs/remote/environments) on the Podman machine itself.
 
-## All environments
+## Multiple environments
 
-With several environments shown at once, the **Pods** and **Quadlets** lists combine every Podman environment and add an **Environment** column. Docker environments are skipped. **Kube**, **Secrets**, and **Auto Update** act on the selected environment and only appear when it runs Podman.
+Podman pages cover every Podman environment you can read and skip Docker environments. **Pods**, **Quadlets**, and **Secrets** combine them in one list with an **Environment** column, and **Auto Update** runs on all of them at once. **Kube** works on one host at a time, so pick its **Environment** first. The Podman pages appear when at least one environment runs Podman.
 
 ## Permissions
 

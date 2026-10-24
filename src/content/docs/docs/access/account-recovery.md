@@ -12,18 +12,18 @@ Both commands are disabled by default because they allow access to an administra
 
 | Command                       | Enabled by                      |
 | ----------------------------- | ------------------------------- |
-| `arcane admin reset-password` | `ALLOW_CLI_PASSWORD_RESET=true` |
-| `arcane admin reset-mfa`      | `ALLOW_CLI_MFA_RESET=true`      |
+| `arcane admin reset-password` | `ARCANE_ALLOW_CLI_PASSWORD_RESET=true` |
+| `arcane admin reset-mfa`      | `ARCANE_ALLOW_CLI_MFA_RESET=true`      |
 
 Run without the gate set and the command refuses:
 
 ```bash
-CLI password reset is disabled; set ALLOW_CLI_PASSWORD_RESET=true to enable it
+CLI password reset is disabled; set ARCANE_ALLOW_CLI_PASSWORD_RESET=true to enable it
 ```
 
 ## Reset an administrator password
 
-1. Add `ALLOW_CLI_PASSWORD_RESET=true` to Arcane's environment and recreate the container.
+1. Add `ARCANE_ALLOW_CLI_PASSWORD_RESET=true` to Arcane's environment and recreate the container.
 2. Run the command interactively:
 
 ```bash
@@ -47,7 +47,7 @@ On success it prints `Password reset successfully for global administrator "<use
 
 Use this when an account has MFA enabled but has lost its passkey and its recovery codes, or when an OIDC-only account has no password and no passkey on the browser in front of it.
 
-1. Add `ALLOW_CLI_MFA_RESET=true` to Arcane's environment and recreate the container.
+1. Add `ARCANE_ALLOW_CLI_MFA_RESET=true` to Arcane's environment and recreate the container.
 2. Run:
 
 ```bash

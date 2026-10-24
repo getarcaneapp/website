@@ -3,7 +3,7 @@ title: 'Analytics'
 description: 'See what Arcane sends in its analytics heartbeat and how to turn it off.'
 ---
 
-Arcane sends a small heartbeat to `https://checkin.getarcane.app/heartbeat` so the project can count running instances and their versions. To turn it off, set `ANALYTICS_DISABLED=true` in Arcane's environment and recreate the container.
+Arcane sends a small heartbeat to `https://checkin.getarcane.app/heartbeat` so the project can count running instances and their versions. To turn it off, set `ARCANE_ANALYTICS_ENABLED=false` in Arcane's environment and recreate the container.
 
 ## What is sent
 

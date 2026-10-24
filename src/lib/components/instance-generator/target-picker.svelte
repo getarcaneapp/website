@@ -5,7 +5,6 @@
 		CheckIcon,
 		CpuIcon,
 		DockerBrandIcon,
-		LinkIcon,
 		PodmanBrandIcon,
 		RoutingIcon,
 		ServiceIcon
@@ -24,7 +23,6 @@
 		'podman-rootless': PodmanBrandIcon,
 		'podman-rootful': PodmanBrandIcon,
 		'podman-quadlet': ServiceIcon,
-		'agent-direct': LinkIcon,
 		'agent-edge': RoutingIcon,
 		'agent-binary': CpuIcon
 	};

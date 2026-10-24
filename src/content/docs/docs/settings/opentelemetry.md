@@ -26,7 +26,7 @@ Leave out any signal you don't want. Setting only the endpoint doesn't send anyt
 
 Arcane sends OTLP over HTTP/protobuf to port `4318`. To use gRPC instead, set `OTEL_EXPORTER_OTLP_PROTOCOL=grpc` and point the endpoint at port `4317`. If your collector needs authentication, set `OTEL_EXPORTER_OTLP_HEADERS`, for example `authorization=Bearer <token>`.
 
-Set the same variables on agents to collect their data too. Each installation reports its own instance ID, and the `arcane.mode` attribute (`manager`, `agent`, or `edge`) tells them apart.
+Set the same variables on agents to collect their data too. Each installation reports its own instance ID, and the `arcane.mode` attribute (`manager` or `edge`) tells them apart.
 
 ## Run a collector
 
@@ -126,11 +126,11 @@ In Grafana, go to **Dashboards → New → Import**, enter dashboard ID `25894`,
 
 - **Metrics:** API request rates and latency, containers, images, volumes, networks, and projects, per-container CPU, memory, network, and disk usage, image updates, vulnerability counts, job runs, edge agents, GitOps syncs, backups, notifications, Go runtime, and database connections.
 - **Traces:** API requests, Docker and Compose calls, database queries, agent calls, jobs, GitOps syncs, backups, image patches, vulnerability scans, and registry calls.
-- **Logs:** everything Arcane logs at the configured `LOG_LEVEL`. Logs still go to stdout too.
+- **Logs:** everything Arcane logs at the configured `ARCANE_LOG_LEVEL`. Logs still go to stdout too.
 
 Database spans contain SQL statements without their values. Authenticated API request spans include the user's ID and username. URLs are recorded without query strings, and request bodies and credentials are never recorded.
 
-The manager's web UI also reports to your collector as `arcane-frontend`: page loads and API calls as traces, navigation times and Web Vitals as metrics, and JavaScript errors as logs. Each of these is sent only when that signal uses OTLP over HTTP, and it goes through Arcane at `/api/telemetry/*`, so your collector doesn't need to be reachable from the browser. Behind a reverse proxy, set [`TRUSTED_PROXIES`](/docs/networking/reverse-proxy#trust-the-proxy-with-trusted_proxies) so Arcane rate-limits this per browser instead of per proxy.
+The manager's web UI also reports to your collector as `arcane-frontend`: page loads and API calls as traces, navigation times and Web Vitals as metrics, and JavaScript errors as logs. Each of these is sent only when that signal uses OTLP over HTTP, and it goes through Arcane at `/api/telemetry/*`, so your collector doesn't need to be reachable from the browser. Behind a reverse proxy, set [`ARCANE_TRUSTED_PROXIES`](/docs/networking/reverse-proxy#trust-the-proxy-with-arcane_trusted_proxies) so Arcane rate-limits this per browser instead of per proxy.
 
 ## Other settings
 

@@ -15,8 +15,8 @@ The **autologin** buildable signs you in automatically, so the login screen is s
 
 ```yaml
 environment:
-  - AUTO_LOGIN_USERNAME=arcane
-  - AUTO_LOGIN_PASSWORD=arcane-admin
+  - ARCANE_AUTO_LOGIN_USERNAME=arcane
+  - ARCANE_AUTO_LOGIN_PASSWORD=arcane-admin
 ```
 
 When the frontend loads, Arcane signs in with these credentials. Autologin turns itself off if local authentication is disabled.
@@ -25,5 +25,5 @@ When the frontend loads, Arcane signs in with these credentials. Autologin turns
 
 | Variable              | Default        | Description                                                                                                  |
 | --------------------- | -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `AUTO_LOGIN_USERNAME` | `arcane`       | Username to sign in as.                                                                                      |
-| `AUTO_LOGIN_PASSWORD` | `arcane-admin` | Password for that user. Supports `AUTO_LOGIN_PASSWORD_FILE` to read it from a file, such as a Docker secret. |
+| `ARCANE_AUTO_LOGIN_USERNAME` | `arcane`       | Username to sign in as.                                                                                      |
+| `ARCANE_AUTO_LOGIN_PASSWORD` | `arcane-admin` | Password for that user. Supports `ARCANE_AUTO_LOGIN_PASSWORD_FILE` to read it from a file, such as a Docker secret. |

@@ -69,7 +69,7 @@ Edits are staged locally and applied together when you **Save**. If someone else
 - Very deep or very large trees are truncated by the configured depth and entry limits, and the workspace tells you when that happens.
 - Volumes that use a custom mount configuration (bind-style driver options) can't be opened in the workspace.
 
-The size and tree limits are configurable with the `VOLUME_WORKSPACE_MAX_FILE_SIZE_MB` (default 10), `VOLUME_WORKSPACE_MAX_DEPTH` (default 50), and `VOLUME_WORKSPACE_MAX_ENTRIES` (default 10000) environment variables.
+The size and tree limits are configurable with the `ARCANE_VOLUME_WORKSPACE_MAX_FILE_SIZE_MB` (default 10), `ARCANE_VOLUME_WORKSPACE_MAX_DEPTH` (default 50), and `ARCANE_VOLUME_WORKSPACE_MAX_ENTRIES` (default 10000) environment variables.
 
 Browsing and downloading need `volumes:read`; which write actions need which permission is listed in the [permission catalog](/docs/access/roles#permission-catalog).
 

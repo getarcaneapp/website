@@ -9,8 +9,6 @@ import type {
 	GeneratorValues
 } from '#lib/types/instance-generator.type.js';
 
-export type AgentMode = 'direct' | 'edge';
-
 const MANAGER_TARGETS: DeploymentTargetId[] = [
 	'docker',
 	'podman-rootless',
@@ -22,7 +20,7 @@ const PODMAN_TARGETS: DeploymentTargetId[] = [
 	'podman-rootful',
 	'podman-quadlet'
 ];
-const AGENT_CONTAINER_TARGETS: DeploymentTargetId[] = ['agent-direct', 'agent-edge'];
+const AGENT_CONTAINER_TARGETS: DeploymentTargetId[] = ['agent-edge'];
 const AGENT_TARGETS: DeploymentTargetId[] = [...AGENT_CONTAINER_TARGETS, 'agent-binary'];
 
 function validatePort(value: string): string | undefined {
@@ -106,19 +104,10 @@ export const deploymentGroups: DeploymentGroup[] = [
 			'Connects another host to an existing Manager as a remote environment. Create the environment in Arcane first to get its token.',
 		targets: [
 			{
-				id: 'agent-direct',
-				label: 'Direct agent',
-				description:
-					'The Manager connects to the agent on port 3553. Use it on the same LAN or VPN.',
-				resultDescription: 'Save the Compose file on the remote host, then start the agent.',
-				docsHref: '/docs/remote/environments',
-				docsLabel: 'Remote environments guide'
-			},
-			{
 				id: 'agent-edge',
-				label: 'Edge agent',
+				label: 'Agent container',
 				description:
-					"The agent connects out to the Manager. Use it when the host can't accept inbound connections.",
+					'Run the agent with Docker Compose. It connects out to the Manager and opens no ports.',
 				resultDescription: 'Save the Compose file on the remote host, then start the agent.',
 				docsHref: '/docs/remote/environments',
 				docsLabel: 'Remote environments guide'
@@ -126,7 +115,7 @@ export const deploymentGroups: DeploymentGroup[] = [
 			{
 				id: 'agent-binary',
 				label: 'Agent binary',
-				description: 'Run a Direct or Edge agent as a standalone binary instead of a container.',
+				description: 'Run the agent as a standalone binary instead of a container.',
 				resultDescription:
 					'Download the arcane-agent binary for your platform from GitHub Releases, put the .env file next to it, then start it.',
 				docsHref: '/docs/remote/environments#run-the-agent-as-a-standalone-binary',
@@ -142,12 +131,6 @@ export const deploymentTargets: DeploymentTarget[] = deploymentGroups.flatMap(
 
 export function getDeploymentTarget(id: DeploymentTargetId): DeploymentTarget {
 	return deploymentTargets.find((target) => target.id === id) ?? deploymentTargets[0];
-}
-
-export function getAgentMode({ target, config }: FieldContext): AgentMode {
-	if (target === 'agent-edge') return 'edge';
-	if (target === 'agent-binary' && config.agentMode === 'edge') return 'edge';
-	return 'direct';
 }
 
 export const generatorConfig: GeneratorConfig = [
@@ -178,7 +161,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'appUrl',
-						envName: 'APP_URL',
+						envName: 'ARCANE_APP_URL',
 						label: 'App URL',
 						description: 'The URL your browser uses to open Arcane',
 						type: 'text',
@@ -261,33 +244,18 @@ export const generatorConfig: GeneratorConfig = [
 				icon: 'settings',
 				fields: [
 					{
-						key: 'agentMode',
-						envName: '',
-						label: 'Agent mode',
-						description: 'Direct if the Manager can reach this host, Edge if it cannot',
-						type: 'select',
-						defaultValue: 'direct',
-						options: [
-							{ label: 'Direct', value: 'direct' },
-							{ label: 'Edge', value: 'edge' }
-						],
-						targets: ['agent-binary']
-					},
-					{
 						key: 'edgeTransport',
 						envName: '',
 						label: 'Edge transport',
-						description:
-							"How the agent keeps in touch with the Manager. Poll is what Arcane's own snippets use.",
+						description: 'How the agent keeps in touch with the Manager',
 						type: 'select',
-						defaultValue: 'poll',
+						defaultValue: 'auto',
 						options: [
-							{ label: 'Poll', value: 'poll' },
 							{ label: 'Auto (gRPC, then WebSocket)', value: 'auto' },
+							{ label: 'Poll', value: 'poll' },
 							{ label: 'WebSocket', value: 'websocket' },
 							{ label: 'gRPC', value: 'grpc' }
 						],
-						visibleWhen: (context) => getAgentMode(context) === 'edge',
 						advanced: true
 					},
 					{
@@ -310,29 +278,6 @@ export const generatorConfig: GeneratorConfig = [
 						placeholder: 'http://10.1.1.4:3552',
 						required: true,
 						validate: validateUrl
-					},
-					{
-						key: 'agentPort',
-						envName: '',
-						label: 'Agent port',
-						description: 'The port the Manager connects to on this host',
-						type: 'text',
-						defaultValue: '3553',
-						placeholder: '3553',
-						visibleWhen: (context) => getAgentMode(context) === 'direct',
-						validate: validatePort
-					},
-					{
-						key: 'listen',
-						envName: '',
-						label: 'Listen address',
-						description: 'Interface the agent binds to. Leave empty to bind all interfaces.',
-						type: 'text',
-						defaultValue: '',
-						placeholder: '127.0.0.1',
-						targets: ['agent-binary'],
-						visibleWhen: (context) => getAgentMode(context) === 'direct',
-						advanced: true
 					}
 				]
 			}
@@ -473,7 +418,7 @@ export const generatorConfig: GeneratorConfig = [
 				fields: [
 					{
 						key: 'logLevel',
-						envName: 'LOG_LEVEL',
+						envName: 'ARCANE_LOG_LEVEL',
 						label: 'Log level',
 						description: 'Logging verbosity',
 						type: 'select',
@@ -488,7 +433,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'logJson',
-						envName: 'LOG_JSON',
+						envName: 'ARCANE_LOG_JSON',
 						label: 'JSON logging',
 						description: 'Enable JSON formatted logs',
 						type: 'checkbox',
@@ -524,7 +469,7 @@ export const generatorConfig: GeneratorConfig = [
 				fields: [
 					{
 						key: 'encryptionKey',
-						envName: 'ENCRYPTION_KEY',
+						envName: 'ARCANE_ENCRYPTION_KEY',
 						label: 'Encryption key',
 						description:
 							'Encryption key for secure stored sensitive data (auto-generated if empty)',
@@ -618,7 +563,7 @@ export const generatorConfig: GeneratorConfig = [
 				fields: [
 					{
 						key: 'enableOIDC',
-						envName: 'OIDC_ENABLED',
+						envName: 'ARCANE_OIDC_ENABLED',
 						label: 'Enable OIDC sign-in',
 						type: 'checkbox',
 						defaultValue: false,
@@ -626,7 +571,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcClientId',
-						envName: 'OIDC_CLIENT_ID',
+						envName: 'ARCANE_OIDC_CLIENT_ID',
 						label: 'Client ID',
 						description: 'Client ID from your OIDC provider',
 						type: 'text',
@@ -638,7 +583,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcClientSecret',
-						envName: 'OIDC_CLIENT_SECRET',
+						envName: 'ARCANE_OIDC_CLIENT_SECRET',
 						label: 'Client secret',
 						description: 'Client secret from your OIDC provider',
 						type: 'password',
@@ -650,7 +595,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcIssuerUrl',
-						envName: 'OIDC_ISSUER_URL',
+						envName: 'ARCANE_OIDC_ISSUER_URL',
 						label: 'Issuer URL',
 						description: 'OIDC provider issuer URL (no trailing slash)',
 						type: 'text',
@@ -663,7 +608,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcScopes',
-						envName: 'OIDC_SCOPES',
+						envName: 'ARCANE_OIDC_SCOPES',
 						label: 'Scopes',
 						description: 'OAuth scopes to request',
 						type: 'text',
@@ -697,7 +642,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcSkipTlsVerify',
-						envName: 'OIDC_SKIP_TLS_VERIFY',
+						envName: 'ARCANE_OIDC_SKIP_TLS_VERIFY',
 						label: 'Skip TLS verify',
 						description: 'Skip TLS verification for the OIDC provider (use with caution)',
 						type: 'checkbox',
@@ -708,7 +653,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcAutoRedirectToProvider',
-						envName: 'OIDC_AUTO_REDIRECT_TO_PROVIDER',
+						envName: 'ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER',
 						label: 'Auto redirect',
 						description: 'Automatically redirect users to the OIDC provider on login',
 						type: 'checkbox',
@@ -719,7 +664,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcMergeAccounts',
-						envName: 'OIDC_MERGE_ACCOUNTS',
+						envName: 'ARCANE_OIDC_MERGE_ACCOUNTS',
 						label: 'Merge accounts',
 						description: 'Link OIDC logins to existing local accounts by email',
 						type: 'checkbox',
@@ -730,7 +675,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcProviderName',
-						envName: 'OIDC_PROVIDER_NAME',
+						envName: 'ARCANE_OIDC_PROVIDER_NAME',
 						label: 'Provider name',
 						description: 'Display name shown on the login screen',
 						type: 'text',
@@ -742,7 +687,7 @@ export const generatorConfig: GeneratorConfig = [
 					},
 					{
 						key: 'oidcProviderLogoUrl',
-						envName: 'OIDC_PROVIDER_LOGO_URL',
+						envName: 'ARCANE_OIDC_PROVIDER_LOGO_URL',
 						label: 'Provider logo URL',
 						description: 'Logo URL shown on the login screen',
 						type: 'text',

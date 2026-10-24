@@ -11,7 +11,7 @@ On Podman hosts, containers started by a Quadlet are skipped. Recreating them wo
 
 ## Turn on auto updates
 
-1. Open **Environments** and select the environment.
+1. Open **Environments** and click the environment.
 2. Open the **Automations** tab and find the **Updates** section.
 3. Turn on **Image Update Watcher** and pick a schedule, or enter a custom one.
 4. Turn on **Auto Update** and set its schedule. It can't be turned on while **Image Update Watcher** is off.
@@ -59,12 +59,12 @@ The delay must be a whole number of hours. Compose values above `8760` or below 
 
 ## Apply updates from the Updates page
 
-The **Updates** page lists pending updates in **Containers** and **Projects** tabs. You can apply them without waiting for the schedule:
+The **Updates** page lists pending updates from every environment in **Containers** and **Projects** tabs. You can apply them without waiting for the schedule:
 
 - **Update Container** or **Update** updates one row after confirmation.
 - To update several rows, select them, click **Update**, and confirm.
 - **Disable automatic updates** and **Enable automatic updates** toggle automatic installation for one container. Disabled rows stay listed and still get checks and notifications. If the action shows _Controlled by Docker label_, change the label instead.
-- **Update All** applies every pending update in the selected environment, including rows not on the current page.
+- **Update All** applies every pending update in every environment you can update, including rows not on the current page.
 
 **Update Containers** on the **Containers** page runs the same **Update All** after confirmation. **Update Projects** on the **Projects** page asks for confirmation, checks every image for updates, and redeploys each project that has one.
 

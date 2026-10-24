@@ -7,14 +7,16 @@ Arcane can notify you when it finds an image update, updates a container, finish
 
 ## Set up a provider
 
-1. Go to **Settings → Notifications** and open the tab for your provider.
+Providers are set per environment, so each environment sends its own events.
+
+1. Open **Environments**, click the environment, open its **Notifications** tab, and choose your provider.
 2. Fill in the provider's settings. See [Provider-specific fields](#provider-specific-fields) for the ones that need care.
 3. Pick the events you want this provider to receive. Each provider has its own event selection, so you can send different alerts to chat, email, or a webhook.
 4. Select **Test** to send a test notification.
 
 If **Test** fails, check that the provider details are correct, that the destination still exists and is reachable, and whether Arcane's logs show a more specific error.
 
-To get notifications on your phone, use the **Mobile Push** tab. See [Arcane Mobile](/docs/settings/mobile-app) for pairing devices and choosing events.
+To get notifications on your phone, turn on mobile push under **Settings → Notifications**. See [Arcane Mobile](/docs/settings/mobile-app) for pairing devices and choosing events.
 
 If your service isn't listed, use **Generic**, a plain HTTP webhook whose body you shape yourself. If Shoutrrr supports the service, you can also ask for it to be added to Arcane.
 

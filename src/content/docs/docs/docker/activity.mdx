@@ -43,7 +43,7 @@ For projects, you can also attach to an operation as it runs with **Watch output
 
 ## Set retention and concurrency
 
-Go to **Settings → Activity**:
+These settings are per environment. Open **Environments**, click the environment, and open its **Activity** tab:
 
 - **Retention Days**: how long finished activities are kept.
 - **Maximum Entries**: a hard cap on stored activity history.
@@ -59,7 +59,7 @@ With the `jobs:manage` permission:
 
 A queued run on a remote environment shows **Waiting for environment** until the agent is reachable. Agents running an older Arcane version must be upgraded to report run history.
 
-Depending on its state, a run offers **Retry run** or **Cancel pending run**. A run marked **Needs attention** blocks later runs of the same job. Check its output and the affected resources, then choose **Resolve after review**. Resolving keeps the history and lets scheduled work continue; it doesn't rerun the operation or mark it successful.
+Depending on its state, a run offers **Retry run** or **Cancel pending run**. A failed, partial, or **Needs attention** run offers **Retry run**; check its output and the affected resources first.
 
 ## Review the Event Log
 

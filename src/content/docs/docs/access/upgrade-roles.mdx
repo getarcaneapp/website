@@ -1,0 +1,77 @@
+---
+title: 'Update roles from 2.x'
+description: 'Bring roles, admins, and OIDC mappings from an Arcane 2.x server in line with 3.0 access control.'
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Work through these steps after the first 3.0 start. Most users keep the same access, but a few 2.x setups need changes.
+
+- The upgrade converts role assignments to [role bindings](/docs/access/roles#role-bindings) and OIDC role mappings to [groups](/docs/access/groups).
+- The [data migration table](/docs/get-started/migrate-v3#data-migration) lists every conversion.
+
+<Steps>
+
+1. Restore admins that came from a custom role.
+
+   In 3.0, Admin is the `*` permission held through the built-in **Admin** role.
+
+   A 2.x custom role that listed every permission no longer makes its users admins. Users bound to it lose admin-only actions such as system backups.
+
+   For each user who should stay an admin, add a global binding to **Admin** under **Settings → Users → Edit User → Role bindings**. Leave the environment and resource limits empty. From the CLI:
+
+   ```bash
+   arcane-cli admin bindings create --user <user-id> --role role_admin
+   ```
+
+   Then delete the old custom role under **Settings → Roles**, or keep it for non-admin users.
+
+2. Grant the new management permissions to delegated admins.
+
+   In 2.x, managing roles, role assignments, OIDC mappings, and federated credentials, and reading diagnostics, needed a global admin.
+
+   In 3.0 they need their own permissions, so a non-admin team lead can do this work:
+
+   | Task                          | Permissions                                                                                       |
+   | ----------------------------- | ------------------------------------------------------------------------------------------------- |
+   | Create and edit roles         | `roles:list`, `roles:read`, `roles:create`, `roles:update`, `roles:delete`                        |
+   | Grant and revoke roles        | `bindings:list`, `bindings:create`, `bindings:delete`                                             |
+   | Manage groups and members     | `groups:list`, `groups:read`, `groups:create`, `groups:update`, `groups:delete`, `groups:members` |
+   | Manage OIDC group mappings    | `oidcmappings:list`, `oidcmappings:create`, `oidcmappings:update`, `oidcmappings:delete`          |
+   | Read and export the audit log | `audit:read`, `audit:export`                                                                      |
+   | Read diagnostics              | `diagnostics:read`                                                                                |
+
+   Add the permissions to a custom role under **Settings → Roles** and bind it globally. [Delegation](/docs/access/roles#delegation) limits a delegated admin to granting what they hold themselves.
+
+3. Replace `OIDC_ROLE_MAPPINGS`.
+
+   3.0 ignores `OIDC_ROLE_MAPPINGS`. The upgrade turns each claim value into a group of the same name, binds the old roles to it, and keeps the mapping environment-managed.
+
+   Set `ARCANE_OIDC_GROUP_MAPPINGS` with each claim value as its group name to keep those groups:
+
+   ```yaml
+   environment:
+     - ARCANE_OIDC_GROUP_MAPPINGS=docker-admins=docker-admins,developers=developers
+   ```
+
+   See [Manage mappings from the environment](/docs/access/sso#manage-mappings-from-the-environment) for the format.
+
+4. Choose a default role for new users.
+
+   Migrated users keep their roles. New local users and new OIDC users get no access until someone binds a role.
+
+   To give new users read-only access, set **Default role** to **Viewer** under **Settings → Authentication → Access control**. See [Default role for new users](/docs/access/roles#default-role-for-new-users).
+
+5. Upgrade every agent with the manager.
+
+   The manager sends each user's permissions to agents in the `X-Arcane-Authz` header, so agents must run 3.0 as well.
+
+</Steps>
+
+## Optional changes
+
+| Change                                 | How                                                                                                                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Move per-user bindings into groups** | The upgrade creates one user binding per 2.x assignment. Create a group per team under **Settings → Groups**, bind the role to the group, add the users, and delete their individual bindings. |
+| **Limit roles to resources**           | A binding can be limited to labels, Compose projects, name patterns, or resources the user created. See [Resource scopes](/docs/access/resource-scopes).                                       |
+| **Record permission denials**          | Turn on **Record permission denials** under **Settings → Authentication → Access control** adds each `403` to the [audit log](/docs/access/audit-log), which shows who lost access they relied on in 2.x. |
