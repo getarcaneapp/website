@@ -3,26 +3,22 @@ title: 'Notifications'
 description: 'Send alerts about image updates, container events, prunes, and vulnerabilities to chat, email, or webhooks.'
 ---
 
-Arcane can notify you when it finds an image update, updates a container, finishes a scheduled prune, finds a fixable vulnerability, or auto-heals an unhealthy container. It delivers these to email (SMTP), Discord, Telegram, Signal, Slack, Ntfy, Pushover, Gotify, Matrix, Google Chat, or any HTTP endpoint through the **Generic** webhook provider. Delivery uses the [Shoutrrr](https://github.com/nicholas-fedor/shoutrrr) library.
+Get alerts when Arcane finds an image update, updates a container, finishes a scheduled prune, finds a fixable vulnerability, or auto-heals a container. Arcane sends them via [Shoutrrr](https://github.com/nicholas-fedor/shoutrrr) to email (SMTP), Discord, Telegram, Signal, Slack, Ntfy, Pushover, Gotify, Matrix, Google Chat, or any HTTP endpoint (the **Generic** webhook provider).
 
 ## Set up a provider
 
-1. Go to **Settings → Notifications** and open the tab for your provider.
+Providers are set once on the Manager and cover every environment. Managing them needs `notifications:manage`.
+
+1. Open **System → Notifications** and choose your provider.
 2. Fill in the provider's settings. See [Provider-specific fields](#provider-specific-fields) for the ones that need care.
-3. Pick the events you want this provider to receive. Each provider has its own event selection, so you can send different alerts to chat, email, or a webhook.
-4. Select **Test** to send a test notification.
+3. Pick the events this provider receives. Each provider has its own selection, so chat, email, and webhooks can get different alerts.
+4. Select **Test** to send a test notification. If it fails, check the provider details, that the destination exists and is reachable, and Arcane's logs.
 
-If **Test** fails, check that the provider details are correct, that the destination still exists and is reachable, and whether Arcane's logs show a more specific error.
-
-To get notifications on your phone, use the **Mobile Push** tab. See [Arcane Mobile](/docs/settings/mobile-app) for pairing devices and choosing events.
-
-If your service isn't listed, use **Generic**, a plain HTTP webhook whose body you shape yourself. If Shoutrrr supports the service, you can also ask for it to be added to Arcane.
+For phone alerts, turn on mobile push on the same page; see [Arcane Mobile](/docs/settings/mobile-app). If your service isn't listed, use **Generic**, a plain HTTP webhook whose body you shape. If Shoutrrr supports the service, you can also ask for it to be added.
 
 ## Custom webhook payloads
 
-The **Generic** provider sends a flat JSON body by default. Use **Payload Template** if your endpoint needs nested objects, specific field names, or a non-JSON body.
-
-The template is Go [`text/template`](https://pkg.go.dev/text/template) syntax. These variables are available:
+Use **Payload Template** when your endpoint needs nested objects, specific field names, or a non-JSON body; **Generic** otherwise sends a flat JSON body. Templates use Go [`text/template`](https://pkg.go.dev/text/template) syntax with these variables:
 
 | Variable             | Value                                        |
 | -------------------- | -------------------------------------------- |
@@ -33,24 +29,20 @@ The template is Go [`text/template`](https://pkg.go.dev/text/template) syntax. T
 | `{{.event}}`         | The event type, e.g. `image_update`.         |
 | `{{.timestamp}}`     | When the event fired, RFC 3339 in UTC.       |
 
-A minimal template for an endpoint that wants a single `text` field:
+A minimal template for a single `text` field. Arcane escapes quotes and newlines in values; add the surrounding JSON quotes yourself.
 
 ```json
 { "text": "{{.message}}" }
 ```
 
-Arcane escapes quotes and newlines in values. Add the surrounding JSON quotes yourself, as above.
-
 > [!NOTE]
-> `{{.title}}` and `{{.message}}` follow the provider's **Title Key** and **Message Key** fields. Rename those and the template variables are renamed with them.
+> `{{.title}}` and `{{.message}}` follow the provider's **Title Key** and **Message Key** fields. Rename those and the variables change too.
 
-Templates must parse and execute. For JSON content types, their output must also be valid JSON. Otherwise, saving fails with `invalid generic webhook payload template`. A template defaults the content type to `application/json`.
-
-Use **Test** to check the rendered payload.
+Templates must parse and execute, and for JSON content types produce valid JSON. Otherwise saving fails with `invalid generic webhook payload template`. A template defaults the content type to `application/json`. Use **Test** to check the rendered payload.
 
 ## Success body matching
 
-If an endpoint returns `HTTP 200` even on failure, set **Success Body Contains** to text that confirms delivery, such as `"code":200`. Arcane then requires that text in the response body. This also works with **Payload Template**.
+If an endpoint returns `HTTP 200` even on failure, set **Success Body Contains** to text that confirms delivery, such as `"code":200`. Arcane then requires it in the response body, also with **Payload Template**.
 
 ## Reference
 

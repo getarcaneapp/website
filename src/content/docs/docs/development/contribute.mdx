@@ -5,7 +5,7 @@ description: Set up the Arcane development environment and submit a pull request
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-This page covers running Arcane locally for development and getting a change merged. The dev environment runs the frontend and backend in Docker with hot reload.
+Run Arcane locally and get your change merged. The dev environment runs the frontend and backend in Docker with hot reload.
 
 > [!IMPORTANT]
 > Using AI tools? Read the [AI Usage Policy](https://github.com/getarcaneapp/arcane/blob/main/AI_POLICY.md) before contributing. For project conventions, see [AGENTS.md](https://github.com/getarcaneapp/arcane/blob/main/AGENTS.md).
@@ -20,10 +20,7 @@ This page covers running Arcane locally for development and getting a change mer
 
 ## Set up the development environment
 
-You need:
-
-- **Docker and Docker Compose**
-- **[Vite+](https://viteplus.dev)** for the Node toolchain, formatting, linting, and pre-commit hooks when working outside Docker:
+You need **Docker and Docker Compose**, plus **[Vite+](https://viteplus.dev)** for the Node toolchain, formatting, linting, and pre-commit hooks outside Docker:
 
 ```bash
 curl -fsSL https://vite.plus | bash
@@ -75,7 +72,7 @@ docker compose -f docker/compose.dev.yaml -p arcane-dev config
 ./scripts/development/dev.sh start
 ```
 
-This starts the frontend and backend with hot reload, installs dependencies inside Docker, and creates persistent storage for development data.
+This starts both services with hot reload, installs dependencies inside Docker, and creates persistent storage for dev data.
 
 4. Confirm the stack is up:
 
@@ -96,7 +93,7 @@ vp hooks enable
 
 ### Use VS Code (optional)
 
-Open the project root folder (`arcane/`) and install the recommended Docker, Go, and Svelte/TypeScript extensions. Use `Ctrl/Cmd+Shift+P` → **Tasks: Run Task** for Start, Stop, Restart, Rebuild, Logs, and Open Frontend. `Ctrl/Cmd+Shift+B` starts the environment. The **Clean** task removes the development containers and volumes, including their data.
+Open the project root (`arcane/`) and install the recommended Docker, Go, and Svelte/TypeScript extensions. Use `Ctrl/Cmd+Shift+P` → **Tasks: Run Task** for Start, Stop, Restart, Rebuild, Logs, and Open Frontend. `Ctrl/Cmd+Shift+B` starts the environment. The **Clean** task removes the development containers and volumes, including their data.
 
 ## Make a change
 
@@ -129,23 +126,15 @@ git commit -m "fix: resolve Docker volume mounting issue"
 
 ## Open a pull request
 
-1. Keep it focused: one feature or fix per PR.
-2. Test that both frontend and backend work.
-3. Update the documentation if you change APIs or add features.
-4. Link issues with `Closes #123` or `Fixes #456`.
-5. Respond to review feedback.
-
-Before you submit, check that:
+Keep each PR to one feature or fix, link issues with `Closes #123` or `Fixes #456`, and respond to review feedback. Update the documentation if you change APIs or add features. Before you submit, check that:
 
 - [ ] The code builds in the development environment
-- [ ] Hot reload works for frontend and backend
+- [ ] Hot reload works for frontend and backend, and both work
 - [ ] There are no lint errors
 - [ ] Commit messages follow the conventional format
 - [ ] The PR description explains the change and why it's needed
 
-## Reference
-
-### Dev script
+## Dev script reference
 
 ```bash
 ./scripts/development/dev.sh start
@@ -160,7 +149,7 @@ Before you submit, check that:
 
 Use `restart` after config changes and `rebuild` after dependency changes.
 
-### Justfile
+## Justfile reference
 
 `just --list` shows every target. Common ones:
 
@@ -173,7 +162,7 @@ Use `restart` after config changes and `rebuild` after dependency changes.
 | Lint and format                  | `just lint frontend`, `just lint js`, `just format frontend`, `just format all --check` |
 | Install dependencies             | `just deps install all`                                                                 |
 
-### Checks inside the Docker dev environment
+## Run checks inside the Docker dev environment
 
 ```bash
 docker compose -f docker/compose.dev.yaml exec frontend pnpm check

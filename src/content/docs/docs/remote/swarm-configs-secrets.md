@@ -7,35 +7,27 @@ Swarm **configs** and **secrets** pass runtime data to services and stacks witho
 
 ## Configs vs. secrets
 
-| Use a **config** for       | Use a **secret** for |
-| -------------------------- | -------------------- |
-| application config files   | API tokens           |
-| feature flags              | passwords            |
-| non-sensitive env defaults | private keys         |
-|                            | registry credentials |
+If a value is sensitive, use a secret; otherwise a config is fine.
 
-If a value is sensitive, use a secret. Otherwise a config is fine.
+- **Config:** application config files, feature flags, non-sensitive env defaults.
+- **Secret:** API tokens, passwords, private keys, registry credentials.
 
 ## Create a config
 
 1. Open **Swarm → Configs** and click **Create Config**.
-2. Enter a name and the config content.
-3. Optionally, add labels.
-4. Click **Create Config**.
+2. Enter a name, the config content, and optional labels.
+3. Click **Create Config**.
 
 ## Create a secret
 
 1. Open **Swarm → Secrets** and click **Create Secret**.
-2. Enter a name and the secret value.
-3. Optionally, add labels.
-4. Click **Create Secret**.
-
-Secret values can't be viewed after they're saved.
+2. Enter a name, the secret value, and optional labels.
+3. Click **Create Secret**. You can't view the value after saving.
 
 ## Change a config or secret
 
-Click a config or secret, or choose **Edit** from its row menu, to change its labels. Docker doesn't allow changing the name, the config content, or the secret value. To change those, create a replacement and update the services that use it, then delete the old one from its row menu.
+Click a config or secret, or choose **Edit** from its row menu, to change its labels. Docker doesn't allow changing the name, config content, or secret value. Instead, create a replacement, update the services that use it, then delete the old one from its row menu.
 
-If someone else changes the same config or secret while you're editing it, Docker rejects your save. Open it again to load the current version.
+If someone else changes it while you edit, Docker rejects your save. Open it again to load the current version.
 
 Join tokens and the manager unlock key are not Swarm secrets. They're cluster credentials, managed on the Cluster page.

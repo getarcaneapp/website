@@ -3,16 +3,13 @@ title: 'OpenTelemetry'
 description: 'Send Arcane metrics, traces, and logs to an OpenTelemetry collector.'
 ---
 
-Arcane can export metrics, traces, and logs with OpenTelemetry. It is configured with the standard `OTEL_*` environment variables, and every exporter is off until you turn it on.
+Export Arcane's metrics, traces, and logs with OpenTelemetry using the standard `OTEL_*` environment variables. Every exporter is off until you turn it on.
 
-You need:
-
-- An OpenTelemetry Collector, or any backend that accepts OTLP.
-- Somewhere to store the data. The examples below use Prometheus for metrics, Tempo for traces, and Loki for logs.
+You need an OpenTelemetry Collector (or any OTLP backend) and somewhere to store the data. The examples use Prometheus for metrics, Tempo for traces, and Loki for logs.
 
 ## Enable export
 
-Set these variables on the Arcane container:
+Set these variables on the Arcane container. Leave out any signal you don't want; the endpoint alone sends nothing.
 
 ```yaml
 environment:
@@ -22,15 +19,13 @@ environment:
   - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
 ```
 
-Leave out any signal you don't want. Setting only the endpoint doesn't send anything.
-
 Arcane sends OTLP over HTTP/protobuf to port `4318`. To use gRPC instead, set `OTEL_EXPORTER_OTLP_PROTOCOL=grpc` and point the endpoint at port `4317`. If your collector needs authentication, set `OTEL_EXPORTER_OTLP_HEADERS`, for example `authorization=Bearer <token>`.
 
-Set the same variables on agents to collect their data too. Each installation reports its own instance ID, and the `arcane.mode` attribute (`manager`, `agent`, or `edge`) tells them apart.
+Set the same variables on agents to collect their data. Each installation reports its own instance ID, and `arcane.mode` (`manager` or `edge`) tells them apart.
 
 ## Run a collector
 
-This Compose file runs Arcane next to an OpenTelemetry Collector:
+This Compose file runs Arcane next to an OpenTelemetry Collector. Prometheus must be started with `--web.enable-otlp-receiver` to accept OTLP metrics.
 
 ```yaml
 services:
@@ -93,11 +88,9 @@ service:
       exporters: [otlphttp/loki]
 ```
 
-Prometheus must be started with `--web.enable-otlp-receiver` to accept OTLP metrics.
-
 ## Scrape with Prometheus instead
 
-If you only want metrics and prefer scraping, skip the collector:
+For metrics only, skip the collector and let Prometheus scrape Arcane. Web UI metrics are only sent over OTLP, so browser panels stay empty when you scrape.
 
 ```yaml
 environment:
@@ -105,9 +98,7 @@ environment:
   - OTEL_EXPORTER_PROMETHEUS_HOST=0.0.0.0
 ```
 
-Arcane then serves metrics at `http://<arcane>:9464/metrics`. Change the port with `OTEL_EXPORTER_PROMETHEUS_PORT`.
-
-Add a scrape job named `arcane` so the dashboard finds the metrics:
+Arcane then serves metrics at `http://<arcane>:9464/metrics` (change the port with `OTEL_EXPORTER_PROMETHEUS_PORT`). Add a scrape job named `arcane` so the dashboard finds them:
 
 ```yaml
 scrape_configs:
@@ -116,25 +107,21 @@ scrape_configs:
       - targets: ['arcane:9464']
 ```
 
-Web UI metrics are only sent over OTLP, so the browser panels stay empty when you scrape.
-
 ## Import the dashboard
 
-In Grafana, go to **Dashboards → New → Import**, enter dashboard ID `25894`, and pick your Prometheus, Tempo, and Loki data sources. The dashboard is also on [grafana.com](https://grafana.com/grafana/dashboards/25894). It expects metric names with Prometheus suffixes, such as `http_server_request_duration_seconds`, which is what Prometheus's OTLP receiver produces by default.
+In Grafana, go to **Dashboards → New → Import**, enter dashboard ID `25894`, and pick your Prometheus, Tempo, and Loki data sources. It's also on [grafana.com](https://grafana.com/grafana/dashboards/25894). It expects metric names with Prometheus suffixes, such as `http_server_request_duration_seconds`, which Prometheus's OTLP receiver produces by default.
 
 ## What Arcane sends
 
 - **Metrics:** API request rates and latency, containers, images, volumes, networks, and projects, per-container CPU, memory, network, and disk usage, image updates, vulnerability counts, job runs, edge agents, GitOps syncs, backups, notifications, Go runtime, and database connections.
 - **Traces:** API requests, Docker and Compose calls, database queries, agent calls, jobs, GitOps syncs, backups, image patches, vulnerability scans, and registry calls.
-- **Logs:** everything Arcane logs at the configured `LOG_LEVEL`. Logs still go to stdout too.
+- **Logs:** everything Arcane logs at the configured `ARCANE_LOG_LEVEL`. Logs still go to stdout too.
 
-Database spans contain SQL statements without their values. Authenticated API request spans include the user's ID and username. URLs are recorded without query strings, and request bodies and credentials are never recorded.
+Database spans contain SQL without values. Authenticated API spans include the user's ID and username. URLs omit query strings; request bodies and credentials are never recorded.
 
-The manager's web UI also reports to your collector as `arcane-frontend`: page loads and API calls as traces, navigation times and Web Vitals as metrics, and JavaScript errors as logs. Each of these is sent only when that signal uses OTLP over HTTP, and it goes through Arcane at `/api/telemetry/*`, so your collector doesn't need to be reachable from the browser. Behind a reverse proxy, set [`TRUSTED_PROXIES`](/docs/networking/reverse-proxy#trust-the-proxy-with-trusted_proxies) so Arcane rate-limits this per browser instead of per proxy.
+The manager's web UI reports as `arcane-frontend`: page loads and API calls as traces, navigation times and Web Vitals as metrics, JavaScript errors as logs. Each is sent only when that signal uses OTLP over HTTP, via Arcane at `/api/telemetry/*`, so the browser needn't reach your collector. Behind a reverse proxy, set [`ARCANE_TRUSTED_PROXIES`](/docs/networking/reverse-proxy#trust-the-proxy-with-arcane_trusted_proxies) so Arcane rate-limits this per browser instead of per proxy.
 
 ## Other settings
-
-These standard variables also work:
 
 | Variable                                         | Use                                                           |
 | ------------------------------------------------ | ------------------------------------------------------------- |

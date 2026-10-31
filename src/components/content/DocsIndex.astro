@@ -80,28 +80,29 @@ const cards = await Promise.all(
 );
 ---
 
-<div class="docs-index arcane-ui not-content grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+<div class="docs-index arcane-ui not-content grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 	{cards.map((card) => (
 		<a
 			href={card.href}
-			class="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-border bg-background p-5 no-underline transition-all duration-300 hover:border-primary/30 hover:shadow-sm hover:shadow-primary/5"
+			class="group relative flex flex-col justify-between rounded-lg border border-border bg-card p-4 no-underline transition-colors duration-150 hover:border-gray-4 hover:bg-surface-raised"
 		>
-			<div class="absolute inset-x-0 top-0 h-0.5 scale-x-0 bg-linear-to-r from-transparent via-primary/40 to-transparent transition-transform duration-300 group-hover:scale-x-100" />
-			<div class="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
-				<card.icon class="size-5" />
+			<div>
+				<div class="flex items-center gap-2.5">
+					<div class="flex size-7 items-center justify-center rounded-md border border-border bg-muted text-foreground transition-colors group-hover:text-primary group-hover:border-primary/40">
+						<card.icon class="size-4" />
+					</div>
+					<span class="text-sm font-medium tracking-tight text-foreground transition-colors group-hover:text-primary">
+						{card.title}
+					</span>
+				</div>
+				<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">{card.description}</p>
 			</div>
-			<div class="flex-1">
-				<span class="block text-[1.0625rem] font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary">
-					{card.title}
+			<div class="mt-4 flex items-center justify-between border-t border-border/50 pt-2.5 text-xs text-muted-foreground">
+				<span>
+					{card.count} article{card.count === 1 ? '' : 's'}
 				</span>
-				<p class="mt-1 text-[0.9375rem] leading-relaxed text-muted-foreground">
-					{card.description}
-				</p>
-			</div>
-			<span class="flex items-center gap-1 text-sm font-medium text-muted-foreground">
-				{card.count} article{card.count === 1 ? '' : 's'}
 				<ArrowRightIcon class="size-3.5 transition-transform group-hover:translate-x-0.5" />
-			</span>
+			</div>
 		</a>
 	))}
 </div>

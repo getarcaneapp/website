@@ -3,15 +3,7 @@ title: 'Podman Overview'
 description: 'What Arcane manages on Podman hosts, what each feature needs, and who can use it.'
 ---
 
-When an environment runs Podman, Arcane adds a **Podman** section to the sidebar alongside the usual container, image, volume, and network pages. Those regular pages work the same as on Docker, because Arcane talks to Podman through its Docker-compatible API. The Podman section covers what that API doesn't have:
-
-- [Pods](/docs/podman/pods)
-- [Quadlets](/docs/podman/quadlets)
-- [Kubernetes YAML](/docs/podman/kube)
-- [Podman secrets](/docs/podman/secrets)
-- [Podman auto-update](/docs/podman/auto-update)
-
-To set up Arcane on a Podman host, see [Run Arcane on Podman](/docs/podman/setup).
+On Podman environments, Arcane adds a **Podman** sidebar section for what the Docker-compatible API lacks: [Pods](/docs/podman/pods), [Quadlets](/docs/podman/quadlets), [Kubernetes YAML](/docs/podman/kube), [Podman secrets](/docs/podman/secrets), and [Podman auto-update](/docs/podman/auto-update). Container, image, volume, and network pages work as on Docker. To set up, see [Run Arcane on Podman](/docs/podman/setup).
 
 ## Version requirements
 
@@ -29,22 +21,22 @@ Arcane detects Podman automatically and only shows what the host supports.
 
 ## Access to systemd
 
-Quadlets run as systemd services, so starting, stopping, and restarting them goes through systemd rather than the Podman API. The same applies to auto-update on Podman versions before 6.2. Arcane reaches systemd over D-Bus:
+Starting, stopping, and restarting Quadlets, and auto-update before Podman 6.2, go through systemd. Arcane reaches it over D-Bus:
 
 - **Rootful Podman** uses the system bus at `/run/dbus/system_bus_socket`. Mount it into the Arcane container and run Arcane as root (`PUID=0`, `PGID=0`) so it's allowed to manage system services.
 - **Rootless Podman** uses the user's session bus at `/run/user/<UID>/bus`. Mount it, set `DBUS_SESSION_BUS_ADDRESS`, and run Arcane as that user. [Run Arcane on Podman](/docs/podman/setup#give-arcane-access-to-systemd) has the full settings.
 
-If the bus isn't reachable, everything else still works. The Quadlet start, stop, and restart buttons are disabled, and the Quadlet and Auto Update pages show why.
+Without the bus, everything else works; Quadlet start, stop, and restart are disabled, and the Quadlet and Auto Update pages show why.
 
-When `DOCKER_HOST` points to a Podman engine on another machine (`tcp://` or `ssh://`), Arcane doesn't use its own local bus, because that would control services on the wrong host. Set `DBUS_SYSTEM_BUS_ADDRESS` or `DBUS_SESSION_BUS_ADDRESS` to that machine's bus if you want systemd actions there. For most remote hosts it's simpler to run an [Arcane Agent](/docs/remote/environments) on the Podman machine itself.
+When `DOCKER_HOST` points to a Podman engine on another machine (`tcp://` or `ssh://`), Arcane ignores its local bus, which would control the wrong host. For systemd actions there, set `DBUS_SYSTEM_BUS_ADDRESS` or `DBUS_SESSION_BUS_ADDRESS` to that machine's bus. Usually it's simpler to run an [Arcane Agent](/docs/remote/environments) on the Podman machine.
 
-## All environments
+## Multiple environments
 
-With several environments shown at once, the **Pods** and **Quadlets** lists combine every Podman environment and add an **Environment** column. Docker environments are skipped. **Kube**, **Secrets**, and **Auto Update** act on the selected environment and only appear when it runs Podman.
+Podman pages appear when at least one environment runs Podman, and cover every Podman environment you can read. **Pods**, **Quadlets**, and **Secrets** combine them with an **Environment** column; **Auto Update** runs on all at once. **Kube** works on one host, so pick its **Environment** first.
 
 ## Permissions
 
-Podman actions have their own permissions, scoped per environment. See [Roles](/docs/access/roles#permission-catalog).
+Podman permissions are scoped per environment. See [Roles](/docs/access/roles#permission-catalog).
 
 | Permission                  | Allows                                        |
 | --------------------------- | --------------------------------------------- |
@@ -60,4 +52,4 @@ The Kube, Auto Update, and Install quadlet pages also need `podman:read`.
 
 ## CLI
 
-Everything in this section is also available from `arcane-cli podman`. See [CLI Commands](/docs/reference/cli/commands#podman).
+Everything here is also in `arcane-cli podman`. See [CLI Commands](/docs/reference/cli/commands#podman).

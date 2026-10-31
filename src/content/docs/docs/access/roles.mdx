@@ -1,0 +1,218 @@
+---
+title: 'Roles & Permissions'
+description: 'Control what users and API keys can do in Arcane with roles and role bindings.'
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Arcane checks a permission, such as `containers:start`, on every action. Permissions reach a user through role bindings.
+
+| Concept          | What it is                                                                                                                                                            |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Permission**   | One action on one resource type, written `<resource>:<action>`.                                                                                                       |
+| **Role**         | A named set of permissions. Use a built-in role or create your own.                                                                                                   |
+| **Role binding** | Grants one role to one user, globally or in one environment. |
+
+A user's access is the union of every binding on the user. There are no deny rules.
+
+## Roles
+
+### Built-in roles
+
+You can't edit or delete built-in roles; they change only when you upgrade Arcane. To start from one, clone it as a custom role.
+
+| Role                | ID                     | Grants                                                                                                                                                                                                                                                                               |
+| ------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Admin**           | `role_admin`           | Every permission (`*`), including permissions added in later releases.                                                                                                                                                                                                               |
+| **Editor**          | `role_editor`          | Full Docker, Podman, GitOps, webhook, job, vulnerability, and activity management, plus templates and variables. Read-only on users, roles, API keys, settings, registries, and Git repositories. No Swarm init, join, leave, or unlock, no `system:upgrade`, no `gitops:lifecycle`. |
+| **No-Shell Editor** | `role_no_shell_editor` | Editor without `containers:exec`.                                                                                                                                                                                                                                                    |
+| **Deployer**        | `role_deployer`        | Read resources and logs, run container and project lifecycle actions, pull, tag, and commit images, trigger GitOps syncs and image update checks. No create or delete, no settings.                                                                                                  |
+| **Monitor**         | `role_monitor`         | Read Docker resources, logs, dashboards, events, and activities in environments. No org-level pages, no actions.                                                                                                                                                                     |
+| **Viewer**          | `role_viewer`          | Everything Monitor can read, plus read-only access to users, roles, API keys, settings, registries, templates, variables, Git repositories, S3 destinations, and webhooks.                                                                                                           |
+
+Podman permissions per built-in role:
+
+| Role                    | Podman permissions                                              |
+| ----------------------- | --------------------------------------------------------------- |
+| Editor, No-Shell Editor | Every `podman` permission                                       |
+| Deployer                | `podman:read`, `podman:quadlets:lifecycle`, `podman:autoupdate` |
+| Monitor, Viewer         | `podman:read`                                                   |
+
+### Admin
+
+A user is an admin when they hold Admin through a global, unscoped binding. Admin is the `*` permission, not a list, so a custom role containing every permission is not Admin. System backup routes require Admin regardless of other permissions.
+
+Arcane always keeps at least one admin who isn't a service account. It rejects deleting a binding that would remove the last one, with `At least one user must retain a global Admin role assignment`; bind Admin to another user first. If nobody can sign in as an admin, see [Account Recovery](/docs/access/account-recovery).
+
+### Custom roles
+
+Create custom roles under **System → Roles**, with `arcane-cli admin roles create`, or with `POST /api/roles`.
+
+```bash
+arcane-cli admin roles create --name "Log reader" -p containers:list -p containers:read -p containers:logs
+```
+
+- **System → Roles** lists custom and **Built-in** roles; **Role bindings** counts each role's bindings.
+- Creating needs `roles:create`, and only permissions you hold globally and unscoped. Only admins can create roles containing `*`.
+- Deleting a custom role deletes all its bindings. You need `roles:delete` and must be able to create each of those bindings.
+
+## Role bindings
+
+| Part     | Values                                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Subject  | One user. |
+| Role     | A built-in or custom role.                                                                                                                                         |
+| Scope    | Global, or one environment.                                                                                                                                        |
+
+A global binding applies in every environment. Org-level permissions, such as `users:*`, `settings:*`, and `registries:*`, only work from a global binding. A user with no bindings can sign in but lands on a "no access" screen.
+
+| Action          | Permission                                              |
+| --------------- | ------------------------------------------------------- |
+| List bindings   | `bindings:list`                                         |
+| Create bindings | `bindings:create`, subject to [delegation](#delegation) |
+| Delete bindings | `bindings:delete`, subject to [delegation](#delegation) |
+
+<Tabs>
+<TabItem label="UI">
+
+Bindings live in the **Role bindings** section of a user's **Edit User** sheet (**System → Users**). The table shows each binding's **Role**, **Scope**, and **Source**. **Source** is **Manual**, **Federated** for bindings from a [federated credential](/docs/access/federated-credentials).
+
+**Add binding** asks for a **Role** and an **Environment scope**: **Global (org-wide)** or one environment.
+
+</TabItem>
+<TabItem label="CLI and API">
+
+The CLI uses `arcane-cli admin bindings`. The API uses `/api/roles/bindings`.
+
+```bash
+arcane-cli admin bindings create --user <user-id> --role role_deployer --environment <env-id>
+```
+
+```bash
+arcane-cli admin bindings list --user <user-id>
+```
+
+```bash
+arcane-cli admin bindings delete <binding-id>
+```
+
+</TabItem>
+</Tabs>
+
+### Default role for new users
+
+The **Default role** setting (`defaultUserRoleId`) under **System → Authentication → Access control** binds a role globally and unscoped to new local users, OIDC users created on first login, and OIDC users who end a login with no group memberships and no bindings.
+
+The default is **No default role**, so new users get nothing. It can't be Admin. If the role no longer exists, Arcane logs a warning and skips it.
+
+## Delegation
+
+You can only grant what you hold. Holding `roles:*`, `bindings:*`, `groups:*`, or `oidcmappings:*` doesn't let anyone escalate.
+
+| Change                | Rule                                                                                                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Roles**             | Every permission in a role you create or update must be one you hold globally.                                                                                                       |
+| **Bindings**          | For every permission the binding grants, you must hold it in the binding's environment or globally. |
+| **Binding deletes**   | Same rule as bindings, so you can't remove a binding broader than your own access.                                                                                                                          |
+
+Rejected requests return `403` with `cannot grant a permission you do not hold: <permission>`.
+
+## Effective access
+
+Effective access lists, per scope, each permission a user holds and which bindings grant it. It's in the CLI and API. In the UI, a user's **Role bindings** in the **Edit User** sheet show where their access comes from.
+
+<Tabs>
+<TabItem label="CLI">
+
+```bash
+arcane-cli auth me --effective
+```
+
+```bash
+arcane-cli admin bindings access <user-id>
+```
+
+</TabItem>
+<TabItem label="API">
+
+| Endpoint                                   | For         | Permission      |
+| ------------------------------------------ | ----------- | --------------- |
+| `GET /api/auth/me/effective-access`        | Yourself    | None            |
+| `GET /api/users/{userId}/effective-access` | Other users | `bindings:list` |
+
+</TabItem>
+</Tabs>
+
+For a `permission denied: ...` error, find the permission in the [permission catalog](#permission-catalog), then check effective access grants it in the right environment.
+
+## Scope API keys
+
+Every API key carries its own permission grants, each global or for one environment. A key never exceeds its owner: Arcane intersects its grants with the owner's current access on every request. Removing an owner's binding narrows their keys immediately, and you can't grant a key a permission you don't hold.
+
+<Steps>
+
+1. Go to **System → API Keys → Create API Key**.
+2. Set a name, description, and optional expiration.
+3. Under **Permissions**, pick an environment, or **Global (org-wide)**, and the permissions the key holds there. **Add environment** adds a row for another environment.
+4. Save and copy the value. It's shown once.
+
+</Steps>
+
+## Permission catalog
+
+`arcane-cli admin roles permissions` prints the catalog your server recognizes.
+
+### Org-level permissions (global bindings only)
+
+| Resource           | Actions                                                                       |
+| ------------------ | ----------------------------------------------------------------------------- |
+| `users`            | `list`, `read`, `create`, `update`, `delete`                                  |
+| `roles`            | `list`, `read`, `create`, `update`, `delete`                                  |
+| `bindings`         | `list`, `create`, `delete`                                                    |
+| `oidcmappings`     | `list`, `create`, `update`, `delete`                                          |
+| `apikeys`          | `list`, `read`, `create`, `update`, `delete`                                  |
+| `federated`        | `list`, `read`, `create`, `update`, `delete`                                  |
+| `settings`         | `read`, `write`                                                               |
+| `environments`     | `list`, `read`, `create`, `update`, `delete`, `pair`, `sync`                  |
+| `registries`       | `list`, `read`, `create`, `update`, `delete`, `test`, `browse`, `delete-tags` |
+| `templates`        | `list`, `read`, `create`, `update`, `delete`                                  |
+| `variables`        | `read`, `create`, `update`, `delete`, `sync`                                  |
+| `git-repositories` | `list`, `read`, `create`, `update`, `delete`, `test`, `sync`                  |
+| `s3-destinations`  | `list`, `read`, `create`, `update`, `delete`, `test`, `sync`                  |
+| `system-backups`   | `read`, `manage`, `restore`, `recovery-key`                                   |
+| `events`           | `read`, `delete`                                                              |
+| `notifications`    | `manage`                                                                      |
+| `customize`        | `manage`                                                                      |
+| `diagnostics`      | `read`                                                                        |
+| `audit`            | `read`, `export`                                                              |
+
+### Env-scoped permissions (global or per environment)
+
+| Resource           | Actions                                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `containers`       | `list`, `read`, `logs`, `create`, `start`, `stop`, `restart`, `redeploy`, `edit`, `kill`, `pause`, `delete`, `exec`, `autoupdate` |
+| `projects`         | `list`, `read`, `logs`, `create`, `update`, `deploy`, `down`, `restart`, `delete`, `archive`                                      |
+| `images`           | `list`, `read`, `pull`, `build`, `tag`, `commit`, `prune`, `delete`, `upload`, `patch`                                            |
+| `volumes`          | `list`, `read`, `create`, `rename`, `delete`, `prune`, `upload`, `backup`                                                         |
+| `networks`         | `list`, `read`, `create`, `delete`, `prune`, `connect`, `disconnect`                                                              |
+| `swarm`            | `read`, `init`, `join`, `leave`, `spec`, `nodes`, `services`, `services:logs`, `stacks`, `configs`, `secrets`, `unlock`           |
+| `podman`           | `read`, `pods`, `quadlets`, `quadlets:lifecycle`, `kube`, `secrets`, `autoupdate`                                                 |
+| `gitops`           | `list`, `read`, `create`, `update`, `delete`, `sync`, `lifecycle`, `backup`                                                       |
+| `webhooks`         | `list`, `create`, `update`, `delete`                                                                                              |
+| `jobs`             | `manage`                                                                                                                          |
+| `dashboard`        | `read`                                                                                                                            |
+| `system`           | `read`, `prune`, `upgrade`                                                                                                        |
+| `image-updates`    | `read`, `check`                                                                                                                   |
+| `vulnerabilities`  | `read`, `scan`, `manage`                                                                                                          |
+| `build-workspaces` | `manage`                                                                                                                          |
+| `activities`       | `read`, `cancel`, `delete`                                                                                                        |
+
+### Special cases
+
+| Permission             | Notes                                                                                                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `notifications:manage` | Org-level. Grant it globally to manage **System → Notifications**. A binding in a single environment isn't enough.                                                                                               |
+| `diagnostics:read`     | Covers runtime diagnostics, pprof profiles, and the live backend log. Only Admin has it by default.                                                                                                                                   |
+| `gitops:lifecycle`     | Only in Admin by default. Allows configuring GitOps pre-deploy hooks, which run code from the repository in a container before deployment.                                                                                           |
+| `gitops:backup`        | Gates **Back up to Git**. The shared sync routes need it in addition to the matching `gitops:*` permission when the sync is a backup.                                                                                                |
+| `volumes:*`            | For [Volume Workspace](/docs/docker/volumes#volume-workspace) writes: `volumes:upload` allows creating and editing files, `volumes:delete` allows deletion, both allow moves and renames, and `volumes:backup` allows file restores. |

@@ -5,15 +5,13 @@ description: 'Back up Docker volumes and Arcane itself to local storage or S3-co
 
 import ScreenshotFrame from '#components/content/ScreenshotFrame.astro';
 
-Arcane can back up your Docker volumes and its own data (database, settings, and runtime configuration), on demand or on a schedule. Backups are stored on local storage mounted at `/backups`, in an S3-compatible bucket, or in both.
-
-Backups are encrypted snapshots made with [Rustic](https://rustic.cli.rs/), an open-source backup tool that Arcane runs in short-lived containers. Before your first backup, set up storage and a recovery key.
+Back up your Docker volumes and Arcane's own data (database, settings, runtime configuration), on demand or on a schedule, to local storage at `/backups`, an S3-compatible bucket, or both. Backups are encrypted [Rustic](https://rustic.cli.rs/) snapshots. Before your first backup, set up storage and a recovery key.
 
 ## Set up backup storage
 
 ### Mount local storage
 
-Local backups and the safety backups taken before a restore are written to `/backups` inside the Arcane container. Mount a host directory there so they land in a predictable place:
+Local backups and pre-restore safety backups go to `/backups` in the Arcane container. Mount a host directory or a named volume there:
 
 ```yaml
 services:
@@ -21,8 +19,6 @@ services:
     volumes:
       - /srv/arcane/backups:/backups
 ```
-
-Or use a named volume:
 
 ```yaml
 services:
@@ -34,56 +30,49 @@ volumes:
   arcane-backups:
 ```
 
-Removing a named volume deletes its backups. Without a `/backups` mount, Arcane uses a fallback Docker volume named `arcane-backups` and shows a warning in the UI; set `ARCANE_BACKUP_VOLUME_NAME` if that name collides with another volume. S3-only backups don't keep a permanent local copy.
+Removing a named volume deletes its backups. Without a `/backups` mount, Arcane uses a fallback volume named `arcane-backups` and warns in the UI; set `ARCANE_BACKUP_VOLUME_NAME` if that name collides. S3-only backups keep no permanent local copy.
 
 > [!IMPORTANT]
 > Backups on the same host don't survive a disk or host failure. Use S3, or copy the Rustic repository under `/backups` to another system.
 
 ### Add an S3 destination
 
-1. Open **Settings → Backups → S3 Destinations**.
+1. Open **System → Backups → S3 Destinations**.
 2. Enter the connection details (see [S3 destination fields](#s3-destination-fields)).
-3. Test the destination. **Create** and **Save** need a passing test, which writes, downloads, verifies, and deletes a temporary object.
+3. Test the destination. **Create** and **Save** need a passing test (write, download, verify, delete a temporary object).
 4. Save.
 
-Destinations sync from the manager to all remote environments. When you change the endpoint, bucket, region, access key ID, SSL, or path-style setting, re-enter the secret access key and test again. A destination can't be deleted while a schedule or a retained remote backup still uses it.
+Destinations sync from the manager to all remote environments. After changing the endpoint, bucket, region, access key ID, SSL, or path-style setting, re-enter the secret access key and test again. You can't delete a destination a schedule or retained remote backup still uses.
 
 ## Recovery key
 
-The recovery key encrypts system backups and volume backups. Without it, snapshots can't be restored, so keep a copy outside Arcane.
+The recovery key encrypts system and volume backups. Without it, snapshots can't be restored.
 
-1. Open **Settings → Backups → Recovery key** and choose **Create recovery key**. Arcane generates a key of 8 groups of 6 characters.
-2. Copy the key and store it somewhere outside Arcane. It isn't shown again.
+1. Open **System → Backups → Recovery key** and choose **Create recovery key**. Arcane generates a key of 8 groups of 6 characters.
+2. Copy the key and store it outside Arcane. It isn't shown again.
 3. Confirm the key to save it.
 
-Arcane keeps a copy for scheduled jobs. To use a key from another installation, choose **Import recovery key** instead. To replace the key, choose **Reset recovery key**.
+Arcane keeps a copy for scheduled jobs. **Import recovery key** uses a key from another installation; **Reset recovery key** replaces it.
 
 > [!WARNING]
 > Losing the recovery key makes the snapshots unrecoverable. Arcane refuses to reset the key while system backups made with the current key still exist, because they can only be opened with the key that created them.
 
-Volume backups made before any recovery key was set use a password derived from `ENCRYPTION_KEY`. When you set a recovery key, Arcane tries to move its existing volume backup repositories to the new key. Repositories that belong to another Arcane instance must be moved by that instance.
+Volume backups made before any recovery key use a password derived from `ARCANE_ENCRYPTION_KEY`. Setting a recovery key makes Arcane try to move its existing volume repositories to the new key; another instance's repositories must be moved by that instance.
 
 > [!WARNING]
-> Keep your original `ENCRYPTION_KEY` until you've confirmed older volume backups open with the recovery key. A recovery key imported on a fresh installation can't unlock a repository that still uses the old password.
+> Keep your original `ARCANE_ENCRYPTION_KEY` until you've confirmed older volume backups open with the recovery key. A recovery key imported on a fresh installation can't unlock a repository that still uses the old password.
 
 ## Volume backups
 
-Open a volume and select its **Backups** tab. The rest of the volume workflow is on [Volumes](/docs/docker/volumes).
+Open a volume and select its **Backups** tab. See also [Volumes](/docs/docker/volumes).
 
 ### Create a backup
 
-Click **Create Backup** for a local backup, or open its dropdown and choose **Local**, **S3**, or **Local + S3**. Options that include S3 ask which saved destination to use.
-
-The table shows each run's trigger, destination, size, time, and status. Failed runs show their error and can't be restored. Only one backup, upload, or delete can run on a volume at a time.
-
-From a successful backup's row actions you can:
-
-- **Upload to S3**: copy a local backup to a destination, turning it into a Local + S3 backup.
-- Download it as a `tar.gz` archive.
+Click **Create Backup** for a local backup, or use its dropdown to choose **Local**, **S3**, or **Local + S3** (S3 options ask for a saved destination). The table shows each run's trigger, destination, size, time, and status. Failed runs show their error and can't be restored. Only one backup, upload, or delete runs on a volume at a time. A successful backup's row actions let you **Upload to S3** (making it Local + S3) or download it as a `tar.gz` archive.
 
 ### Schedule backups
 
-Click **Add schedule**. A volume can have several schedules, each with these settings:
+Click **Add schedule**. A volume can have several schedules:
 
 | Setting                           | What it does                                                                                                |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -93,9 +82,7 @@ Click **Add schedule**. A volume can have several schedules, each with these set
 | Destination                       | **Local**, **S3**, or **Local + S3**. If S3 is included, also pick the S3 destination.                      |
 | **Stop containers during backup** | Stops running containers that use the volume, takes the snapshot, then starts them again.                   |
 
-Turn on **Stop containers during backup** for applications that write to the volume constantly, such as databases; otherwise the restore point may be inconsistent. Leaving it off avoids downtime. On-demand **Create Backup** never stops containers.
-
-Scheduled and on-demand runs appear in the same table and in the Activity Center.
+Turn on **Stop containers during backup** for apps that write constantly, such as databases, or the restore point may be inconsistent. Leaving it off avoids downtime. On-demand **Create Backup** never stops containers. Scheduled and on-demand runs appear in the same table and the Activity Center.
 
 <ScreenshotFrame
   name="backup-schedule"
@@ -107,21 +94,17 @@ Scheduled and on-demand runs appear in the same table and in the Activity Center
 
 ### Restore a volume
 
-Restore the whole volume or selected files. For an existing volume, Arcane stops the containers using it and takes a local safety backup first; if that fails, the restore is cancelled. Arcane restarts every container it stopped.
-
-Rustic writes directly to the volume, and a whole-volume restore deletes files that aren't in the snapshot. If a restore fails partway, roll back with the safety backup. Restoring a backup for a volume that doesn't exist creates the volume, with no safety backup.
+Restore the whole volume or selected files. For an existing volume, Arcane stops its containers and takes a local safety backup first (if that fails, the restore is cancelled), then restarts every container it stopped. A whole-volume restore deletes files not in the snapshot. If a restore fails partway, roll back with the safety backup. Restoring to a volume that doesn't exist creates it, with no safety backup.
 
 ### Delete backups and retention
 
-Retention runs separately for each schedule, and separately for local and S3 copies. When a restore point expires, Arcane removes its local and S3 snapshots where possible.
+Retention runs per schedule, and separately for local and S3 copies. Expired restore points lose their local and S3 snapshots where possible.
 
-Deleting backups by hand also tries to remove every stored copy. If the local copy is deleted but S3 deletion fails, the row stays as S3-only and Arcane reports the error. If any remote copy can't be deleted, the row stays, so the backup isn't wrongly shown as gone.
-
-Deleting a local backup doesn't free its disk space right away. Arcane prunes the local system and volume backup repositories at 04:15 and 16:15 every day in Arcane's configured timezone, and Rustic keeps deleted data for about a day before a prune removes it, so the space can take up to two days to come back.
+Manual deletes also try every stored copy. If local deletion succeeds but S3 fails, the row stays as S3-only with the error. If any remote copy can't be deleted, the row stays. Disk space returns slowly, up to two days. Arcane prunes local system and volume repositories at 04:15 and 16:15 daily (configured timezone), and Rustic keeps deleted data about a day before a prune removes it.
 
 ### System-managed volume backups
 
-To back up many volumes with one schedule, an admin can open **Settings → Backups**, click **Create schedule**, and choose the **Volume** type. Set the schedule, retention, destination, and stop-containers option as above, then pick which volumes to include:
+To back up many volumes with one schedule, an admin opens **System → Backups**, clicks **Create schedule**, and chooses **Volume**. Set schedule, retention, destination, and stop-containers as above, then pick volumes:
 
 | Mode            | Included volumes                                                               |
 | --------------- | ------------------------------------------------------------------------------ |
@@ -129,17 +112,15 @@ To back up many volumes with one schedule, an admin can open **Settings → Back
 | **Allowlist**   | Only the selected volumes. New volumes are left out until you select them.     |
 | **Blocklist**   | Every volume except the selected ones. New volumes are included automatically. |
 
-Each run reads Docker's current volume list. Turn on **Ignore anonymous volumes** to skip unnamed volumes. **Run now** reports matched, successful, failed, and skipped volumes. The results show up in each volume's **Backups** tab as **System-managed**, next to **Volume-managed** backups.
+Each run reads Docker's current volume list. **Ignore anonymous volumes** skips unnamed ones. **Run now** reports matched, successful, failed, and skipped volumes. Results appear in each volume's **Backups** tab as **System-managed**, next to **Volume-managed** backups.
 
 ## Back up Arcane itself
 
-System backups save Arcane's application data and runtime configuration so you can recover the whole installation. They need SQLite, Arcane running in Docker with `/app/data` mounted, access to the local Docker daemon, and a [recovery key](#recovery-key).
+System backups save Arcane's application data and runtime configuration to recover the whole installation. They need SQLite, Arcane in Docker with `/app/data` mounted, local Docker daemon access, and a [recovery key](#recovery-key).
 
 ### Create and schedule system backups
 
-Open **Settings → Backups** as an admin. Click **Create schedule** and choose the **System** type to add a schedule with its own cron expression, destination (**Local**, **S3**, or **Local + S3**), S3 destination, and retention. For a one-off backup, reuse a saved schedule's configuration or pick a destination. Local backups can be uploaded to S3 later.
-
-When a backup exists both locally and on S3, restores and file browsing use the other copy if one can't be read.
+As an admin, open **System → Backups**, click **Create schedule**, and choose **System**. Set its cron expression, destination (**Local**, **S3**, or **Local + S3**), S3 destination, and retention. For a one-off backup, reuse a saved schedule's configuration or pick a destination. Local backups can be uploaded to S3 later. If one copy of a Local + S3 backup can't be read, restores and file browsing use the other.
 
 ### Restore Arcane
 
@@ -150,9 +131,7 @@ When a backup exists both locally and on S3, restores and file browsing use the 
 2. A detached recovery helper stops the Arcane container.
 3. Rustic restores the snapshot into `/app/data`.
 4. The helper recreates Arcane with the recovered runtime configuration.
-5. Arcane starts, and the backup and Activity Center records are finalized.
-
-The page disconnects while Arcane restarts. Reload it once the container is back.
+5. Arcane starts, and the backup and Activity Center records are finalized. The page disconnects meanwhile; reload once the container is back.
 
 ### Restore selected project files
 
@@ -160,17 +139,15 @@ The page disconnects while Arcane restarts. Reload it once the container is back
 2. If no recovery key is stored, enter it and click **Load files**.
 3. Select project files or folders, or use **Select all**, and restore.
 
-Arcane first takes a full local safety backup; Arcane and project containers keep running. Selected files overwrite the files at those paths, and restoring a folder also removes files in it that aren't in the snapshot. If any file fails, the files already restored are rolled back. Database, settings, and secrets need a full system restore.
-
-Browsing backup files needs `system-backups:read` and restoring needs `system-backups:restore`. Both are admin-only.
+Arcane first takes a full local safety backup; containers keep running. Selected files overwrite those paths, and a restored folder loses files not in the snapshot. If any file fails, restored files are rolled back. Database, settings, and secrets need a full system restore. Browsing needs `system-backups:read` and restoring needs `system-backups:restore`; both are admin-only.
 
 ## Recover backups on another installation
 
-1. Import the original key under **Settings → Backups → Recovery key → Import recovery key**.
+1. Import the original key under **System → Backups → Recovery key → Import recovery key**.
 2. Add the S3 destination with the same bucket and object prefix.
-3. Open **Settings → Backups** to see the restore points Arcane found.
+3. Open **System → Backups** to see the restore points Arcane found.
 
-With a recovery key stored, Arcane looks for existing system and volume backups whenever you save an S3 destination or open the Backups page. It searches each instance directory in the destination and lists every snapshot it can decrypt; a failure in one directory doesn't stop the others. **Find S3 backups** runs the same search on demand for system backups.
+With a recovery key stored, Arcane searches each instance directory in the destination for decryptable system and volume snapshots whenever you save an S3 destination or open the Backups page. A failure in one directory doesn't stop the others. **Find S3 backups** runs the same search on demand for system backups.
 
 ## Reference
 

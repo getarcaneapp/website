@@ -1,52 +1,16 @@
 ---
 title: 'Preview Features'
-description: 'Try features that are still in development in the web UI, iOS app, and CLI.'
+description: 'Enable in-development features in the web UI, iOS app, and CLI.'
 ---
 
-import { Badge, TabItem, Tabs } from '@astrojs/starlight/components';
+Turn on preview features in the web UI, iOS app, or CLI to test unfinished functionality. Preview features are off by default, may contain bugs, and can change or be removed in future releases.
 
-Preview features are unfinished. They're off by default, may have bugs, and can change or go away in a future release. Each client (web UI, iOS app, CLI) has its own toggle.
+## Verify CLI self-update signatures
 
-## All environments
-
-<Badge text="Preview" variant="caution" />
-
-Shows containers, projects, images, volumes, networks, ports, updates, and vulnerability scans from every enabled environment in one list, instead of switching between environments. Each item is tagged with its environment, and actions run against that environment.
-
-Bulk actions like update checks, updates, and pruning run on every enabled environment, even if the list is filtered. Check the environment count in the confirmation before you continue.
-
-<Tabs syncKey="arcane-client">
-
-<TabItem label="Web UI">
-
-Go to **Account** → **Previews** (click your avatar at the bottom of the sidebar) and turn on **All environments (preview)**. The setting is saved to your account, not the browser.
-
-The same tab lets you choose whether lists show the environment name or just a colored dot, and set a color per environment.
-
-To turn it off, use the same toggle or click **Turn off preview** in the environment switcher.
-
-</TabItem>
-
-<TabItem label="iOS app">
-
-Go to **More** → **Preview Features** and turn on **All Environments**. You can also set a color per environment there.
-
-The setting is per device. Turn it off to pick a single environment again.
-
-</TabItem>
-
-<TabItem label="CLI">
+Enable Sigstore signature verification for `arcane-cli self-update`:
 
 ```bash
-arcane-cli config set previews.allEnvironments true
+arcane-cli config set previews.newSelfUpdater true
 ```
 
-Lists get an `ENVIRONMENT` column. Use `--env <id>` to target one environment for a single command. Set it back to `false` to go back to your default environment.
-
-See the [CLI config reference](/docs/reference/cli/config#preview-every-environment) for details.
-
-</TabItem>
-
-</Tabs>
-
-Found a bug? [Open an issue](https://github.com/getarcaneapp/arcane/issues) and mention which client and version you're on.
+See [Verify self-update signatures](/docs/reference/cli/config#verify-self-update-signatures) for details. To report a bug, [open an issue](https://github.com/getarcaneapp/arcane/issues) with your client and version.

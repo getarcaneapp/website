@@ -31,7 +31,7 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 		items: [
 			doc('get-started/installation'),
 			doc('get-started/lxc-container'),
-			doc('get-started/migrate-v2'),
+			doc('get-started/migrate-v3'),
 			doc('get-started/preview-builds'),
 			doc('get-started/preview-features'),
 			doc('get-started/downgrading')
@@ -83,6 +83,7 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 			doc('access/sso'),
 			doc('access/passkeys'),
 			doc('access/roles'),
+			doc('access/audit-log'),
 			doc('access/federated-credentials'),
 			doc('access/account-recovery')
 		]

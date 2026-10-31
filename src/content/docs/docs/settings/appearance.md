@@ -3,12 +3,10 @@ title: 'Appearance & Preferences'
 description: 'Personalize themes, navigation, and display options for your Arcane account.'
 ---
 
-Preferences control how Arcane looks and behaves for you: language, theme, navigation, and your profile picture. They belong to your account and follow you to any browser where you sign in, so changing them doesn't affect other users.
-
-Open **Account → Preferences** to change the options below. The only server-wide settings on this page are the [profile picture limits](#set-profile-picture-limits-admins) that admins control.
+Open **Account → Preferences** to set your language, theme, navigation, environment colors, and profile picture. Preferences belong to your account, follow you to any browser, and don't affect other users. Only the [profile picture limits](#set-profile-picture-limits-admins) are server-wide.
 
 > [!NOTE]
-> If you upgraded from a release that configured appearance server-wide, your existing settings were copied to every user account automatically, so Arcane looks the same as it did before.
+> If you upgraded from a release with server-wide appearance settings, they were copied to every user account, so Arcane looks the same as before.
 
 ## General
 
@@ -17,46 +15,40 @@ Open **Account → Preferences** to change the options below. The only server-wi
 
 ## Appearance
 
-- **Theme** — Light, Dark, or System. System follows your operating system.
+- **Theme** — Light, Dark, or System (follows your operating system).
 - **Font size** — scales text and UI density.
-- **Icon Catalog** — which catalog resolves project and container icon slugs: **selfh.st** or **Dashboard Icons**. See [Compose Labels](/docs/reference/compose-labels) for how icon slugs are applied.
-- **Application Theme** — the overall visual theme (see below).
+- **Icon Catalog** — **selfh.st** or **Dashboard Icons**, used to resolve project and container icon slugs. See [Compose Labels](/docs/reference/compose-labels).
+- **Application Theme** — Default, Graphite, Ocean, Amber, GitHub, Nord, Everforest, or Rosé Pine.
 - **Accent Color** — the highlight color used across the UI.
-- **OLED Mode** — deepens backgrounds to true black.
+- **OLED Mode** — deepens backgrounds to true black. Applies to the Default theme only; alternate presets ignore it.
 - **Glass & Blur Effects** — translucent panel surfaces.
 - **Interface Animations** — turn off to reduce motion.
-
-### Available theme variants
-
-- Default
-- Graphite
-- Ocean
-- Amber
-- GitHub
-- Nord
-- Everforest
-- Rosé Pine
-
-OLED mode applies to the Default theme. If you switch to one of the alternate presets, Arcane keeps that preset active instead of layering OLED mode on top of it.
+- **Toast Position** — where pop-up messages appear. **Auto** uses top center on mobile and tablet, bottom right on desktop.
+- **Editor tab width** — 2, 4, or 8 spaces, for code editors and YAML formatting.
 
 ## Navigation
 
-- **Default Landing Page** — where Arcane sends you after you sign in. The default is the Dashboard. You can choose any of: Dashboard, Projects, Environments, Containers, Images, Updates, Networks, or Volumes. If a saved choice ever becomes unavailable, Arcane falls back to the Dashboard.
-- **Enable Hover Expansion** — expand the collapsed sidebar when you hover it.
-- **Keyboard Shortcuts** — enable or disable Arcane's keyboard shortcuts.
+- **Default Landing Page** — where you land after sign-in: Dashboard (default), Projects, Environments, Containers, Images, Updates, Networks, or Volumes. If your choice becomes unavailable, Arcane falls back to the Dashboard.
+- **Enable Hover Expansion** — expand the collapsed sidebar on hover.
+- **Keyboard Shortcuts** — turn Arcane's keyboard shortcuts on or off.
+
+## Environments
+
+- **Environment labels**: show each row's environment by **Name**, or as a **Color dot** with the name on hover.
+- **Environment colors**: pick a unique color for each environment's name in lists. **Reset** restores the defaults.
 
 ## Mobile appearance
 
 - **Navigation Mode** — **Floating** or **Docked** mobile navigation bar.
-- **Show Labels** — show text labels beneath the mobile navigation icons.
+- **Show Labels** — show text labels under the mobile navigation icons.
 
 ## Upload a profile picture
 
-Upload a custom profile picture from **Account**. Arcane accepts PNG, JPEG, and WebP images, opens a crop dialog before upload, and stores the cropped image as your profile picture.
+Upload a PNG, JPEG, or WebP image from **Account**. Arcane opens a crop dialog and stores the cropped image as your profile picture.
 
 ## Set profile picture limits (admins)
 
-These settings apply to every user and are under **Settings → Users**:
+These apply to every user, under **System → Users**:
 
-- **Enable Gravatar** — use Gravatar as the fallback source for users without an uploaded photo. Off by default on new installations; upgraded installations keep their current value. Setting `ENABLE_GRAVATAR=true` or `false` on the Arcane container overrides this setting and locks it in the UI.
-- **Profile Picture Upload Size (MB)** — maximum cropped image size users can upload. The default is 2 MB, and the allowed range is 1–50 MB.
+- **Enable Gravatar** — use Gravatar as the fallback for users without an uploaded photo. Off by default on new installations; upgrades keep their current value. Setting `ARCANE_ENABLE_GRAVATAR=true` or `false` on the Arcane container overrides this and locks it in the UI.
+- **Profile Picture Upload Size (MB)** — maximum cropped image size. Default 2 MB, range 1–50 MB.
