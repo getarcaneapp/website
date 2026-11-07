@@ -3,12 +3,23 @@ title: 'Podman Auto-Update'
 description: 'Run Podman auto-update for containers that opt in.'
 ---
 
-Podman has its own auto-update for containers labelled `io.containers.autoupdate`, usually set with `AutoUpdate=registry` in a Quadlet. **Podman → Auto Update** runs it on demand. How it runs depends on the Podman version:
+This runs Podman's own auto-update on every Podman environment at once. It covers containers labelled `io.containers.autoupdate`, usually set with `AutoUpdate=registry` in a Quadlet.
 
-- **Podman 6.2 or later**: Arcane calls the Podman API and shows a report for each container, with the image, the policy, and whether it was updated. **Dry run** checks for updates without applying them. **Roll back failed updates** returns a container to its previous image if the new one doesn't start. Updated containers trigger the same update notifications as Arcane's own updater.
-- **Older versions with systemd access**: Arcane starts `podman-auto-update.service` and shows the unit's result. There's no per-container report and no dry run, and the options above aren't available.
-- **Neither**: the page explains what's missing.
+## Run auto-update
 
-If the run finishes with errors, Arcane reports it as failed and lists the errors.
+1. Open **Podman → Auto Update**.
+2. Optional (Podman 6.2 or later): turn on **Dry run** to check without applying, or **Roll back failed updates** to restore the previous image if the new one doesn't start.
+3. Run it.
+4. Check the results. Errors are listed with the environment they came from.
 
-Podman's own `podman-auto-update.timer` keeps running on its schedule whether or not you use this page.
+Podman's `podman-auto-update.timer` keeps running on its schedule either way.
+
+## What each Podman version supports
+
+| Host | What happens |
+| --- | --- |
+| Podman 6.2 or later | Arcane calls the Podman API and reports each container's image, policy, and whether it updated. Updates trigger the same notifications as Arcane's own updater. |
+| Older, with systemd access | Arcane starts `podman-auto-update.service` and shows the unit's result. No per-container report, dry run, or rollback option. |
+| Neither | The page explains what's missing, and the environment is skipped. |
+
+See [Access to systemd](/docs/podman/overview#access-to-systemd).

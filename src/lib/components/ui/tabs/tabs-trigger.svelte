@@ -3,19 +3,19 @@
 -->
 
 <script lang="ts">
-	import { Tabs as TabsPrimitive } from 'bits-ui';
-	import { cn } from '#lib/utils.js';
+import { Tabs as TabsPrimitive } from 'bits-ui';
+import { cn } from '#lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		variant = 'default',
-		size = 'default',
-		...restProps
-	}: TabsPrimitive.TriggerProps & {
-		variant?: 'default' | 'arcane' | 'steps';
-		size?: 'default' | 'sm';
-	} = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	variant = 'default',
+	size = 'default',
+	...restProps
+}: TabsPrimitive.TriggerProps & {
+	variant?: 'default' | 'arcane' | 'steps';
+	size?: 'default' | 'sm';
+} = $props();
 </script>
 
 <TabsPrimitive.Trigger

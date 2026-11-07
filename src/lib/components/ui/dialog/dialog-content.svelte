@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { CloseIcon } from '#lib/icons/index.js';
-	import { Dialog as DialogPrimitive } from 'bits-ui';
-	import type { Snippet } from 'svelte';
-	import { cn, type WithoutChildrenOrChild } from '#lib/utils.js';
-	import Overlay from './dialog-overlay.svelte';
+import { Dialog as DialogPrimitive } from 'bits-ui';
+import type { Snippet } from 'svelte';
+import { CloseIcon } from '#lib/icons/index.js';
+import { cn, type WithoutChildrenOrChild } from '#lib/utils.js';
+import Overlay from './dialog-overlay.svelte';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		portalProps,
-		children,
-		showCloseButton = true,
-		variant = 'default',
-		...restProps
-	}: WithoutChildrenOrChild<DialogPrimitive.ContentProps> & {
-		portalProps?: DialogPrimitive.PortalProps;
-		children: Snippet;
-		showCloseButton?: boolean;
-		/** `command` is a compact palette, `wide` a tall code viewer, `lightbox` a frameless full-screen view. */
-		variant?: 'default' | 'command' | 'wide' | 'lightbox';
-	} = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	portalProps,
+	children,
+	showCloseButton = true,
+	variant = 'default',
+	...restProps
+}: WithoutChildrenOrChild<DialogPrimitive.ContentProps> & {
+	portalProps?: DialogPrimitive.PortalProps;
+	children: Snippet;
+	showCloseButton?: boolean;
+	/** `command` is a compact palette, `wide` a tall code viewer, `lightbox` a frameless full-screen view. */
+	variant?: 'default' | 'command' | 'wide' | 'lightbox';
+} = $props();
 </script>
 
 <DialogPrimitive.Portal {...portalProps}>

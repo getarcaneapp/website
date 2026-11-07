@@ -14,11 +14,11 @@ import { MoonIcon, SunIcon } from '../../lib/icons/index';
 </button>
 
 <script is:inline>
-	document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
-		button.addEventListener('click', () => {
-			const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-			document.documentElement.dataset.theme = next;
-			localStorage.setItem('starlight-theme', next);
-		});
+document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+	button.addEventListener('click', () => {
+		const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+		document.documentElement.dataset.theme = next;
+		localStorage.setItem('starlight-theme', next);
 	});
+});
 </script>

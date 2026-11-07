@@ -3,7 +3,7 @@ title: 'Template Registries'
 description: 'Publish a registry of Compose templates for your team or the community.'
 ---
 
-A template registry is a hosted `registry.json` file that lists Compose [templates](/docs/docker/templates) and their download URLs. Create one to share templates with your team. For container image registries, see [private registries](/docs/docker/images#private-registries).
+A template registry is a hosted `registry.json` file that lists Compose [templates](/docs/docker/templates) and their download URLs. For container image registries, see [private registries](/docs/docker/images#private-registries) instead.
 
 ## Create a registry
 
@@ -55,7 +55,12 @@ Include `$schema` so editors can validate the file:
 
 ### 3. Host the files
 
-Upload the files to GitHub or an HTTPS server. Download URLs must point directly to files, not repository pages: on GitHub use raw URLs, and on a custom domain enable CORS. For a repository named `my-docker-templates`, the registry URL is:
+Upload the files to GitHub or an HTTPS server.
+
+- Download URLs must point directly to files, not repository pages. On GitHub, use raw URLs.
+- On a custom domain, enable CORS.
+
+For a GitHub repository named `my-docker-templates`, the registry URL is:
 
 ```text
 https://raw.githubusercontent.com/username/my-docker-templates/main/registry.json
@@ -65,13 +70,15 @@ https://raw.githubusercontent.com/username/my-docker-templates/main/registry.jso
 
 1. Validate `registry.json` against the schema.
 2. Open each file URL and check that it downloads.
-3. Add the registry in **Customization → Templates → Add Registry** and check that the templates appear.
+3. Add the registry in **Projects → Templates → Manage Registries → Add Registry** and check that the templates appear.
 
 ## Write templates others can rely on
 
-- Pin image versions, include health checks and restart policies, and test before publishing.
+- Pin image versions.
+- Include health checks and restart policies.
 - Document required variables in `.env.example` with working, non-secret values.
-- Use semantic versioning and keep images patched.
+- Use semantic versioning, and keep images patched.
+- Test before publishing.
 
 To submit a template to the community registry, open a pull request to [getarcaneapp/templates](https://github.com/getarcaneapp/templates).
 

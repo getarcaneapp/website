@@ -15,8 +15,7 @@ const SECONDS_PER_CARD = 4;
 		</p>
 	</div>
 
-	<div
-		role="region"
+	<section
 		aria-label="Community comments"
 		class="group/marquee no-scrollbar overflow-hidden mask-fade-x motion-reduce:overflow-x-auto motion-reduce:mask-none"
 		data-reddit-marquee
@@ -57,27 +56,27 @@ const SECONDS_PER_CARD = 4;
 				</ul>
 			))}
 		</div>
-	</div>
+	</section>
 </section>
 
 <script>
-	document.querySelectorAll<HTMLElement>('[data-reddit-marquee]').forEach((marquee) => {
-		const lists = [...marquee.querySelectorAll<HTMLElement>('[data-reddit-list]')];
-		const ids = [...(lists[0]?.children ?? [])].map(
-			(li) => (li as HTMLElement).dataset.commentId ?? ''
+document.querySelectorAll<HTMLElement>('[data-reddit-marquee]').forEach((marquee) => {
+	const lists = [...marquee.querySelectorAll<HTMLElement>('[data-reddit-list]')];
+	const ids = [...(lists[0]?.children ?? [])].map(
+		(li) => (li as HTMLElement).dataset.commentId ?? ''
+	);
+	for (let i = ids.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[ids[i], ids[j]] = [ids[j], ids[i]];
+	}
+	for (const list of lists) {
+		const byId = new Map(
+			[...list.children].map((li) => [(li as HTMLElement).dataset.commentId ?? '', li])
 		);
-		for (let i = ids.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[ids[i], ids[j]] = [ids[j], ids[i]];
+		for (const id of ids) {
+			const li = byId.get(id);
+			if (li) list.append(li);
 		}
-		for (const list of lists) {
-			const byId = new Map(
-				[...list.children].map((li) => [(li as HTMLElement).dataset.commentId ?? '', li])
-			);
-			for (const id of ids) {
-				const li = byId.get(id);
-				if (li) list.append(li);
-			}
-		}
-	});
+	}
+});
 </script>

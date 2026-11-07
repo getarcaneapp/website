@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn, type WithElementRef } from '#lib/utils.js';
+import type { HTMLAttributes } from 'svelte/elements';
+import { cn, type WithElementRef } from '#lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		variant = 'default',
-		children,
-		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		/** `panel` is a flatter, rounder surface for stacked form sections. */
-		variant?: 'default' | 'panel';
-	} = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	variant = 'default',
+	children,
+	...restProps
+}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
+	/** `panel` is a flatter, rounder surface for stacked form sections. */
+	variant?: 'default' | 'panel';
+} = $props();
 </script>
 
 <div

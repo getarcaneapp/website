@@ -1,0 +1,24 @@
+---
+title: 'Permissions'
+description: 'Every Arcane permission, what it requires, and which API endpoints check it.'
+---
+
+import PermissionsTable from '#components/content/PermissionsTable.astro';
+import PermissionEndpointsTable from '#components/content/PermissionEndpointsTable.astro';
+
+Add these permissions to a [role](/docs/access/roles). Picking a permission also adds the ones listed under **Requires**.
+
+- **Global** permissions apply to the whole Manager.
+- **Environment** permissions apply to every environment, or only to the environment a role assignment names.
+
+Generate this list from your own install with `arcane permissions -o permissions.json`.
+
+## Permissions
+
+<PermissionsTable />
+
+## Endpoints
+
+Every API endpoint and the permission it checks. Some endpoints check a different permission per `?action=`, or add one based on the request.
+
+<PermissionEndpointsTable />

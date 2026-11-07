@@ -3,20 +3,20 @@ title: 'Federated Credentials'
 description: 'Let CI/CD pipelines and automation sign in to Arcane with short-lived OIDC tokens instead of long-lived API keys.'
 ---
 
-Federated credentials let CI jobs exchange an OIDC token for a short-lived Arcane token. Create a **trust rule** for the jobs you want to allow; no Arcane password or API key is needed in the pipeline.
+CI jobs exchange their platform's OIDC token for a short-lived Arcane token. The pipeline needs no Arcane password or API key.
 
 > [!NOTE]
-> This is for machines, not people. For interactive sign-in by human users, see [OIDC Single Sign-On](/docs/access/sso).
-
-## How it works
-
-The CLI fetches an OIDC token from the CI platform and sends it to Arcane. Arcane verifies its signature against the issuer's keys and checks the audience and subject against your rule. Matching jobs receive an Arcane token with the mapped role.
+> This is for machines. For human sign-in, see [OIDC Single Sign-On](/docs/access/sso).
 
 ## Create a federated credential
 
-1. Go to **Settings → Authentication → Federated Credentials** and select **Create**.
-2. Fill in the fields below.
-3. Save, and toggle **Enabled** on.
+1. Go to **System → Authentication → Federated Credentials**.
+2. Select **Create**.
+3. Fill in the fields below. For issuer and subject values, see [Subject formats by provider](#subject-formats-by-provider).
+4. Save.
+5. Turn **Enabled** on.
+
+Arcane checks each incoming token's signature against the issuer's keys, then its audience and subject against your rule. Matching jobs get an Arcane token with the mapped role.
 
 | Field          | What it does                                                                                                                        |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -30,19 +30,14 @@ The CLI fetches an OIDC token from the CI platform and sends it to Arcane. Arcan
 | Enabled        | Whether the rule currently accepts exchanges.                                                                                       |
 
 > [!CAUTION]
-> A broad subject match — `*`, or a whole organization — trusts **every** workflow in that scope, including forks and pull requests. Always match the most specific subject you can, usually a single repository and branch.
+> A broad subject match, such as `*` or a whole organization, trusts **every** workflow in that scope, including forks and pull requests. Always match the most specific subject you can, usually a single repository and branch.
 
 ## Subject formats by provider
-
-Use your provider's subject format:
 
 ### GitHub Actions
 
 - **Issuer:** `https://token.actions.githubusercontent.com`
-- **Subject examples:**
-  - `repo:OWNER/REPO:ref:refs/heads/main` — the `main` branch
-  - `repo:OWNER/REPO:environment:production` — a GitHub Environment
-  - `repo:OWNER/REPO:pull_request` — pull requests
+- **Subject examples:** `repo:OWNER/REPO:ref:refs/heads/main` (the `main` branch), `repo:OWNER/REPO:environment:production` (a GitHub Environment), `repo:OWNER/REPO:pull_request` (pull requests)
 - The workflow must request `id-token: write` permission.
 
 ### GitLab CI
@@ -74,7 +69,7 @@ jobs:
 ```
 
 > [!TIP]
-> Each GitHub Actions `run:` step is a fresh shell, so authenticate and run your commands in the **same** step — or write the token to `$GITHUB_ENV` to share it across steps.
+> Each GitHub Actions `run:` step is a fresh shell. Authenticate and run your commands in the **same** step, or write the token to `$GITHUB_ENV` to share it across steps.
 
 ### GitLab CI
 
@@ -90,13 +85,11 @@ deploy:
 
 ### Other providers
 
-For any other OIDC source, pass the token yourself:
+For any other OIDC source, pass the token yourself, or use `--token-file <path>` or `--token-stdin`:
 
 ```bash
 arcane-cli auth federated --token "$MY_OIDC_TOKEN" --audience https://arcane.example.com --export
 ```
-
-You can also use `--token-file <path>` or `--token-stdin`.
 
 ## Reference
 
@@ -116,9 +109,9 @@ Other clients can call `/api/auth/federated/token` using [OAuth 2.0 Token Exchan
 
 ## Security notes
 
-- Issued tokens are **short-lived** (15 minutes by default) and carry only the role you mapped — nothing more.
-- Arcane verifies every token's signature against the issuer's published keys, so a workload cannot forge another's identity.
-- Prefer **exact** subject matches; reserve wildcards for scopes you have deliberately chosen to trust.
-- **Disabling or deleting** a credential immediately blocks new exchanges and revokes any tokens it has already issued.
+- Issued tokens are **short-lived** (15 minutes by default) and carry only the mapped role.
+- Arcane verifies every token's signature against the issuer's published keys, so a workload can't forge another's identity.
+- Prefer **exact** subject matches; use wildcards only for scopes you deliberately trust.
+- **Disabling or deleting** a credential blocks new exchanges and revokes tokens it already issued.
 
-For the roles you can assign and how environment scopes work, see [Roles & Permissions](/docs/access/roles).
+For roles and environment scopes, see [Roles & Permissions](/docs/access/roles).
