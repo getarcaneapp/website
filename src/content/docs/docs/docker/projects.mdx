@@ -89,7 +89,7 @@ All file changes are staged until you **Save** the project or press `Ctrl/Cmd+S`
 > [!NOTE]
 > The Compose file, `.env`, `.env.git`, and `project.env` are protected. They show a lock icon and can't be renamed, moved, or deleted from the tree. Edit them through their own editors instead.
 
-The file size, depth, and entry limits are set by environment variables listed under [Reference](#reference).
+The tree loads a folder's contents when you open it. The file size and per-folder entry limits are set by environment variables listed under [Reference](#reference).
 
 <ScreenshotFrame
   name="project-workspace"
@@ -203,8 +203,6 @@ Set these on the Arcane container to change the workspace limits:
 | Variable                             | Default | Sets                                            |
 | ------------------------------------ | ------- | ----------------------------------------------- |
 | `PROJECT_WORKSPACE_MAX_FILE_SIZE_MB` | `10`    | Maximum size of a single workspace file, in MiB |
-| `PROJECT_WORKSPACE_MAX_DEPTH`        | `20`    | Maximum folder depth                            |
-| `PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders             |
+| `PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders per folder  |
 
-> [!IMPORTANT]
-> Use `PROJECT_WORKSPACE_MAX_DEPTH` to set the folder depth. Arcane doesn't read `PROJECT_FILE_TREE_MAX_DEPTH`, so rename it if your environment still sets it.
+A folder with more entries than the limit shows only its first entries, and the workspace tells you when that happens.
