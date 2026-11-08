@@ -108,7 +108,7 @@ To filter by Docker label, use the **Labels** filter:
 - Delete `.env` from its own menu.
 - For Git **Pull** projects, sync-managed files are read-only.
 
-Size, depth, and entry limits: see [Workspace limits](#workspace-limits).
+The tree loads a folder's contents when you open it. Size and per-folder entry limits: see [Workspace limits](#workspace-limits).
 
 ## Tag projects
 
@@ -234,8 +234,6 @@ Set these on the Arcane container:
 | Variable                                    | Default | Sets                                            |
 | ------------------------------------------- | ------- | ----------------------------------------------- |
 | `ARCANE_PROJECT_WORKSPACE_MAX_FILE_SIZE_MB` | `10`    | Maximum size of a single workspace file, in MiB |
-| `ARCANE_PROJECT_WORKSPACE_MAX_DEPTH`        | `20`    | Maximum folder depth                            |
-| `ARCANE_PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders             |
+| `ARCANE_PROJECT_WORKSPACE_MAX_ENTRIES`      | `2000`  | Maximum number of files and folders per folder  |
 
-> [!IMPORTANT]
-> Arcane doesn't read `PROJECT_FILE_TREE_MAX_DEPTH`. If your environment still sets it, rename it to `ARCANE_PROJECT_WORKSPACE_MAX_DEPTH`.
+A folder with more entries than the limit shows only its first entries. The workspace tells you when that happens.
