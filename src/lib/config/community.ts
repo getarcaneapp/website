@@ -4,6 +4,15 @@ import type { CommunityItem } from '#lib/types/community.type.js';
 const communityItems: CommunityItem[] = [
 	{
 		kind: 'video',
+		videoId: 'I1_vosdG4Zw',
+		title: 'Watchertower is dead, Arcane replaces it',
+		author: 'TechSimpld',
+		url: 'https://www.youtube.com/watch?v=I1_vosdG4Zw',
+		publishedAt: '2026-11-09',
+		featured: true
+	},
+	{
+		kind: 'video',
 		videoId: 'YwpWqdexEIk',
 		title: 'The Best Docker Manager I’ve Seen! // Arcane Tutorial',
 		author: 'Christian Lempa',
