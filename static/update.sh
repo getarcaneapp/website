@@ -319,6 +319,16 @@ start_service() {
 
     if command -v systemctl &> /dev/null; then
         run_cmd systemctl start arcane 2>/dev/null || true
+        sleep 3
+        if ! systemctl is-active --quiet arcane; then
+            progress_fail
+            log_error "Arcane was updated but did not start. Last log lines:"
+            tail -n 20 /var/log/arcane/arcane-error.log 2>/dev/null || true
+            log_warn "Upgrading from 2.x? See https://getarcane.app/docs/get-started/migrate-v3"
+            log_warn "Previous binary: ${BACKUP_PATH}"
+            cleanup
+            exit 1
+        fi
     elif command -v rc-service &> /dev/null; then
         run_cmd rc-service arcane start 2>/dev/null || true
     elif command -v launchctl &> /dev/null; then
@@ -330,6 +340,70 @@ start_service() {
     fi
 
     progress_done
+}
+
+# Arcane 3.0 refuses to start on 2.x variable names. Ask the new binary which
+# names in .env it rejects, then rename exactly those.
+migrate_env_file() {
+    local env_file="${ARCANE_INSTALL_DIR}/.env"
+    local line report env_backup tmp_env
+    local -a vars=()
+
+    if [[ ! -f "$env_file" ]]; then
+        return 0
+    fi
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        if [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*=. ]]; then
+            vars+=("$line")
+        fi
+    done < "$env_file"
+
+    report=$(env -i "${vars[@]}" "$ARCANE_BIN" health --timeout 1s 2>&1 || true)
+    if ! grep -q 'legacy environment variables are no longer read' <<< "$report"; then
+        return 0
+    fi
+
+    log_step "Migrating environment file to 3.0 variable names..."
+    progress "Migrating .env"
+
+    env_backup="${env_file}.bak.$(date +%s)"
+    cp -p "$env_file" "$env_backup"
+    tmp_env=$(mktemp -t arcane-env.XXXXXX 2>/dev/null || mktemp /tmp/arcane-env.XXXXXX)
+
+    awk '
+        NR == FNR {
+            n = split($0, f, /[ \t]+/)
+            if (n == 4 && f[1] == "rename" && f[3] == "to") {
+                renamed[f[2]] = f[4]
+            } else if (n == 4 && f[1] == "replace" && f[3] == "with") {
+                split(f[2], from, "=")
+                split(f[4], to, "=")
+                inverted[from[1]] = to[1]
+            }
+            next
+        }
+        {
+            eq = index($0, "=")
+            name = eq ? substr($0, 1, eq - 1) : ""
+            value = substr($0, eq + 1)
+            if (name in renamed) {
+                print renamed[name] "=" value
+            } else if (name in inverted) {
+                if (value ~ /^["\047]?(true|1)["\047]?$/) {
+                    print inverted[name] "=false"
+                }
+            } else {
+                print
+            }
+        }
+    ' <(printf '%s\n' "$report") "$env_backup" > "$tmp_env"
+
+    cat "$tmp_env" > "$env_file"
+    rm -f "$tmp_env"
+
+    progress_done
+    log_success "Old environment file saved at $env_backup"
 }
 
 apply_update() {
@@ -481,6 +555,7 @@ main() {
     download_arcane
     stop_service
     apply_update
+    migrate_env_file
     ensure_systemd_service
     start_service
     cleanup
