@@ -1,0 +1,89 @@
+---
+import { permissionEndpoints } from '../../lib/config/pages/permissions';
+import EndpointCode from './EndpointCode.astro';
+import PermissionCode from './PermissionCode.astro';
+import TableFilter from './TableFilter.astro';
+
+const ACCESS_LABELS: Record<string, string> = {
+	public: 'Public',
+	authenticated: 'Any signed-in user',
+	agentToken: 'Agent token',
+	webhookToken: 'Webhook token',
+	subjectToken: 'Federated subject token'
+};
+---
+
+<TableFilter
+	label="Search endpoints"
+	noun="endpoints"
+	total={permissionEndpoints.length}
+	empty="No endpoints match. Try a path like /containers or a permission."
+>
+	<table>
+		<thead>
+			<tr>
+				<th>Endpoint</th>
+				<th>Access</th>
+			</tr>
+		</thead>
+		<tbody>
+			{permissionEndpoints.map((endpoint) => {
+				const actions = Object.entries(endpoint.actionPermissions ?? {});
+				const permissions = [
+					endpoint.permission,
+					...actions.map(([, permission]) => permission),
+					...(endpoint.conditionalPermissions ?? []).map((condition) => condition.permission)
+				].filter(Boolean);
+				return (
+					<tr
+						data-search={`${endpoint.method} ${endpoint.path} ${endpoint.summary ?? ''} ${permissions.join(' ')} ${endpoint.access}`.toLowerCase()}
+					>
+						<td>
+							<EndpointCode method={endpoint.method} path={endpoint.path} />
+						</td>
+						<td>
+							<div class="env-details">
+								{endpoint.summary && <p>{endpoint.summary}</p>}
+								<div class="env-meta">
+									{endpoint.permission && (
+										<>
+											<span class="env-label">Permission</span>
+											<PermissionCode permission={endpoint.permission} />
+										</>
+									)}
+									{actions.map(([action, permission]) => (
+										<>
+											<span class="env-label">
+												?{endpoint.actionParam}={action}
+											</span>
+											<PermissionCode permission={permission} />
+										</>
+									))}
+									{(endpoint.conditionalPermissions ?? []).map((condition) => (
+										<>
+											<span class="env-label">
+												{condition.field}={condition.value}
+											</span>
+											<PermissionCode permission={condition.permission} />
+										</>
+									))}
+									{ACCESS_LABELS[endpoint.access] && (
+										<>
+											<span class="env-label">Access</span>
+											<span>{ACCESS_LABELS[endpoint.access]}</span>
+										</>
+									)}
+								</div>
+								{endpoint.globalAdmin && (
+									<div class="env-badges">
+										<span class="env-badge sensitive">Global admin only</span>
+									</div>
+								)}
+							</div>
+						</td>
+					</tr>
+				);
+			})}
+		</tbody>
+	</table>
+</TableFilter>

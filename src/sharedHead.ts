@@ -13,7 +13,12 @@ export const sharedHead = (site: URL | string): HeadTag[] => [
 	{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary' } },
 	{
 		tag: 'link',
-		attrs: { rel: 'alternate', type: 'application/rss+xml', title: 'Arcane Blog', href: '/rss.xml' }
+		attrs: {
+			rel: 'alternate',
+			type: 'application/rss+xml',
+			title: 'Arcane Blog',
+			href: '/rss.xml'
+		}
 	},
 	{
 		tag: 'link',

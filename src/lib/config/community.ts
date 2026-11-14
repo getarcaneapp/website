@@ -1,5 +1,5 @@
-import virtualizationHowtoThumbnail from '../../assets/community/virtualizationhowto-docker-ui.webp';
 import type { CommunityItem } from '#lib/types/community.type.js';
+import virtualizationHowtoThumbnail from '../../assets/community/virtualizationhowto-docker-ui.webp';
 
 const communityItems: CommunityItem[] = [
 	{

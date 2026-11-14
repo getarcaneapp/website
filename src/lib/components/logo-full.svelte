@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { SVGAttributes } from 'svelte/elements';
+import type { SVGAttributes } from 'svelte/elements';
 
-	let { class: className, ...restProps }: SVGAttributes<SVGElement> = $props();
+let { class: className, ...restProps }: SVGAttributes<SVGElement> = $props();
 </script>
 
 <svg

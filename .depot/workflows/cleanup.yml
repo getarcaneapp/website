@@ -6,17 +6,17 @@ on:
   workflow_dispatch:
     inputs:
       retention_days:
-        description: 'Delete deployments in environments older than N days'
+        description: "Delete deployments in environments older than N days"
         required: false
-        default: '14'
+        default: "14"
       dry_run:
-        description: 'Dry run (true/false)'
+        description: "Dry run (true/false)"
         required: false
-        default: 'false'
+        default: "false"
       keep:
-        description: 'Comma-separated envs to keep'
+        description: "Comma-separated envs to keep"
         required: false
-        default: 'production'
+        default: "production"
 
 permissions:
   actions: read

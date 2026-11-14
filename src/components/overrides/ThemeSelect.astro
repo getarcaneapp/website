@@ -14,41 +14,45 @@ import { MoonIcon, SunIcon } from '../../lib/icons/index';
 </button>
 
 <script>
-	document.querySelectorAll<HTMLButtonElement>('[data-docs-theme-toggle]').forEach((button) => {
-		button.addEventListener('click', () => {
-			const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-			document.documentElement.dataset.theme = next;
-			localStorage.setItem('starlight-theme', next);
-		});
+document.querySelectorAll<HTMLButtonElement>('[data-docs-theme-toggle]').forEach((button) => {
+	button.addEventListener('click', () => {
+		const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+		document.documentElement.dataset.theme = next;
+		localStorage.setItem('starlight-theme', next);
 	});
+});
 </script>
 
 <style>
-	.theme-toggle {
-		display: grid;
-		place-items: center;
-		width: 2.25rem;
-		height: 2.25rem;
-		padding: 0;
-		border: 0;
-		border-radius: 999px;
-		background: transparent;
-		color: var(--sl-color-gray-2);
-		cursor: pointer;
-		transition:
-			background-color 0.15s ease,
-			color 0.15s ease;
-	}
-	.theme-toggle:hover {
-		background-color: var(--surface-muted);
-		color: var(--sl-color-white);
-	}
-	.theme-toggle :global(.theme-icon) {
-		width: 1.125rem;
-		height: 1.125rem;
-	}
-	:global([data-theme='dark']) .theme-toggle :global(.theme-icon-moon),
-	:global([data-theme='light']) .theme-toggle :global(.theme-icon-sun) {
-		display: none;
-	}
+.theme-toggle {
+	display: grid;
+	place-items: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--sl-color-gray-2);
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
+}
+.theme-toggle:focus-visible {
+	outline: 2px solid var(--focus-ring);
+	outline-offset: 2px;
+}
+.theme-toggle:hover {
+	background-color: var(--surface-muted);
+	color: var(--sl-color-white);
+}
+.theme-toggle :global(.theme-icon) {
+	width: 1.125rem;
+	height: 1.125rem;
+}
+:global([data-theme="dark"]) .theme-toggle :global(.theme-icon-moon),
+:global([data-theme="light"]) .theme-toggle :global(.theme-icon-sun) {
+	display: none;
+}
 </style>

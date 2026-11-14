@@ -1,19 +1,27 @@
 ---
-title: 'Downgrading'
-description: 'Go back to an older Arcane version without losing your data.'
+title: "Downgrading"
+description: "Roll back to an older Arcane version without losing data."
 ---
 
-Arcane updates its database when you upgrade. If you start an older version against that database, Arcane stops at startup instead of guessing, so you have to allow the downgrade explicitly.
+Arcane migrates its database on upgrade. An older version refuses to start unless you allow a downgrade.
 
 ## Downgrade Arcane
 
 1. Back up the Arcane database.
-2. Add `ALLOW_DOWNGRADE=true` to the Arcane container's environment.
-3. Start the older version. Arcane rolls the database back to the version that release expects.
-4. Once it starts cleanly, remove `ALLOW_DOWNGRADE` or set it to `false`.
+2. Set `ARCANE_ALLOW_DOWNGRADE=true` in the Arcane container's environment.
+3. Start the older version. Arcane rolls the database back.
+4. Once Arcane starts cleanly, remove `ARCANE_ALLOW_DOWNGRADE` or set it to `false`.
 
-## If the downgrade is refused
+## Recover if the downgrade is refused
 
-An older release can only undo database changes it knows about. When the database has changes made by a newer release that the older one doesn't include, Arcane refuses to start even with `ALLOW_DOWNGRADE=true`, and the log says the rollback SQL is unavailable.
+An older release only rolls back migrations it knows about. If the log says rollback migrations are unavailable:
 
-In that case, restore the database from a backup taken before you upgraded, then start the older version.
+1. Restore your pre-upgrade backup.
+2. Start the older version.
+
+## Downgrade from 3.0 to 2.x
+
+3.0 can't roll back below its v2.17.1 database baseline.
+
+1. Restore the backup you took before upgrading to 3.0.
+2. Start 2.17.1.

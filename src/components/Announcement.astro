@@ -1,6 +1,6 @@
 ---
-import { ArrowRightIcon, CloseIcon } from '../lib/icons/index';
 import { getFeaturedPost } from '../lib/blog';
+import { ArrowRightIcon, CloseIcon } from '../lib/icons/index';
 
 const featured = await getFeaturedPost();
 ---
@@ -20,7 +20,7 @@ const featured = await getFeaturedPost();
 		</a>
 		<button
 			type="button"
-			class="absolute top-1/2 right-3 grid size-7 -translate-y-1/2 after:absolute after:-inset-2 after:content-[''] place-items-center rounded-md text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground"
+			class="absolute top-1/2 right-3 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors after:absolute after:-inset-2 after:content-[''] hover:bg-primary/10 hover:text-foreground"
 			aria-label="Dismiss announcement"
 			data-announcement-dismiss
 		>
@@ -30,17 +30,17 @@ const featured = await getFeaturedPost();
 )}
 
 <script is:inline>
-	(() => {
-		document.querySelectorAll('[data-announcement]').forEach((el) => {
-			const key = `arcane:dismissed-announcement:${el.dataset.announcement}`;
-			if (localStorage.getItem(key) === '1') {
-				el.remove();
-				return;
-			}
-			el.querySelector('[data-announcement-dismiss]')?.addEventListener('click', () => {
-				localStorage.setItem(key, '1');
-				el.remove();
-			});
+(() => {
+	document.querySelectorAll('[data-announcement]').forEach((el) => {
+		const key = `arcane:dismissed-announcement:${el.dataset.announcement}`;
+		if (localStorage.getItem(key) === '1') {
+			el.remove();
+			return;
+		}
+		el.querySelector('[data-announcement-dismiss]')?.addEventListener('click', () => {
+			localStorage.setItem(key, '1');
+			el.remove();
 		});
-	})();
+	});
+})();
 </script>

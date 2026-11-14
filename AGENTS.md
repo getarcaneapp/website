@@ -40,13 +40,14 @@
 
 - `pnpm dev` or `vp run dev` (Astro dev server on port 3001)
 - `pnpm build` or `vp run build`
-- `pnpm check` (`astro check` + `vp check`)
-- `pnpm lint`
-- `pnpm format`
+- `pnpm check` (`astro check` + `biome check`)
+- `pnpm lint` (`biome lint`)
+- `pnpm format` (`biome format --write`)
+- `pnpm fix` (`biome check --write`: format, lint fixes, import sorting, Tailwind class sorting)
 
-Astro owns the dev server and build, so use `vp run dev` / `vp run build`, never the built-in `vp dev` / `vp build`, which run plain Vite without Astro. Vite+ handles formatting, linting and the commit hook.
+Astro owns the dev server and build, so use `vp run dev` / `vp run build`, never the built-in `vp dev` / `vp build`, which run plain Vite without Astro. Vite+ runs the commit hook (`vp staged`, configured in `vite.config.ts`).
 
-Oxfmt does not format `.astro` files yet, so `pnpm format` and `pnpm check` also run Prettier with `prettier-plugin-astro` on `src/**/*.astro` (config in `.prettierrc.yaml`, matching the Oxfmt settings). The commit hook formats staged `.astro` files the same way.
+Biome formats and lints everything, including `.astro` and `.svelte` (config in `biome.json`). Its Astro/Svelte support is experimental, so expect the odd false positive in those files.
 
 `pnpm screenshots` regenerates the docs screenshots in `src/assets/screenshots/` (light and dark pairs) from a temporary Arcane container with demo data; it needs Docker and Playwright's Chromium. `<ScreenshotFrame name="dashboard" />` picks the pair by name and fails the build when one is missing.
 
@@ -79,7 +80,7 @@ release. Add a tool name to select part of the graph. For example, run
 ## Review Checklist
 
 - [ ] Run `vp install` after pulling remote changes and before getting started.
-- [ ] Run `vp check` and `vp test` to format, lint, type check and test changes.
+- [ ] Run `pnpm check` to lint, format-check and type check changes.
 - [ ] Check if there are `vite.config.ts` tasks or `package.json` scripts necessary for validation, run via `vp run <script>`.
 - [ ] If setup, runtime, or package-manager behavior looks wrong, run `vp env doctor` and include its output when asking for help.
 

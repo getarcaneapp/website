@@ -1,66 +1,66 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
-	import { DownloadIcon } from '#lib/icons/index.js';
-	import * as Tabs from '#lib/components/ui/tabs/index.js';
-	import * as Table from '#lib/components/ui/table/index.js';
+import { untrack } from 'svelte';
+import * as Table from '#lib/components/ui/table/index.js';
+import * as Tabs from '#lib/components/ui/tabs/index.js';
+import { DownloadIcon } from '#lib/icons/index.js';
 
-	type FileEntry = { key: string; size: number; modified: string };
+type FileEntry = { key: string; size: number; modified: string };
 
-	const PREFIXES = [
-		{ id: 'bin/arcane-next/', label: 'Arcane' },
-		{ id: 'bin/cli-next/', label: 'CLI' }
-	] as const;
+const PREFIXES = [
+	{ id: 'bin/arcane-next/', label: 'Arcane' },
+	{ id: 'bin/cli-next/', label: 'CLI' }
+] as const;
 
-	const INITIAL_TAB = PREFIXES[0].id;
+const INITIAL_TAB = PREFIXES[0].id;
 
-	let activeTab = $state<string>(INITIAL_TAB);
-	let cache = $state<Record<string, FileEntry[]>>({});
-	let loading = $state<Record<string, boolean>>({});
-	let errors = $state<Record<string, string>>({});
+let activeTab = $state<string>(INITIAL_TAB);
+let cache = $state<Record<string, FileEntry[]>>({});
+let loading = $state<Record<string, boolean>>({});
+let errors = $state<Record<string, string>>({});
 
-	async function loadFiles(prefix: string) {
-		if (cache[prefix] !== undefined || loading[prefix]) return;
-		loading[prefix] = true;
-		errors[prefix] = '';
-		try {
-			const res = await fetch(`/api/r2/list?prefix=${encodeURIComponent(prefix)}`);
-			if (!res.ok) throw new Error(`Failed to load files (${res.status})`);
-			const data: { files: FileEntry[] } = await res.json();
-			cache[prefix] = data.files;
-		} catch (e) {
-			errors[prefix] = e instanceof Error ? e.message : 'Failed to load';
-		} finally {
-			loading[prefix] = false;
-		}
+async function loadFiles(prefix: string) {
+	if (cache[prefix] !== undefined || loading[prefix]) return;
+	loading[prefix] = true;
+	errors[prefix] = '';
+	try {
+		const res = await fetch(`/api/r2/list?prefix=${encodeURIComponent(prefix)}`);
+		if (!res.ok) throw new Error(`Failed to load files (${res.status})`);
+		const data: { files: FileEntry[] } = await res.json();
+		cache[prefix] = data.files;
+	} catch (e) {
+		errors[prefix] = e instanceof Error ? e.message : 'Failed to load';
+	} finally {
+		loading[prefix] = false;
 	}
+}
 
-	// Each tab's file list is fetched the first time it's shown. Untracked so a failed
-	// request (loading flips back while cache stays empty) doesn't re-run this and refetch.
-	$effect(() => {
-		untrack(() => loadFiles(INITIAL_TAB));
+// Each tab's file list is fetched the first time it's shown. Untracked so a failed
+// request (loading flips back while cache stays empty) doesn't re-run this and refetch.
+$effect(() => {
+	untrack(() => loadFiles(INITIAL_TAB));
+});
+
+function formatSize(bytes: number): string {
+	if (bytes < 1024) return `${bytes} B`;
+	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatDate(iso: string): string {
+	return new Date(iso).toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric'
 	});
+}
 
-	function formatSize(bytes: number): string {
-		if (bytes < 1024) return `${bytes} B`;
-		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-	}
+function fileName(key: string): string {
+	return key.split('/').pop() ?? key;
+}
 
-	function formatDate(iso: string): string {
-		return new Date(iso).toLocaleDateString('en-US', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric'
-		});
-	}
-
-	function fileName(key: string): string {
-		return key.split('/').pop() ?? key;
-	}
-
-	function downloadUrl(key: string): string {
-		return `/api/r2/get?key=${encodeURIComponent(key)}`;
-	}
+function downloadUrl(key: string): string {
+	return `/api/r2/get?key=${encodeURIComponent(key)}`;
+}
 </script>
 
 <div class="my-4 overflow-hidden rounded-xl border">

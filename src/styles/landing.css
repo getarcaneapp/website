@@ -1,4 +1,4 @@
-@import './global.css';
+@import "./global.css";
 
 @layer base {
 	*,
@@ -9,9 +9,13 @@
 	}
 	html {
 		color-scheme: dark;
-		scroll-behavior: smooth;
 	}
-	html[data-theme='light'] {
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+	html[data-theme="light"] {
 		color-scheme: light;
 	}
 	body {
@@ -51,8 +55,8 @@
 	color: var(--shiki-dark);
 	background-color: transparent;
 }
-[data-theme='light'] .astro-code,
-[data-theme='light'] .astro-code span {
+[data-theme="light"] .astro-code,
+[data-theme="light"] .astro-code span {
 	color: var(--shiki-light);
 }
 .astro-code {
@@ -81,4 +85,34 @@
 	margin-right: 1.4rem;
 	text-align: right;
 	color: var(--muted-foreground);
+}
+
+.no-line-numbers .astro-code {
+	padding: 0.75rem 0;
+}
+.no-line-numbers .astro-code .line {
+	padding-inline: 1rem;
+}
+.no-line-numbers .astro-code .line::before {
+	content: none;
+}
+
+/* Inline code in landing copy. Solid colors keep it above 4.5:1 in both themes. */
+main :where(p, h3) > code {
+	padding: 0.0625rem 0.3125rem;
+	border-radius: 0.25rem;
+	background-color: var(--muted);
+	color: var(--foreground);
+	font-family: var(--font-mono);
+	font-size: 0.875em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+	}
 }

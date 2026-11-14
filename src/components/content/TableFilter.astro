@@ -4,190 +4,344 @@ interface Props {
 	noun: string;
 	total: number;
 	empty: string;
+	/**
+	 * Filter every `[data-filter-target="<scope>"]` table on the page instead of the
+	 * slotted table. Use it for one search box above several tables.
+	 */
+	scope?: string;
 }
-const { label, noun, total, empty } = Astro.props;
-const inputId = `filter-${noun.replace(/\W+/g, '-')}`;
+const { label, noun, total, empty, scope } = Astro.props;
+const inputId = `filter-${(scope ?? noun).replace(/\W+/g, '-')}`;
 ---
 
-<div class="table-filter not-content" data-table-filter data-noun={noun}>
+<div class="table-filter not-content" data-table-filter data-noun={noun} data-scope={scope}>
 	<label for={inputId}>{label}</label>
 	<input
 		id={inputId}
 		type="search"
 		placeholder="Name or description, e.g. backup"
 		autocomplete="off"
-	/>
+	>
 	<p class="table-filter-status" role="status" data-table-filter-status>
-		{total} of {total} {noun}
+		{`${total} of ${total} ${noun}`}
 	</p>
-	<slot />
+	{!scope && (
+		<div class="filter-table" data-filter-target>
+			<slot />
+		</div>
+	)}
 	<p class="table-filter-empty" data-table-filter-empty hidden>
 		{empty}
 	</p>
 </div>
 
 <script>
-	document.querySelectorAll<HTMLElement>('[data-table-filter]').forEach((root) => {
-		const input = root.querySelector('input');
-		const status = root.querySelector('[data-table-filter-status]');
-		const empty = root.querySelector<HTMLElement>('[data-table-filter-empty]');
-		const rows = [...root.querySelectorAll<HTMLElement>('[data-search]')];
-		const noun = root.dataset.noun ?? '';
-		input?.addEventListener('input', () => {
-			const query = input.value.trim().toLowerCase();
-			let shown = 0;
-			for (const row of rows) {
-				const match = !query || (row.dataset.search ?? '').includes(query);
+// Scoped filters also hide every `##` section of the page that has no matching rows
+// (heading, intro text, callouts, and table), so results sit right under the search box.
+const pageSections = (root: HTMLElement) => {
+	const sections: HTMLElement[][] = [];
+	for (const el of root.parentElement?.children ?? []) {
+		if (!(el instanceof HTMLElement) || el === root) continue;
+		// Starlight wraps headings in `.sl-heading-wrapper`, so match the wrapper too.
+		if (el.matches('h2, :has(> h2)')) sections.push([el]);
+		else sections.at(-1)?.push(el);
+	}
+	return sections;
+};
+
+document.querySelectorAll<HTMLElement>('[data-table-filter]').forEach((root) => {
+	const input = root.querySelector('input');
+	const status = root.querySelector('[data-table-filter-status]');
+	const empty = root.querySelector<HTMLElement>('[data-table-filter-empty]');
+	const noun = root.dataset.noun ?? '';
+	const targets = root.dataset.scope
+		? [...document.querySelectorAll<HTMLElement>(`[data-filter-target="${root.dataset.scope}"]`)]
+		: [...root.querySelectorAll<HTMLElement>('[data-filter-target]')];
+	const groups = targets.map((target) => ({
+		target,
+		rows: [...target.querySelectorAll<HTMLElement>('tbody tr')].map((row) => ({
+			row,
+			text: row.dataset.search ?? (row.textContent ?? '').toLowerCase()
+		}))
+	}));
+	const anchors = [...document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+	const sections = root.dataset.scope
+		? pageSections(root).map((elements) => {
+				const headingIds = new Set(
+					elements
+						.flatMap((el) =>
+							[el, ...el.querySelectorAll('*')].filter((h) => /^H[2-6]$/.test(h.tagName) && h.id)
+						)
+						.map((h) => h.id)
+				);
+				return {
+					elements,
+					groups: groups.filter((group) => elements.some((el) => el.contains(group.target))),
+					// Links elsewhere on the page that point into this section: TOC entries (desktop
+					// and mobile) hide their whole list item; other links, like "Jump to", hide themselves.
+					links: anchors
+						.filter(
+							(link) =>
+								headingIds.has(decodeURIComponent(link.hash.slice(1))) &&
+								!elements.some((el) => el.contains(link))
+						)
+						.map(
+							(link) =>
+								link.closest<HTMLElement>('starlight-toc li, mobile-starlight-toc li') ?? link
+						)
+				};
+			})
+		: [];
+	const jumpLists = [...document.querySelectorAll<HTMLElement>('[data-jump-links]')];
+	const total = groups.reduce((sum, group) => sum + group.rows.length, 0);
+	const update = () => {
+		const query = (input?.value ?? '').trim().toLowerCase();
+		const shownIn = new Map<(typeof groups)[number], number>();
+		for (const group of groups) {
+			let groupShown = 0;
+			for (const { row, text } of group.rows) {
+				const match = !query || text.includes(query);
 				row.hidden = !match;
-				if (match) shown++;
+				if (match) groupShown++;
 			}
-			if (status) status.textContent = `${shown} of ${rows.length} ${noun}`;
-			if (empty) empty.hidden = shown > 0;
-		});
-	});
+			group.target.toggleAttribute('data-empty', groupShown === 0);
+			shownIn.set(group, groupShown);
+		}
+		for (const section of sections) {
+			const hide = Boolean(query) && !section.groups.some((group) => (shownIn.get(group) ?? 0) > 0);
+			for (const el of section.elements) el.toggleAttribute('data-filter-hidden', hide);
+			for (const link of section.links) link.hidden = hide;
+		}
+		for (const list of jumpLists) list.hidden = !list.querySelector('a:not([hidden])');
+		const shown = [...shownIn.values()].reduce((sum, count) => sum + count, 0);
+		if (status) status.textContent = `${shown} of ${total} ${noun}`;
+		if (empty) empty.hidden = shown > 0;
+	};
+	// Navigating to a heading or row the search hides clears the search so the target shows.
+	const revealHash = () => {
+		const id = decodeURIComponent(location.hash.slice(1));
+		const target = id ? document.getElementById(id) : null;
+		if (!input || !target?.closest('[data-filter-hidden], .filter-table tr[hidden]')) return;
+		input.value = '';
+		update();
+		target.scrollIntoView();
+	};
+	input?.addEventListener('input', update);
+	window.addEventListener('hashchange', revealHash);
+	update();
+	revealHash();
+});
 </script>
 
 <style>
-	.table-filter {
-		margin-top: 1rem;
-	}
-	label {
-		display: block;
-		margin-bottom: 0.5rem;
-		font-size: var(--sl-text-sm);
-		font-weight: 500;
-		color: var(--sl-color-white);
-	}
+.table-filter {
+	margin-top: 1.5rem;
+}
+label {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-size: var(--sl-text-sm);
+	font-weight: 500;
+	color: var(--sl-color-white);
+}
+input {
+	width: 100%;
+	max-width: 32rem;
+	height: 2.5rem;
+	padding: 0 0.875rem;
+	border: 1px solid var(--input-border);
+	border-radius: 0.375rem;
+	background-color: var(--sl-color-black);
+	color: var(--sl-color-white);
+	font: inherit;
+	/* 16px on phones stops iOS from zooming into the field on focus. */
+	font-size: 1rem;
+}
+@media (min-width: 40rem) {
 	input {
+		font-size: var(--sl-text-sm);
+	}
+}
+input:focus-visible {
+	outline: 2px solid var(--focus-ring);
+	outline-offset: 2px;
+}
+.table-filter-status {
+	margin: 0.75rem 0;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+.table-filter-empty {
+	margin: 0;
+	padding-block: 1rem;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+
+/* "Jump to" links: the dot separators sit only between visible links. */
+:global([data-jump-links] a:not([hidden]) ~ a:not([hidden])::before) {
+	/* inline-block keeps the link underline off the dot. */
+	content: "·";
+	display: inline-block;
+	margin-inline-end: 0.35em;
+	color: var(--sl-color-gray-3);
+}
+
+/* Page sections hidden by a scoped search. `!important` beats display rules on asides and tables. */
+:global([data-filter-hidden]) {
+	display: none !important;
+}
+
+/* Shared table styles. Global so tables filtered by a page-wide `scope` get them too. */
+:global(.filter-table) {
+	margin-top: 1rem;
+}
+:global(.filter-table table) {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+	margin: 0;
+	border: 0;
+	border-collapse: collapse;
+	font-size: var(--sl-text-sm);
+}
+:global(.filter-table :is(th, td)) {
+	padding: 0.75rem 1rem 0.75rem 0;
+	border: 0;
+	border-bottom: 1px solid var(--sl-color-hairline);
+	text-align: start;
+	vertical-align: top;
+	overflow-wrap: anywhere;
+}
+:global(.filter-table th) {
+	padding-block: 0.5rem;
+	border-bottom-color: var(--sl-color-gray-5);
+	background: none;
+	font-weight: 600;
+	color: var(--sl-color-white);
+}
+:global(.filter-table tr[hidden]) {
+	display: none;
+}
+:global(.filter-table th:first-child) {
+	width: 40%;
+}
+:global(.filter-table tr[id]) {
+	scroll-margin-top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height) + 1.5rem);
+}
+:global(.filter-table tr[id]:target) {
+	background-color: color-mix(in oklch, var(--sl-color-accent), transparent 92%);
+}
+:global(.filter-table[data-empty] table) {
+	display: none;
+}
+:global(.filter-table[data-empty]::after) {
+	content: "No matching variables in this section.";
+	display: block;
+	padding-block: 0.5rem;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+:global(.table-filter .filter-table[data-empty]::after) {
+	content: none;
+}
+
+/* Narrow screens: unboxed definition rows (name, default, description) with a divider. */
+@media (max-width: 40rem) {
+	:global(.filter-table :is(table, tbody, tr, td)) {
+		display: block;
 		width: 100%;
-		height: 2.5rem;
-		padding: 0 0.875rem;
-		border: 1px solid var(--surface-border);
-		border-radius: 0.625rem;
-		background-color: var(--sl-color-black);
-		color: var(--sl-color-white);
-		font: inherit;
-		font-size: var(--sl-text-sm);
 	}
-	input:focus-visible {
-		outline: 2px solid color-mix(in oklch, var(--sl-color-accent), transparent 50%);
-		outline-offset: 1px;
-	}
-	.table-filter-status {
-		margin: 0.75rem 0;
-		font-size: var(--sl-text-sm);
-		color: var(--sl-color-gray-3);
-	}
-	.table-filter-empty {
-		margin: 0;
-		padding: 1rem;
-		font-size: var(--sl-text-sm);
-		color: var(--sl-color-gray-3);
-	}
-	.table-filter :global(table) {
-		display: table;
-		width: 100%;
-		table-layout: fixed;
-		margin: 0;
-		border: 1px solid var(--surface-border);
-		border-radius: var(--sl-radius);
-		border-collapse: separate;
-		border-spacing: 0;
-		overflow: hidden;
-		font-size: var(--sl-text-sm);
-	}
-	.table-filter :global(:is(th, td)) {
-		padding: 0.75rem 0.9rem;
-		border-bottom: 1px solid var(--sl-color-hairline-light);
-		text-align: start;
-		vertical-align: top;
-	}
-	.table-filter :global(th) {
-		background-color: var(--surface-muted);
-		font-weight: 600;
-		color: var(--sl-color-white);
-	}
-	.table-filter :global(tr:last-child td) {
-		border-bottom: 0;
-	}
-	.table-filter :global(tr[hidden]) {
+	:global(.filter-table thead) {
 		display: none;
 	}
-	.table-filter :global(th:first-child) {
-		width: 40%;
+	:global(.filter-table tr) {
+		padding-block: 0.875rem;
+		border-bottom: 1px solid var(--sl-color-hairline);
 	}
-	@media (max-width: 40rem) {
-		.table-filter :global(:is(table, tbody, tr, td)) {
-			display: block;
-			width: 100%;
-		}
-		.table-filter :global(thead) {
-			display: none;
-		}
-		.table-filter :global(tr) {
-			border-bottom: 1px solid var(--sl-color-hairline-light);
-		}
-		.table-filter :global(tr:last-child) {
-			border-bottom: 0;
-		}
-		.table-filter :global(td) {
-			border-bottom: 0;
-		}
-		.table-filter :global(td:first-child) {
-			padding-bottom: 0;
-		}
+	:global(.filter-table td) {
+		padding: 0;
+		border-bottom: 0;
 	}
-	.table-filter :global(code) {
-		display: inline-block;
-		max-width: 100%;
-		padding: 0.15rem 0.4rem;
-		border: 1px solid var(--surface-border);
-		border-radius: 0.375rem;
-		background-color: var(--surface-muted);
-		font-size: var(--sl-text-xs);
-		overflow-wrap: anywhere;
-		color: var(--sl-color-white);
+	:global(.filter-table td + td) {
+		margin-top: 0.5rem;
 	}
-	.table-filter :global(.env-details > * + *) {
-		margin-top: 0.625rem;
-	}
-	.table-filter :global(.env-details p) {
-		margin: 0;
-	}
-	.table-filter :global(.env-meta) {
-		display: grid;
-		grid-template-columns: minmax(5rem, auto) 1fr;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	.table-filter :global(.env-label) {
-		font-size: var(--sl-text-xs);
-		font-weight: 500;
-		letter-spacing: 0.04em;
-		text-transform: uppercase;
-		color: var(--sl-color-gray-3);
-	}
-	.table-filter :global(.env-note) {
-		font-size: var(--sl-text-xs);
-		color: var(--sl-color-gray-3);
-	}
-	.table-filter :global(.env-badges) {
+	:global(.filter-table .env-details) {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
+		flex-direction: column;
 	}
-	.table-filter :global(.env-badge) {
-		padding: 0.15rem 0.5rem;
-		border-radius: 999px;
-		font-size: var(--sl-text-xs);
-		font-weight: 500;
+	:global(.filter-table .env-details > .env-meta) {
+		order: -1;
 	}
-	.table-filter :global(.env-badge.deprecated) {
-		background-color: color-mix(in oklch, var(--destructive), transparent 88%);
-		color: var(--destructive);
+	:global(.filter-table .env-details > * + *) {
+		margin-top: 0.5rem;
 	}
-	.table-filter :global(.env-badge.sensitive) {
-		background-color: color-mix(in oklch, var(--warning), transparent 88%);
-		color: var(--warning);
-	}
+}
+
+:global(.filter-table code) {
+	display: inline-block;
+	max-width: 100%;
+	padding: 0.1rem 0.375rem;
+	border: 1px solid var(--surface-border);
+	border-radius: 0.25rem;
+	background-color: var(--surface-muted);
+	font-size: var(--sl-text-xs);
+	overflow-wrap: anywhere;
+	color: var(--sl-color-white);
+}
+:global(.filter-table .env-anchor) {
+	color: inherit;
+	text-decoration: none;
+}
+:global(.filter-table .env-anchor:hover code) {
+	border-color: var(--sl-color-accent);
+}
+:global(.filter-table .env-details > * + *) {
+	margin-top: 0.625rem;
+}
+:global(.filter-table .env-details p) {
+	margin: 0;
+}
+:global(.filter-table .env-meta) {
+	display: grid;
+	grid-template-columns: minmax(4.5rem, auto) 1fr;
+	align-items: center;
+	gap: 0.375rem 0.5rem;
+}
+:global(.filter-table .env-label) {
+	font-size: var(--sl-text-xs);
+	font-weight: 500;
+	color: var(--sl-color-gray-3);
+}
+:global(.filter-table .env-note) {
+	font-size: var(--sl-text-xs);
+	color: var(--sl-color-gray-3);
+}
+:global(.filter-table .env-badges) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+:global(.filter-table .env-badge) {
+	--badge-text: #991b1b;
+	--badge-tint: #fef2f2;
+	padding: 0.125rem 0.5rem;
+	border-radius: 0.25rem;
+	background-color: var(--badge-tint);
+	color: var(--badge-text);
+	font-size: var(--sl-text-xs);
+	font-weight: 500;
+}
+:global(.filter-table .env-badge.sensitive) {
+	--badge-text: #92400e;
+	--badge-tint: #fffbeb;
+}
+:global([data-theme="dark"] .filter-table .env-badge.deprecated) {
+	--badge-text: #fca5a5;
+	--badge-tint: #3b1214;
+}
+:global([data-theme="dark"] .filter-table .env-badge.sensitive) {
+	--badge-text: #fcd34d;
+	--badge-tint: #3a2508;
+}
 </style>

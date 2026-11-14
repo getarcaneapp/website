@@ -23,6 +23,9 @@ export default defineConfig({
 		]
 	},
 	vite: {
+		// The /api/* routes live in the Cloudflare Worker (src/worker.ts), which `astro dev`
+		// does not run. Forward them to production so live widgets work locally.
+		server: { proxy: { '/api': { target: site, changeOrigin: true } } },
 		plugins: [tailwindcss(), Icons({ compiler: 'svelte', autoInstall: false })],
 		build: {
 			rolldownOptions: {
@@ -68,6 +71,7 @@ export default defineConfig({
 				Footer: './src/components/overrides/Footer.astro',
 				MobileMenuFooter: './src/components/overrides/MobileMenuFooter.astro',
 				PageSidebar: './src/components/overrides/PageSidebar.astro',
+				Sidebar: './src/components/overrides/Sidebar.astro',
 				TwoColumnContent: './src/components/overrides/TwoColumnContent.astro'
 			},
 			expressiveCode: {

@@ -1,6 +1,6 @@
 ---
-import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { getCollection, render } from 'astro:content';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { SearchIcon } from '../lib/icons/index';
 
 const years = (await getCollection('changelog')).sort((a, b) => b.id.localeCompare(a.id));
@@ -23,285 +23,324 @@ const headings = rendered.flatMap(({ headings }) =>
 >
 	<div class="changelog-tools not-content" data-changelog-tools>
 		<label class="changelog-search">
-			<SearchIcon />
-			<input
-				type="search"
-				placeholder="Search releases, issues, or keywords"
-				aria-label="Search changelog"
-			/>
+			<SearchIcon aria-hidden="true" />
+			<span class="sr-only">Search changelog</span>
+			<input type="search" placeholder="Search versions, issue numbers, or keywords">
 		</label>
 		<div class="changelog-actions">
-			<button type="button" data-changelog-expand>
-				Expand all
-			</button>
-			<button type="button" data-changelog-collapse>
-				Collapse all
-			</button>
+			<button type="button" data-changelog-expand>Expand all</button>
+			<button type="button" data-changelog-collapse>Collapse all</button>
 		</div>
 	</div>
-	<p class="changelog-count" data-changelog-count role="status">
-		Showing {headings.length} of {headings.length} releases
-	</p>
+	<p class="changelog-count" data-changelog-count role="status">{headings.length} releases</p>
 
 	<div class="changelog" data-changelog>
-		{rendered.map(({ Content }) => (
-			<Content />
-		))}
+		{rendered.map(({ Content }) => <Content />)}
 	</div>
 
 	<div class="changelog-empty not-content" data-changelog-empty hidden>
 		<p>No releases match your search.</p>
-		<p>Try searching for a version number, issue id, or a keyword like "OIDC".</p>
+		<p>Try a version number, an issue number, or a keyword like "OIDC".</p>
 	</div>
 </StarlightPage>
 
 <script>
-	const STORAGE_KEY = 'collapsible-cards-expanded';
-	const root = document.querySelector<HTMLElement>('[data-changelog]');
-	const releases = [...(root?.querySelectorAll<HTMLDetailsElement>('[data-release]') ?? [])];
-	const idOf = (release: HTMLDetailsElement) => release.querySelector('h2')?.id ?? '';
+const STORAGE_KEY = 'collapsible-cards-expanded';
+const HIGHLIGHT = 'changelog-match';
+const MAX_HIGHLIGHTS = 1500;
 
-	const read = (): Record<string, boolean> => {
-		try {
-			return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-		} catch {
-			return {};
-		}
-	};
-	const save = () => {
-		const state: Record<string, boolean> = {};
-		for (const release of releases) state[idOf(release)] = release.open;
+const root = document.querySelector<HTMLElement>('[data-changelog]');
+const releases = [...(root?.querySelectorAll<HTMLDetailsElement>('[data-release]') ?? [])];
+const idOf = (release: HTMLDetailsElement) => release.querySelector('h2')?.id ?? '';
+
+const read = (): Record<string, boolean> => {
+	try {
+		return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+	} catch {
+		return {};
+	}
+};
+
+// Open state from before a search, restored when the query is cleared. Null when not searching.
+let beforeSearch: Map<HTMLDetailsElement, boolean> | null = null;
+
+const save = () => {
+	if (beforeSearch) return;
+	const state = Object.fromEntries(releases.map((release) => [idOf(release), release.open]));
+	try {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-	};
+	} catch {}
+};
 
-	const stored = read();
-	releases.forEach((release, index) => {
-		release.open = index === 0 || stored[idOf(release)] === true;
-		release.addEventListener('toggle', save);
-	});
+const stored = read();
+releases.forEach((release, index) => {
+	release.open = index === 0 || stored[idOf(release)] === true;
+	release.addEventListener('toggle', save);
+});
 
-	const openHash = () => {
-		const id = decodeURIComponent(location.hash.slice(1));
-		const target = id ? document.getElementById(id) : null;
-		const release = target?.closest<HTMLDetailsElement>('[data-release]');
-		if (release && !release.open) {
-			release.open = true;
-			requestAnimationFrame(() => target?.scrollIntoView());
+const setAll = (open: boolean) => {
+	for (const release of releases) if (!release.hidden) release.open = open;
+	save();
+};
+document.querySelector('[data-changelog-expand]')?.addEventListener('click', () => setAll(true));
+document.querySelector('[data-changelog-collapse]')?.addEventListener('click', () => setAll(false));
+
+// Table of contents entries (desktop and mobile) for each release, keyed by heading id.
+const tocItems = new Map<string, HTMLElement[]>();
+for (const link of document.querySelectorAll<HTMLAnchorElement>(
+	'starlight-toc a[href^="#"], mobile-starlight-toc a[href^="#"]'
+)) {
+	const id = decodeURIComponent(link.hash.slice(1));
+	const item = link.closest('li');
+	if (item) tocItems.set(id, [...(tocItems.get(id) ?? []), item]);
+}
+
+const highlights = 'highlights' in CSS ? CSS.highlights : undefined;
+const highlightMatches = (query: string, matched: HTMLDetailsElement[]) => {
+	if (!highlights) return;
+	highlights.delete(HIGHLIGHT);
+	if (!query) return;
+	const ranges: Range[] = [];
+	for (const release of matched) {
+		const walker = document.createTreeWalker(release, NodeFilter.SHOW_TEXT);
+		for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+			const text = (node.textContent ?? '').toLowerCase();
+			for (let at = text.indexOf(query); at !== -1; at = text.indexOf(query, at + query.length)) {
+				const range = new Range();
+				range.setStart(node, at);
+				range.setEnd(node, at + query.length);
+				ranges.push(range);
+				if (ranges.length >= MAX_HIGHLIGHTS) break;
+			}
+			if (ranges.length >= MAX_HIGHLIGHTS) break;
 		}
-	};
-	openHash();
-	window.addEventListener('hashchange', openHash);
+		if (ranges.length >= MAX_HIGHLIGHTS) break;
+	}
+	highlights.set(HIGHLIGHT, new Highlight(...ranges));
+};
 
-	const setAll = (open: boolean) => {
-		for (const release of releases) release.open = open;
-		save();
-	};
-	document.querySelector('[data-changelog-expand]')?.addEventListener('click', () => setAll(true));
-	document
-		.querySelector('[data-changelog-collapse]')
-		?.addEventListener('click', () => setAll(false));
+const input = document.querySelector<HTMLInputElement>('[data-changelog-tools] input');
+const count = document.querySelector('[data-changelog-count]');
+const empty = document.querySelector<HTMLElement>('[data-changelog-empty]');
+const searchText = releases.map((release) => (release.textContent ?? '').toLowerCase());
 
-	const input = document.querySelector<HTMLInputElement>('[data-changelog-tools] input');
-	const count = document.querySelector('[data-changelog-count]');
-	const empty = document.querySelector<HTMLElement>('[data-changelog-empty]');
-	const searchText = releases.map((release) => (release.textContent ?? '').toLowerCase());
-	input?.addEventListener('input', () => {
-		const query = input.value.trim().toLowerCase();
-		let shown = 0;
-		releases.forEach((release, index) => {
-			const match = !query || searchText[index].includes(query);
-			release.hidden = !match;
-			if (match) shown++;
-		});
-		if (count) count.textContent = `Showing ${shown} of ${releases.length} releases`;
-		if (empty) empty.hidden = shown > 0;
+const applySearch = () => {
+	const query = (input?.value ?? '').trim().toLowerCase();
+
+	if (query && !beforeSearch) {
+		beforeSearch = new Map(releases.map((release) => [release, release.open]));
+	}
+
+	const matched = releases.filter((release, index) => {
+		const match = !query || searchText[index].includes(query);
+		release.hidden = !match;
+		if (query && match) release.open = true;
+		for (const item of tocItems.get(idOf(release)) ?? []) item.hidden = !match;
+		return match;
 	});
+
+	if (!query && beforeSearch) {
+		const previous = beforeSearch;
+		beforeSearch = null;
+		for (const release of releases) release.open = previous.get(release) ?? release.open;
+	}
+
+	highlightMatches(query, matched);
+	if (count) {
+		count.textContent = query
+			? `${matched.length} of ${releases.length} releases match "${input?.value.trim()}"`
+			: `${releases.length} releases`;
+	}
+	if (empty) empty.hidden = matched.length > 0;
+};
+
+let searchTimer: ReturnType<typeof setTimeout> | undefined;
+input?.addEventListener('input', () => {
+	clearTimeout(searchTimer);
+	searchTimer = setTimeout(applySearch, 120);
+});
+
+const openHash = () => {
+	const id = decodeURIComponent(location.hash.slice(1));
+	const target = id ? document.getElementById(id) : null;
+	const release = target?.closest<HTMLDetailsElement>('[data-release]');
+	if (!release) return;
+	// A search can hide the target; clear it (restoring pre-search open state) so the link lands.
+	const wasHidden = release.hidden;
+	if (wasHidden && input) {
+		clearTimeout(searchTimer);
+		input.value = '';
+		applySearch();
+	}
+	if (wasHidden || !release.open) {
+		release.open = true;
+		requestAnimationFrame(() => target?.scrollIntoView());
+	}
+};
+openHash();
+window.addEventListener('hashchange', openHash);
 </script>
 
-<style>
-	.changelog-tools {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0.75rem;
-		border: 1px solid var(--surface-border);
-		border-radius: var(--sl-radius);
-	}
-	.changelog-search {
-		display: flex;
-		flex: 1 1 16rem;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--surface-border);
-		border-radius: 0.5rem;
-		color: var(--sl-color-gray-3);
-	}
-	.changelog-search :global(svg) {
-		width: 1rem;
-		height: 1rem;
-		flex-shrink: 0;
-	}
-	.changelog-search input {
-		width: 100%;
-		border: 0;
-		background: transparent;
-		color: var(--sl-color-white);
-		font: inherit;
-		outline: none;
-	}
-	.changelog-actions {
-		display: flex;
-		gap: 0.5rem;
-	}
-	.changelog-actions button {
-		height: 2rem;
-		padding: 0 0.75rem;
-		border: 1px solid var(--surface-border);
-		border-radius: 0.5rem;
-		background: transparent;
-		color: var(--sl-color-gray-2);
-		font: inherit;
-		font-size: var(--sl-text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
-	.changelog-actions button:hover {
-		background-color: var(--surface-muted);
-		color: var(--sl-color-white);
-	}
-	.changelog-count {
-		font-size: var(--sl-text-sm);
-		color: var(--sl-color-gray-3);
-	}
-	.changelog-empty {
-		padding: 1.5rem;
-		border: 1px dashed var(--surface-border);
-		border-radius: var(--sl-radius);
-		color: var(--sl-color-gray-3);
-	}
-	.changelog-empty p {
-		margin: 0;
-	}
+<style is:global>
+::highlight(changelog-match) {
+	background-color: color-mix(in oklch, var(--sl-color-accent), transparent 65%);
+	color: var(--sl-color-white);
+}
+</style>
 
-	.changelog :global(details.release) {
-		margin-top: 1.25rem;
-		padding: 0;
-		border: 1px solid var(--surface-border);
-		border-radius: var(--sl-radius);
-		background-color: var(--sl-color-black);
-		overflow: hidden;
-	}
-	.changelog :global(details.release[hidden]) {
-		display: none;
-	}
-	.changelog :global(.release-summary) {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		margin: 0;
-		padding: 0.875rem 1.25rem;
-		background-color: var(--surface-muted);
-		cursor: pointer;
-		list-style: none;
-	}
-	.changelog :global(.release-summary::-webkit-details-marker) {
-		display: none;
-	}
-	.changelog :global(.release-summary::after) {
-		content: '';
-		width: 0.5rem;
-		height: 0.5rem;
-		margin-inline-start: auto;
-		border-right: 2px solid var(--sl-color-gray-3);
-		border-bottom: 2px solid var(--sl-color-gray-3);
-		transform: rotate(45deg);
-		transition: transform 0.2s ease;
-	}
-	.changelog :global(details.release[open] > .release-summary) {
-		border-bottom: 1px solid var(--surface-border);
-	}
-	.changelog :global(details.release[open] > .release-summary::after) {
-		transform: rotate(-135deg);
-	}
-	.changelog :global(.release-summary :is(h2, .sl-heading-wrapper)) {
-		margin: 0;
-		padding: 0;
-		border: 0;
-		font-size: var(--sl-text-lg);
-		scroll-margin-top: calc(var(--sl-nav-height) + 2rem);
-	}
-	.changelog :global(.release-link) {
-		display: inline-flex;
-		align-items: center;
-		padding: 0.125rem 0.625rem;
-		border: 1px solid var(--surface-border);
-		border-radius: 999px;
-		background-color: var(--sl-color-black);
-		color: var(--sl-color-gray-2);
-		font-size: var(--sl-text-xs);
-		font-weight: 500;
-		text-decoration: none;
-	}
-	.changelog :global(.release-link:hover) {
-		color: var(--sl-color-white);
-		border-color: color-mix(in oklch, var(--sl-color-accent), transparent 50%);
-	}
-	.changelog :global(.release-notes) {
-		padding: 1rem 1.25rem 1.25rem;
-		overflow-wrap: anywhere;
-	}
-	@media (max-width: 40rem) {
-		.changelog :global(.release-summary) {
-			padding: 0.75rem 1rem;
-		}
-		.changelog :global(.release-notes) {
-			padding: 0.875rem 1rem 1rem;
-		}
-	}
-	.changelog :global(.release-notes > :first-child) {
-		margin-top: 0;
-	}
-	.changelog :global(.release-notes h3) {
-		display: inline-flex;
-		align-items: center;
-		width: fit-content;
-		margin-top: 1rem;
-		padding: 0.25rem 0.7rem;
-		border: 1px solid var(--surface-border);
-		border-radius: 0.375rem;
-		background-color: var(--surface-muted);
-		font-size: var(--sl-text-sm);
-		font-weight: 600;
-	}
-	.changelog :global(.release-notes h3[data-kind='features']) {
-		background-color: color-mix(in oklab, var(--primary) 10%, transparent);
-	}
-	.changelog :global(.release-notes h3[data-kind='fixes']) {
-		background-color: color-mix(in oklab, var(--chart-2) 10%, transparent);
-	}
-	.changelog :global(.release-notes h3[data-kind='deps']) {
-		background-color: color-mix(in oklab, var(--chart-4) 10%, transparent);
-	}
-	.changelog :global(.release-notes h3[data-kind='security']) {
-		background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
-	}
-	.changelog :global(.release-notes h3[data-kind='refactor']) {
-		background-color: color-mix(in oklab, var(--chart-5) 10%, transparent);
-	}
-	.changelog :global(.release-notes h3[data-kind='other']) {
-		background-color: color-mix(in oklab, var(--chart-3) 10%, transparent);
-	}
-	.changelog :global(.release-notes ul) {
-		margin-top: 0.5rem;
-		padding-inline-start: 1.25rem;
-	}
-	.changelog :global(.release-notes li) {
-		line-height: 1.55;
-		font-size: var(--sl-text-sm);
-	}
-	.changelog :global(.release-notes li + li) {
-		margin-top: 0.375rem;
-	}
+<style>
+.changelog-tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem 1rem;
+}
+.changelog-search {
+	display: flex;
+	flex: 1 1 16rem;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--sl-color-gray-3);
+	border-radius: 0.375rem;
+	color: var(--sl-color-gray-2);
+}
+.changelog-search:focus-within {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 2px;
+}
+.changelog-search :global(svg) {
+	width: 1rem;
+	height: 1rem;
+	flex-shrink: 0;
+}
+.changelog-search input {
+	width: 100%;
+	border: 0;
+	background: transparent;
+	color: var(--sl-color-white);
+	font: inherit;
+	outline: none;
+}
+/* The label draws the focus outline around the whole field. `:not([data-slot])` matches the
+   global focus rule's specificity in starlight.css so this one wins. */
+.changelog-search input:focus-visible:not([data-slot]) {
+	outline: none;
+}
+.changelog-search input::placeholder {
+	color: var(--sl-color-gray-3);
+	opacity: 1;
+}
+.changelog-actions {
+	display: flex;
+	gap: 1rem;
+}
+.changelog-actions button {
+	padding: 0.25rem 0;
+	border: 0;
+	border-radius: 0.125rem;
+	background: transparent;
+	color: var(--sl-color-text-accent);
+	font: inherit;
+	font-size: var(--sl-text-sm);
+	font-weight: 500;
+	cursor: pointer;
+}
+.changelog-actions button:hover {
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
+}
+.changelog-actions button:focus-visible {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 2px;
+}
+.changelog-count {
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-2);
+}
+.changelog-empty {
+	padding-block: 1rem;
+	color: var(--sl-color-gray-2);
+}
+.changelog-empty p {
+	margin: 0;
+}
+
+.changelog {
+	border-top: 1px solid var(--surface-border);
+}
+.changelog :global(details.release) {
+	margin: 0;
+	border-bottom: 1px solid var(--surface-border);
+}
+.changelog :global(details.release[hidden]) {
+	display: none;
+}
+.changelog :global(.release-summary) {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.25rem 1rem;
+	margin: 0;
+	padding: 1rem 0;
+	cursor: pointer;
+	list-style: none;
+}
+.changelog :global(.release-summary::-webkit-details-marker) {
+	display: none;
+}
+.changelog :global(.release-summary:focus-visible) {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 2px;
+	border-radius: 0.125rem;
+}
+/* One caret, on the left: Starlight's summary::before chevron, toned to match the docs collapsibles. */
+.changelog :global(.release-summary::before) {
+	--sl-details-marker-size: 1.125rem;
+	align-self: center;
+	margin-inline: 0 -0.375rem;
+	background-color: var(--sl-color-gray-3);
+}
+.changelog :global(.release-summary :is(h2, .sl-heading-wrapper)) {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: var(--sl-text-lg);
+	font-weight: 600;
+	scroll-margin-top: calc(var(--sl-nav-height) + 2rem);
+}
+.changelog :global(.release-link) {
+	color: var(--sl-color-text-accent);
+	font-size: var(--sl-text-sm);
+	text-underline-offset: 0.2em;
+}
+.changelog :global(.release-link:focus-visible) {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 2px;
+	border-radius: 0.125rem;
+}
+.changelog :global(.release-notes) {
+	padding: 0 0 1.5rem;
+	overflow-wrap: anywhere;
+}
+.changelog :global(.release-notes > :first-child) {
+	margin-top: 0;
+}
+.changelog :global(.release-notes h3) {
+	margin-top: 1.25rem;
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	color: var(--sl-color-white);
+}
+.changelog :global(.release-notes ul) {
+	margin-top: 0.5rem;
+	padding-inline-start: 1.25rem;
+}
+.changelog :global(.release-notes li) {
+	line-height: 1.55;
+	font-size: var(--sl-text-sm);
+}
+.changelog :global(.release-notes li + li) {
+	margin-top: 0.375rem;
+}
 </style>

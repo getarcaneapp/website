@@ -1,0 +1,40 @@
+---
+interface Props {
+	method: string;
+	path: string;
+}
+const { method, path } = Astro.props;
+// Split "/users/{userId}" into literal and {param} segments so params can be colored.
+const segments = `/api${path}`.split(/(\{[^}]+\})/).filter(Boolean);
+---
+
+<code class="endpoint-code">
+	<span class:list={['endpoint-method', `method-${method.toLowerCase()}`]}>{method}</span>
+	{segments.map((segment) =>
+		segment.startsWith('{') ? <span class="endpoint-param">{segment}</span> : segment
+	)}
+</code>
+
+<style>
+.endpoint-method {
+	margin-inline-end: 0.25rem;
+	font-weight: 700;
+}
+.method-get,
+.method-head {
+	color: var(--success);
+}
+.method-post {
+	color: var(--info);
+}
+.method-put,
+.method-patch {
+	color: var(--warning);
+}
+.method-delete {
+	color: var(--destructive);
+}
+.endpoint-param {
+	color: var(--sl-color-accent);
+}
+</style>

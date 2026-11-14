@@ -1,40 +1,78 @@
 ---
 import Default from '@astrojs/starlight/components/MobileMenuFooter.astro';
 import { DEMO_URL, mainNavItems } from '../../lib/config/docs';
+
+const path = Astro.url.pathname.replace(/\.html$/, '');
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+// Rendered above the docs tree on phones by the Sidebar override.
 ---
 
-<nav class="mobile-sections" aria-label="Sections">
-	{mainNavItems.map((item) => (
-		<a href={item.href}>{item.label}</a>
-	))}
-	<a href={DEMO_URL} target="_blank" rel="noopener" class="demo">
-		Try the Demo
-	</a>
-</nav>
-<Default />
+<div class="mobile-menu-top">
+	<nav class="mobile-sections" aria-label="Sections">
+		{mainNavItems.map((item) => (
+			<a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+				{item.label}
+			</a>
+		))}
+	</nav>
+	<div class="mobile-actions">
+		<a href={DEMO_URL} target="_blank" rel="noopener" class="demo">Try the Demo</a>
+		<Default />
+	</div>
+</div>
 
 <style>
-	.mobile-sections {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		padding-block: 1rem;
-		border-top: 1px solid var(--sl-color-hairline);
-	}
-	.mobile-sections a {
-		display: inline-flex;
-		align-items: center;
-		height: 2rem;
-		padding: 0 0.875rem;
-		border-radius: 999px;
-		background-color: var(--surface-muted);
-		color: var(--sl-color-gray-2);
-		font-size: var(--sl-text-sm);
-		font-weight: 500;
-		text-decoration: none;
-	}
-	.mobile-sections a.demo {
-		background-color: var(--sl-color-accent);
-		color: oklch(0.985 0 0);
-	}
+.mobile-menu-top {
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--sl-color-hairline);
+}
+.mobile-sections {
+	display: flex;
+	flex-direction: column;
+}
+.mobile-sections a {
+	padding: 0.5rem 0;
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-base);
+	font-weight: 500;
+	text-decoration: none;
+}
+.mobile-sections a:hover,
+.mobile-sections a[aria-current="page"] {
+	color: var(--sl-color-white);
+}
+.mobile-sections a[aria-current="page"] {
+	font-weight: 600;
+}
+.mobile-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: 0.75rem;
+}
+.mobile-actions a.demo {
+	display: inline-flex;
+	align-items: center;
+	height: 2.25rem;
+	padding: 0 1rem;
+	border-radius: 999px;
+	background-color: var(--button);
+	color: var(--button-foreground);
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	text-decoration: none;
+}
+.mobile-actions a.demo:hover {
+	background-color: var(--button-hover);
+}
+.mobile-actions :global(.mobile-preferences) {
+	flex: 1;
+	justify-content: flex-end;
+	border-top: 0;
+	padding: 0;
+}
+.mobile-actions :global(.social-icons) {
+	padding-block: 0;
+}
 </style>

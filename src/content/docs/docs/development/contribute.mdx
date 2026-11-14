@@ -3,9 +3,9 @@ title: Contributing to Arcane
 description: Set up the Arcane development environment and submit a pull request.
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-This page covers running Arcane locally for development and getting a change merged. The dev environment runs the frontend and backend in Docker with hot reload.
+Run Arcane locally and get your change merged. The dev environment runs the frontend and backend in Docker with hot reload.
 
 > [!IMPORTANT]
 > Using AI tools? Read the [AI Usage Policy](https://github.com/getarcaneapp/arcane/blob/main/AI_POLICY.md) before contributing. For project conventions, see [AGENTS.md](https://github.com/getarcaneapp/arcane/blob/main/AGENTS.md).
@@ -20,10 +20,9 @@ This page covers running Arcane locally for development and getting a change mer
 
 ## Set up the development environment
 
-You need:
+You need **Docker and Docker Compose**, [`just`](https://just.systems), and **[Vite+](https://viteplus.dev)** for the Node toolchain, formatting, linting, and pre-commit hooks outside Docker. Go checks also need Go and [golangci-lint](https://golangci-lint.run) on your machine.
 
-- **Docker and Docker Compose**
-- **[Vite+](https://viteplus.dev)** for the Node toolchain, formatting, linting, and pre-commit hooks when working outside Docker:
+Install Vite+:
 
 ```bash
 curl -fsSL https://vite.plus | bash
@@ -63,40 +62,38 @@ cd arcane
 
 2. Check Docker and the Compose config:
 
-```bash
-docker info
-docker compose version
-docker compose -f docker/compose.dev.yaml -p arcane-dev config
-```
+   ```bash
+   docker info
+   docker compose version
+   docker compose -f docker/compose.dev.yaml -p arcane-dev config
+   ```
 
-3. Start the development environment:
+3. Start the development environment. This starts both services with hot reload, installs dependencies inside Docker, and creates persistent storage for dev data.
 
-```bash
-./scripts/development/dev.sh start
-```
-
-This starts the frontend and backend with hot reload, installs dependencies inside Docker, and creates persistent storage for development data.
+   ```bash
+   ./scripts/development/dev.sh start
+   ```
 
 4. Confirm the stack is up:
 
-```bash
-./scripts/development/dev.sh status
-curl -f http://localhost:3000
-curl -f http://localhost:3552/api/health
-```
+   ```bash
+   ./scripts/development/dev.sh status
+   curl -f http://localhost:3000
+   curl -f http://localhost:3552/api/health
+   ```
 
-- **Frontend**: [http://localhost:3000](http://localhost:3000) (SvelteKit with HMR)
-- **Backend**: [http://localhost:3552](http://localhost:3552) (Go with Air hot reload)
+   - **Frontend**: [http://localhost:3000](http://localhost:3000) (SvelteKit with HMR)
+   - **Backend**: [http://localhost:3552](http://localhost:3552) (Go with Air hot reload)
 
 5. Enable the pre-commit hooks once, so format checks run on staged files:
 
-```bash
-vp hooks enable
-```
+   ```bash
+   vp hooks enable
+   ```
 
 ### Use VS Code (optional)
 
-Open the project root folder (`arcane/`) and install the recommended Docker, Go, and Svelte/TypeScript extensions. Use `Ctrl/Cmd+Shift+P` → **Tasks: Run Task** for Start, Stop, Restart, Rebuild, Logs, and Open Frontend. `Ctrl/Cmd+Shift+B` starts the environment. The **Clean** task removes the development containers and volumes, including their data.
+Open the project root (`arcane/`) and install the recommended Docker, Go, and Svelte/TypeScript extensions. Use `Ctrl/Cmd+Shift+P` → **Tasks: Run Task** for Start, Stop, Restart, Rebuild, Logs, and Open Frontend. `Ctrl/Cmd+Shift+B` starts the environment. The **Clean** task removes the development containers and volumes, including their data.
 
 ## Make a change
 
@@ -109,43 +106,35 @@ Open the project root folder (`arcane/`) and install the recommended Docker, Go,
 
 2. Edit code. Vite reloads the frontend and Air rebuilds and restarts the backend. Watch logs with `./scripts/development/dev.sh logs`, or `logs frontend` / `logs backend` for one service.
 
-3. Run the checks before you commit:
+3. Format, then lint:
 
-```bash
-vp fmt --check
-vp check
-docker compose -f docker/compose.dev.yaml exec backend go fmt ./...
-docker compose -f docker/compose.dev.yaml exec backend go vet ./...
-```
+   ```bash
+   just format all
+   just lint all
+   ```
 
-Frontend formatting and lint rules live in the root `vite.config.ts`. The backend also runs Go fmt and Go vet as part of Air hot reload.
+   Fix everything `just lint all` reports. Frontend formatting and lint rules live in the root `vite.config.ts`; Go rules live in `.golangci.yml`.
 
-4. Commit using **Conventional Commits**. Types are `feat`, `fix`, `docs`, `style`, `refactor`, `test`, and `chore`:
+4. Run the tests for what you changed, such as `just test backend` or `just test cli`.
 
-```bash
-git commit -m "feat: add user authentication"
-git commit -m "fix: resolve Docker volume mounting issue"
-```
+5. Commit using **Conventional Commits**. Types are `feat`, `fix`, `docs`, `style`, `refactor`, `test`, and `chore`:
+
+   ```bash
+   git commit -m "feat: add user authentication"
+   git commit -m "fix: resolve Docker volume mounting issue"
+   ```
 
 ## Open a pull request
 
-1. Keep it focused: one feature or fix per PR.
-2. Test that both frontend and backend work.
-3. Update the documentation if you change APIs or add features.
-4. Link issues with `Closes #123` or `Fixes #456`.
-5. Respond to review feedback.
-
-Before you submit, check that:
+Keep each PR to one feature or fix, link issues with `Closes #123` or `Fixes #456`, and respond to review feedback. Update the documentation if you change APIs or add features. Before you submit, check that:
 
 - [ ] The code builds in the development environment
-- [ ] Hot reload works for frontend and backend
+- [ ] Frontend and backend both run, and hot reload works for each
 - [ ] There are no lint errors
 - [ ] Commit messages follow the conventional format
 - [ ] The PR description explains the change and why it's needed
 
-## Reference
-
-### Dev script
+## Dev script reference
 
 ```bash
 ./scripts/development/dev.sh start
@@ -160,22 +149,47 @@ Before you submit, check that:
 
 Use `restart` after config changes and `rebuild` after dependency changes.
 
-### Justfile
+## Go modules
+
+The repository is a Go workspace (`go.work`) with three modules:
+
+| Directory  | Module path               |
+| ---------- | ------------------------- |
+| `backend/` | `getarcane.dev/arcane/v3` |
+| `cli/`     | `getarcane.dev/cli/v3`    |
+| `types/`   | `getarcane.dev/types/v3`  |
+
+Shared API types live in `types/`, imported as `getarcane.dev/types/v3`.
+
+## Database migrations
+
+Migrations are Goose Go files in `backend/internal/database/migrations`, one per schema change.
+
+1. Add `NNNNN_name.go`, numbered one past the latest file. Goose reads the version from the filename.
+2. Put raw SQL for SQLite and Postgres in top-level constants. Don't import GORM, domain packages, or `types/`.
+3. Register it in `init()` with `goose.AddMigrationContext(run(sqliteUp, postgresUp), run(sqliteDown, postgresDown))`. Pass the same constant twice when both dialects match.
+4. Add an up/down test in `backend/internal/database/database_test.go`.
+
+Version 94 is a baseline equal to Arcane v2.17.1. Older databases upgrade to v2.17.1 first.
+
+## Justfile reference
 
 `just --list` shows every target. Common ones:
 
-| Task                             | Command                                                                                 |
-| -------------------------------- | --------------------------------------------------------------------------------------- |
-| Start the Docker dev environment | `just dev docker`                                                                       |
-| Follow logs                      | `just dev logs`                                                                         |
-| Build the frontend or backend    | `just build single frontend`, `just build single backend`                               |
-| Run tests                        | `just test all`, `just test backend`                                                    |
-| Lint and format                  | `just lint frontend`, `just lint js`, `just format frontend`, `just format all --check` |
-| Install dependencies             | `just deps install all`                                                                 |
+| Task                                         | Command                                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------------------- |
+| Rebuild and start the Docker dev environment | `just dev docker`                                                               |
+| Follow Docker dev logs                       | `just dev logs`                                                                 |
+| Run frontend and backend without Docker      | `just dev all`                                                                  |
+| Run a local agent against a manager          | `ARCANE_AGENT_TOKEN=<token> just dev agent`                                     |
+| Build the frontend or backend                | `just build single frontend`, `just build single backend`                       |
+| Run tests                                    | `just test backend`, `just test cli`, `just test e2e`                           |
+| Format and lint                              | `just format all`, `just lint all`, `just format frontend`, `just lint backend` |
+| Install dependencies                         | `just deps install all`                                                         |
 
-### Checks inside the Docker dev environment
+## Run checks inside the Docker dev environment
 
 ```bash
-docker compose -f docker/compose.dev.yaml exec frontend pnpm check
-docker compose -f docker/compose.dev.yaml exec frontend pnpm format
+docker compose -f docker/compose.dev.yaml -p arcane-dev exec frontend vp -C frontend run check
+docker compose -f docker/compose.dev.yaml -p arcane-dev exec backend go vet ./...
 ```
