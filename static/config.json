@@ -195,7 +195,12 @@
     "VOLUME_WORKSPACE_MAX_FILE_SIZE_MB": "ARCANE_VOLUME_WORKSPACE_MAX_FILE_SIZE_MB",
     "VULNERABILITY_SCAN_ENABLED": "ARCANE_VULNERABILITY_SCAN_ENABLED",
     "VULNERABILITY_SCAN_INTERVAL": "ARCANE_VULNERABILITY_SCAN_INTERVAL",
-    "VULNERABILITY_THREAT_INTEL_ENABLED": "ARCANE_VULNERABILITY_THREAT_INTEL_ENABLED"
+    "VULNERABILITY_THREAT_INTEL_ENABLED": "ARCANE_VULNERABILITY_THREAT_INTEL_ENABLED",
+    "VULNERABILITY_UPDATE_GATE_ENABLED": "ARCANE_VULNERABILITY_UPDATE_GATE_ENABLED",
+    "VULNERABILITY_UPDATE_GATE_MAX_CRITICAL": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_CRITICAL",
+    "VULNERABILITY_UPDATE_GATE_MAX_HIGH": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_HIGH",
+    "VULNERABILITY_UPDATE_GATE_MAX_LOW": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_LOW",
+    "VULNERABILITY_UPDATE_GATE_MAX_MEDIUM": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_MEDIUM"
   },
   "envConfig": [
     {
@@ -2470,6 +2475,85 @@
       "public": false
     },
     {
+      "env": "ARCANE_VULNERABILITY_UPDATE_GATE_ENABLED",
+      "key": "vulnerabilityUpdateGateEnabled",
+      "type": "boolean",
+      "default": "false",
+      "scope": "environment",
+      "description": "Scan each updated image with Trivy and block the update when it exceeds the vulnerability limits",
+      "category": "security",
+      "requires": "ARCANE_FEATURE_VULNERABILITY_MANAGEMENT_ENABLED=true to have effect at runtime.",
+      "source": "settings.Settings",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.VulnerabilityUpdateGateEnabled",
+      "sensitive": false,
+      "public": false
+    },
+    {
+      "min": -1,
+      "env": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_CRITICAL",
+      "key": "vulnerabilityUpdateGateMaxCritical",
+      "type": "integer",
+      "default": "0",
+      "scope": "environment",
+      "description": "Highest number of critical vulnerabilities an update may contain (-1 = no limit)",
+      "category": "security",
+      "requires": "ARCANE_FEATURE_VULNERABILITY_MANAGEMENT_ENABLED=true and ARCANE_VULNERABILITY_UPDATE_GATE_ENABLED=true to have effect at runtime.",
+      "source": "settings.Settings",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.VulnerabilityUpdateGateMaxCritical",
+      "sensitive": false,
+      "public": false
+    },
+    {
+      "min": -1,
+      "env": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_HIGH",
+      "key": "vulnerabilityUpdateGateMaxHigh",
+      "type": "integer",
+      "default": "-1",
+      "scope": "environment",
+      "description": "Highest number of high vulnerabilities an update may contain (-1 = no limit)",
+      "category": "security",
+      "requires": "ARCANE_FEATURE_VULNERABILITY_MANAGEMENT_ENABLED=true and ARCANE_VULNERABILITY_UPDATE_GATE_ENABLED=true to have effect at runtime.",
+      "source": "settings.Settings",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.VulnerabilityUpdateGateMaxHigh",
+      "sensitive": false,
+      "public": false
+    },
+    {
+      "min": -1,
+      "env": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_LOW",
+      "key": "vulnerabilityUpdateGateMaxLow",
+      "type": "integer",
+      "default": "-1",
+      "scope": "environment",
+      "description": "Highest number of low vulnerabilities an update may contain (-1 = no limit)",
+      "category": "security",
+      "requires": "ARCANE_FEATURE_VULNERABILITY_MANAGEMENT_ENABLED=true and ARCANE_VULNERABILITY_UPDATE_GATE_ENABLED=true to have effect at runtime.",
+      "source": "settings.Settings",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.VulnerabilityUpdateGateMaxLow",
+      "sensitive": false,
+      "public": false
+    },
+    {
+      "min": -1,
+      "env": "ARCANE_VULNERABILITY_UPDATE_GATE_MAX_MEDIUM",
+      "key": "vulnerabilityUpdateGateMaxMedium",
+      "type": "integer",
+      "default": "-1",
+      "scope": "environment",
+      "description": "Highest number of medium vulnerabilities an update may contain (-1 = no limit)",
+      "category": "security",
+      "requires": "ARCANE_FEATURE_VULNERABILITY_MANAGEMENT_ENABLED=true and ARCANE_VULNERABILITY_UPDATE_GATE_ENABLED=true to have effect at runtime.",
+      "source": "settings.Settings",
+      "sourceFile": "backend/internal/settings/model.go",
+      "sourceSymbol": "settings.Settings.VulnerabilityUpdateGateMaxMedium",
+      "sensitive": false,
+      "public": false
+    },
+    {
       "env": "ARCANE_DISK_USAGE_PATH",
       "key": "diskUsagePath",
       "type": "text",
@@ -2828,10 +2912,8 @@
     }
   ],
   "retiredEnv": [
-    "ANALYTICS_DISABLED",
     "ARCANE_VOLUME_WORKSPACE_MAX_DEPTH",
     "JWT_SECRET",
-    "UPDATE_CHECK_DISABLED",
     "VOLUME_WORKSPACE_MAX_DEPTH"
   ],
   "schemaVersion": 2
