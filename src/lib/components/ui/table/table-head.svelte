@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { HTMLThAttributes } from 'svelte/elements';
-	import { cn, type WithElementRef } from '#lib/utils.js';
+import type { HTMLThAttributes } from 'svelte/elements';
+import { cn, type WithElementRef } from '#lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		inset = false,
-		children,
-		...restProps
-	}: WithElementRef<HTMLThAttributes> & {
-		/** Pads the first and last columns away from the table edge. */
-		inset?: boolean;
-	} = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	inset = false,
+	children,
+	...restProps
+}: WithElementRef<HTMLThAttributes> & {
+	/** Pads the first and last columns away from the table edge. */
+	inset?: boolean;
+} = $props();
 </script>
 
 <th

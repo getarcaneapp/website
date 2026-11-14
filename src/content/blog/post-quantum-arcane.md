@@ -1,10 +1,10 @@
 ---
-title: 'Post-quantum signatures in Arcane 2.10.0'
-description: 'Arcane 2.10.0 adds support for ML-DSA-87, the post-quantum signature algorithm standardized in NIST FIPS 204.'
+title: "Post-quantum signatures in Arcane 2.10.0"
+description: "Arcane 2.10.0 adds support for ML-DSA-87, the post-quantum signature algorithm standardized in NIST FIPS 204."
 date: 2026-08-31
 kind: update
 featured: true
-banner: 'Arcane 2.10.0 adds post-quantum ML-DSA-87 signatures.'
+banner: "Arcane 2.10.0 adds post-quantum ML-DSA-87 signatures."
 ---
 
 Arcane 2.10.0 brought in support for **ML-DSA-87**. That is the post quantum signature method from [NIST FIPS 204](https://csrc.nist.gov/pubs/fips/204/final). The release uses it for signing keys the system controls. Session tokens and fresh edge certificates now rely on it. Passkeys and federated logins can switch over too if the device or provider allows. Older methods stay around for compatibility.

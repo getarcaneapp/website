@@ -6,17 +6,17 @@ interface Props {
 	items: CommunityItem[];
 	emptyMessage?: string;
 }
-const { items, emptyMessage = 'Nothing here yet — check back soon.' } = Astro.props;
+const { items, emptyMessage = 'Nothing here yet. Check back soon.' } = Astro.props;
 ---
 
 {items.length ? (
-	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+	<ul class="border-t border-border">
 		{items.map((item) => (
-			<CommunityCard item={item} />
+			<li class="border-b border-border">
+				<CommunityCard item={item} />
+			</li>
 		))}
-	</div>
+	</ul>
 ) : (
-	<div class="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border py-16 text-center">
-		<p class="text-sm text-muted-foreground">{emptyMessage}</p>
-	</div>
+	<p class="text-sm text-muted-foreground">{emptyMessage}</p>
 )}

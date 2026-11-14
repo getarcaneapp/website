@@ -1,0 +1,16 @@
+---
+import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
+import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
+import MobileMenuFooter from './MobileMenuFooter.astro';
+
+const { sidebar } = Astro.locals.starlightRoute;
+---
+
+<!-- Site sections first so phone keyboard and reading order match the visual order. Hidden on desktop. -->
+<div class="md:sl-hidden">
+	<MobileMenuFooter />
+</div>
+
+<SidebarPersister>
+	<SidebarSublist sublist={sidebar} />
+</SidebarPersister>

@@ -1,0 +1,138 @@
+---
+title: "Roles & Permissions"
+description: "Control what users and API keys can do in Arcane with roles and role assignments."
+---
+
+import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
+
+Arcane checks a permission, such as `containers:start`, on every action. A role is a named set of permissions. Users get every permission granted by their assigned roles. There are no deny rules.
+
+## Assign a role
+
+<Tabs>
+<TabItem label="UI">
+
+1. Open **System → Users** and edit a user.
+2. Under **Role assignments**, pick a role per agent.
+3. Optional: add a **Global** assignment for org-wide permissions.
+4. Click **Save Changes**.
+
+</TabItem>
+<TabItem label="CLI and API">
+
+The API uses `GET` and `PUT /api/users/{userId}/roles`.
+
+```bash
+arcane-cli admin roles assignments <user-id>
+```
+
+```bash
+arcane-cli admin roles assign <user-id> --role role_deployer:<agent-id> --role role_viewer
+```
+
+`--role ""` clears every manual assignment.
+
+</TabItem>
+</Tabs>
+
+- An assignment grants one role to one user, globally or on one agent.
+- A global assignment applies on every agent.
+- Org-level permissions, such as `users:*` and `settings:*`, need a global assignment.
+- Viewing and changing assignments needs a global admin.
+- Saving replaces a user's manual assignments. Assignments from [OIDC role mappings](/docs/access/sso) are kept.
+
+## Create a custom role
+
+You need to be a global admin to create, edit, or delete roles. Deleting a role removes every assignment of it.
+
+<Tabs>
+<TabItem label="UI">
+
+1. Go to **System → Roles**.
+2. Create a role, or clone a built-in one.
+3. Pick its permissions and save.
+
+</TabItem>
+<TabItem label="CLI and API">
+
+Pass one `-p` per permission:
+
+```bash
+arcane-cli admin roles create --name "Log reader" -p containers:list -p containers:read -p containers:logs
+```
+
+The API endpoint is `POST /api/roles`.
+
+</TabItem>
+</Tabs>
+
+## Scope API keys
+
+<Steps>
+
+1. Go to **System → API Keys → Create API Key**.
+2. Set a name, description, and optional expiration.
+3. Under **Permissions**, pick the permissions the key holds. Keys created here get global grants.
+4. Save and copy the value. It's shown once.
+
+</Steps>
+
+To scope a grant to one agent, use the CLI. Add `:<agent-id>` to the permission:
+
+```bash
+arcane-cli admin api-keys create ci-deployer -p projects:deploy:2 -p containers:list:2
+```
+
+The API equivalent is `POST /api/apikeys` with `environmentId` set on each grant.
+
+A personal key from **Account → API keys → New key** carries no grants. It has the same permissions as your account.
+
+- A scoped key has its own permission grants, global or per agent.
+- A key never exceeds its owner's current access, checked on every request.
+- Removing an owner's assignment narrows their keys immediately.
+- You can't grant a key a permission you don't hold.
+
+## Built-in roles
+
+You can't edit or delete built-in roles; they change only when you upgrade Arcane. To start from one, clone it as a custom role.
+
+| Role                | ID                     | Grants                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Admin**           | `role_admin`           | Every permission (`*`), including permissions added in later releases.                                                                                                                                                                                                                                                                                                                                                             |
+| **Editor**          | `role_editor`          | Full Docker, Podman, GitOps, webhook, job, vulnerability, and activity management, plus templates and variables. Read-only on users, roles, API keys, federated credentials, settings, agent settings, registries, Git repositories, and S3 destinations. Can list, read, and sync agents, but not create, edit, delete, pair, or restart them. No Swarm init, join, leave, or unlock, no `system:upgrade`, no `gitops:lifecycle`. |
+| **No-Shell Editor** | `role_no_shell_editor` | Editor without `containers:exec`.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Deployer**        | `role_deployer`        | Everything Monitor has, plus read on registries, templates, and variables. Start, stop, restart, redeploy, kill, and pause containers. Deploy, stop, and restart projects. Pull, tag, and commit images. Check for **and apply** image updates. Container and Podman auto-update. Trigger GitOps syncs. Cancel activities. No create or delete, no settings, users, roles, or API keys.                                            |
+| **Monitor**         | `role_monitor`         | List and read, on agents: containers, projects, images, volumes, networks, Swarm, Podman (pods, Quadlets, secrets), image updates, vulnerabilities, and activities. Logs, events, and system info. No org-level pages, no actions.                                                                                                                                                                                                 |
+| **Viewer**          | `role_viewer`          | Everything Monitor has, plus read-only access to users, roles, API keys, federated credentials, settings, agent settings, registries, templates, variables, Git repositories, S3 destinations, and GitOps, and the webhook list.                                                                                                                                                                                                   |
+
+Podman permissions per built-in role:
+
+| Role                    | Podman permissions                                                                                                                                  |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Editor, No-Shell Editor | Every `podman`, `podman-pods`, `podman-quadlets`, `podman-secrets`, and `podman-kube` permission                                                    |
+| Deployer                | `podman:read`, `podman:autoupdate`, `podman-pods:list`/`read`, `podman-quadlets:list`/`read`/`start`/`stop`/`restart`, `podman-secrets:list`/`read` |
+| Monitor, Viewer         | `podman:read`, `podman-pods:list`/`read`, `podman-quadlets:list`/`read`, `podman-secrets:list`/`read`                                               |
+
+## Global admin
+
+- A global admin's global assignments cover every permission. Admin's `*` does this.
+- System backup routes and authentication settings need a global admin.
+- Arcane keeps at least one global admin.
+- Removing the last one fails with `At least one user must retain a global Admin role assignment`.
+- If nobody can sign in as an admin, see [Account Recovery](/docs/access/account-recovery).
+
+## Permission catalog
+
+`arcane-cli admin roles permissions` prints the catalog your server recognizes.
+
+See [Permissions](/docs/reference/permissions) for every permission, what it requires, and the endpoints that check it.
+
+### Special cases
+
+| Permission         | Notes                                                                                                                                                                                                                                |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `notifications:*`  | Org-level. Needs a global assignment to manage **System → Notifications**.                                                                                                                                                           |
+| `diagnostics:read` | Covers runtime diagnostics and the live backend log. `diagnostics:profile` adds pprof profiles and goroutine dumps. Only Admin has them by default.                                                                                  |
+| `gitops:lifecycle` | Only in Admin by default. Allows configuring GitOps pre-deploy hooks, which run code from the repository in a container before deployment.                                                                                           |
+| `gitops:backup`    | Gates **Back up to Git**. The shared sync routes need it in addition to the matching `gitops:*` permission when the sync is a backup.                                                                                                |
+| `volumes:*`        | For [Volume Workspace](/docs/docker/volumes#volume-workspace) writes: `volumes:upload` allows creating and editing files, `volumes:delete` allows deletion, both allow moves and renames, and `volumes:backup` allows file restores. |

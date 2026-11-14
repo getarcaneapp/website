@@ -1,139 +1,139 @@
 <script lang="ts">
-	import { AlertTriangleIcon, BoxIcon, CpuIcon, DownloadIcon } from '#lib/icons/index.js';
-	import * as Tabs from '#lib/components/ui/tabs/index.js';
-	import * as Table from '#lib/components/ui/table/index.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import type { SpdxDocument, DisplayPackage, SbomMetadata } from '#lib/types/sbom.type.js';
-	import { extractDisplayPackages } from '#lib/types/sbom.type.js';
+import { Badge } from '#lib/components/ui/badge/index.js';
+import { Button } from '#lib/components/ui/button/index.js';
+import * as Table from '#lib/components/ui/table/index.js';
+import * as Tabs from '#lib/components/ui/tabs/index.js';
+import { AlertTriangleIcon, BoxIcon, CpuIcon, DownloadIcon } from '#lib/icons/index.js';
+import type { SbomMetadata, SpdxDocument } from '#lib/types/sbom.type.js';
+import { extractDisplayPackages } from '#lib/types/sbom.type.js';
 
-	const archFiles = {
-		amd64: 'linux_amd64.spdx.json',
-		arm64: 'linux_arm64.spdx.json',
-		armv7: 'linux_armv7.spdx.json',
-		riscv64: 'linux_riscv64.spdx.json'
-	} as const;
+const archFiles = {
+	amd64: 'linux_amd64.spdx.json',
+	arm64: 'linux_arm64.spdx.json',
+	armv7: 'linux_armv7.spdx.json',
+	riscv64: 'linux_riscv64.spdx.json'
+} as const;
 
-	const archLabels = {
-		amd64: 'linux/amd64',
-		arm64: 'linux/arm64',
-		armv7: 'linux/arm/v7',
-		riscv64: 'linux/riscv64'
-	} as const;
+const archLabels = {
+	amd64: 'linux/amd64',
+	arm64: 'linux/arm64',
+	armv7: 'linux/arm/v7',
+	riscv64: 'linux/riscv64'
+} as const;
 
-	type Arch = keyof typeof archFiles;
+type Arch = keyof typeof archFiles;
 
-	const arches = Object.keys(archFiles) as Arch[];
+const arches = Object.keys(archFiles) as Arch[];
 
-	type ArchSboms = Record<Arch, SpdxDocument | null>;
+type ArchSboms = Record<Arch, SpdxDocument | null>;
 
-	interface SbomData {
-		metadata: SbomMetadata | null;
-		manager: ArchSboms;
-		agent: ArchSboms;
-	}
+interface SbomData {
+	metadata: SbomMetadata | null;
+	manager: ArchSboms;
+	agent: ArchSboms;
+}
 
-	function emptyArchSboms(): ArchSboms {
-		return { amd64: null, arm64: null, armv7: null, riscv64: null };
-	}
+function emptyArchSboms(): ArchSboms {
+	return { amd64: null, arm64: null, armv7: null, riscv64: null };
+}
 
-	let sbomData = $state<SbomData>({
-		metadata: null,
-		manager: emptyArchSboms(),
-		agent: emptyArchSboms()
-	});
+let sbomData = $state<SbomData>({
+	metadata: null,
+	manager: emptyArchSboms(),
+	agent: emptyArchSboms()
+});
 
-	let loading = $state(true);
-	let error = $state<string | null>(null);
+let loading = $state(true);
+let error = $state<string | null>(null);
 
-	let selectedImage = $state<'manager' | 'agent'>('manager');
-	let selectedArch = $state<Arch>('amd64');
-	let packageFilter = $state<'all' | 'go-module' | 'deb'>('all');
-	let searchQuery = $state('');
+let selectedImage = $state<'manager' | 'agent'>('manager');
+let selectedArch = $state<Arch>('amd64');
+let packageFilter = $state<'all' | 'go-module' | 'deb'>('all');
+let searchQuery = $state('');
 
-	const currentSbom = $derived(sbomData[selectedImage][selectedArch]);
-	const packages = $derived(currentSbom ? extractDisplayPackages(currentSbom) : []);
+const currentSbom = $derived(sbomData[selectedImage][selectedArch]);
+const packages = $derived(currentSbom ? extractDisplayPackages(currentSbom) : []);
 
-	const filteredPackages = $derived(
-		packages.filter((pkg) => {
-			const matchesFilter = packageFilter === 'all' || pkg.type === packageFilter;
-			const matchesSearch =
-				searchQuery === '' ||
-				pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				pkg.version.toLowerCase().includes(searchQuery.toLowerCase());
-			return matchesFilter && matchesSearch;
-		})
-	);
+const filteredPackages = $derived(
+	packages.filter((pkg) => {
+		const matchesFilter = packageFilter === 'all' || pkg.type === packageFilter;
+		const matchesSearch =
+			searchQuery === '' ||
+			pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			pkg.version.toLowerCase().includes(searchQuery.toLowerCase());
+		return matchesFilter && matchesSearch;
+	})
+);
 
-	const packageCounts = $derived({
-		total: packages.length,
-		goModules: packages.filter((p) => p.type === 'go-module').length,
-		debPackages: packages.filter((p) => p.type === 'deb').length
-	});
+const packageCounts = $derived({
+	total: packages.length,
+	goModules: packages.filter((p) => p.type === 'go-module').length,
+	debPackages: packages.filter((p) => p.type === 'deb').length
+});
 
-	async function loadSbomData() {
-		loading = true;
-		error = null;
+async function loadSbomData() {
+	loading = true;
+	error = null;
 
-		try {
-			// Load metadata first
-			const metaRes = await fetch('/sbom/metadata.json');
-			if (!metaRes.ok) {
-				throw new Error('SBOM data not available. Please check back later.');
-			}
-			sbomData.metadata = await metaRes.json();
-
-			// Load all SBOM files in parallel
-			await Promise.all(
-				(['manager', 'agent'] as const).flatMap((image) =>
-					arches.map(async (arch) => {
-						const res = await fetch(`/sbom/${image}/${archFiles[arch]}`);
-						sbomData[image][arch] = res.ok ? await res.json() : null;
-					})
-				)
-			);
-		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to load SBOM data';
-		} finally {
-			loading = false;
+	try {
+		// Load metadata first
+		const metaRes = await fetch('/sbom/metadata.json');
+		if (!metaRes.ok) {
+			throw new Error('SBOM data not available. Please check back later.');
 		}
-	}
+		sbomData.metadata = await metaRes.json();
 
-	$effect(() => {
-		loadSbomData();
-	});
-
-	function formatLicense(license: string): string {
-		if (license === 'NOASSERTION' || !license) return '—';
-		// Truncate long license strings
-		if (license.length > 50) {
-			return license.slice(0, 47) + '...';
-		}
-		return license;
+		// Load all SBOM files in parallel
+		await Promise.all(
+			(['manager', 'agent'] as const).flatMap((image) =>
+				arches.map(async (arch) => {
+					const res = await fetch(`/sbom/${image}/${archFiles[arch]}`);
+					sbomData[image][arch] = res.ok ? await res.json() : null;
+				})
+			)
+		);
+	} catch (e) {
+		error = e instanceof Error ? e.message : 'Failed to load SBOM data';
+	} finally {
+		loading = false;
 	}
+}
 
-	function getTypeColor(type: string): 'default' | 'secondary' | 'outline' {
-		switch (type) {
-			case 'go-module':
-				return 'default';
-			case 'deb':
-				return 'secondary';
-			default:
-				return 'outline';
-		}
-	}
+$effect(() => {
+	loadSbomData();
+});
 
-	function downloadSbom() {
-		if (!currentSbom) return;
-		const filename = `arcane-${selectedImage}-${selectedArch}.spdx.json`;
-		const blob = new Blob([JSON.stringify(currentSbom, null, 2)], { type: 'application/json' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = filename;
-		a.click();
-		URL.revokeObjectURL(url);
+function formatLicense(license: string): string {
+	if (license === 'NOASSERTION' || !license) return '—';
+	// Truncate long license strings
+	if (license.length > 50) {
+		return `${license.slice(0, 47)}...`;
 	}
+	return license;
+}
+
+function getTypeColor(type: string): 'default' | 'secondary' | 'outline' {
+	switch (type) {
+		case 'go-module':
+			return 'default';
+		case 'deb':
+			return 'secondary';
+		default:
+			return 'outline';
+	}
+}
+
+function downloadSbom() {
+	if (!currentSbom) return;
+	const filename = `arcane-${selectedImage}-${selectedArch}.spdx.json`;
+	const blob = new Blob([JSON.stringify(currentSbom, null, 2)], { type: 'application/json' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = filename;
+	a.click();
+	URL.revokeObjectURL(url);
+}
 </script>
 
 <div class="arcane-ui flex w-full flex-col gap-8">
@@ -166,7 +166,8 @@
 							{sbomData.metadata.version}
 						</Badge>
 						<span class="text-sm text-muted-foreground">
-							Updated {new Date(sbomData.metadata.updated).toLocaleDateString('en-US', {
+							Updated
+							{new Date(sbomData.metadata.updated).toLocaleDateString('en-US', {
 								year: 'numeric',
 								month: 'long',
 								day: 'numeric'
@@ -236,7 +237,7 @@
 					placeholder="Search packages..."
 					bind:value={searchQuery}
 					class="h-9.5 rounded-md border border-border bg-background px-3.5 text-sm text-foreground focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20 focus-visible:outline-none"
-				/>
+				>
 			</label>
 			<div class="grid gap-2">
 				<p class="text-xs font-medium text-muted-foreground">Package type</p>

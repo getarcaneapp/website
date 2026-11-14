@@ -1,11 +1,9 @@
 ---
-title: 'CLI Commands'
-description: 'Practical arcane-cli invocations for everyday tasks.'
+title: "CLI Commands"
+description: "Practical arcane-cli invocations for everyday tasks."
 ---
 
-The `arcane-cli` commands you'll use most often, grouped by task. For the full flag list run `arcane-cli <command> --help`, and for the complete command tree run `arcane-cli --help`.
-
-Set your server URL and sign in first. See [CLI Configuration](/docs/reference/cli/config).
+Find the `arcane-cli` commands you'll use most, grouped by task. First set your server URL and sign in (see [CLI Configuration](/docs/reference/cli/config)). Run `arcane-cli <command> --help` for all flags, or `arcane-cli --help` for the full command tree.
 
 ## Sign in
 
@@ -25,30 +23,38 @@ arcane-cli auth me
 arcane-cli auth logout
 ```
 
-For CI, use an API key or a federated credential instead of an interactive login — see [Federated Credentials](/docs/access/federated-credentials).
+For CI, use an API key or a federated credential instead. See [Federated Credentials](/docs/access/federated-credentials).
 
-## Choose an environment
+## Agents
 
-Most resource commands act on your default environment. Set it once:
+Commands cover every agent by default. Use `--agent` for only one:
 
 ```bash
-arcane-cli environments switch
+arcane-cli containers list --agent 2
 ```
 
-Or override it for a single command with `--env`:
+Changes without `--agent` ask for confirmation before they run on all agents. See [Work across agents](/docs/reference/cli/config#work-across-agents).
+
+List agents and check one is reachable:
 
 ```bash
-arcane-cli containers list --env 2
-```
-
-List environments and check one is reachable:
-
-```bash
-arcane-cli environments list
+arcane-cli agents list
 ```
 
 ```bash
-arcane-cli environments test 2
+arcane-cli agents test 2
+```
+
+Close an agent's tunnel so it reconnects. Needs `environments:restart`:
+
+```bash
+arcane-cli agents tunnel restart 2
+```
+
+Add an agent. The CLI prints a single-use enrollment token once, then the `docker run` and Compose commands to start the agent on the remote host:
+
+```bash
+arcane-cli agents create --name production
 ```
 
 ## Containers
@@ -65,7 +71,7 @@ arcane-cli containers get my-container
 arcane-cli containers restart my-container
 ```
 
-Show which containers have a newer image available:
+List containers with a newer image available:
 
 ```bash
 arcane-cli containers updates
@@ -83,8 +89,6 @@ arcane-cli containers update my-container
 arcane-cli projects list
 ```
 
-Bring a project up, or take it down:
-
 ```bash
 arcane-cli projects up my-project
 ```
@@ -100,7 +104,7 @@ arcane-cli projects redeploy my-project
 ```
 
 > [!TIP]
-> `projects up`, `projects redeploy`, and `projects pull` print the raw Docker output line by line as the operation runs, so you see the same thing you would from `docker compose` directly. These commands allow up to 30 minutes for large pulls and builds.
+> `projects up`, `projects redeploy`, and `projects pull` print raw Docker output line by line, as `docker compose` would. They allow up to 30 minutes for large pulls and builds.
 
 Remove a project and its resources:
 
@@ -110,6 +114,20 @@ arcane-cli projects destroy my-project
 
 > [!WARNING]
 > `destroy` removes the project's files from disk by default. Pass `--remove-files=false` to keep them. Volumes are kept unless you add `--remove-volumes`.
+
+## Variables
+
+Add a global variable for every agent, or pass `--agent <id>` once per agent to limit it. Without `--inject` it's only used for `${VAR}` substitution; see [Variables](/docs/docker/variables#substitution-or-injection):
+
+```bash
+arcane-cli variables create --key DOMAIN --value example.com
+```
+
+Push variables to every agent now, or show the last sync result with `--status`:
+
+```bash
+arcane-cli variables sync
+```
 
 ## Images and volumes
 
@@ -143,8 +161,6 @@ arcane-cli volumes usage my-volume
 arcane-cli gitops list
 ```
 
-Check a sync's state, then run it now:
-
 ```bash
 arcane-cli gitops status my-sync
 ```
@@ -153,9 +169,15 @@ arcane-cli gitops status my-sync
 arcane-cli gitops sync my-sync
 ```
 
+Add a Git repository. `--provider` (`github`, `gitlab`, `gitea`, or `bitbucket`) sets the link format for files and commits; leave it out to detect it from the URL. `repos update` takes the same flag.
+
+```bash
+arcane-cli repos create --name my-repo --url https://git.example.com/me/stacks.git --provider gitea
+```
+
 ## System
 
-Free up space across the environment:
+Free up space on every agent, or pass `--agent` for one:
 
 ```bash
 arcane-cli system prune
@@ -179,7 +201,7 @@ arcane-cli system convert "docker run -d -p 8080:80 nginx"
 
 ## Vulnerabilities
 
-Get an overview of scan results, or the full findings list:
+Get a summary or the full findings list, scan an image now, or show one image's findings:
 
 ```bash
 arcane-cli images vulnerabilities summary
@@ -188,8 +210,6 @@ arcane-cli images vulnerabilities summary
 ```bash
 arcane-cli images vulnerabilities list
 ```
-
-Scan an image now, or show one image's findings:
 
 ```bash
 arcane-cli images vulnerabilities scan nginx:latest
@@ -204,6 +224,36 @@ Silence a CVE you've reviewed (and list or undo ignores with `ignored` / `unigno
 ```bash
 arcane-cli images vulnerabilities ignore CVE-2026-1234
 ```
+
+## Users and access
+
+Set a user's role assignments. Add `:<agent-id>` to scope one to an agent:
+
+```bash
+arcane-cli admin roles assign <user-id> --role role_deployer:<agent-id>
+```
+
+List a user's assignments:
+
+```bash
+arcane-cli admin roles assignments <user-id>
+```
+
+Map an OIDC claim value to a role:
+
+```bash
+arcane-cli admin oidc create --claim docker-admins --role role_admin
+```
+
+Read the Event Log:
+
+```bash
+arcane-cli admin events list
+```
+
+- Custom roles: `admin roles list`, `get`, `create`, `update`, `delete`, `permissions`.
+- Assignments: `admin roles assign` and `assignments`.
+- See [Roles & Permissions](/docs/access/roles).
 
 ## System backups
 
@@ -223,9 +273,11 @@ arcane-cli admin backups restore <backup-id>
 
 There are also subcommands for retention policies (`policies`), the recovery key (`recovery`), uploading a local backup to S3 (`upload`), and finding S3 restore points not in the database (`discover`).
 
+These commands manage the manager's backups. Remote agent backups are managed under **System → Backups**.
+
 ## Podman
 
-These commands work on environments that run Podman. Check what the host supports first:
+These commands work on Podman agents; see [Podman Overview](/docs/podman/overview) for host requirements. Check what the host supports first:
 
 ```bash
 arcane-cli podman status
@@ -289,11 +341,7 @@ Run Podman auto-update. `--dry-run` needs Podman 6.2 or later:
 arcane-cli podman autoupdate --dry-run
 ```
 
-See [Podman Overview](/docs/podman/overview) for what each feature needs on the host.
-
 ## Activities and webhooks
-
-Follow what the server is doing:
 
 ```bash
 arcane-cli activities list
@@ -315,7 +363,7 @@ arcane-cli webhooks trigger <token>
 
 ## Updater
 
-Inspect the automatic updater and trigger a run:
+Inspect the automatic updater, trigger a run, and view history:
 
 ```bash
 arcane-cli updater status
@@ -329,7 +377,7 @@ arcane-cli updater run
 arcane-cli updater history
 ```
 
-History shows one row per resource — resource, type, status, whether the update was applied, and when it started. Use `--limit` (`-n`) to change how many entries you get back; the default is 50.
+History shows one row per resource: resource, type, status, whether the update was applied, and start time. `--limit` (`-n`) sets how many entries return; the default is 50.
 
 ## Update the CLI
 
@@ -347,19 +395,15 @@ To check release signatures before updating, turn on the [signature verification
 
 ## Diagnose problems and set up your shell
 
-Diagnose connectivity and configuration problems:
+Diagnose connectivity and configuration problems, install shell completion, or generate secrets and certificates for a new install:
 
 ```bash
 arcane-cli doctor
 ```
 
-Install shell completion:
-
 ```bash
 arcane-cli completion zsh
 ```
-
-Generate secrets and certificates for a new install:
 
 ```bash
 arcane-cli generate secret
@@ -367,20 +411,20 @@ arcane-cli generate secret
 
 ## Scripting
 
-Every command accepts `--output json` (or the shorthand `--json`), which makes the CLI easy to pair with `jq`:
+Every command accepts `--output json` (or `--json`), so you can pair it with `jq`:
 
 ```bash
 arcane-cli containers list --json | jq -r ".data[].name"
 ```
 
-In JSON mode, stdout carries exactly one JSON document. Status messages and progress go to stderr. List commands print the server's paginated response with `data` and `pagination`. Other commands print only the resource or result. `images pull`, `images build`, and the streaming `projects` commands print an array of the server's progress frames once the operation finishes.
+In JSON mode, stdout carries exactly one JSON document; status and progress go to stderr. List commands print the paginated response with `data` and `pagination`; others print only the resource or result. `images pull`, `images build`, and streaming `projects` commands print an array of progress frames when done.
 
-Commands that remove or reset resources ask for confirmation first. Add `--yes` to skip confirmation prompts in unattended scripts. On delete commands, `--force` skips the prompt too.
+Commands that remove or reset resources ask for confirmation. Add `--yes` to skip prompts in unattended scripts; on delete commands, `--force` also works.
 
 > [!IMPORTANT]
 > Without a terminal, or with `--json`, a prompt fails with `confirmation required: re-run with --yes` instead of waiting for input. Piping `y` into the command does not answer it.
 
-List commands are paginated. `--all` (`-a`) returns every item, ignoring pagination — it cannot be combined with `--limit` or `--start`:
+`--all` (`-a`) returns every item, ignoring pagination. It can't be combined with `--limit` or `--start`:
 
 ```bash
 arcane-cli containers list --all --json
@@ -391,11 +435,11 @@ arcane-cli containers list --all --json
 
 ## Renamed flags
 
-Some flags were renamed so they no longer clash with the global `--env`, `--config`, and `--output` flags, or to replace a separate off switch. The old names still work but print a deprecation warning, and they will be removed in v3. Update your scripts to the new names:
+Arcane 3.0 removed these old flag names, so scripts using them fail with `unknown flag`. They clashed with the global `--env` (now `--agent`), `--config`, and `--output` flags, or were separate off switches.
 
-| Command                                                                                                                                                                          | Old flag     | New flag              |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
-| `containers create`                                                                                                                                                              | `--env`      | `--env-var`, `-e`     |
-| `admin notifications settings set`                                                                                                                                               | `--config`   | `--provider-config`   |
-| `templates download`                                                                                                                                                             | `--output`   | `--output-file`, `-o` |
-| `environments create`, `environments update`, `registries create`, `registries update`, `templates registries update`, `admin federated update`, `admin backups policies update` | `--disabled` | `--enabled=false`     |
+| Command                                                                                                                                                                                        | Old flag     | New flag              |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
+| `containers create`                                                                                                                                                                            | `--env`      | `--env-var`, `-e`     |
+| `admin notifications settings set`                                                                                                                                                             | `--config`   | `--provider-config`   |
+| `templates download`                                                                                                                                                                           | `--output`   | `--output-file`, `-o` |
+| `agents create`, `agents update`, `registries create`, `registries update`, `templates registries update`, `admin federated create`, `admin federated update`, `admin backups policies update` | `--disabled` | `--enabled=false`     |

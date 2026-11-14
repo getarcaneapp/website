@@ -1,4 +1,4 @@
-import { getActiveFields, getAgentMode } from '#lib/config/instance-generator.js';
+import { getActiveFields } from '#lib/config/instance-generator.js';
 import type {
 	DeploymentTargetId,
 	FieldContext,
@@ -8,7 +8,6 @@ import type {
 } from '#lib/types/instance-generator.type.js';
 import {
 	buildSocketProxyService,
-	quoteYamlScalar,
 	SOCKET_PROXY_NETWORK,
 	type SocketProxyProvider
 } from './socket-proxy.js';
@@ -44,6 +43,44 @@ interface ComposeDocument {
 
 const generatedAt = new Date().toLocaleString();
 
+/** Characters a plain (unquoted) YAML scalar can hold without being misread. */
+const YAML_PLAIN = /^[A-Za-z0-9_./~][\w./~@%+=,:$()-]*$/;
+/** Plain scalars YAML would read as a number, sexagesimal, boolean, or null. */
+const YAML_AMBIGUOUS = /^(?:[\d:._+-]+|y|yes|n|no|true|false|on|off|null|~)$/i;
+
+/** Serializes a string as a YAML scalar, single-quoting it when plain YAML would misread it. */
+export function yamlScalar(value: string): string {
+	return YAML_PLAIN.test(value) && !value.endsWith(':') && !YAML_AMBIGUOUS.test(value)
+		? value
+		: `'${value.replaceAll("'", "''")}'`;
+}
+
+/** Serializes a Compose value: doubles `$` so Compose does not interpolate it, then YAML-quotes it. */
+export function composeScalar(value: string): string {
+	return yamlScalar(value.replaceAll('$', () => '$$'));
+}
+
+/** Escapes systemd specifiers (`%`) in a user-supplied Quadlet value. */
+function systemdLiteral(value: string): string {
+	return value.replaceAll('%', '%%');
+}
+
+/** Quotes a Quadlet value that holds whitespace, quotes, or backslashes. */
+function systemdQuote(value: string): string {
+	return /[\s"'\\]/.test(value) ? `"${value.replace(/[\\"]/g, (char) => `\\${char}`)}"` : value;
+}
+
+/** Formats a KEY=value entry for a .env file read by gotenv. */
+export function dotenvLine(entry: string): string {
+	const separator = entry.indexOf('=');
+	const value = entry.slice(separator + 1);
+	if (/^[\w./:@%+,~=-]*$/.test(value)) return entry;
+	const key = entry.slice(0, separator);
+	if (!value.includes("'")) return `${key}='${value}'`;
+	return `${key}="${value.replace(/[\\"$]/g, (char) => `\\${char}`)}"`;
+}
+
+/** Makes a new 32-byte hex secret. Call it from form state only, never while building output. */
 export function generateRandomKey(): string {
 	return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
 		byte.toString(16).padStart(2, '0')
@@ -53,6 +90,12 @@ export function generateRandomKey(): string {
 function getString(config: GeneratorValues, key: string, fallback: string): string {
 	const value = config[key];
 	return typeof value === 'string' && value.trim() ? value.trim() : fallback;
+}
+
+/** Reads a password, secret, token, or key exactly as typed. Blank values still fall back. */
+function getSecret(config: GeneratorValues, key: string, fallback: string): string {
+	const value = config[key];
+	return typeof value === 'string' && value.trim() ? value : fallback;
 }
 
 function getManagerImage(config: GeneratorValues): string {
@@ -73,11 +116,10 @@ function getEnvironmentEntry(field: GeneratorField, config: GeneratorValues): st
 	if (!field.includeInEnv || !field.envName) return null;
 
 	const value = config[field.key];
-	if (value === true) return `${field.envName}=true`;
+	if (value === true) return `${field.envName}=${field.envValue ?? 'true'}`;
 	if (typeof value !== 'string') return null;
 	if (field.type === 'select' && value === field.defaultValue) return null;
-	if (value.trim()) return `${field.envName}=${value.trim()}`;
-	if (field.canGenerate) return `${field.envName}=${generateRandomKey()}`;
+	if (value.trim()) return `${field.envName}=${field.type === 'password' ? value : value.trim()}`;
 	return null;
 }
 
@@ -89,14 +131,21 @@ function buildEnvironment(context: FieldContext): string[] {
 }
 
 function projectsEnvironment(projectsPath: string): string[] {
-	return projectsPath ? [`PROJECTS_DIRECTORY=${projectsPath}`] : [];
+	return projectsPath ? [`ARCANE_PROJECTS_DIRECTORY=${projectsPath}`] : [];
+}
+
+function tlsPaths(config: GeneratorValues): string[] {
+	if (config.enableTls !== true) return [];
+	return [getString(config, 'tlsCertFile', ''), getString(config, 'tlsKeyFile', '')].filter(
+		Boolean
+	);
 }
 
 function databaseSettings(config: GeneratorValues) {
 	return {
 		name: getString(config, 'dbName', 'arcane'),
 		user: getString(config, 'dbUser', 'arcane'),
-		password: getString(config, 'dbPassword', 'changeme'),
+		password: getSecret(config, 'dbPassword', 'changeme'),
 		port: getString(config, 'dbPort', '5432')
 	};
 }
@@ -111,9 +160,9 @@ function buildPostgresService(config: GeneratorValues): ComposeRecord {
 			`POSTGRES_DB=${database.name}`,
 			`POSTGRES_USER=${database.user}`,
 			`POSTGRES_PASSWORD=${database.password}`
-		],
+		].map(composeScalar),
 		volumes: ['postgres-data:/var/lib/postgresql/data'],
-		ports: [quoteYamlScalar(`${database.port}:5432`)]
+		ports: [composeScalar(`${database.port}:5432`)]
 	};
 }
 
@@ -133,7 +182,7 @@ function buildDockerCompose(config: GeneratorValues): ComposeDocument {
 	const arcane: ComposeRecord = {
 		image: getManagerImage(config),
 		container_name: 'arcane',
-		ports: [quoteYamlScalar(`${getString(config, 'port', '3552')}:3552`)],
+		ports: [composeScalar(`${getString(config, 'port', '3552')}:3552`)],
 		...(selinux && !useSocketProxy ? { security_opt: ['label:disable'] } : {}),
 		volumes: [
 			...(useSocketProxy
@@ -141,19 +190,23 @@ function buildDockerCompose(config: GeneratorValues): ComposeDocument {
 				: [`${getString(config, 'dockerSocket', '/var/run/docker.sock')}:/var/run/docker.sock`]),
 			`${dataVolume}:/app/data`,
 			...(projectsPath ? [`${projectsPath}:${projectsPath}${selinux ? ':z' : ''}`] : []),
+			...tlsPaths(config).map((path) => `${path}:${path}:ro${selinux ? ',z' : ''}`),
 			...(lxc ? ['/sys/fs/cgroup:/sys/fs/cgroup:ro'] : [])
-		],
+		].map(composeScalar),
 		environment: [
 			...buildEnvironment({ target: 'docker', config }),
 			...projectsEnvironment(projectsPath),
 			...(useSocketProxy ? ['DOCKER_HOST=tcp://docker-socket-proxy:2375'] : []),
 			...(useDatabase
 				? [
-						`DATABASE_URL=postgresql://${database.user}:${database.password}@postgres:5432/${database.name}`
+						`ARCANE_DATABASE_URL=postgresql://${encodeURIComponent(database.user)}:${encodeURIComponent(database.password)}@postgres:5432/${encodeURIComponent(database.name)}`
 					]
 				: [])
-		],
-		...(useSocketProxy ? { networks: [SOCKET_PROXY_NETWORK] } : {}),
+		].map(composeScalar),
+		// Joining arcane-internal drops Arcane off the default network, so rejoin it to reach postgres.
+		...(useSocketProxy
+			? { networks: [SOCKET_PROXY_NETWORK, ...(useDatabase ? ['default'] : [])] }
+			: {}),
 		...(dependsOn.length > 0 ? { depends_on: dependsOn } : {}),
 		...(lxc ? {} : { cgroup: 'host' }),
 		...(config.healthcheck === true ? { healthcheck: ARCANE_HEALTHCHECK } : {}),
@@ -169,7 +222,7 @@ function buildDockerCompose(config: GeneratorValues): ComposeDocument {
 			...(useDatabase ? { postgres: buildPostgresService(config) } : {})
 		},
 		volumes: {
-			[dataVolume]: useSocketProxy ? { name: dataVolume } : {},
+			[dataVolume]: useSocketProxy ? { name: composeScalar(dataVolume) } : {},
 			...(useDatabase ? { 'postgres-data': {} } : {})
 		},
 		networks: useSocketProxy
@@ -193,20 +246,21 @@ function buildPodmanCompose(
 	const arcane: ComposeRecord = {
 		image: getPodmanManagerImage(config),
 		container_name: 'arcane',
-		...(rootless && systemdAccess ? { user: quoteYamlScalar('0:0'), userns_mode: 'keep-id' } : {}),
-		ports: [quoteYamlScalar(`${getString(config, 'port', '3552')}:3552`)],
+		...(rootless && systemdAccess ? { user: yamlScalar('0:0'), userns_mode: 'keep-id' } : {}),
+		ports: [composeScalar(`${getString(config, 'port', '3552')}:3552`)],
 		volumes: [
 			`${socket}:/var/run/docker.sock`,
 			...(systemdAccess ? [`${bus}:${bus}`] : []),
 			`${dataVolume}:/app/data`,
-			...(projectsPath ? [`${projectsPath}:${projectsPath}`] : [])
-		],
+			...(projectsPath ? [`${projectsPath}:${projectsPath}`] : []),
+			...tlsPaths(config).map((path) => `${path}:${path}:ro`)
+		].map(composeScalar),
 		environment: [
 			...buildEnvironment({ target, config }),
 			...(rootless && systemdAccess ? [`DBUS_SESSION_BUS_ADDRESS=unix:path=${bus}`] : []),
 			...(!rootless && systemdAccess ? ['PUID=0', 'PGID=0'] : []),
 			...projectsEnvironment(projectsPath)
-		],
+		].map(composeScalar),
 		security_opt: ['label=disable'],
 		cgroup: 'host',
 		healthcheck: ARCANE_HEALTHCHECK,
@@ -220,30 +274,27 @@ function buildPodmanCompose(
 	};
 }
 
-function buildAgentCompose(
-	target: 'agent-direct' | 'agent-edge',
-	config: GeneratorValues
-): ComposeDocument {
-	const context = { target, config };
-	const edge = getAgentMode(context) === 'edge';
+function buildAgentCompose(config: GeneratorValues): ComposeDocument {
+	const context = { target: 'agent-container' as const, config };
 	const lxc = config.lxc === true;
 
 	const agent: ComposeRecord = {
 		image: AGENT_IMAGE,
-		container_name: edge ? 'arcane-edge-agent' : 'arcane-agent',
+		container_name: 'arcane-agent',
 		...(lxc ? { pid: 'host' } : {}),
-		...(edge ? {} : { ports: [quoteYamlScalar(`${getString(config, 'agentPort', '3553')}:3553`)] }),
-		environment: [...agentConnectionEnvironment(context), ...buildEnvironment(context)],
+		environment: [...agentConnectionEnvironment(context), ...buildEnvironment(context)].map(
+			composeScalar
+		),
 		volumes: [
 			`${getString(config, 'dockerSocket', '/var/run/docker.sock')}:/var/run/docker.sock`,
 			'arcane-data:/app/data',
 			...(lxc ? ['/proc:/proc'] : [])
-		],
+		].map(composeScalar),
 		restart: 'unless-stopped'
 	};
 
 	return {
-		services: { [edge ? 'arcane-edge-agent' : 'arcane-agent']: agent },
+		services: { 'arcane-agent': agent },
 		volumes: { 'arcane-data': {} },
 		networks: {}
 	};
@@ -251,19 +302,12 @@ function buildAgentCompose(
 
 function agentConnectionEnvironment(context: FieldContext): string[] {
 	const { config } = context;
-	const connection = [
-		`AGENT_TOKEN=${getString(config, 'agentToken', AGENT_TOKEN_PLACEHOLDER)}`,
-		`MANAGER_API_URL=${getString(config, 'managerUrl', MANAGER_URL_PLACEHOLDER)}`
+	return [
+		'ARCANE_AGENT=true',
+		`ARCANE_AGENT_TRANSPORT=${getString(config, 'agentTransport', 'auto')}`,
+		`ARCANE_AGENT_TOKEN=${getSecret(config, 'agentToken', AGENT_TOKEN_PLACEHOLDER)}`,
+		`ARCANE_MANAGER_API_URL=${getString(config, 'managerUrl', MANAGER_URL_PLACEHOLDER)}`
 	];
-
-	if (getAgentMode(context) === 'edge') {
-		return [
-			'EDGE_AGENT=true',
-			`EDGE_TRANSPORT=${getString(config, 'edgeTransport', 'poll')}`,
-			...connection
-		];
-	}
-	return ['AGENT_MODE=true', ...connection];
 }
 
 function appendYamlValue(lines: string[], key: string, value: unknown, indent: number): void {
@@ -291,7 +335,7 @@ function appendYamlSection(
 ): void {
 	lines.push(`${name}:`);
 	for (const [entryName, entryConfig] of Object.entries(section)) {
-		lines.push(`  ${entryName}:`);
+		lines.push(`  ${yamlScalar(entryName)}:`);
 		for (const [key, value] of Object.entries(entryConfig)) {
 			appendYamlValue(lines, key, value, 4);
 		}
@@ -328,10 +372,10 @@ function buildQuadlet(config: GeneratorValues): string {
 	const port = getString(config, 'port', '3552');
 	const projectsPath = getString(config, 'projectsHostPath', '');
 	const environment = [
-		...buildEnvironment({ target: 'podman-quadlet', config }),
-		'ENCRYPTION_KEY_FILE=/run/secrets/arcane-key',
+		...buildEnvironment({ target: 'podman-quadlet', config }).map(systemdLiteral),
+		'ARCANE_ENCRYPTION_KEY_FILE=/run/secrets/arcane-key',
 		...(systemdAccess ? ['DBUS_SESSION_BUS_ADDRESS=unix:path=%t/bus'] : []),
-		...projectsEnvironment(projectsPath)
+		...projectsEnvironment(projectsPath).map(systemdLiteral)
 	];
 
 	return [
@@ -350,14 +394,17 @@ function buildQuadlet(config: GeneratorValues): string {
 		'PodmanArgs=--cgroupns=host',
 		...(systemdAccess ? ['User=0:0', 'UserNS=keep-id'] : []),
 		'',
-		`PublishPort=${config.localOnly === true ? '127.0.0.1:' : ''}${port}:3552`,
+		`PublishPort=${config.localOnly === true ? '127.0.0.1:' : ''}${systemdLiteral(port)}:3552`,
 		'Volume=%t/podman/podman.sock:/var/run/docker.sock',
 		...(systemdAccess ? ['Volume=%t/bus:%t/bus'] : []),
-		`Volume=${getString(config, 'dataPath', 'arcane-data')}:/app/data`,
-		...(projectsPath ? [`Volume=${projectsPath}:${projectsPath}`] : []),
+		`Volume=${systemdLiteral(getString(config, 'dataPath', 'arcane-data'))}:/app/data`,
+		...(projectsPath
+			? [`Volume=${systemdLiteral(projectsPath)}:${systemdLiteral(projectsPath)}`]
+			: []),
+		...tlsPaths(config).map((path) => `Volume=${systemdLiteral(path)}:${systemdLiteral(path)}:ro`),
 		'Secret=arcane-encryption-key,type=mount,target=/run/secrets/arcane-key,mode=0444',
 		'',
-		...environment.map((entry) => `Environment=${entry}`),
+		...environment.map((entry) => `Environment=${systemdQuote(entry)}`),
 		'',
 		'HealthCmd=["./arcane","health","--timeout","2s"]',
 		'HealthInterval=10s',
@@ -382,6 +429,14 @@ const ENABLE_ROOTLESS_SOCKET: GeneratedFile = {
 	description: 'Lingering keeps your user services running without an interactive login.',
 	lang: 'bash',
 	code: ['systemctl --user enable --now podman.socket', 'loginctl enable-linger "$USER"'].join('\n')
+};
+
+const ENABLE_ROOTFUL_SOCKET: GeneratedFile = {
+	id: 'socket',
+	title: 'Enable the Podman socket',
+	description: 'Arcane talks to Podman through this socket at /run/podman/podman.sock.',
+	lang: 'bash',
+	code: 'sudo systemctl enable --now podman.socket'
 };
 
 function quadletFiles(config: GeneratorValues): GeneratedFile[] {
@@ -425,8 +480,6 @@ function quadletFiles(config: GeneratorValues): GeneratedFile[] {
 
 function agentBinaryFiles(config: GeneratorValues): GeneratedFile[] {
 	const context = { target: 'agent-binary' as const, config };
-	const direct = getAgentMode(context) === 'direct';
-	const listen = getString(config, 'listen', '');
 
 	return [
 		{
@@ -437,11 +490,11 @@ function agentBinaryFiles(config: GeneratorValues): GeneratedFile[] {
 			lang: 'dotenv',
 			code: [
 				...agentConnectionEnvironment(context),
-				'ENVIRONMENT=production',
-				...(direct ? [`PORT=${getString(config, 'agentPort', '3553')}`] : []),
-				...(direct && listen ? [`LISTEN=${listen}`] : []),
+				'ARCANE_ENVIRONMENT=production',
 				...buildEnvironment(context)
-			].join('\n')
+			]
+				.map(dotenvLine)
+				.join('\n')
 		},
 		{
 			id: 'start',
@@ -476,15 +529,15 @@ export function generateInstance(
 			];
 		case 'podman-rootful':
 			return [
+				ENABLE_ROOTFUL_SOCKET,
 				composeFile(buildPodmanCompose(target, config)),
 				startFile('sudo podman compose up -d')
 			];
 		case 'podman-quadlet':
 			return quadletFiles(config);
-		case 'agent-direct':
-		case 'agent-edge':
+		case 'agent-container':
 			return [
-				composeFile(buildAgentCompose(target, config)),
+				composeFile(buildAgentCompose(config)),
 				startFile('docker compose up -d', 'Start the agent')
 			];
 		case 'agent-binary':

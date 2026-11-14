@@ -1,10 +1,10 @@
 ---
-title: 'Arcane Mobile is on Android'
-description: 'The Arcane Mobile beta is now open to Android users through Google Play.'
+title: "Arcane Mobile is on Android"
+description: "The Arcane Mobile beta is now open to Android users through Google Play."
 date: 2026-10-18
 kind: news
 featured: true
-banner: 'Arcane Mobile is now in beta on Android.'
+banner: "Arcane Mobile is now in beta on Android."
 ---
 
 A lot of you have been asking about Android since the iOS beta came out. It's finally here.

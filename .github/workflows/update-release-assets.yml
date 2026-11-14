@@ -88,33 +88,6 @@ jobs:
           set -euo pipefail
           RELEASES_JSON="${{ steps.releases.outputs.releases_json }}" REPO="getarcaneapp/arcane" CHANGELOG_DIR="src/content/changelog" bash scripts/update-changelog.sh
 
-      - name: Checkout arcane repo
-        if: steps.check.outputs.do_sbom == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: getarcaneapp/arcane
-          ref: ${{ steps.check.outputs.version }}
-          path: arcane
-          fetch-depth: 1
-
-      - name: Set up Go
-        if: steps.check.outputs.do_sbom == 'true'
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version-file: arcane/go.mod
-
-      - name: Set up just
-        if: steps.check.outputs.do_sbom == 'true'
-        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
-
-      - name: Generate config.json
-        if: steps.check.outputs.do_sbom == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd arcane
-          just docs config ../static/config.json
-
       - name: Extract SBOMs from published images
         if: steps.check.outputs.do_sbom == 'true'
         shell: bash
@@ -124,9 +97,9 @@ jobs:
           mkdir -p static/sbom/manager static/sbom/agent
           for image in manager agent; do
             if [[ "$image" == "manager" ]]; then
-              ref="ghcr.io/getarcaneapp/arcane:$VERSION"
+              ref="ghcr.io/getarcaneapp/manager:$VERSION"
             else
-              ref="ghcr.io/getarcaneapp/arcane-headless:$VERSION"
+              ref="ghcr.io/getarcaneapp/agent:$VERSION"
             fi
             sboms=$(docker buildx imagetools inspect "$ref" --format '{{ json .SBOM }}')
             for spec in \
@@ -160,7 +133,7 @@ jobs:
             "updated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "images": {
               "manager": {
-                "name": "ghcr.io/getarcaneapp/arcane",
+                "name": "ghcr.io/getarcaneapp/manager",
                 "architectures": ["linux/amd64", "linux/arm64", "linux/arm/v7", "linux/riscv64"],
                 "sbomFiles": {
                   "amd64": "/sbom/manager/linux_amd64.spdx.json",
@@ -170,7 +143,7 @@ jobs:
                 }
               },
               "agent": {
-                "name": "ghcr.io/getarcaneapp/arcane-headless",
+                "name": "ghcr.io/getarcaneapp/agent",
                 "architectures": ["linux/amd64", "linux/arm64", "linux/arm/v7", "linux/riscv64"],
                 "sbomFiles": {
                   "amd64": "/sbom/agent/linux_amd64.spdx.json",
@@ -188,14 +161,36 @@ jobs:
           ls -la static/sbom/manager/
           ls -la static/sbom/agent/
 
-          # Clean up cloned repo
-          rm -rf arcane
+      - name: Checkout arcane main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: getarcaneapp/arcane
+          ref: main
+          path: arcane
+          fetch-depth: 1
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: arcane/backend/go.mod
+
+      - name: Set up just
+        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
+
+      - name: Generate config.json and permissions.json
+        working-directory: arcane
+        run: |
+          set -euo pipefail
+          just docs config ../static/config.json
+          just docs permissions ../static/permissions.json
+
+      - name: Clean up arcane checkout
+        run: rm -rf arcane
 
       - name: Check for changes
         id: changes
-        if: steps.check.outputs.skip_all != 'true'
         run: |
-          if [[ -n "$(git status --porcelain -- src/content/changelog/ static/config.json static/sbom/)" ]]; then
+          if [[ -n "$(git status --porcelain -- src/content/changelog/ static/config.json static/permissions.json static/sbom/)" ]]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
@@ -215,29 +210,31 @@ jobs:
 
       - name: Create pull request
         if: steps.changes.outputs.has_changes == 'true'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
-          committer: 'arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>'
-          author: 'arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>'
+          commit-message: "chore(release): update assets for ${{ steps.check.outputs.version }}"
+          committer: "arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>"
+          author: "arcane-github-automation[bot] <315613249+arcane-github-automation[bot]@users.noreply.github.com>"
           signoff: true
-          title: 'chore(release): update assets for ${{ steps.check.outputs.version }}'
+          title: "chore(release): update assets for ${{ steps.check.outputs.version }}"
           body: |
             Updates Arcane release assets for ${{ steps.check.outputs.version }}.
 
             ## Changes
             - Changelog entry (if new)
             - Generated `static/config.json` (if changed)
+            - Generated `static/permissions.json` (if changed)
             - SBOM files for manager and agent images (if new)
 
             ---
             *This PR was automatically generated.*
-          branch: 'chore/release-assets-${{ steps.check.outputs.version }}'
+          branch: "chore/release-assets-${{ steps.check.outputs.version }}"
           base: main
-          labels: 'docs(changelog),chore(config),chore(sbom)'
+          labels: "docs(changelog),chore(config),chore(sbom)"
           add-paths: |
             src/content/changelog/
             static/config.json
+            static/permissions.json
             static/sbom/
           delete-branch: true
