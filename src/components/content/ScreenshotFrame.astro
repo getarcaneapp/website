@@ -28,6 +28,10 @@ const pick = (theme: 'light' | 'dark') => {
 		);
 	return image.default;
 };
+// The docs column is 56rem (896px) wide. Offer that width at 1x, 1.5x, 2x, and 3x so the
+// browser never has to upscale a smaller file, which is what made screenshots look soft.
+const WIDTHS = [896, 1344, 1792, 2688];
+const SIZES = '(min-width: 50rem) 56rem, 100vw';
 const light = pick('light');
 const dark = pick('dark');
 const [lightFull, darkFull] = await Promise.all([
@@ -47,8 +51,8 @@ const [lightFull, darkFull] = await Promise.all([
 			<Image
 				src={light}
 				alt={alt}
-				widths={[768, 1536]}
-				sizes="(min-width: 50rem) 48rem, 100vw"
+				widths={WIDTHS}
+				sizes={SIZES}
 				loading={loading}
 				decoding={decoding}
 				class:list={['light-only', className]}
@@ -56,8 +60,8 @@ const [lightFull, darkFull] = await Promise.all([
 			<Image
 				src={dark}
 				alt={alt}
-				widths={[768, 1536]}
-				sizes="(min-width: 50rem) 48rem, 100vw"
+				widths={WIDTHS}
+				sizes={SIZES}
 				loading={loading}
 				decoding={decoding}
 				class:list={['dark-only', className]}

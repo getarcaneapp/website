@@ -4,7 +4,7 @@
 	--sl-text-h2: 1.5rem;
 	--sl-text-h3: 1.1875rem;
 	--sl-text-h4: 1.0625rem;
-	--prose-measure: 38rem;
+	--prose-measure: 46rem;
 	--sl-color-bg-inline-code: var(--surface-muted);
 	--sl-content-width: 56rem;
 	--sl-nav-height: 3.5rem;
@@ -46,7 +46,7 @@ body {
 
 site-search > button[data-open-modal] {
 	height: 2rem;
-	padding-inline: 0.75rem 0.5rem;
+	padding-inline: 0.75rem;
 	border: 1px solid var(--surface-border);
 	border-radius: 0.375rem;
 	background-color: var(--surface-muted);
@@ -63,13 +63,19 @@ site-search > button[data-open-modal]:hover {
 	background-color: var(--surface-raised);
 	color: var(--sl-color-white);
 }
+/* Shortcut hint as plain text. Starlight nests a <kbd> per key inside an outer <kbd>, so any
+   border or fill here draws a box inside a box. */
 site-search > button[data-open-modal] kbd {
-	border: 1px solid var(--surface-border);
-	border-radius: 0.25rem;
-	background-color: var(--surface-raised);
-	padding: 0.1rem 0.35rem;
-	font-size: 0.6875rem;
-	font-family: var(--font-mono);
+	align-items: center;
+	gap: 0.15em;
+	border: 0;
+	border-radius: 0;
+	background: none;
+	padding: 0;
+	/* Sans, not mono: the mono face draws the command symbol smaller than the letter. */
+	font-family: var(--font-sans);
+	font-size: 0.8125rem;
+	line-height: 1;
 	color: var(--sl-color-gray-3);
 }
 site-search dialog {
@@ -177,11 +183,11 @@ site-search dialog {
 	box-shadow: none;
 }
 :root {
-	--sidebar-hover: oklch(0.14 0 0);
+	--sidebar-hover: #1f1b2a;
 	--sidebar-shadow: none;
 }
 :root[data-theme="light"] {
-	--sidebar-hover: oklch(0.95 0 0);
+	--sidebar-hover: #f3f0fb;
 }
 :root[data-theme="light"] .sidebar-content a[aria-current="page"] {
 	color: var(--sl-color-accent);
@@ -255,9 +261,10 @@ site-search dialog {
 	}
 }
 
-/* Prose measure: 38rem keeps body text at ~70–80 characters per line (`ch` is the width of
-   "0", so 68ch ran past 100). Tables, code blocks, Steps, and screenshots keep the full width,
-   and so does any `.not-content` element, including its root. */
+/* Prose measure: 46rem gives about 90 characters per line. 38rem wrapped step text too early
+   next to the full-width code blocks, and lines full of inline code broke awkwardly. Tables,
+   code blocks, Steps, and screenshots keep the full width, and so does any `.not-content`
+   element, including its root. */
 .sl-markdown-content
 	:is(p, dl, blockquote, .starlight-aside, .sl-heading-wrapper, h2, h3, h4):not(
 		:where(.not-content, .not-content *, table *, .starlight-aside *, summary *)
@@ -297,14 +304,14 @@ site-search dialog {
 	color: var(--sl-color-white);
 }
 
-/* Callouts: no box. A 3px rule and a colored title carry the meaning.
-   Light titles are AA on white: note 6.7, tip 7.1, important 7.1, caution 7.1, danger 6.5. */
+/* Callouts: a quiet box with a 3px rule and a colored title.
+   Light titles stay AA on the box surface: note, tip, important, caution, danger are all above 5.5. */
 .starlight-aside {
-	border: 0;
+	border: 1px solid var(--surface-border);
 	border-inline-start: 3px solid var(--sl-color-asides-text-accent);
-	border-radius: 0;
-	background-color: transparent;
-	padding: 0.125rem 0 0.125rem 1rem;
+	border-radius: 0.5rem;
+	background-color: var(--surface-muted);
+	padding: 0.75rem 1rem;
 	color: var(--sl-color-gray-2);
 }
 .starlight-aside--note {
@@ -354,6 +361,13 @@ site-search dialog {
 	margin-top: 0.25rem;
 }
 
+/* Steps: more air between items, and taller lines so wrapped inline code does not collide. */
+.sl-markdown-content .sl-steps > li + li {
+	margin-top: 1.75rem;
+}
+.sl-markdown-content .sl-steps > li {
+	line-height: 1.8;
+}
 .sl-steps > li::before {
 	border-radius: 0.5rem;
 	background-color: var(--button);
@@ -374,14 +388,14 @@ site-search dialog {
 	font-size: var(--sl-text-sm);
 }
 .sl-markdown-content th:not(:where(.not-content *)) {
-	background: none;
+	background-color: var(--surface-muted);
 	font-weight: 600;
 	color: var(--sl-color-white);
 }
 .sl-markdown-content :is(th, td):not(:where(.not-content *)) {
 	border: 0;
 	border-bottom: 1px solid var(--sl-color-hairline);
-	padding: 0.65rem 1rem 0.65rem 0;
+	padding: 0.65rem 1rem;
 	/* `break-word`, not `anywhere`: `anywhere` lets a column shrink to one character, which
 	   squeezed short columns into "Wher/e" once a neighbour held a long sentence. */
 	overflow-wrap: break-word;
@@ -401,6 +415,8 @@ site-search dialog {
 }
 /* Added by `src/lib/markdown/tables.ts` around every Markdown table. */
 .sl-markdown-content .table-scroll {
+	border: 1px solid var(--surface-border);
+	border-radius: 0.5rem;
 	overflow-x: auto;
 	overscroll-behavior-x: contain;
 }
@@ -468,10 +484,11 @@ starlight-tabs [role="tab"][aria-selected="true"] {
 	--sl-mobile-toc-height: 3rem;
 	scroll-padding-top: calc(1.5rem + var(--sl-nav-height) + var(--sl-mobile-toc-height));
 }
+/* Solid, not translucent: a blurred see-through bar picked up a tint from the content
+   scrolling under it and no longer matched the page. */
 mobile-starlight-toc nav {
 	border-block: 0;
-	background-color: color-mix(in oklch, var(--sl-color-bg-nav), transparent 15%);
-	backdrop-filter: blur(16px);
+	background-color: var(--sl-color-bg-nav);
 }
 mobile-starlight-toc summary {
 	height: var(--sl-mobile-toc-height);
@@ -522,7 +539,7 @@ mobile-starlight-toc .dropdown a[aria-current="true"]::after {
 	background-color: var(--sl-color-accent);
 }
 
-/* Previous/next: plain text links under one rule. "Previous: <title>" / "Next: <title>". */
+/* Previous/next: two bordered links under one rule. "Previous: <title>" / "Next: <title>". */
 .pagination-links {
 	display: flex;
 	flex-direction: column;
@@ -541,11 +558,12 @@ mobile-starlight-toc .dropdown a[aria-current="true"]::after {
 	display: block;
 	width: auto;
 	flex: 0 1 auto;
-	padding: 0;
-	border: 0;
-	border-radius: 0;
-	background: none;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--surface-border);
+	border-radius: 0.5rem;
+	background-color: var(--surface-muted);
 	box-shadow: none;
+	transition: border-color 0.15s ease;
 	color: var(--sl-color-gray-3);
 	font-size: var(--sl-text-sm);
 	text-align: start;
@@ -560,6 +578,9 @@ mobile-starlight-toc .dropdown a[aria-current="true"]::after {
 		margin-inline-start: 0;
 		text-align: start;
 	}
+}
+.pagination-links a:hover {
+	border-color: var(--sl-color-gray-4);
 }
 .pagination-links a :is(svg, br) {
 	display: none;

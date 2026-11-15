@@ -4,6 +4,7 @@ import { Code } from 'astro:components';
 import Announcement from '../components/Announcement.astro';
 import CommunityPreview from '../components/community/CommunityPreview.astro';
 import RedditComments from '../components/community/RedditComments.astro';
+import ScreenshotFrame from '../components/content/ScreenshotFrame.astro';
 import { button } from '../components/landing/button';
 import Header from '../components/landing/Header.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -55,6 +56,25 @@ const focusRing =
 const sectionTitle = 'text-2xl font-semibold tracking-tight text-foreground md:text-3xl';
 
 const MOBILE_BETA_URL = '/docs/settings/mobile-app';
+
+const installSteps = [
+	{
+		title: 'Save the compose file',
+		description: 'Copy it from here, or build one with the Instance Generator.'
+	},
+	{
+		title: 'Run',
+		code: 'docker compose up -d',
+		description: 'One container and one volume for its data.'
+	},
+	{
+		title: 'Open port',
+		code: '3552',
+		description: 'Sign in and start managing.'
+	}
+];
+// Two-column tiles; with ten features they fill a three-column grid exactly.
+const WIDE_FEATURES = new Set(['Containers', 'Remote hosts']);
 ---
 
 <!doctype html>
@@ -155,6 +175,57 @@ const MOBILE_BETA_URL = '/docs/settings/mobile-app';
 					</p>
 				</div>
 
+				<div class="relative mx-auto w-full max-w-2xl lg:max-w-none [&_figure]:my-0">
+					<div
+						class="pointer-events-none absolute -inset-4 rounded-2xl glow-center opacity-40 light:opacity-60"
+						aria-hidden="true"
+					></div>
+					<div class="relative rounded-lg shadow-lg shadow-primary/5">
+						<ScreenshotFrame name="dashboard" alt="The Arcane dashboard" loading="eager" />
+					</div>
+				</div>
+			</section>
+
+			<!-- Full-bleed like the original layout, so the marquee fades out at the viewport edges. -->
+			<div class="relative ml-[calc(50%-50vw)] w-screen">
+				<RedditComments />
+			</div>
+
+			<section
+				class="grid grid-cols-1 items-start gap-10 border-t border-border py-16 lg:grid-cols-2 lg:gap-16"
+				aria-labelledby="install-title"
+			>
+				<div>
+					<h2 id="install-title" class={sectionTitle}>Running in one file</h2>
+					<p class="mt-2 text-muted-foreground">
+						Arcane is a single container. It uses the Docker socket you already have.
+					</p>
+					<ol class="mt-8 flex flex-col gap-5">
+						{installSteps.map((step, index) => (
+							<li class="flex gap-4">
+								<span
+									class="grid size-8 shrink-0 place-items-center rounded-md bg-button text-sm font-semibold text-button-foreground"
+									aria-hidden="true"
+								>
+									{index + 1}
+								</span>
+								<div>
+									<h3 class="text-base font-medium text-foreground">
+										{step.title}
+										{step.code && (
+											<>
+												{' '}
+												<code>{step.code}</code>
+											</>
+										)}
+									</h3>
+									<p class="mt-0.5 text-sm text-muted-foreground">{step.description}</p>
+								</div>
+							</li>
+						))}
+					</ol>
+				</div>
+
 				<div class="relative mx-auto w-full max-w-2xl lg:max-w-none">
 					<div
 						class="pointer-events-none absolute -inset-4 rounded-2xl glow-center opacity-40 light:opacity-60"
@@ -196,17 +267,19 @@ const MOBILE_BETA_URL = '/docs/settings/mobile-app';
 				</div>
 			</section>
 
-			<!-- Full-bleed like the original layout, so the marquee fades out at the viewport edges. -->
-			<div class="relative ml-[calc(50%-50vw)] w-screen">
-				<RedditComments />
-			</div>
-
 			<section class="border-t border-border py-16" aria-labelledby="features-title">
 				<h2 id="features-title" class={sectionTitle}>Everything you need to manage Docker</h2>
-				<ul class="mt-8 grid grid-cols-1 gap-x-12 md:grid-cols-2">
+				<ul class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 					{features.map((feature) => (
-						<li class="flex gap-3 border-b border-border py-4">
-							<feature.icon class="mt-1 size-4 shrink-0 text-primary" aria-hidden="true" />
+						<li
+							class:list={[
+								'flex flex-col gap-3 rounded-lg border border-border bg-card p-5',
+								WIDE_FEATURES.has(feature.title) && 'lg:col-span-2'
+							]}
+						>
+							<span class="grid size-9 place-items-center rounded-md bg-primary/15 text-primary">
+								<feature.icon class="size-4" aria-hidden="true" />
+							</span>
 							<div>
 								<h3 class="text-base font-medium text-foreground">{feature.title}</h3>
 								<p class="mt-0.5 text-sm text-muted-foreground">{feature.description}</p>
