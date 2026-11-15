@@ -20,9 +20,7 @@ jobs:
           fetch-depth: 1
 
       - name: Ensure origin remote
-        run: |
-          git remote get-url origin >/dev/null 2>&1 ||
-            git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+        run: git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git" || true
 
       - name: Fetch releases list
         id: releases
