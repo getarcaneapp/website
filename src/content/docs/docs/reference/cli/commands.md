@@ -411,7 +411,13 @@ Switch between the stable and next release channels:
 arcane-cli self-update channel next
 ```
 
-To check release signatures before updating, turn on the [signature verification preview](/docs/reference/cli/config#verify-self-update-signatures).
+`self-update` checks the release signature before it trusts any checksum. Every release signs its checksum file with the Arcane [cosign key](https://github.com/getarcaneapp/arcane/blob/main/cosign.pub) and records it in Sigstore's public transparency log. The CLI downloads the checksum file and its `.sigstore.json` bundle and confirms the file was signed with the Arcane key, is in the transparency log, and is unchanged. Only then does it check the binary against that checksum. The key is built in, so you don't need `cosign` installed.
+
+If verification fails, the update stops and your binary is unchanged; there's no fallback to an unverified update. Verification also runs with `--dry-run` and `--json`, and the JSON output reports `signatureVerified` and `bundleUrl`.
+
+The first update downloads Sigstore's trust data from `tuf-repo-cdn.sigstore.dev`. It's cached in `arcane-cli/sigstore` under your user cache directory (`~/.cache` on Linux, `~/Library/Caches` on macOS). Later updates use the cache, even offline, until the trust data expires; then the CLI must reach `tuf-repo-cdn.sigstore.dev` again.
+
+Releases before v1.18.0 are unsigned, so `self-update` can't install them. A signature proves Arcane published a release. It does not stop you from installing an older signed release, for example with `--version`.
 
 ## Diagnose problems and set up your shell
 

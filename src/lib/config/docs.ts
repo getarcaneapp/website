@@ -34,7 +34,6 @@ export const docSections: { label: string; items: SidebarItem[] }[] = [
 			doc('get-started/dashboard'),
 			doc('get-started/migrate-v3'),
 			doc('get-started/preview-builds'),
-			doc('get-started/preview-features'),
 			doc('get-started/downgrading')
 		]
 	},
