@@ -3,14 +3,14 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "sbom",
-  "documentNamespace": "https://anchore.com/syft/dir/sbom-7d869a99-2f52-496c-9f80-237962cec9c2",
+  "documentNamespace": "https://anchore.com/syft/dir/sbom-807302ba-1241-4557-ba54-11ef0f6ce297",
   "creationInfo": {
     "licenseListVersion": "3.28",
     "creators": [
       "Organization: Anchore, Inc",
       "Tool: syft-v1.51.0"
     ],
-    "created": "2026-11-14T22:13:10Z"
+    "created": "2026-11-15T17:08:49Z"
   },
   "packages": [
     {
@@ -8965,15 +8965,15 @@
     },
     {
       "name": "kit.getarcane.app",
-      "SPDXID": "SPDXRef-Package-go-module-kit.getarcane.app-61256bc060caf902",
-      "versionInfo": "v0.7.2",
+      "SPDXID": "SPDXRef-Package-go-module-kit.getarcane.app-d2310eade7f2694d",
+      "versionInfo": "v0.7.3",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "340fcbe90e6702ba93796485dc71c52d36c98266aa1a09d19969854fcf0ba074"
+          "checksumValue": "aaf12cbd7157a5af5b41f5097a856f603d2aa1580445f5033fd57c601710accc"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane-agent",
@@ -8984,21 +8984,21 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/kit.getarcane.app@v0.7.2"
+          "referenceLocator": "pkg:golang/kit.getarcane.app@v0.7.3"
         }
       ]
     },
     {
       "name": "kit.getarcane.app/acfs",
-      "SPDXID": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-1a9535f35b81c749",
-      "versionInfo": "v0.10.2",
+      "SPDXID": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-6b58f8b7f8c9b92f",
+      "versionInfo": "v0.10.3",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "af4202b18f9f1596f0a5677fdfd85fbb92e8692bbed14c58fe36572c03ba2c37"
+          "checksumValue": "cdbe76b92d4753354bb89723a5bae87c856cb46c71b613f85a152ca5f6eace11"
         }
       ],
       "sourceInfo": "acquired package info from go module information: /app/arcane-agent",
@@ -9009,7 +9009,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:golang/kit.getarcane.app/acfs@v0.10.2"
+          "referenceLocator": "pkg:golang/kit.getarcane.app/acfs@v0.10.3"
         }
       ]
     },
@@ -9652,7 +9652,7 @@
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "f6c445c6b855da30fdc91985df1570cf3c3d3a86e374f886bba70456bacdc8ae"
+          "checksumValue": "4756e2cef97791367e557511419b7f8fc2fad366fc6bc939a5b735cc52867a9c"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -31602,11 +31602,6 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-1a9535f35b81c749",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-k8s.io-utils-1bd54579029f6cf0",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
       "relationshipType": "DEPENDENCY_OF"
@@ -32012,11 +32007,6 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-61256bc060caf902",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
-      "relationshipType": "DEPENDENCY_OF"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-libtnb-sqlite-62aefabe8d897b52",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
       "relationshipType": "DEPENDENCY_OF"
@@ -32073,6 +32063,11 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-containerd-platforms-6b0599e14b221403",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-6b58f8b7f8c9b92f",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
       "relationshipType": "DEPENDENCY_OF"
     },
@@ -32657,6 +32652,11 @@
       "relationshipType": "DEPENDENCY_OF"
     },
     {
+      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-d2310eade7f2694d",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
+      "relationshipType": "DEPENDENCY_OF"
+    },
+    {
       "spdxElementId": "SPDXRef-Package-go-module-go.opentelemetry.io-otel-d3c8bc0aff7a3ef3",
       "relatedSpdxElement": "SPDXRef-Package-go-module-command-line-arguments-4b691f3cf8311ed3",
       "relationshipType": "DEPENDENCY_OF"
@@ -33056,12 +33056,6 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-sys-cgroup-191697922fc3382e",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-1a9535f35b81c749",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -33601,12 +33595,6 @@
       "comment": "evident-by: indicates the package's existence is evident by the given file"
     },
     {
-      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-61256bc060caf902",
-      "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
-      "relationshipType": "OTHER",
-      "comment": "evident-by: indicates the package's existence is evident by the given file"
-    },
-    {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-libtnb-sqlite-62aefabe8d897b52",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
       "relationshipType": "OTHER",
@@ -33692,6 +33680,12 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-containerd-platforms-6b0599e14b221403",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-6b58f8b7f8c9b92f",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -34430,6 +34424,12 @@
     },
     {
       "spdxElementId": "SPDXRef-Package-go-module-github.com-aquasecurity-go-version-d1989646698ee292",
+      "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
+      "relationshipType": "OTHER",
+      "comment": "evident-by: indicates the package's existence is evident by the given file"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-go-module-kit.getarcane.app-d2310eade7f2694d",
       "relatedSpdxElement": "SPDXRef-File-app-arcane-agent-65a7a96ed8cd613b",
       "relationshipType": "OTHER",
       "comment": "evident-by: indicates the package's existence is evident by the given file"
@@ -36096,12 +36096,12 @@
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-kit.getarcane.app-61256bc060caf902",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-kit.getarcane.app-d2310eade7f2694d",
       "relationshipType": "CONTAINS"
     },
     {
       "spdxElementId": "SPDXRef-DocumentRoot-Directory-sbom",
-      "relatedSpdxElement": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-1a9535f35b81c749",
+      "relatedSpdxElement": "SPDXRef-Package-go-module-kit.getarcane.app-acfs-6b58f8b7f8c9b92f",
       "relationshipType": "CONTAINS"
     },
     {
