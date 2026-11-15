@@ -3,7 +3,7 @@ title: "CLI Configuration"
 description: "Point arcane-cli at your server, sign in, and choose which agents a command covers."
 ---
 
-import { Badge, Steps } from "@astrojs/starlight/components";
+import { Steps } from "@astrojs/starlight/components";
 
 Set up `arcane-cli` once after you [install it](/docs/reference/cli/install). It keeps its server URL, credentials, and defaults in a YAML config file; change values with `arcane-cli config set <key> <value>`.
 
@@ -97,39 +97,6 @@ Prune, update checks, updater runs, settings and schedule updates, and similar c
 
 If your credentials can't list agents, for example an API key limited to one agent, the CLI stops with `these credentials cannot list agents; pass --agent <id> to choose one`.
 
-## Verify self-update signatures
-
-<Badge text="Preview" variant="caution" />
-
-> [!IMPORTANT]
-> Signature verification is a preview feature. Its behavior and output are subject to change at any time.
-
-Turn this preview on so `arcane-cli self-update` checks the release signature before it trusts any checksum. Every release signs its checksum file with the Arcane [cosign key](https://github.com/getarcaneapp/arcane/blob/main/cosign.pub) and records it in Sigstore's public transparency log.
-
-```bash
-arcane-cli config set previews.newSelfUpdater true
-arcane-cli self-update run
-```
-
-The CLI downloads the checksum file and its `.sigstore.json` bundle and confirms the file was signed with the Arcane key, is in the transparency log, and is unchanged. Only then does it check the binary against that checksum. The key is built in, so you don't need `cosign` installed.
-
-If verification fails, the update stops and your binary is unchanged; there's no fallback to an unverified update. Verification also runs with `--dry-run` and `--json`, and the JSON output reports `signatureVerified` and `bundleUrl`.
-
-### Network access and caching
-
-The first verified update downloads Sigstore's trust data from `tuf-repo-cdn.sigstore.dev`. It's cached in `arcane-cli/sigstore` under your user cache directory (`~/.cache` on Linux, `~/Library/Caches` on macOS). Later updates use the cache, even offline, until the trust data expires; then the CLI must reach `tuf-repo-cdn.sigstore.dev` again.
-
-### Older releases
-
-Releases before v1.18.0 are unsigned and can't be installed with this preview on. Turn it off first:
-
-```bash
-arcane-cli config set previews.newSelfUpdater false
-arcane-cli self-update --version v1.17.4
-```
-
-A signature proves Arcane published a release. It does not stop you from installing an older signed release, for example with `--version`.
-
 ## Reference
 
 ### Config file
@@ -141,8 +108,6 @@ arcane-cli config path
 ```
 
 ```yaml
-previews:
-  newSelfUpdater: false
 api_key: ""
 cli_update_channel: stable
 federated_audience: ""
