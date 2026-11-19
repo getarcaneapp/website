@@ -157,20 +157,20 @@ The CLI must be signed in first. See [CLI Configuration](/docs/reference/cli/con
 
 ### Environment variables
 
-| Variable                                | What it does                                                                                        |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `ARCANE_OIDC_ENABLED`                   | Turn on OIDC login. Default `false`.                                                                |
-| `ARCANE_OIDC_CLIENT_ID`                 | Client ID from your provider.                                                                       |
-| `ARCANE_OIDC_CLIENT_SECRET`             | Client secret from your provider.                                                                   |
-| `ARCANE_OIDC_ISSUER_URL`                | Provider issuer URL, such as `https://auth.example.com`. No trailing slash.                         |
-| `ARCANE_OIDC_SCOPES`                    | Scopes to request. Default `openid email profile`. Add `groups` for role mappings.                  |
-| `ARCANE_OIDC_GROUPS_CLAIM`              | Claim holding the user's groups. Default `groups`. Dotted paths work, such as `realm_access.roles`. |
-| `ARCANE_OIDC_ROLE_MAPPINGS`             | Claim-to-role mappings as a JSON array. Also `ARCANE_OIDC_ROLE_MAPPINGS_FILE`.                      |
+| Variable                                | What it does                                                                                                                 |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `ARCANE_OIDC_ENABLED`                   | Turn on OIDC login. Default `false`.                                                                                         |
+| `ARCANE_OIDC_CLIENT_ID`                 | Client ID from your provider.                                                                                                |
+| `ARCANE_OIDC_CLIENT_SECRET`             | Client secret from your provider.                                                                                            |
+| `ARCANE_OIDC_ISSUER_URL`                | Provider issuer URL, such as `https://auth.example.com`. No trailing slash.                                                  |
+| `ARCANE_OIDC_SCOPES`                    | Scopes to request. Default `openid email profile`. Add `groups` for role mappings.                                           |
+| `ARCANE_OIDC_GROUPS_CLAIM`              | Claim holding the user's groups. Default `groups`. Dotted paths work, such as `realm_access.roles`.                          |
+| `ARCANE_OIDC_ROLE_MAPPINGS`             | Claim-to-role mappings as a JSON array. Also `ARCANE_OIDC_ROLE_MAPPINGS_FILE`.                                               |
 | `ARCANE_OIDC_MERGE_ACCOUNTS`            | Link OIDC logins to existing local accounts by email. Default `false`. While on, no one can change a user's email in Arcane. |
-| `ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER` | Send users straight to the provider on login. Default `false`.                                      |
-| `ARCANE_OIDC_PROVIDER_NAME`             | Provider name shown on the login screen.                                                            |
-| `ARCANE_OIDC_PROVIDER_LOGO_URL`         | Provider logo URL shown on the login screen.                                                        |
-| `ARCANE_OIDC_SKIP_TLS_VERIFY`           | Skip TLS verification for the provider. Default `false`. Use with caution.                          |
+| `ARCANE_OIDC_AUTO_REDIRECT_TO_PROVIDER` | Send users straight to the provider on login. Default `false`.                                                               |
+| `ARCANE_OIDC_PROVIDER_NAME`             | Provider name shown on the login screen.                                                                                     |
+| `ARCANE_OIDC_PROVIDER_LOGO_URL`         | Provider logo URL shown on the login screen.                                                                                 |
+| `ARCANE_OIDC_SKIP_TLS_VERIFY`           | Skip TLS verification for the provider. Default `false`. Use with caution.                                                   |
 
 Register the exact redirect URI shown under **System → Authentication → Redirect URI Configuration**. Open that page at the address users sign in with, because the URI follows that address. Arcane builds it from the browser's `Origin` header, then `X-Forwarded-Host`/`X-Forwarded-Proto`, then `Host`, and only then `ARCANE_APP_URL`. Behind a proxy, the forwarded headers decide it. See [Reverse proxy](/docs/networking/reverse-proxy).
 

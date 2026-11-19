@@ -79,12 +79,12 @@ These apply to every user, under **System → Users**:
 
 Under **Logos and icons**, each image has **Upload** (**Replace** once set) and **Remove**. **Remove** restores the built-in image.
 
-| Image         | Accepted files                     | Where it shows                                        |
-| ------------- | ---------------------------------- | ----------------------------------------------------- |
-| **Icon mark** | PNG, JPEG, WebP, or SVG            | Collapsed sidebar, sign-in pages, and version dialog. |
-| **Full logo** | PNG, JPEG, WebP, or SVG            | Expanded sidebar.                                     |
-| **Favicon**   | PNG, SVG, or ICO                   | Browser tab.                                          |
-| **App icon**  | Square PNG, 512×512 to 4096×4096   | Installed app and home screen icons.                  |
+| Image         | Accepted files                   | Where it shows                                        |
+| ------------- | -------------------------------- | ----------------------------------------------------- |
+| **Icon mark** | PNG, JPEG, WebP, or SVG          | Collapsed sidebar, sign-in pages, and version dialog. |
+| **Full logo** | PNG, JPEG, WebP, or SVG          | Expanded sidebar.                                     |
+| **Favicon**   | PNG, SVG, or ICO                 | Browser tab.                                          |
+| **App icon**  | Square PNG, 512×512 to 4096×4096 | Installed app and home screen icons.                  |
 
 - Each file can be up to 2 MB.
 - Arcane resizes the **App icon** to every app icon size.

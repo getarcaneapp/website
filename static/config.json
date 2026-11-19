@@ -240,9 +240,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AdminStaticAPIKey",
-      "options": [
-        "file"
-      ],
+      "options": ["file"],
       "supportsFile": true,
       "conditional": false
     },
@@ -305,9 +303,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AgentMTLSMode",
-      "options": [
-        "toLower"
-      ],
+      "options": ["toLower"],
       "supportsFile": false,
       "conditional": false
     },
@@ -340,9 +336,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AgentToken",
-      "options": [
-        "file"
-      ],
+      "options": ["file"],
       "supportsFile": true,
       "conditional": false
     },
@@ -354,9 +348,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.AgentTransport",
-      "options": [
-        "toLower"
-      ],
+      "options": ["toLower"],
       "supportsFile": false,
       "conditional": false
     },
@@ -401,9 +393,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ApnsKeyAlgorithm",
-      "options": [
-        "toLower"
-      ],
+      "options": ["toLower"],
       "supportsFile": false,
       "conditional": false
     },
@@ -415,9 +405,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.ApnsRelayUrl",
-      "options": [
-        "trimTrailingSlash"
-      ],
+      "options": ["trimTrailingSlash"],
       "supportsFile": false,
       "conditional": false
     },
@@ -438,12 +426,8 @@
       "source": "config.BuildablesConfig",
       "sourceFile": "backend/internal/config/buildables_config.go",
       "sourceSymbol": "config.BuildablesConfig.AutoLoginPassword",
-      "options": [
-        "file"
-      ],
-      "buildTags": [
-        "buildables"
-      ],
+      "options": ["file"],
+      "buildTags": ["buildables"],
       "supportsFile": true,
       "conditional": true
     },
@@ -456,9 +440,7 @@
       "source": "config.BuildablesConfig",
       "sourceFile": "backend/internal/config/buildables_config.go",
       "sourceSymbol": "config.BuildablesConfig.AutoLoginUsername",
-      "buildTags": [
-        "buildables"
-      ],
+      "buildTags": ["buildables"],
       "supportsFile": false,
       "conditional": true
     },
@@ -481,9 +463,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DatabaseURL",
-      "options": [
-        "file"
-      ],
+      "options": ["file"],
       "supportsFile": true,
       "conditional": false
     },
@@ -505,9 +485,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.DefaultAdminPassword",
-      "options": [
-        "file"
-      ],
+      "options": ["file"],
       "supportsFile": true,
       "conditional": false
     },
@@ -540,9 +518,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.EncryptionKey",
-      "options": [
-        "file"
-      ],
+      "options": ["file"],
       "supportsFile": true,
       "conditional": false
     },
@@ -630,9 +606,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.LogLevel",
-      "options": [
-        "toLower"
-      ],
+      "options": ["toLower"],
       "supportsFile": false,
       "conditional": false
     },
@@ -653,9 +627,7 @@
       "source": "config.Config",
       "sourceFile": "backend/internal/config/config.go",
       "sourceSymbol": "config.Config.OidcRoleMappings",
-      "options": [
-        "file"
-      ],
+      "options": ["file"],
       "supportsFile": true,
       "conditional": false
     },
@@ -1546,10 +1518,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.BuildProvider",
-      "values": [
-        "local",
-        "depot"
-      ],
+      "values": ["local", "depot"],
       "sensitive": false,
       "public": false
     },
@@ -1633,11 +1602,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.DefaultDeployPullPolicy",
-      "values": [
-        "missing",
-        "always",
-        "never"
-      ],
+      "values": ["missing", "always", "never"],
       "sensitive": false,
       "public": false
     },
@@ -1667,12 +1632,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.PruneBuildCacheMode",
-      "values": [
-        "none",
-        "unused",
-        "all",
-        "olderThan"
-      ],
+      "values": ["none", "unused", "all", "olderThan"],
       "sensitive": false,
       "public": false
     },
@@ -1702,11 +1662,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.PruneContainerMode",
-      "values": [
-        "none",
-        "stopped",
-        "olderThan"
-      ],
+      "values": ["none", "stopped", "olderThan"],
       "sensitive": false,
       "public": false
     },
@@ -1736,12 +1692,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.PruneImageMode",
-      "values": [
-        "none",
-        "dangling",
-        "all",
-        "olderThan"
-      ],
+      "values": ["none", "dangling", "all", "olderThan"],
       "sensitive": false,
       "public": false
     },
@@ -1771,11 +1722,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.PruneNetworkMode",
-      "values": [
-        "none",
-        "unused",
-        "olderThan"
-      ],
+      "values": ["none", "unused", "olderThan"],
       "sensitive": false,
       "public": false
     },
@@ -1805,11 +1752,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.PruneVolumeMode",
-      "values": [
-        "none",
-        "anonymous",
-        "all"
-      ],
+      "values": ["none", "anonymous", "all"],
       "sensitive": false,
       "public": false
     },
@@ -1824,10 +1767,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.ToolsImageRegistry",
-      "values": [
-        "ghcr.io",
-        "docker.io"
-      ],
+      "values": ["ghcr.io", "docker.io"],
       "sensitive": false,
       "public": false
     },
@@ -1842,12 +1782,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.UpdateCheckRegistry",
-      "values": [
-        "auto",
-        "ghcr.io",
-        "docker.io",
-        "public.ecr.aws"
-      ],
+      "values": ["auto", "ghcr.io", "docker.io", "public.ecr.aws"],
       "sensitive": false,
       "public": false
     },
@@ -2126,12 +2061,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.GpuType",
-      "values": [
-        "auto",
-        "nvidia",
-        "amd",
-        "intel"
-      ],
+      "values": ["auto", "nvidia", "amd", "intel"],
       "sensitive": false,
       "public": false
     },
@@ -2565,10 +2495,7 @@
       "source": "settings.Settings",
       "sourceFile": "backend/internal/settings/model.go",
       "sourceSymbol": "settings.Settings.TrivyDbRegistry",
-      "values": [
-        "ghcr.io",
-        "docker.io"
-      ],
+      "values": ["ghcr.io", "docker.io"],
       "sensitive": false,
       "public": false
     },
@@ -3189,10 +3116,6 @@
       "public": false
     }
   ],
-  "retiredEnv": [
-    "ARCANE_VOLUME_WORKSPACE_MAX_DEPTH",
-    "JWT_SECRET",
-    "VOLUME_WORKSPACE_MAX_DEPTH"
-  ],
+  "retiredEnv": ["ARCANE_VOLUME_WORKSPACE_MAX_DEPTH", "JWT_SECRET", "VOLUME_WORKSPACE_MAX_DEPTH"],
   "schemaVersion": 2
 }

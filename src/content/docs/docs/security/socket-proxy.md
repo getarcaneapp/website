@@ -214,16 +214,16 @@ volumes:
 
 Tecnativa switches API sections with environment variables: `1` allows, `0` blocks.
 
-| Variable                                                            | Value | Why                                                                         |
-| ------------------------------------------------------------------- | ----- | --------------------------------------------------------------------------- |
-| `EVENTS`, `CONTAINERS`, `EXEC`, `IMAGES`, `NETWORKS`, `VOLUMES`     | `1`   | Watch Docker activity and manage containers, images, networks, and volumes. |
-| `POST`                                                              | `1`   | Create and change resources. Without it the proxy is read-only.             |
-| `DISTRIBUTION`                                                      | `1`   | Inspect images and check for image updates.                                 |
-| `PING`, `VERSION`, `INFO`                                           | `1`   | Health checks and Docker version and system info.                           |
-| `SYSTEM`                                                            | `1`   | Allow `/system/df`, which scheduled pruning requires.                       |
-| `AUTH`, `BUILD`, `COMMIT`, `GRPC`, `SESSION`                        | `1`   | Registry sign-in, image builds, and container commits.                      |
-| `CONFIGS`, `NODES`, `SECRETS`, `SERVICES`, `SWARM`, `TASKS`         | `0`   | Block Swarm.                                                                |
-| `PLUGINS`                                                           | `0`   | Block the plugin API, which Arcane doesn't use.                             |
+| Variable                                                        | Value | Why                                                                         |
+| --------------------------------------------------------------- | ----- | --------------------------------------------------------------------------- |
+| `EVENTS`, `CONTAINERS`, `EXEC`, `IMAGES`, `NETWORKS`, `VOLUMES` | `1`   | Watch Docker activity and manage containers, images, networks, and volumes. |
+| `POST`                                                          | `1`   | Create and change resources. Without it the proxy is read-only.             |
+| `DISTRIBUTION`                                                  | `1`   | Inspect images and check for image updates.                                 |
+| `PING`, `VERSION`, `INFO`                                       | `1`   | Health checks and Docker version and system info.                           |
+| `SYSTEM`                                                        | `1`   | Allow `/system/df`, which scheduled pruning requires.                       |
+| `AUTH`, `BUILD`, `COMMIT`, `GRPC`, `SESSION`                    | `1`   | Registry sign-in, image builds, and container commits.                      |
+| `CONFIGS`, `NODES`, `SECRETS`, `SERVICES`, `SWARM`, `TASKS`     | `0`   | Block Swarm.                                                                |
+| `PLUGINS`                                                       | `0`   | Block the plugin API, which Arcane doesn't use.                             |
 
 > [!NOTE]
 > Unlike the wollomatic allowlist, this blocks Swarm. To use Swarm through Tecnativa, set `SWARM`, `NODES`, `SERVICES`, `TASKS`, `SECRETS`, and `CONFIGS` to `1`.

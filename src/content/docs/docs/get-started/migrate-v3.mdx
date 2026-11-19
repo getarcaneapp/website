@@ -177,16 +177,16 @@ Lists, the dashboard, topology, Swarm, Security, Git Syncs, and Podman Auto Upda
 
 <Collapsible id="cli-changes" title="CLI changes" description="Removed flags and commands, and their replacements.">
 
-| Removed                                                                  | Use instead                              |
-| ------------------------------------------------------------------------ | ---------------------------------------- |
-| `environments` and its `environment`, `env`, `e` aliases                 | `agents`                                 |
-| `--env` on `containers create`                                           | `--env-var`                              |
-| `--config` on `admin notifications settings set`                         | `--provider-config`                      |
-| `--output` on `templates download`                                       | `--output-file`                          |
-| `--disabled`                                                             | `--enabled=false`                        |
-| `jwt_token` and `refresh_token` in the config file                       | `arcane-cli auth login`                  |
-| `default_environment`, `config set environment`, `environments switch`   | `--agent <id>` on each command           |
-| `--api-url`, `--access-token`, `--edge`, `--use-api-key` on agents       | Nothing. `agents create` needs `--name`. |
+| Removed                                                                | Use instead                              |
+| ---------------------------------------------------------------------- | ---------------------------------------- |
+| `environments` and its `environment`, `env`, `e` aliases               | `agents`                                 |
+| `--env` on `containers create`                                         | `--env-var`                              |
+| `--config` on `admin notifications settings set`                       | `--provider-config`                      |
+| `--output` on `templates download`                                     | `--output-file`                          |
+| `--disabled`                                                           | `--enabled=false`                        |
+| `jwt_token` and `refresh_token` in the config file                     | `arcane-cli auth login`                  |
+| `default_environment`, `config set environment`, `environments switch` | `--agent <id>` on each command           |
+| `--api-url`, `--access-token`, `--edge`, `--use-api-key` on agents     | Nothing. `agents create` needs `--name`. |
 
 Commands run across all agents by default. Mutating commands without `--agent` prompt for confirmation. See [CLI Configuration](/docs/reference/cli/config#work-across-agents).
 

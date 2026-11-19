@@ -100,11 +100,11 @@ Auto Heal restarts running containers whose Docker healthcheck reports `unhealth
 2. Under **Monitoring**, turn on **Auto-Heal**. It's off by default.
 3. Optional: change its schedule. The default checks every 5 minutes (`*/5 * * * *`).
 
-| Setting                      | Default | What it does                                                                                     |
-| ---------------------------- | ------- | ------------------------------------------------------------------------------------------------ |
+| Setting                      | Default | What it does                                                                                      |
+| ---------------------------- | ------- | ------------------------------------------------------------------------------------------------- |
 | **Max Restarts**             | 5       | Restarts allowed per container within the restart window. After that, Arcane skips the container. |
-| **Restart Window (minutes)** | 30      | How far back restarts are counted.                                                               |
-| **Excluded Containers**      | None    | Containers Auto Heal never restarts.                                                             |
+| **Restart Window (minutes)** | 30      | How far back restarts are counted.                                                                |
+| **Excluded Containers**      | None    | Containers Auto Heal never restarts.                                                              |
 
 Both numbers must be at least 1. Auto Heal also skips Arcane's own container, Arcane's helper containers, and Podman [Quadlet](/docs/podman/quadlets) containers, whose systemd `Restart=` policy handles recovery.
 
