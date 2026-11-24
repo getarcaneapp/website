@@ -5,6 +5,9 @@ description: "Limit what Arcane can do through the Docker socket by putting a pr
 
 A socket proxy is a small container that sits between Arcane and `/var/run/docker.sock`. It forwards only the Docker API routes you allow and blocks the rest.
 
+> [!TIP]
+> A Manager that only manages remote agents needs no socket, so no proxy either. See [Run the Manager without local Docker](/docs/remote/agents#run-the-manager-without-local-docker).
+
 ## What it does and does not protect
 
 - It filters **which API routes** Arcane can call. Blocked routes (for example plugins) fail.

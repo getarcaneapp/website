@@ -119,6 +119,39 @@ When the new agent enrolls, the agent gets a new agent key and the old agent dis
 
 To cut off an agent right away, turn off the **Enabled** switch in the agent header and save. Arcane closes the tunnel and rejects the agent key until you turn it back on. Deleting the agent also works.
 
+## Run the Manager without local Docker
+
+A Manager that only manages remote agents doesn't need the Docker socket. Set `ARCANE_LOCAL_DOCKER_ENABLED=false` and drop the socket mount:
+
+```yaml
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    container_name: arcane
+    restart: unless-stopped
+    ports:
+      - "3552:3552"
+    volumes:
+      - arcane-data:/app/data
+    environment:
+      - ARCANE_APP_URL=http://localhost:3552
+      - ARCANE_ENCRYPTION_KEY=<your-encryption-key>
+      - ARCANE_LOCAL_DOCKER_ENABLED=false
+
+volumes:
+  arcane-data:
+```
+
+Arcane then never talks to local Docker. The local agent (ID `0`) stays, because settings, permissions, and jobs are scoped to it. What changes for it:
+
+- The dashboard, resource lists, and create forms hide it. You still see it on **Agents** and under **Applying settings for**.
+- Its jobs are off: image polling, auto-update, auto-patch, vulnerability scans, scheduled prune, auto-heal, backups, Git syncs, and the health check.
+- System backups are unavailable. **System → Backups** says so and hides **Create**.
+- [**Update All**](#update-all-agents) skips the Manager. Update it yourself with `docker compose pull && docker compose up -d`.
+- Projects, Git syncs, and webhooks you created on it earlier stay in the database. Arcane hides them and doesn't run them.
+
+The variable defaults to `true`. Combining `false` with `ARCANE_AGENT=true` stops startup, since an agent needs its own Docker.
+
 ## Work across agents
 
 Arcane shows every agent you can read. Lists, the dashboard, the **Activity Center**, network topology, Swarm, Security, Git Syncs, and Podman pages combine them all, with an **Agent** column and filter. Row actions run in that row's agent; create forms have an **Agent** field. Lists and the dashboard update live when any agent changes. Detail pages carry the agent in the URL, like `/containers/<id>?env=2`, so shared links open the right host.
@@ -171,7 +204,7 @@ This upgrades Arcane itself on the Manager and every agent. It needs the `system
 3. Confirm in the **Update all agents** dialog.
 4. Watch each row for old and new versions, the current stage, and live logs.
 
-Agents update first, 4 at a time by default. Change that with **Parallel agent upgrades** (1–16) in the **Agents** settings. The Manager updates last and restarts only if its image changed. Offline agents are skipped.
+Agents update first, 4 at a time by default. Change that with **Parallel agent upgrades** (1–16) in the **Agents** settings. The Manager updates last and restarts only if its image changed. Offline agents are skipped. So is the Manager when it [runs without local Docker](#run-the-manager-without-local-docker).
 
 | Status                                      | Meaning                                                                  |
 | ------------------------------------------- | ------------------------------------------------------------------------ |
