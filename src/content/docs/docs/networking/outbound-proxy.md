@@ -15,6 +15,6 @@ Use this when your network reaches the internet only through a forward proxy. It
    | `HTTPS_PROXY` / `https_proxy` | Proxy for HTTPS requests.                        |
    | `NO_PROXY` / `no_proxy`       | Hosts and networks Arcane should reach directly. |
 
-2. Add local addresses and internal networks to `NO_PROXY`, so Arcane still reaches Docker, local registries, and other internal services.
-3. If your proxy inspects HTTPS traffic, install its CA certificate in the Arcane container.
-4. Allow outbound connections to registry hosts such as `registry-1.docker.io` and `index.docker.io`.
+2. Add local addresses and internal networks to `NO_PROXY` so Arcane can still reach Docker, local registries, and other internal services directly.
+3. If your proxy inspects HTTPS traffic, install its CA certificate inside the Arcane container.
+4. Make sure the proxy allows outbound connections to registry hosts like `registry-1.docker.io` and `index.docker.io`.

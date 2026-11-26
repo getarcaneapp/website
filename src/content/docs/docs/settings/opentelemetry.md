@@ -21,9 +21,7 @@ environment:
 
 Arcane sends OTLP over HTTP/protobuf to port `4318`. To use gRPC instead, set `OTEL_EXPORTER_OTLP_PROTOCOL=grpc` and point the endpoint at port `4317`. If your collector needs authentication, set `OTEL_EXPORTER_OTLP_HEADERS`, for example `authorization=Bearer <token>`.
 
-- Set the same variables on agents to collect their data.
-- Each install reports its own instance ID.
-- `arcane.mode` is `manager` or `agent`.
+Set the same variables on agents to collect their data as well. Each install reports its own instance ID, with `arcane.mode` set to either `manager` or `agent`.
 
 ## Run a collector
 
@@ -128,7 +126,7 @@ In Grafana, go to **Dashboards → New → Import**, enter dashboard ID `25894`,
 
 Database spans contain SQL without values. Authenticated API spans include the user's ID and username. URLs omit query strings; request bodies and credentials are never recorded.
 
-The manager's web UI reports as `arcane-frontend`: page loads and API calls as traces, navigation times and Web Vitals as metrics, JavaScript errors as logs. Each is sent only when that signal uses OTLP over HTTP, via Arcane at `/api/telemetry/*`, so the browser needn't reach your collector. Behind a reverse proxy, set [`ARCANE_TRUSTED_PROXIES`](/docs/networking/reverse-proxy#trust-the-proxy-with-arcane_trusted_proxies) so Arcane rate-limits this per browser instead of per proxy.
+The manager's web UI reports as `arcane-frontend`: page loads and API calls as traces, navigation times and Web Vitals as metrics, and JavaScript errors as logs. Each is sent only when that signal uses OTLP over HTTP, via Arcane at `/api/telemetry/*`, so the browser doesn't need direct access to your collector. Behind a reverse proxy, set [`ARCANE_TRUSTED_PROXIES`](/docs/networking/reverse-proxy#trust-the-proxy-with-arcane_trusted_proxies) so Arcane rate-limits this per browser instead of per proxy.
 
 ## Other settings
 

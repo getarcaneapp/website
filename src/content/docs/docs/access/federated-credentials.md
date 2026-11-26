@@ -3,7 +3,7 @@ title: "Federated Credentials"
 description: "Let CI/CD pipelines and automation sign in to Arcane with short-lived OIDC tokens instead of long-lived API keys."
 ---
 
-CI jobs exchange their platform's OIDC token for a short-lived Arcane token. The pipeline needs no Arcane password or API key.
+Federated credentials let CI jobs exchange their platform's OIDC token for a short-lived Arcane token, so your pipelines don't need to store an Arcane password or API key.
 
 > [!NOTE]
 > This is for machines. For human sign-in, see [OIDC Single Sign-On](/docs/access/sso).
@@ -112,9 +112,9 @@ Other clients can call `/api/auth/federated/token` using [OAuth 2.0 Token Exchan
 
 ## Security notes
 
-- Issued tokens are **short-lived** (15 minutes by default) and carry only the mapped role.
+- Issued tokens are short-lived (15 minutes by default) and only carry the mapped role.
 - Arcane verifies every token's signature against the issuer's published keys, so a workload can't forge another's identity.
-- Prefer **exact** subject matches; use wildcards only for scopes you deliberately trust.
-- **Disabling or deleting** a credential blocks new exchanges and revokes tokens it already issued.
+- Stick to **exact** subject matches whenever you can, and only use wildcards for scopes you deliberately trust.
+- Disabling or deleting a credential blocks new exchanges and immediately revokes any tokens it already issued.
 
 For roles and agent scopes, see [Roles & Permissions](/docs/access/roles).

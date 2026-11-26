@@ -8,7 +8,7 @@ description: "Keep containers and Compose projects on newer images without click
 1. Open **Settings → Automations** and pick the agent.
 2. Find the **Updates** section.
 3. Turn on **Image Update Watcher** and pick or enter a schedule.
-4. Turn on **Auto Update** and set its schedule. It needs **Image Update Watcher** on.
+4. Turn on **Auto Update** and set its schedule (requires **Image Update Watcher** to be on).
 5. Optional: set **Update Delay (hours)**. See [Delay new images](#delay-new-images).
 6. Optional: set **Auto Update Mode**:
    - **Exclude** (default): updates every container except the ones you list.
@@ -68,8 +68,7 @@ labels:
   - com.getarcaneapp.arcane.updater.delay=72
 ```
 
-- Compose values above `8760` or below `0` are rejected.
-- A label above `8760` is treated as `8760`.
+Compose values outside `0`–`8760` are rejected, while labels above `8760` are capped at `8760`.
 
 ## Apply updates by hand
 
@@ -130,10 +129,7 @@ This stops checks and notifications. It doesn't stop automatic installation. To 
 | `update-check=false`                     | No                       | Yes                    |
 | `updater=false` and `update-check=false` | No                       | No                     |
 
-- `x-arcane.update-check: false` sets the same label, for the whole project or one service.
-- An image is skipped only when every container using it opts out.
-- Images with no running container are always checked. Single-image checks from **Images** still work.
-- Older agents may still skip checks for containers with automatic updates disabled, until you upgrade them.
+You can also set `x-arcane.update-check: false` in Compose for a whole project or a single service. Arcane only skips an image when every container using it opts out. Images with no running containers are still checked, and manual single-image checks from **Images** always work. Older agents may still skip checks for containers with automatic updates disabled until you upgrade them.
 
 ### Set restart order and stop signal
 
@@ -152,10 +148,7 @@ services:
     container_name: redis
 ```
 
-- `depends-on` takes Docker container names, comma-separated. Compose service names don't work unless the container has that name, so the example sets `container_name`. Without it, Compose names containers like `myproject-db-1`; use that name instead.
-- When a container updates, Arcane also restarts the containers that depend on it, dependencies first.
-- Arcane also infers dependencies from legacy `links` and `network_mode: container:...`.
-- `stop-signal` sets the signal used to stop the container before recreating it.
+`depends-on` takes comma-separated Docker container names, not Compose service names. That's why the example sets `container_name`; without it, use the generated name like `myproject-db-1`. When a container updates, Arcane restarts any containers that depend on it, starting dependencies first. It also infers dependencies from legacy `links` and `network_mode: container:...`. Use `stop-signal` to choose the signal sent to stop the container before recreating it.
 
 ## How Arcane picks a new image
 
@@ -209,27 +202,18 @@ labels:
   com.getarcaneapp.arcane.updater.tag-pattern: '(?P<version>\d+\.\d+\.\d+)-alpine'
 ```
 
-All fields, precedence between labels, service fields, and project defaults, and how to clear inherited values: see [Updater behavior](/docs/reference/compose-labels#updater-behavior).
-
-- Checks use saved registry credentials.
-- Containers sharing an image can follow different ranges.
-- Changing an image or policy marks its previous result stale.
+For all available fields, precedence between labels, service fields, and project defaults, and how to clear inherited values, see [Updater behavior](/docs/reference/compose-labels#updater-behavior). Checks use your saved registry credentials, containers sharing an image can follow different ranges, and changing an image or policy marks its previous result stale.
 
 ## When Arcane checks for updates
 
-Arcane checks on the **Image Update Watcher** schedule, hourly by default.
+Arcane checks on the **Image Update Watcher** schedule, hourly by default. You can also turn on **Enable event-driven image checks** to trigger checks after local Docker image events, though it's off by default because the extra requests count toward registry rate limits. Keep the schedule enabled either way, since registry releases don't produce local events.
 
-- **Enable event-driven image checks** also checks after local Docker image events. It's off by default because extra requests can count toward registry rate limits.
-- Keep the schedule on even with event-driven checks. Registry releases don't cause local events.
-- Nearby triggers share one check, and checks never overlap. A manual check during one returns _an image update check is already in progress_.
-- Checks abandoned for more than two minutes are marked failed.
+Nearby triggers are coalesced into a single check, and checks never overlap (triggering a manual check during one returns _an image update check is already in progress_). Any check abandoned for more than two minutes is marked failed.
 
 ## How Compose projects are updated
 
-- Arcane groups updates by project and recreates only changed services.
-- A manual **Redeploy** pulls and recreates the whole project.
-- A tag update writes the new image reference into the Compose file before deploying, even if both tags resolve to the same image.
-- If an image tag comes from a variable in the project's `.env`, Arcane updates that variable in `.env` instead of rewriting `compose.yaml`, and updates any follower services that use the same variable.
-- The new reference stays in the file if deployment fails.
+Arcane groups updates by project and only recreates services that changed, whereas a manual **Redeploy** pulls and recreates the whole project.
+
+For tag updates, Arcane writes the new image reference into the Compose file before deploying, even if both tags resolve to the same image. If the tag comes from a variable in the project's `.env`, Arcane updates that variable in `.env` instead of rewriting `compose.yaml`, along with any follower services using the same variable. If deployment fails, the new reference stays in the file.
 
 Tag updates can only edit a single Compose file with explicit `image:` fields. Update these at their source instead: git-synced projects, multi-file setups, `include`, `extends`, YAML anchors or aliases, and symlinked files. Digest updates work for all of them.

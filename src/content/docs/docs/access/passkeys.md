@@ -8,7 +8,7 @@ A passkey signs you in with your phone, computer, or hardware key. Use it for:
 - **Passwordless sign-in:** select **Passkey** on the login page and follow your device's prompt.
 - **Passkey MFA:** sign in with your password or OIDC provider, then confirm with a passkey.
 
-Registering a passkey does not turn on MFA. That's a separate switch.
+Registering a passkey doesn't turn on MFA automatically; that's a separate switch.
 
 ## Before you start
 
@@ -27,14 +27,14 @@ Over plain HTTP, Arcane shows _"Passkeys require a supported browser and a secur
 3. Name it something recognizable, usually its device.
 4. Complete your browser or OS prompt.
 
-The list shows each passkey's name and last use; rename or delete them there.
+Once added, each passkey appears in the list with its name and last-used time, where you can rename or delete it.
 
 Passkeys come in two kinds:
 
 - **Synced:** stored in a password manager or platform account (for example iCloud Keychain or Google Password Manager). It follows you to your other signed-in devices.
 - **Device-bound:** stays on one device, such as a hardware security key. Lose the device and you lose the passkey.
 
-Keep a second way in either way: register a second passkey, keep your password, or save your recovery codes when you turn on MFA. Arcane prefers post-quantum ML-DSA keys when your authenticator supports them, otherwise classical algorithms.
+Either way, it's a good idea to keep a backup method: register a second passkey, keep your password, or save your recovery codes when you turn on MFA. Arcane prefers post-quantum ML-DSA keys when your authenticator supports them, and falls back to classical algorithms otherwise.
 
 ## Turn on passkey MFA
 

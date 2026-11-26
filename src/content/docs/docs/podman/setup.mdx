@@ -5,7 +5,7 @@ description: "Run Arcane on rootless or rootful Podman with Podman Compose or a 
 
 import { Steps, TabItem, Tabs } from "@astrojs/starlight/components";
 
-Arcane connects through Podman's Docker-compatible API socket. With a rootless user's socket, Arcane and every container it creates stay rootless. Arcane detects Podman on its own and adds a **Podman** section. See [Podman Overview](/docs/podman/overview).
+Arcane talks to Podman through its Docker-compatible API socket. Point it at a rootless user's socket, and Arcane and every container it creates stay rootless. Arcane detects Podman automatically and adds a **Podman** section to the sidebar (see [Podman Overview](/docs/podman/overview)).
 
 ## Before you start
 
@@ -13,7 +13,7 @@ You need:
 
 - **Podman.** Check with `podman --version`.
 - **A Compose provider** for the Compose path: [podman-compose](https://github.com/containers/podman-compose) or Docker Compose. `podman compose` runs whichever one is installed. Check with `podman compose version`.
-- **The Podman socket**, turned on as shown below.
+- **The Podman socket**, enabled as shown below.
 
 ## Enable the Podman socket
 
@@ -228,7 +228,7 @@ Environment=ARCANE_PROJECTS_DIRECTORY=/opt/docker
 
 ## Give Arcane access to systemd
 
-Only needed for starting and stopping Quadlets, and Podman auto-update before 6.2. Everything else works without it.
+You only need this to start and stop Quadlets, or to run Podman auto-update on versions before 6.2. Everything else works without it.
 
 1. Mount the systemd D-Bus socket into Arcane.
 2. Run Arcane as a user allowed to use it.
@@ -300,7 +300,7 @@ Arcane doesn't redeploy stopped Compose projects when it starts, so set a restar
 
 ## Check that it's working
 
-Run the commands for how you installed Arcane. The health check needs about 15 seconds after start; until then it shows `starting`.
+Run the commands that match your install method. The health check takes about 15 seconds after startup, so it'll show `starting` until then.
 
 <Tabs>
 <TabItem label="Rootless Compose">

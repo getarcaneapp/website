@@ -20,7 +20,7 @@ Manage other Docker hosts from one Arcane Manager. Each remote host runs a small
 
 1. Open **Agents → Add Agent**.
 2. Enter a name. Arcane derives the address from it.
-3. Optional: turn on **Enable manager mTLS** for client-certificate security. See [Agent mTLS](/docs/security/edge-mtls).
+3. Optionally turn on **Enable manager mTLS** for client-certificate security (see [Agent mTLS](/docs/security/edge-mtls)).
 4. Click **Generate Agent Configuration**. Arcane issues a single-use enrollment token bound to this agent.
 5. Copy the token or a snippet now. The token isn't shown again.
 6. Run the generated `docker run` command or Compose file on the remote host.
@@ -73,11 +73,11 @@ The agent listens on no port, so HTTP health checks like the old `curl http://lo
 
 ## Enroll many hosts with one token
 
-Use this to add several hosts without creating each agent first. Each agent that enrolls creates its own agent, named after the host. On a Swarm node whose cluster Arcane already manages, the new agent is linked to that node.
+If you're adding several hosts at once, you can skip creating each agent ahead of time. Every host that enrolls registers its own agent named after the host, and if it's a Swarm node in a cluster Arcane already manages, it gets linked to that node automatically.
 
 <Steps>
 
-1. Open **Agents → Enrollment Tokens**. Needs `environments:create`.
+1. Open **Agents → Enrollment Tokens** (requires `environments:create`).
 2. Click **Create Enrollment Token**.
 3. Enter a name. Leave **Unlimited** on, or turn it off and set **Max Uses** (1–10000).
 4. Copy the token. Copy it again later with the row's copy button.
@@ -104,7 +104,7 @@ The list shows each token's uses, creation date, and last use. Deleting a token 
 
 ## Re-enroll an agent
 
-Do this to replace an agent, move it to a new host, or recover a former direct agent that shows **Pending** after upgrading to 3.0. The agent keeps its ID, so webhooks, Git syncs, settings, jobs, and color stay attached. Needs `environments:pair`.
+Re-enroll an agent when you want to replace it, move it to a new host, or recover a former direct agent that shows **Pending** after upgrading to 3.0. It keeps its ID, so webhooks, Git syncs, settings, jobs, and color all stay attached (requires `environments:pair`).
 
 <Steps>
 
@@ -142,7 +142,7 @@ volumes:
   arcane-data:
 ```
 
-Arcane then never talks to local Docker. The local agent (ID `0`) stays, because settings, permissions, and jobs are scoped to it. What changes for it:
+With that set, Arcane never talks to local Docker. The local agent (ID `0`) stays in place because settings, permissions, and jobs are scoped to it, with a few differences:
 
 - The dashboard, resource lists, and create forms hide it. You still see it on **Agents** and under **Applying settings for**.
 - Its jobs are off: image polling, auto-update, auto-patch, vulnerability scans, scheduled prune, auto-heal, backups, Git syncs, and the health check.
@@ -150,7 +150,7 @@ Arcane then never talks to local Docker. The local agent (ID `0`) stays, because
 - [**Update All**](#update-all-agents) skips the Manager. Update it yourself with `docker compose pull && docker compose up -d`.
 - Projects, Git syncs, and webhooks you created on it earlier stay in the database. Arcane hides them and doesn't run them.
 
-The variable defaults to `true`. Combining `false` with `ARCANE_AGENT=true` stops startup, since an agent needs its own Docker.
+This defaults to `true`. Combining `false` with `ARCANE_AGENT=true` stops startup, since an agent needs a local Docker engine.
 
 ## Work across agents
 
@@ -204,7 +204,7 @@ This upgrades Arcane itself on the Manager and every agent. It needs the `system
 3. Confirm in the **Update all agents** dialog.
 4. Watch each row for old and new versions, the current stage, and live logs.
 
-Agents update first, 4 at a time by default. Change that with **Parallel agent upgrades** (1–16) in the **Agents** settings. The Manager updates last and restarts only if its image changed. Offline agents are skipped. So is the Manager when it [runs without local Docker](#run-the-manager-without-local-docker).
+Agents update first, 4 at a time by default. Change that with **Parallel agent upgrades** (1–16) in the **Agents** settings. The Manager updates last and restarts only if its image changed. Offline agents are skipped, and so is the Manager if it's [running without local Docker](#run-the-manager-without-local-docker).
 
 | Status                                      | Meaning                                                                  |
 | ------------------------------------------- | ------------------------------------------------------------------------ |

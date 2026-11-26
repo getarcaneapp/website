@@ -39,7 +39,7 @@ arcane-cli config set api-key arc_xxxxxxx
 
 ## Change list limits
 
-List commands are paginated. Page size comes from, in order: `--limit` on the command, `pagination.resources.<resource>.limit`, `pagination.default.limit`, then the command's built-in default. Set limits from the CLI:
+List commands are paginated. Page size is resolved in order: `--limit` on the command, `pagination.resources.<resource>.limit`, `pagination.default.limit`, and finally the command's built-in default. You can set these from the CLI:
 
 ```bash
 arcane-cli config set default-limit 25
@@ -101,7 +101,7 @@ If your credentials can't list agents, for example an API key limited to one age
 
 ### Config file
 
-The config file is at `~/.config/arcanecli.yml` by default. Print the exact path, then see a typical file below:
+The config file lives at `~/.config/arcanecli.yml` by default. You can print the exact path, and see a typical config below:
 
 ```bash
 arcane-cli config path
@@ -140,6 +140,7 @@ server_url: http://localhost:3552
 > Older versions saved `jwt_token` and `refresh_token` in the config file. Since 3.0 the CLI ignores these keys and only reads sessions from `auth.json`. If your session only lives in those keys, sign in again with `arcane-cli auth login`.
 
 If `auth.json` is damaged, the CLI ignores it with a warning but can't save new sessions. Run `arcane-cli config backup --auth` to move it to `auth.json.bak`, then sign in again.
+
 API keys set with `arcane-cli config set api-key` stay in the config file. A config with an API key ignores saved sessions and always authenticates with the key.
 
 ### Global flags

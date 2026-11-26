@@ -7,7 +7,7 @@ import { Steps } from "@astrojs/starlight/components";
 import Collapsible from "#components/content/Collapsible.astro";
 import ScreenshotFrame from "#components/content/ScreenshotFrame.astro";
 
-You need Docker Engine and Docker Compose.
+Before you start, make sure you have Docker Engine and Docker Compose installed.
 
 ## Install with Docker Compose
 
@@ -47,7 +47,7 @@ You need Docker Engine and Docker Compose.
 
 3. **Paste your key.** Replace `<your-encryption-key>` with the key from step 1.
 
-4. **Set the address.** Change `ARCANE_APP_URL` to the address you will open. Keep `http://localhost:3552` if you only use Arcane on the Docker host. From other devices, use `http://<docker-host-ip>:3552`.
+4. **Set the address.** Change `ARCANE_APP_URL` to the address you'll use to access Arcane. Keep `http://localhost:3552` if you only use Arcane on the Docker host, or use `http://<docker-host-ip>:3552` from other devices.
 
 5. **Set your projects folder.** Replace all three `/opt/docker` values with the folder that holds your Compose projects. See [Projects folder](#projects-folder).
 

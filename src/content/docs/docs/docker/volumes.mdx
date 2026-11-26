@@ -69,13 +69,7 @@ If a file you edited changed in the volume since you opened it, the save is reje
 | **Rename**, **Move**, **Delete** | Reorganize the contents.                                           |
 | Restore a file                   | Restore a single file from an existing volume backup.              |
 
-Limits:
-
-- Binary files, symlinks, and special files are read-only in the editor. Binary files can still be uploaded, downloaded, and moved.
-- Files over the maximum size (default 10 MiB) can't be edited in place.
-- The tree loads a folder's contents when you open it. A folder with more entries than the entry limit shows only its first entries. The workspace tells you when that happens.
-- Volumes with a custom mount configuration (bind-style driver options) can't be opened in the workspace.
-- If the container sets a numeric `user:`, workspace writes use that user and group instead of root.
+A few limits apply: binary files, symlinks, and special files are read-only in the editor (though binary files can still be uploaded, downloaded, and moved), and files over the maximum size (default 10 MiB) can't be edited in place. The tree loads a folder's contents when you open it, and if a folder exceeds the entry limit, only its first entries are shown with a notice in the workspace. Volumes using custom mount configurations (bind-style driver options) can't be opened in the workspace. If the container sets a numeric `user:`, workspace writes use that user and group instead of root.
 
 Set the limits on the Arcane container:
 
@@ -95,9 +89,6 @@ Open a volume's **Backups** to create or schedule snapshots on local storage or 
 
 ## Helper containers
 
-Arcane creates helper containers for backup, restore, and workspace access.
+Arcane creates helper containers for backup, restore, and workspace access. They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default—turn on **Show Internal Containers** in the container table's view options if you want to see them.
 
-- They carry the label `com.getarcaneapp.internal.resource=true` and are hidden from the Containers list by default. To see them, turn on **Show Internal Containers** in the container table's view options.
-- Backups and restores run in short-lived containers using Rustic, the backup tool behind [Backups](/docs/docker/backups).
-- The workspace helper keeps the volume mounted between operations, so it doesn't restart each time you browse.
-- Arcane removes the workspace helper after the **Volume Helper Idle Timeout** (default 10 minutes). Set it to `0` to turn off idle cleanup.
+Backups and restores run in short-lived containers using Rustic, the backup tool behind [Backups](/docs/docker/backups). The workspace helper keeps the volume mounted between operations so it doesn't have to restart every time you browse, and Arcane removes it after the **Volume Helper Idle Timeout** (default 10 minutes; set to `0` to turn off idle cleanup).

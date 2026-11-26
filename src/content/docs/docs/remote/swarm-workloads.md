@@ -20,7 +20,7 @@ A stack deploys related services together from a Compose file.
 1. Open **Swarm → Stacks** and click **Create Stack**.
 2. Pick the **Agent**: the Swarm manager to deploy through.
 3. Enter a stack name and paste your Compose content.
-4. Optional: click **Add .env file** for variables the Compose file references.
+4. Optionally click **Add .env file** if your Compose file references environment variables.
 5. Click **Create Stack**.
 
 Editor shortcuts:
@@ -44,7 +44,7 @@ Deploy options:
 
 1. Open the stack from **Swarm → Stacks**.
 2. Click **Edit**.
-3. Change the Compose or `.env`.
+3. Update the Compose or `.env` file.
 4. Click **Save**.
 
 **Down** removes the stack's services, networks, configs, and secrets but keeps its saved files, so **Up** can deploy it again. **Delete** removes the stack. Both are on the stack detail page and the row menu.

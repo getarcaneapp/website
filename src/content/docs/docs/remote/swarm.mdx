@@ -37,7 +37,7 @@ Swarm pages cover every agent you can read, and each action runs on the agent of
 
 ## Where the data comes from
 
-Arcane reads cluster resources from Swarm manager agents. If several of yours manage one cluster, Arcane reads through one, so each resource is listed once; the **Agent** column shows which manager. Stacks are grouped by the `com.docker.stack.namespace` service label, so stacks created outside Arcane show up too. Agents on nodes add access to each node's containers and images; services and stacks stay visible without them (see [Nodes & Agents](/docs/remote/swarm-nodes-agents)).
+Arcane reads cluster resources from Swarm manager agents. If you have several managers in the same cluster, Arcane reads through one of them so each resource is only listed once, and the **Agent** column shows which manager it came from. Stacks are grouped by the `com.docker.stack.namespace` service label, so stacks created outside Arcane show up too. Agents on nodes add access to each node's containers and images; services and stacks stay visible without them (see [Nodes & Agents](/docs/remote/swarm-nodes-agents)).
 
 ## Permissions and modes
 

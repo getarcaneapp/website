@@ -186,7 +186,7 @@ Arcane then reads the real client IP from `X-Forwarded-For` for requests from th
 
 ### Details
 
-`ARCANE_TRUSTED_PROXIES` accepts a comma-separated list of CIDR ranges. Write a single address as `/32` for IPv4 or `/128` for IPv6; Arcane logs a warning and ignores entries without a prefix length. Forwarded headers are trusted only when the direct peer is listed, so untrusted clients can't spoof `X-Forwarded-For`. Loopback and private addresses aren't trusted unless listed. See [Environment Variables](/docs/reference/environment-variables) for all options.
+`ARCANE_TRUSTED_PROXIES` accepts a comma-separated list of CIDR ranges. Write single addresses with `/32` for IPv4 or `/128` for IPv6—Arcane logs a warning and ignores entries without a prefix length. Forwarded headers are only trusted when the direct peer is in this list, so untrusted clients can't spoof `X-Forwarded-For`. Loopback and private addresses aren't trusted automatically unless you list them. See [Environment Variables](/docs/reference/environment-variables) for all options.
 
 > [!NOTE]
 > If you bind Arcane to loopback with `ARCANE_LISTEN` (such as `ARCANE_LISTEN=127.0.0.1` for a same-host proxy), Arcane trusts loopback proxies (`127.0.0.0/8`, `::1/128`) automatically; no `ARCANE_TRUSTED_PROXIES` needed. This only works with literal loopback IPs, not hostnames like `localhost`.
@@ -199,7 +199,7 @@ Use this when a TCP (layer 4) proxy or load balancer, such as HAProxy or a Traef
 2. Set `ARCANE_TRUSTED_PROXIES` to the proxy's range, such as `10.0.0.5/32`.
 3. Recreate the container.
 
-Arcane reads the client address from the PROXY header on connections from those addresses. The header is optional there, so HTTP proxies in the same list keep working. Connections from other addresses aren't parsed for PROXY headers. One invalid entry in `ARCANE_TRUSTED_PROXIES` turns PROXY protocol off and logs `Invalid ARCANE_TRUSTED_PROXIES; PROXY protocol is disabled`.
+Arcane reads the client address from the PROXY header on connections from those addresses. The header is optional for trusted peers, so HTTP proxies in the same list keep working, while connections from unlisted addresses ignore PROXY headers. Keep in mind that even a single invalid entry in `ARCANE_TRUSTED_PROXIES` disables PROXY protocol and logs `Invalid ARCANE_TRUSTED_PROXIES; PROXY protocol is disabled`.
 
 ## Allow large enough headers
 

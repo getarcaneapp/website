@@ -34,7 +34,7 @@ If the host is already a [Remote Agent](/docs/remote/agents), add it with **Easy
 
 ### Enroll many nodes with one token
 
-Run the agent on each node with a multi-use token from **Agents → Enrollment Tokens** (see [Enroll many hosts with one token](/docs/remote/agents#enroll-many-hosts-with-one-token)). When the node's cluster is managed by the Arcane Manager or one of its agents, each agent gets its own agent linked to its node. Arcane refuses the enrollment if the node already has an agent or a connected agent.
+Run the agent on each node with a multi-use token from **Agents → Enrollment Tokens** (see [Enroll many hosts with one token](/docs/remote/agents#enroll-many-hosts-with-one-token)). When the node's cluster is already managed by the Arcane Manager or one of its agents, each host gets its own agent linked to its node. Arcane refuses the enrollment if the node already has a connected agent.
 
 ## Agent dialog
 
@@ -67,6 +67,6 @@ Older dedicated node agents keep working, labelled **Legacy dedicated registrati
 
 ## Troubleshooting
 
-- **pending** doesn't change: check that the command ran on the intended node and that the node can reach the Manager URL. A single-use token works once; generate a new one if it was already used.
-- **mismatched** on a Remote Agent: detach it, or rebind the correct agent.
+- **pending** doesn't change: check that the command ran on the intended node and that the node can reach the Manager URL. A single-use token only works once, so generate a new one if it was already used.
+- **mismatched** on a Remote Agent: detach it or rebind the correct agent.
 - **mismatched** on a dedicated agent: generate a new enrollment token and redeploy on the intended node.

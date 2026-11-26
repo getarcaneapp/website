@@ -17,16 +17,16 @@ A Quadlet is a unit file, such as `web.container`, that Podman turns into a syst
 
 The Quadlet page shows the file, unit status, and its containers with logs. From there you can:
 
-- **Start**, **Stop**, or **Restart** the unit. Not offered for template units (names ending in `@`), which have no running instance.
+- **Start**, **Stop**, or **Restart** the unit. This isn't available for template units (names ending in `@`) since they don't have a running instance on their own.
 - **Edit** the file. Podman reloads systemd; restart the unit to apply the change.
-- **Delete** the Quadlet, stopping the unit and removing its files. If Podman can't remove something, the error is shown and the Quadlet stays.
+- **Delete** the Quadlet, which stops the unit and removes its files. If Podman can't remove something, you'll see the error and the Quadlet stays put.
 
 ## Containers that belong to a Quadlet
 
-Quadlet containers carry a **Quadlet** badge on the containers list and container page, linking to the Quadlet. Because systemd owns them:
+Quadlet containers carry a **Quadlet** badge on the containers list and container page, linking back to the Quadlet. Because systemd owns them:
 
 - **Start**, **Stop**, and **Restart** go to the systemd unit, keeping unit and container in sync.
-- **Edit**, **Redeploy**, and **Delete** are refused. Change the Quadlet file instead.
+- **Edit**, **Redeploy**, and **Delete** are blocked; edit the Quadlet file instead.
 - Arcane's [auto updates](/docs/docker/auto-updates) skip them. Use [Podman auto-update](/docs/podman/auto-update).
 
 Before Podman 5.8, Arcane can't confirm a container's Quadlet. Start and stop go through the Podman API, and edit, redeploy, and delete stay blocked.

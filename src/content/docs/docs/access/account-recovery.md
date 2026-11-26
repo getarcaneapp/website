@@ -22,10 +22,7 @@ These commands update the database inside the Arcane container without starting 
 3. Enter the new password twice. Input is hidden.
 4. Remove the variable and recreate the container again.
 
-On success it prints `Password reset successfully for global administrator "<username>"` and revokes all that user's sessions. It also clears a pending required password change, such as the one on the default `arcane` account.
-
-- Only accounts with global administrator permissions can be reset. An unknown name returns `global administrator "<name>" not found`.
-- The new password must meet the [password policy](#password-policy).
+On success, it prints `Password reset successfully for global administrator "<username>"`, revokes all of that user's sessions, and clears any pending required password change (such as the one on the default `arcane` account). Only accounts with global administrator permissions can be reset; an unknown name returns `global administrator "<name>" not found`. The new password still has to meet your [password policy](#password-policy).
 
 ## Clear passkey MFA
 
@@ -45,7 +42,7 @@ This disables passkey MFA, deletes recovery codes, cancels any pending MFA trans
 
 ## Why the commands are off by default
 
-Both commands grant administrator access, so each needs its own variable. Turn it on only while you use it.
+Because both commands grant administrator-level recovery access, they're disabled by default and each has its own environment variable. Only turn them on while you need them:
 
 | Command                       | Turned on by                           |
 | ----------------------------- | -------------------------------------- |

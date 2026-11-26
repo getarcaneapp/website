@@ -25,12 +25,11 @@ No user identifiers, project metadata, secrets, tokens, or environment variables
 
 ## Check the heartbeat in the logs
 
-A successful heartbeat logs this line. A failed one is retried about an hour later.
+A successful heartbeat logs this line; a failed one is retried about an hour later.
 
 ```
 Jan 31 21:10:26.504 INF analytics heartbeat sent successfully version=unknown instanceId=5bd274b3-7500-74b3-aa06-59308f0a0eb2 serverType=manager
 ```
 
 > [!NOTE]
-> If you want to send analytics but the check-in is blocked, disable ad blockers or privacy extensions for a while. Allowlist `checkin.getarcane.app`, and your Arcane domain if you use a proxy.
-> Try another network or DNS filter to rule out upstream blocking, and check the Arcane logs for `analytics heartbeat` messages.
+> If you want to send analytics but the check-in is blocked, try temporarily disabling ad blockers or privacy extensions and allowlisting `checkin.getarcane.app` (plus your Arcane domain if you use a proxy). You can also test on another network or DNS filter to rule out upstream blocking, and check the Arcane logs for `analytics heartbeat` messages.

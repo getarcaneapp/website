@@ -38,8 +38,7 @@ On the project page, use **Build** or **Build & Deploy** for Compose services wi
 5. Pick a provider, and choose **Push**, **Load**, or both.
 6. Click **Build** and watch the live output.
 
-- A **Git repository** source uses the credentials of an enabled [Git repository](/docs/docker/git-sync#connect-a-repository) with the same URL. Otherwise Arcane clones it anonymously.
-- To add files to the workspace, upload them in the **Files** tab. Files of any size are accepted.
+A **Git repository** source automatically uses the credentials of any enabled [Git repository](/docs/docker/git-sync#connect-a-repository) with the same URL; otherwise Arcane clones it anonymously. To add files to the workspace, upload them in the **Files** tab (files of any size are accepted).
 
 <ScreenshotFrame
   name="image-builds"
@@ -61,10 +60,7 @@ On the project page, use **Build** or **Build & Deploy** for Compose services wi
 - **Repository name**: one of the repository names saved on that registry.
 - **Tag**: free text, such as `1.0.0`.
 
-The resulting `host/repository:tag` shows as a read-only **Image reference** above the build button.
-
-- Changing the registry clears the repository.
-- Repositories not in the registry's list are rejected.
+The resulting `host/repository:tag` shows as a read-only **Image reference** above the build button. Changing the registry clears the selected repository, and repositories not in the registry's list are rejected.
 
 | Message                                          | What to do                                                                                |
 | ------------------------------------------------ | ----------------------------------------------------------------------------------------- |

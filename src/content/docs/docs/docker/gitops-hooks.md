@@ -38,13 +38,7 @@ The script runs before each deploy that follows a sync. If it exits non-zero, ti
 
 ## Check the last run
 
-When a sync doesn't deploy, check the last hook run on the sync. It shows:
-
-- Run time.
-- Status: `success`, `failed`, or `timeout`.
-- Combined stdout and stderr, truncated.
-
-To keep hook logs long term, store them elsewhere.
+When a sync doesn't deploy, check the last hook run on the sync. It shows the run time, status (`success`, `failed`, or `timeout`), and truncated combined stdout and stderr. If you need to keep hook logs long term, store them elsewhere.
 
 ## Script path and runner behavior
 

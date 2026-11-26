@@ -9,7 +9,7 @@ A pod is a group of containers sharing network, IPC, and UTS namespaces, like a 
 
 1. Open **Podman → Pods** and click **Create pod**.
 2. Choose the agent, if several are shown.
-3. Enter a name. Everything else is optional.
+3. Give the pod a name; everything else is optional.
 4. Fill in the sections you need:
    - **Networking**: network mode, networks with aliases, static IPs and MAC addresses, published ports, and options for `pasta` or `slirp4netns`.
    - **DNS & hosts**: DNS servers, search domains, DNS options, and extra `/etc/hosts` entries.
@@ -20,12 +20,14 @@ A pod is a group of containers sharing network, IPC, and UTS namespaces, like a 
    - **Infra container**: the image, command, and name of the container that holds the pod's namespaces, or no infra container at all.
 5. Click **Create**.
 
+A few things to keep in mind:
+
 - Volume sources must be an absolute host path or a named volume. Relative paths such as `./data` are rejected.
 - Device limits take a `MAJOR:MINOR` device number, for example `8:0`.
 - These `podman pod create` flags have no API equivalent: `--pod-id-file`, `--replace`, `--subuidname`, and `--subgidname`.
 
 ## Manage pods
 
-**Start**, **Stop**, **Restart**, and **Delete** pods from the row menu or pod page. To delete a pod with running containers, select **Stop and remove running containers**. **Prune pods** removes every stopped pod in the shown agents.
+You can **Start**, **Stop**, **Restart**, and **Delete** pods from the row menu or the pod's detail page. To delete a pod with running containers, select **Stop and remove running containers**. **Prune pods** removes every stopped pod across the shown agents.
 
 The pod page shows settings, containers (infra container marked), live resource usage, and processes. If Arcane loses contact with the host, it says so and keeps the last loaded state.

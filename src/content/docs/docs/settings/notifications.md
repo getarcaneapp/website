@@ -31,7 +31,7 @@ Use **Payload Template** when your endpoint needs nested objects, specific field
 | `{{.event}}`         | The event type, e.g. `image_update`.   |
 | `{{.timestamp}}`     | When the event fired, RFC 3339 in UTC. |
 
-A minimal template for a single `text` field. Arcane escapes quotes and newlines in values; add the surrounding JSON quotes yourself.
+Here's a minimal template for a single `text` field. Arcane escapes quotes and newlines in values, so add the surrounding JSON quotes yourself:
 
 ```json
 { "text": "{{.message}}" }
@@ -40,11 +40,11 @@ A minimal template for a single `text` field. Arcane escapes quotes and newlines
 > [!NOTE]
 > `{{.title}}` and `{{.message}}` follow the provider's **Title Key** and **Message Key** fields. Rename those and the variables change too.
 
-Templates must parse and execute, and for JSON content types produce valid JSON. Otherwise saving fails with `invalid generic webhook payload template`. A template defaults the content type to `application/json`. Use **Test Provider** to check the rendered payload.
+Templates must parse and execute cleanly, and produce valid JSON when using a JSON content type; otherwise saving fails with `invalid generic webhook payload template`. A template defaults the content type to `application/json`. Use **Test Provider** to check the rendered payload.
 
 ## Success body matching
 
-If an endpoint returns `HTTP 200` even on failure, set **Success Body Contains** to text that confirms delivery, such as `"code":200`. Arcane then requires it in the response body, also with **Payload Template**.
+If an endpoint returns `HTTP 200` even on failure, set **Success Body Contains** to a string that confirms delivery, such as `"code":200`. Arcane will then require that text in the response body (this works with **Payload Template** too).
 
 ## Reference
 

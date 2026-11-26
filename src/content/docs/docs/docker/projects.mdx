@@ -24,12 +24,7 @@ A **project** is a folder with a Compose file and its related files (`.env`, con
   decoding="async"
 />
 
-How Arcane picks the folder:
-
-- The folder is named after the project.
-- If a folder with that name already exists, has no Compose file, and no other project uses it, Arcane reuses it and keeps its files.
-- When it reuses a folder with a `.env`, an empty `.env` editor keeps the existing file. Different `.env` content is rejected.
-- Otherwise, Arcane adds a number to the name, such as `myapp-1`.
+Arcane names the project folder after the project. If a folder with that name already exists, has no Compose file, and isn't used by another project, Arcane reuses it and keeps its files (if it already contains a `.env`, leaving the `.env` editor empty preserves it, while entering different `.env` content is rejected). Otherwise, Arcane appends a number like `myapp-1`.
 
 ## Control a project
 
@@ -102,15 +97,9 @@ To filter by Docker label, use the **Labels** filter:
 | **Edit**                         | UTF-8 text files open in tabs. Binary files can't be edited. |
 | **Rename**, **Move**, **Delete** | Non-empty folders delete recursively.                        |
 
-- Right-click in the editor for cut, copy, paste, select all, and editor commands. Middle-click a tab to close it.
-- Markdown files (`.md`) can be toggled to **Markdown view** to read them rendered in place.
-- The tab strip shows the open file's validation errors, schema, and cursor position.
-- Indentation follows **Editor tab width** in [Preferences](/docs/settings/appearance#editor).
-- A project without a `.env` gets **Add .env file** in the tree's menu. Saving an empty `.env` removes the file.
-- Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden.
-- The Compose and override files show a lock icon. You can't rename, move, or delete them from the tree.
-- Delete `.env` from its own menu.
-- For Git **Pull** projects, sync-managed files are read-only.
+Right-click inside the editor for cut, copy, paste, select all, and editor commands, and middle-click a tab to close it. Markdown files (`.md`) can be switched to **Markdown view** to render them in place. The tab strip shows validation errors, schema, and cursor position for the active file, and indentation follows **Editor tab width** in [Preferences](/docs/settings/appearance#editor).
+
+A project without a `.env` shows **Add .env file** in the tree's menu; saving an empty `.env` removes it, or you can delete it from its own menu. Build and dependency folders (`.git`, `node_modules`, `vendor`, `dist`, `build`, and similar) are hidden. Compose and override files show a lock icon and can't be renamed, moved, or deleted from the tree. For Git **Pull** projects, sync-managed files are read-only.
 
 The tree loads a folder's contents when you open it. Size and per-folder entry limits: see [Workspace limits](#workspace-limits).
 
@@ -120,9 +109,7 @@ The tree loads a folder's contents when you open it. Size and per-folder entry l
 2. Click **+**.
 3. In **Search or create a tag…**, pick a tag, or type a new name and choose a color.
 
-- To remove a tag, click it.
-- More than three tags collapse under **+N**.
-- To filter, use the **Tags** column, or search by tag name.
+Click a tag to remove it. When a project has more than three tags, the extras collapse under **+N**. You can filter by tags using the **Tags** column or by searching for the tag name.
 
 You can also declare tags in the Compose file's `x-arcane` block. They apply on deploy and sync, show a lock icon, and can only be changed in the Compose file.
 
@@ -133,13 +120,7 @@ x-arcane:
       color: purple
 ```
 
-Tag rules:
-
-- Names are trimmed and lowercased, up to 64 characters, with no commas.
-- A tag name has one color everywhere. Attaching an existing name keeps its stored color.
-- Each project holds up to 50 UI tags and 50 Compose tags.
-- The tag catalog is per agent.
-- Editing tags needs `projects:update`. Discovered (unmanaged) projects can't be tagged.
+Tag names are trimmed and lowercased, up to 64 characters, with no commas. Each tag name has one color across the agent's catalog, so attaching an existing name keeps its stored color. A project can hold up to 50 UI tags and 50 Compose tags. Editing tags requires `projects:update`, and discovered (unmanaged) projects can't be tagged.
 
 ## Rename a project with managed volumes
 
@@ -169,9 +150,7 @@ Move a project and its volume data between environments as a `.tar.gz` archive.
 3. Optional: turn on **Stop project during export for a consistent copy**. Arcane stops the project while copying volumes and starts it again once the export finishes.
 4. Export to download the `.tar.gz` archive.
 
-- Including volume data needs `volumes:backup`.
-- Stopping the project during export needs `projects:down` and `projects:deploy`.
-- If a project has no volumes, only its files are exported.
+Including volume data requires `volumes:backup`, and stopping the project during export requires `projects:down` and `projects:deploy`. If a project has no volumes, only its files are exported.
 
 ### Import a project
 
@@ -201,11 +180,7 @@ If a service has a `build:` directive, the project page shows **Build** and **Bu
 
 ### Where projects live
 
-Each project is a folder in the **Projects Directory**. The default is `/app/data/projects`. Change it with `ARCANE_PROJECTS_DIRECTORY` or under **Settings → Storage & Limits**.
-
-- Arcane scans the folder, including nested folders, for Compose files. Projects created outside Arcane show up too.
-- Same-named folders are told apart by full path.
-- Mounting the folder at the same path on host and container is simplest. [Installation](/docs/get-started/installation) covers the mount, and path translation when they differ.
+Each project is a folder in the **Projects Directory** (default `/app/data/projects`). Change it with `ARCANE_PROJECTS_DIRECTORY` or under **Settings → Storage & Limits**. Arcane scans the directory, including nested folders, for Compose files—so projects created outside Arcane show up too—and tells same-named folders apart by their full path. Mounting the folder at the same path on both the host and container is simplest; see [Installation](/docs/get-started/installation) for the mount and path translation when they differ.
 
 ### Additional projects directories
 
@@ -216,20 +191,15 @@ environment:
   - 'ARCANE_PROJECTS_DIRECTORIES=[{"path":"/opt/stacks","enabled":true}]'
 ```
 
-- Mount each folder into the Arcane container. The settings page flags paths it can't find in the container.
-- Paths must be absolute. Each entry also accepts the `<containerPath>:<hostPath>` form.
-- Entries can't repeat, sit inside one another, or overlap the **Projects Directory** or the Templates Directory.
-- A disabled entry is kept but not scanned.
-- New projects go in the **Projects Directory**. When more than one directory is enabled, pick another with the folder selector next to the project name, or pass `--directory <containerPath>` to `arcane-cli projects create`. Git syncs always create projects in the **Projects Directory**.
-- When projects come from more than one directory, the projects list shows each project's directory in its path.
+Mount each folder into the Arcane container—the settings page flags any path it can't find. Paths must be absolute (each entry also accepts `<containerPath>:<hostPath>`), and entries can't repeat, nest inside one another, or overlap the **Projects Directory** or Templates Directory. Disabled entries are kept in config but not scanned.
+
+New projects go into the **Projects Directory** by default. When more than one directory is enabled, pick another with the folder selector next to the project name, or pass `--directory <containerPath>` to `arcane-cli projects create`. Git syncs always create projects in the **Projects Directory**. When projects come from multiple directories, the projects list shows each project's directory in its path.
 
 ### Nested folders and symlinks
 
-- For symlinked layouts (for example GNU Stow), turn on **Follow Project Symlinks** under **Settings → Storage & Limits**. Arcane then follows child-directory symlinks.
-- A folder Arcane can't read appears empty. Other folders stay accessible.
-- Relative paths outside the projects mount (such as `../../data:/app/data`) resolve against the host projects directory, as with `docker compose up`.
-- `include:` entries can point outside the project, such as a shared fragment (`include: [../shared.yaml]`).
-- On Linux, Arcane watches project trees recursively, so deep trees use extra inotify watches. For very large trees, raise `fs.inotify.max_user_watches`.
+If you use symlinked layouts like GNU Stow, turn on **Follow Project Symlinks** under **Settings → Storage & Limits** so Arcane follows child-directory symlinks. Any folder Arcane can't read appears empty without blocking other folders.
+
+Relative paths outside the projects mount (such as `../../data:/app/data`) resolve against the host projects directory just like `docker compose up`, and `include:` entries can point outside the project (for example, `include: [../shared.yaml]`). On Linux, Arcane watches project trees recursively, so deep trees consume extra inotify watches; for very large trees, raise `fs.inotify.max_user_watches`.
 
 ### What deploys pull
 
@@ -269,8 +239,7 @@ Arcane honors these Docker Compose [pre-defined environment variables](https://d
 | `COMPOSE_REMOVE_ORPHANS` / `COMPOSE_IGNORE_ORPHANS` | Control how containers left over from removed services are handled.                                                                                                 |
 | `COMPOSE_PARALLEL_LIMIT`                            | Cap how many operations Compose runs at once.                                                                                                                       |
 
-- Paths in `COMPOSE_FILE` and `COMPOSE_ENV_FILES` resolve relative to the project folder. Entries outside it are rejected.
-- With several files, the detail view lists them in a **Multiple compose files** card. The base file opens in the Compose editor. Edit the others in **Workspace**.
+Paths in `COMPOSE_FILE` and `COMPOSE_ENV_FILES` resolve relative to the project folder, and entries outside it are rejected. When a project uses multiple Compose files, the detail view lists them in a **Multiple compose files** card: the base file opens in the Compose editor, and you can edit the others in **Workspace**.
 
 ### Workspace limits
 

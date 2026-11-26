@@ -20,7 +20,7 @@ A socket proxy is a small container that sits between Arcane and `/var/run/docke
 ## Set up the proxy
 
 1. Read [Installation](/docs/get-started/installation) for the encryption key, projects folder, and first login.
-2. Create a `compose.yaml` from an example below. Use **wollomatic/socket-proxy** (what the [Instance Generator](/generator) produces). Use **Tecnativa** only if you already run it.
+2. Create a `compose.yaml` from one of the examples below. We recommend **wollomatic/socket-proxy** (which is what the [Instance Generator](/generator) produces); only use **Tecnativa** if you're already running it.
 3. Replace `<your-encryption-key>` with your key and `/opt/docker` with your projects folder.
 4. Run `docker compose up -d`.
 

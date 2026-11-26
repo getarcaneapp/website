@@ -35,11 +35,7 @@ arcane-cli admin roles assign <user-id> --role role_deployer:<agent-id> --role r
 </TabItem>
 </Tabs>
 
-- An assignment grants one role to one user, globally or on one agent.
-- A global assignment applies on every agent.
-- Org-level permissions, such as `users:*` and `settings:*`, need a global assignment.
-- Viewing and changing assignments needs a global admin.
-- Saving replaces a user's manual assignments. Assignments from [OIDC role mappings](/docs/access/sso) are kept.
+Each assignment grants one role to a user, either globally (covering every agent) or on a single agent. Org-level permissions like `users:*` and `settings:*` require a global assignment. You'll need to be a global admin to view or change assignments. Saving replaces a user's manual assignments, while assignments from [OIDC role mappings](/docs/access/sso) are left untouched.
 
 ## Create a custom role
 
@@ -87,10 +83,7 @@ The API equivalent is `POST /api/apikeys` with `environmentId` set on each grant
 
 A personal key from **Account → API keys → New key** carries no grants. It has the same permissions as your account.
 
-- A scoped key has its own permission grants, global or per agent.
-- A key never exceeds its owner's current access, checked on every request.
-- Removing an owner's assignment narrows their keys immediately.
-- You can't grant a key a permission you don't hold.
+Scoped keys carry their own global or per-agent permission grants, but a key can never exceed its owner's current access (checked on every request). You can't grant a key a permission you don't hold, and if an owner's role assignment is removed, their keys lose that access immediately.
 
 ## Built-in roles
 
@@ -115,11 +108,7 @@ Podman permissions per built-in role:
 
 ## Global admin
 
-- A global admin's global assignments cover every permission. Admin's `*` does this.
-- System backup routes and authentication settings need a global admin.
-- Arcane keeps at least one global admin.
-- Removing the last one fails with `At least one user must retain a global Admin role assignment`.
-- If nobody can sign in as an admin, see [Account Recovery](/docs/access/account-recovery).
+A global admin is any user whose global assignments cover every permission, such as the built-in **Admin** role (`*`). System backup routes and authentication settings both require a global admin. Arcane always keeps at least one global admin, so removing the last one fails with `At least one user must retain a global Admin role assignment`. If nobody can sign in as an admin, see [Account Recovery](/docs/access/account-recovery).
 
 ## Permission catalog
 

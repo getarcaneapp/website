@@ -29,9 +29,7 @@ The Dashboard is a grid of widgets covering every agent you can see. Each user h
 
 </Steps>
 
-- Moving and resizing with the mouse only works on wide screens. On narrow screens, widgets stack in one column.
-- **Reset to default** restores the default layout. **Reset** discards unsaved changes.
-- A dashboard holds up to 50 widgets.
+Dragging and resizing with the mouse only works on wide screens; on narrow screens, widgets stack in a single column. You can add up to 50 widgets to a dashboard. If you want to start over, **Reset** discards unsaved changes and **Reset to default** restores the default layout.
 
 ## Add a widget
 
@@ -47,7 +45,7 @@ Creating a new widget saves the layout right away.
 
 ### Built-in widgets
 
-Each built-in widget appears once. It can be hidden but not removed.
+Each built-in widget can only appear once on your dashboard. You can hide it, though you can't remove it completely.
 
 | Widget                | Shows                                                                             |
 | --------------------- | --------------------------------------------------------------------------------- |
@@ -65,7 +63,7 @@ Each built-in widget appears once. It can be hidden but not removed.
 
 ### Custom widgets
 
-Custom widgets can be added more than once.
+Unlike built-in widgets, you can add as many custom widgets as you like.
 
 | Widget                 | Shows                                                  |
 | ---------------------- | ------------------------------------------------------ |
@@ -75,7 +73,7 @@ Custom widgets can be added more than once.
 | **Container Logs**     | Live log tail for one container.                       |
 | **Agent**              | Status and live stats for one agent.                   |
 
-**Resource**, **Container Stats**, and **Container Logs** need an **Agent** and a **Resource**. **Resource** also needs a **Resource type** (containers or projects). The **Agent** widget needs only an **Agent**. Every custom widget has an optional **Title**.
+**Resource**, **Container Stats**, and **Container Logs** each require an **Agent** and a **Resource** (**Resource** also asks for a **Resource type**: containers or projects). The **Agent** widget only needs an **Agent**, and every custom widget has an optional **Title**.
 
 ### Filtered Resources fields
 
@@ -92,6 +90,8 @@ Custom widgets can be added more than once.
 | **Limit**                       | How many items to list. Default 5, up to 50.                                     |
 
 ## Pin from other pages
+
+You don't have to build every widget from scratch. You can pin views and resources directly from other pages:
 
 - **Pin this view** on the Containers, Projects, Images, Volumes, and Networks lists adds a **Filtered Resources** widget with the current search and filters.
 - **Pin to Dashboard** on a container, project, or agent page adds a **Resource** or **Agent** widget.
