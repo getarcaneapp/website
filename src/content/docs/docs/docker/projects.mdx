@@ -103,6 +103,7 @@ To filter by Docker label, use the **Labels** filter:
 | **Rename**, **Move**, **Delete** | Non-empty folders delete recursively.                        |
 
 - Right-click in the editor for cut, copy, paste, select all, and editor commands. Middle-click a tab to close it.
+- Markdown files (`.md`) can be toggled to **Markdown view** to read them rendered in place.
 - The tab strip shows the open file's validation errors, schema, and cursor position.
 - Indentation follows **Editor tab width** in [Preferences](/docs/settings/appearance#editor).
 - A project without a `.env` gets **Add .env file** in the tree's menu. Saving an empty `.env` removes the file.
@@ -156,6 +157,30 @@ Renaming is blocked when:
 - A target volume name already exists.
 - A source volume is attached to a container.
 - Docker reports there isn't enough space for the copy.
+
+## Export and import a project
+
+Move a project and its volume data between environments as a `.tar.gz` archive.
+
+### Export a project
+
+1. Open the project and choose **Export Project**.
+2. Pick which volumes to include. External volumes or volumes using driver options that keep data outside Docker aren't exported.
+3. Optional: turn on **Stop project during export for a consistent copy**. Arcane stops the project while copying volumes and starts it again once the export finishes.
+4. Export to download the `.tar.gz` archive.
+
+- Including volume data needs `volumes:backup`.
+- Stopping the project during export needs `projects:down` and `projects:deploy`.
+- If a project has no volumes, only its files are exported.
+
+### Import a project
+
+1. Open **Projects** and choose **Import Project**.
+2. Upload a `.tar.gz` archive exported by Arcane.
+3. Optional: turn on **Start after import** to deploy it right away.
+4. Import. Arcane creates the project and restores any volume data in the archive into new volumes.
+
+For recurring snapshots and point-in-time restores, use [Project backups](/docs/docker/backups#project-backups).
 
 ## Sync with Git
 

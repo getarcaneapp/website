@@ -27,6 +27,7 @@ Open **Containers** in the sidebar. The table shows name, ID, image, and status.
 
 - Long port lists collapse behind a `+N` expander.
 - To show only published host mappings, hide exposed-only ports in the view options menu.
+- On Swarm hosts, turn on **Show Swarm Task Hostnames** in the view options menu to display task hostnames in the list. Search and sort still use Docker names.
 - To select a range, select a row checkbox, then **Shift**-select another. This works on the current page.
 
 ### Filter by Docker label
@@ -84,6 +85,7 @@ Click a container's name or **Inspect**. The detail view has tabs for configurat
 - Network details show assigned IPv4 and IPv6 addresses.
 - Containers in an Arcane-managed Compose project get a **Compose** tab. It shows the root Compose file, or the included file when the service comes from a Compose `include`. It's read-only for Git-synced projects.
 - Project containers link to their project.
+- Well-known container and service labels are pretty-printed on the **Configuration** tab so they're easier to read.
 - Sensitive environment values are masked on the **Configuration** and **Inspect** tabs. **Show** reveals them all; on **Configuration**, **Reveal value** shows one. A variable is sensitive when a `_`-separated part of its name is a word such as `PASSWORD`, `SECRET`, `TOKEN`, `KEY`, or `AUTH`, or its value is a URL with credentials (contains `://` and `@`). Names ending in `_FILE`, `_PATH`, or `_DIR` are never masked.
 
 ### Updates
@@ -100,11 +102,12 @@ Auto Heal restarts running containers whose Docker healthcheck reports `unhealth
 2. Under **Monitoring**, turn on **Auto-Heal**. It's off by default.
 3. Optional: change its schedule. The default checks every 5 minutes (`*/5 * * * *`).
 
-| Setting                      | Default | What it does                                                                                      |
-| ---------------------------- | ------- | ------------------------------------------------------------------------------------------------- |
-| **Max Restarts**             | 5       | Restarts allowed per container within the restart window. After that, Arcane skips the container. |
-| **Restart Window (minutes)** | 30      | How far back restarts are counted.                                                                |
-| **Excluded Containers**      | None    | Containers Auto Heal never restarts.                                                              |
+| Setting                      | Default   | What it does                                                                                                                           |
+| ---------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Max Restarts**             | 5         | Restarts allowed per container within the restart window. After that, Arcane skips the container.                                      |
+| **Restart Window (minutes)** | 30        | How far back restarts are counted.                                                                                                     |
+| **Auto-Heal Mode**           | `exclude` | `exclude` heals every container except the listed ones. `include` only heals listed containers and those with `com.getarcaneapp.arcane.auto-heal=true`. |
+| **Auto-Heal Containers**     | None      | Comma-separated container list. Skipped in `exclude` mode, targeted in `include` mode.                                                 |
 
 Both numbers must be at least 1. Auto Heal also skips Arcane's own container, Arcane's helper containers, and Podman [Quadlet](/docs/podman/quadlets) containers, whose systemd `Restart=` policy handles recovery.
 
@@ -114,9 +117,10 @@ Each restart is logged as a container restart event and sends an **Auto-Heal Res
 
 1. Open a running container's detail view.
 2. Open the **Shell** tab. This needs `containers:exec`.
-3. Pick `sh`, `bash`, `ash`, `zsh`, or enter a custom path.
+3. Pick **Auto** (`bash` when the container has it, otherwise `sh`), `sh`, `bash`, `ash`, `zsh`, or enter a custom path.
+4. Optional: pick a user to run the shell as, or leave it on **Container default**.
 
-Your browser remembers the choice per Compose service (or container name), so it survives recreation. Without a saved choice, Arcane uses the agent's **Default Shell** (**Settings → Docker**), which is `/bin/sh` by default.
+Arcane remembers your shell and user choice per Compose service (or container name), so it survives recreation. Without a saved choice, it uses your **Default Shell** preference under **Account → Preferences** (a path, `auto`, or the agent's default), falling back to the agent's **Default Shell** (**Settings → Docker**, `/bin/sh` by default).
 
 ## View logs
 

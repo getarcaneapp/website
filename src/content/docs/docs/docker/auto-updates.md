@@ -10,7 +10,9 @@ description: "Keep containers and Compose projects on newer images without click
 3. Turn on **Image Update Watcher** and pick or enter a schedule.
 4. Turn on **Auto Update** and set its schedule. It needs **Image Update Watcher** on.
 5. Optional: set **Update Delay (hours)**. See [Delay new images](#delay-new-images).
-6. Optional: under **Excluded Containers**, pick containers that should never update automatically.
+6. Optional: set **Auto Update Mode**:
+   - **Exclude** (default): updates every container except the ones you list.
+   - **Include**: opt-in mode. Only updates containers in the list and containers labeled `com.getarcaneapp.arcane.updater=true`.
 7. Click **Save**.
 
 To scan new images first and block the ones with too many vulnerabilities, see [Block vulnerable updates](/docs/security/vulnerability-scans#block-vulnerable-updates).
@@ -227,7 +229,7 @@ Arcane checks on the **Image Update Watcher** schedule, hourly by default.
 - Arcane groups updates by project and recreates only changed services.
 - A manual **Redeploy** pulls and recreates the whole project.
 - A tag update writes the new image reference into the Compose file before deploying, even if both tags resolve to the same image.
-- Interpolated values become explicit references. Shared `.env` variables are untouched.
+- If an image tag comes from a variable in the project's `.env`, Arcane updates that variable in `.env` instead of rewriting `compose.yaml`, and updates any follower services that use the same variable.
 - The new reference stays in the file if deployment fails.
 
 Tag updates can only edit a single Compose file with explicit `image:` fields. Update these at their source instead: git-synced projects, multi-file setups, `include`, `extends`, YAML anchors or aliases, and symlinked files. Digest updates work for all of them.

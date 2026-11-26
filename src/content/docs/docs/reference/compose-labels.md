@@ -17,7 +17,8 @@ x-arcane:
   icon-dark: nginx
   urls:
     - https://docs.example.com
-    - https://github.com/example/repo
+    - url: https://github.com/example/repo
+      label: Source
 
 services:
   nginx:
@@ -29,7 +30,7 @@ services:
 | `icon-light` | Light-coloured icon, shown when Arcane uses the dark theme.              |
 | `icon-dark`  | Dark-coloured icon, shown when Arcane uses the light theme.              |
 | `icon`       | Single icon for both themes, used only when neither of the above is set. |
-| `urls`       | Extra links shown next to the project, such as docs or a homepage.       |
+| `urls`       | Extra links shown next to the project, such as docs or a homepage. Entries can be plain URL strings or `{ url, label }` objects. |
 
 Project tags can also go here; see [Projects](/docs/docker/projects).
 
@@ -128,6 +129,7 @@ Strategies and how updates are checked and applied are explained in [Auto Update
 | `com.getarcaneapp.arcane.updater.delay`            | Hours to wait before auto-update installs a new image.                                                                                     |
 | `com.getarcaneapp.arcane.updater.configured-image` | Set by Arcane, not by you. Records the image reference of a container Arcane had to roll back to an image ID, so it keeps getting updates. |
 | `com.getarcaneapp.arcane.update-check`             | `false` stops update checks and notifications. Also `x-arcane.update-check`.                                                               |
+| `com.getarcaneapp.arcane.auto-heal`                | Opt a container into (`true`) or out of (`false`) [Auto Heal](/docs/docker/containers#restart-unhealthy-containers-automatically).         |
 | `com.getarcaneapp.arcane.depends-on`               | Comma-separated container names to restart in order during updates. No `x-arcane` field.                                                   |
 | `com.getarcaneapp.arcane.stop-signal`              | Signal used to stop the container during updates. No `x-arcane` field.                                                                     |
 

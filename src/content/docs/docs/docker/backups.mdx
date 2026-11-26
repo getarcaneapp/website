@@ -1,6 +1,6 @@
 ---
 title: "Backups"
-description: "Back up Docker volumes and Arcane itself to local storage or S3-compatible storage."
+description: "Back up Docker volumes, Compose projects, and Arcane itself to local storage or S3-compatible storage."
 ---
 
 import ScreenshotFrame from "#components/content/ScreenshotFrame.astro";
@@ -190,9 +190,52 @@ To back up many volumes with one schedule (admin only):
 - **Run now** reports matched, successful, failed, and skipped volumes.
 - Results appear in each volume's **Backups** tab as **System-managed**, next to **Volume-managed** backups.
 
+## Project backups
+
+Back up a Compose project's files and the data of its selected volumes together as one snapshot. When the project's containers are stopped during the snapshot, the files and volumes restore to the same point in time.
+
+### Create a project backup
+
+1. Open a project and select its **Backups** tab.
+2. Click **Create Backup**, or open the dropdown to choose **Local**, **S3**, or **Local + S3** (with a saved S3 destination).
+3. Select the volumes to include. External volumes and volumes using driver options that store data outside Docker aren't backed up. If the project has no volumes, only its files are backed up.
+4. Optional: turn on **Stop containers during backup** so Arcane stops the project's running containers for a consistent snapshot and starts them again afterward. Other containers keep running.
+
+### Schedule project backups
+
+You can schedule backups for one project, or set up a global schedule for many projects at once.
+
+**Per project:**
+
+1. Open the project's **Backups** tab and click **Add schedule**.
+2. Set the cron schedule, retention (**Backups to keep**, `0` keeps all), destination (**Local**, **S3**, or **Local + S3**), volumes, and whether to stop containers during the snapshot.
+3. Save.
+
+**Global schedule (admin only):**
+
+1. Open **System → Backups** and click **Create schedule**.
+2. Choose **Project**.
+3. Set the schedule, retention (per project), destination, and whether to stop each project's containers during its snapshot.
+4. Pick which projects to include:
+
+| Mode             | Included projects                                                               |
+| ---------------- | ------------------------------------------------------------------------------- |
+| **All projects** | Every current and future project.                                               |
+| **Allowlist**    | Only the selected projects. New projects are excluded until you select them.    |
+| **Blocklist**    | Every project except the selected ones. New projects are included automatically.|
+
+Rules are checked against the server's projects at every run. If a project has its own enabled backup schedule, that schedule handles it instead of the global one.
+
+### Restore a project
+
+1. Open the project's **Backups** tab, find a successful backup, and open its row menu.
+2. Click **Restore** and confirm.
+
+Arcane stops the project's containers, restores its files and selected volumes, and starts it again if it was running.
+
 ## Back up Arcane itself
 
-System backups save Arcane's application data and runtime configuration, so you can recover the whole installation.
+System backups save Arcane's own application data and runtime configuration, so you can recover the installation. Projects are backed up separately with [Project backups](#project-backups).
 
 Requirements:
 
@@ -236,7 +279,7 @@ Each agent encrypts with its own key, derived from your recovery key and the age
 ### Restore Arcane
 
 > [!CAUTION]
-> A system restore replaces Arcane's current database, users, settings, destinations, secrets, and other application data with the selected restore point.
+> A system restore replaces Arcane's current database, users, settings, destinations, secrets, and other application data with the selected restore point. Backups made without projects leave project folders as they are — restore projects from their [project backups](#project-backups). Older backups and safety backups that include projects still restore them.
 
 1. As an admin, open **System → Backups**.
 2. Find a successful **System** backup and open its row menu.
@@ -273,7 +316,7 @@ Each agent encrypts with its own key, derived from your recovery key and the age
 2. Add the S3 destination with the same bucket and object prefix.
 3. Open **System → Backups** to see the restore points Arcane found.
 
-With a recovery key stored, Arcane searches each instance directory in the destination for system and volume snapshots it can decrypt.
+With a recovery key stored, Arcane searches local storage (`/backups`) and each instance directory in your S3 destinations for system, project, and volume snapshots it can decrypt. This also lets Arcane rediscover local backups if its data volume is lost.
 
 - The search runs whenever you save an S3 destination or open the Backups page.
 - A failure in one directory doesn't stop the others.
