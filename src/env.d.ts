@@ -6,3 +6,5 @@ declare module 'virtual:icons/*' {
 	const component: Component<IconProps> & ((props: IconProps) => unknown);
 	export default component;
 }
+
+/// <reference types="astro/client" />
