@@ -114,7 +114,15 @@ const WIDE_FEATURES = new Set(['Containers', 'Remote hosts']);
 	<body class="overflow-x-clip overscroll-none">
 		<Announcement />
 		<Header />
-		<main class="mx-auto w-full max-w-screen-2xl px-4 lg:px-6">
+		<main class="relative mx-auto w-full max-w-screen-2xl px-4 lg:px-6">
+			<div
+				class="pointer-events-none absolute inset-x-0 -top-16 -z-10 h-136 hero-dot-grid opacity-55"
+				aria-hidden="true"
+			></div>
+			<div
+				class="pointer-events-none absolute inset-x-0 -top-24 -z-10 h-128 glow-top"
+				aria-hidden="true"
+			></div>
 			<section
 				class="grid grid-cols-1 items-center gap-10 pt-12 pb-20 md:pt-16 lg:grid-cols-2 lg:gap-16"
 				aria-labelledby="hero-title"
@@ -125,7 +133,7 @@ const WIDE_FEATURES = new Set(['Containers', 'Remote hosts']);
 						data-track-cta="mobile_beta"
 						data-track-placement="home_hero"
 						class:list={[
-							'mb-6 inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline',
+							'mb-6 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3.5 py-1 text-xs font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/15',
 							focusRing
 						]}
 					>
@@ -175,12 +183,12 @@ const WIDE_FEATURES = new Set(['Containers', 'Remote hosts']);
 					</p>
 				</div>
 
-				<div class="relative mx-auto w-full max-w-2xl lg:max-w-none [&_figure]:my-0">
+				<div class="relative mx-auto w-full max-w-2xl lg:max-w-none [&_figure]:!my-0">
 					<div
-						class="pointer-events-none absolute -inset-4 rounded-2xl glow-center opacity-40 light:opacity-60"
+						class="pointer-events-none absolute -inset-6 -z-10 rounded-3xl glow-center opacity-60"
 						aria-hidden="true"
 					></div>
-					<div class="relative rounded-lg shadow-lg shadow-primary/5">
+					<div class="relative rounded-lg shadow-2xl shadow-primary/10">
 						<ScreenshotFrame name="dashboard" alt="The Arcane dashboard" loading="eager" />
 					</div>
 				</div>
@@ -227,21 +235,18 @@ const WIDE_FEATURES = new Set(['Containers', 'Remote hosts']);
 				</div>
 
 				<div class="relative mx-auto w-full max-w-2xl lg:max-w-none">
-					<div
-						class="pointer-events-none absolute -inset-4 rounded-2xl glow-center opacity-40 light:opacity-60"
-						aria-hidden="true"
-					></div>
 					<section
-						class="relative overflow-hidden rounded-xl border border-primary/20 bg-code shadow-lg shadow-primary/5 [&_.line:nth-child(3)]:bg-primary/14 [&_.line:nth-child(3)_span]:transition-opacity [&_.line:nth-child(3)_span]:duration-280 data-swapping:[&_.line:nth-child(3)_span]:opacity-0 motion-reduce:[&_.line:nth-child(3)_span]:transition-none"
+						class="relative overflow-hidden rounded-xl border border-border bg-code shadow-xl shadow-black/20 light:shadow-black/5 [&_.line:nth-child(3)]:bg-primary/12 [&_.line:nth-child(3)_span]:transition-opacity [&_.line:nth-child(3)_span]:duration-280 data-swapping:[&_.line:nth-child(3)_span]:opacity-0 motion-reduce:[&_.line:nth-child(3)_span]:transition-none"
 						aria-label="Docker Compose example"
 						data-compose-preview
 					>
-						<div class="flex items-center gap-3 border-b border-primary/10 bg-surface/80 px-5 py-3">
-							<div class="flex items-center gap-1.5">
-								<span class="size-2.5 rounded-full bg-destructive/80"></span>
-								<span class="size-2.5 rounded-full bg-warning/80"></span>
-								<span class="size-2.5 rounded-full bg-success/80"></span>
-							</div>
+						<div
+							class="h-px w-full bg-linear-to-r from-transparent via-primary/50 to-transparent"
+							aria-hidden="true"
+						></div>
+						<div
+							class="flex items-center gap-3 border-b border-border bg-surface-muted px-4 py-2.5"
+						>
 							<span class="font-mono text-xs text-muted-foreground">compose.yaml</span>
 							<button
 								type="button"
@@ -269,20 +274,24 @@ const WIDE_FEATURES = new Set(['Containers', 'Remote hosts']);
 
 			<section class="border-t border-border py-16" aria-labelledby="features-title">
 				<h2 id="features-title" class={sectionTitle}>Everything you need to manage Docker</h2>
-				<ul class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				<ul
+					class="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
+				>
 					{features.map((feature) => (
 						<li
 							class:list={[
-								'flex flex-col gap-3 rounded-lg border border-border bg-card p-5',
+								'group flex flex-col gap-3.5 bg-background p-6 transition-colors hover:bg-surface-muted/70',
 								WIDE_FEATURES.has(feature.title) && 'lg:col-span-2'
 							]}
 						>
-							<span class="grid size-9 place-items-center rounded-md bg-primary/15 text-primary">
+							<span class="grid size-9 place-items-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors group-hover:border-primary/35 group-hover:bg-primary/15">
 								<feature.icon class="size-4" aria-hidden="true" />
 							</span>
 							<div>
 								<h3 class="text-base font-medium text-foreground">{feature.title}</h3>
-								<p class="mt-0.5 text-sm text-muted-foreground">{feature.description}</p>
+								<p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+									{feature.description}
+								</p>
 							</div>
 						</li>
 					))}

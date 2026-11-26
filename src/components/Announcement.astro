@@ -7,20 +7,21 @@ const featured = await getFeaturedPost();
 
 {featured && (
 	<div
-		class="relative flex items-center justify-center border-b border-primary/20 bg-primary/8 px-12 py-2"
+		class="relative flex items-center justify-center border-b border-border bg-surface-muted px-12 py-2"
 		data-announcement={featured.slug}
 		data-pagefind-ignore
 	>
 		<a
 			href={featured.href}
-			class="inline-flex min-w-0 items-center gap-2 text-xs font-medium text-primary hover:underline"
+			class="inline-flex min-w-0 items-center gap-2 text-xs font-medium text-foreground transition-colors hover:text-primary"
 		>
+			<span class="size-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
 			<span class="truncate">{featured.data.banner ?? featured.data.title}</span>
-			<ArrowRightIcon class="size-3 shrink-0" />
+			<ArrowRightIcon class="size-3 shrink-0 text-muted-foreground" />
 		</a>
 		<button
 			type="button"
-			class="absolute top-1/2 right-3 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors after:absolute after:-inset-2 after:content-[''] hover:bg-primary/10 hover:text-foreground"
+			class="absolute top-1/2 right-3 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors after:absolute after:-inset-2 after:content-[''] hover:bg-accent hover:text-foreground"
 			aria-label="Dismiss announcement"
 			data-announcement-dismiss
 		>
