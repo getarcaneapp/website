@@ -1,11 +1,11 @@
 ---
 title: "Roles & Permissions"
-description: "Control what users and API keys can do in Arcane with roles and role assignments."
+description: "Control what users, groups, and API keys can do in Arcane with roles, resource-scoped assignments, and IdP group sync."
 ---
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
-Arcane checks a permission, such as `containers:start`, on every action. A role is a named set of permissions. Users get every permission granted by their assigned roles. There are no deny rules.
+Arcane checks a permission, such as `containers:start`, on every action. A role is a named set of permissions. Users get every permission granted by their direct role assignments and by any [user groups](#user-groups) they belong to. There are no deny rules.
 
 ## Assign a role
 
@@ -14,7 +14,7 @@ Arcane checks a permission, such as `containers:start`, on every action. A role 
 
 1. Open **System → Users** and edit a user.
 2. Under **Role assignments**, pick a role per agent.
-3. Optional: add a **Global** assignment for org-wide permissions.
+3. Optional: narrow an agent assignment to a single resource (see [Scope roles to specific resources](#scope-roles-to-specific-resources)), or add a **Global** assignment for org-wide permissions.
 4. Click **Save Changes**.
 
 </TabItem>
@@ -35,7 +35,107 @@ arcane-cli admin roles assign <user-id> --role role_deployer:<agent-id> --role r
 </TabItem>
 </Tabs>
 
-Each assignment grants one role to a user, either globally (covering every agent) or on a single agent. Org-level permissions like `users:*` and `settings:*` require a global assignment. You'll need to be a global admin to view or change assignments. Saving replaces a user's manual assignments, while assignments from [OIDC role mappings](/docs/access/sso) are left untouched.
+Each assignment grants one role to a user or group at one of three scopes: **Global** (covering every agent and org-level endpoints), a single **Agent**, or a specific **Resource** on one agent. Org-level permissions like `users:*` and `settings:*` require a global assignment. You'll need to be a global admin to view or change assignments. Saving replaces a user's manual assignments, while assignments from [OIDC role mappings](/docs/access/sso) or LDAP sync are left untouched.
+
+## Scope roles to specific resources
+
+Instead of granting a role across an entire agent, you can narrow an agent-scoped assignment to a single resource. Resource-scoped assignments work on both users and groups, and Arcane forwards them to remote and edge agents so access is enforced consistently everywhere.
+
+<Tabs>
+<TabItem label="UI">
+
+1. In a user or group's **Role assignments**, pick an agent and a role.
+2. Change the scope dropdown from **All resources in environment** to a resource type (`Project`, `Container`, `Volume`, `Network`, `Image`, or `GitOps`).
+3. For **Project**, pick the project from the dropdown. For other resource types, enter the resource identifier.
+4. Click **Save Changes**.
+
+</TabItem>
+<TabItem label="API">
+
+Include `environmentId`, `resourceType`, and `resourceId` on an assignment in `PUT /api/users/{userId}/roles` or `PUT /api/groups/{id}/roles`:
+
+```json
+{
+  "assignments": [
+    {
+      "roleId": "role_deployer",
+      "environmentId": "0",
+      "resourceType": "project",
+      "resourceId": "proj_123"
+    }
+  ]
+}
+```
+
+All three fields (`environmentId`, `resourceType`, and `resourceId`) must be set together. Global assignments cannot be resource-scoped.
+
+</TabItem>
+</Tabs>
+
+| Resource type | Identifier matched | Notes |
+| --- | --- | --- |
+| `project` | Project ID | Also covers the project's Compose-owned containers, volumes, and networks, images referenced by the project (for `images:list` and `images:read`), and GitOps syncs linked to the project. |
+| `container` | Container ID or name | Applies to that container's actions, logs, stats, and exec. |
+| `volume` | Volume name or ID | Applies to that volume, including workspace and backup routes. |
+| `network` | Network ID or name | Applies to that network's read, connect, disconnect, and delete actions. |
+| `image` | Image ID, repo tag, or repo digest | Applies to that image's read, tag, push, commit, patch, and delete actions. |
+| `gitops` | GitOps sync ID | Applies to that GitOps sync configuration and sync actions. |
+
+> [!NOTE]
+> Collection-wide actions that don't target an existing resource — such as creating or pruning containers, projects, images, volumes, or networks — still require an agent-wide or global assignment.
+
+## User groups
+
+Groups let you manage role assignments for a team in one place instead of repeating them on every user. A user receives the union of their direct role assignments and the role assignments of every group they belong to.
+
+Creating, editing, and deleting groups — as well as changing their members, role assignments, and IdP mappings — requires a global admin. Users with `groups:list` and `groups:read` can view groups in read-only mode.
+
+<Tabs>
+<TabItem label="UI">
+
+1. Go to **System → Groups** and select **Create Group**.
+2. Enter a **Name** and optional **Description**.
+3. Under **Members**, select the users to add manually.
+4. Under **Role Assignments**, add any global, per-agent, or resource-scoped role assignments for the group.
+5. Click **Save**.
+
+</TabItem>
+<TabItem label="API">
+
+Manage groups and their memberships with the Groups API:
+
+- `GET /api/groups` and `POST /api/groups` — list or create groups (creation can include initial `memberUserIds` and `roleAssignments`).
+- `GET /api/groups/{id}`, `PATCH /api/groups/{id}`, `DELETE /api/groups/{id}` — read, update, or delete a group.
+- `GET /api/groups/{id}/members` and `PUT /api/groups/{id}/members` — list members or replace manual memberships.
+- `GET /api/groups/{id}/roles` and `PUT /api/groups/{id}/roles` — list or replace the group's manual role assignments.
+
+</TabItem>
+</Tabs>
+
+### Sync group membership from OIDC or LDAP
+
+You can map OIDC or LDAP group claim values to an Arcane group so users are added to and removed from the group automatically when they sign in via OIDC or during LDAP sync.
+
+<Tabs>
+<TabItem label="UI">
+
+1. Open an existing group under **System → Groups**.
+2. Under **OIDC/LDAP Group Mappings**, enter the claim value from your identity provider (for example `platform-eng`).
+3. Click **Add Mapping**. Repeat for any additional claim values that should map to this group.
+
+</TabItem>
+<TabItem label="API">
+
+- `GET /api/groups/idp-mappings` — list mappings (optionally filter with `?groupId=<group-id>`).
+- `POST /api/groups/idp-mappings` — create a mapping with `{"claimValue": "platform-eng", "groupId": "<group-id>"}`.
+- `DELETE /api/groups/idp-mappings/{id}` — remove a manual mapping.
+
+</TabItem>
+</Tabs>
+
+- Claim values are matched case-insensitively against the groups returned by your OIDC provider (configured via [Groups Claim](/docs/access/sso#map-provider-groups-to-roles)) or LDAP directory.
+- Synced memberships are marked with an **IdP** badge in the member list. Manual memberships are never modified by OIDC or LDAP sync, and saving manual members leaves IdP-synced memberships intact.
+- Deleting a group, removing members, or syncing from an IdP can never remove the last global admin; Arcane rejects or skips changes that would leave no global admin remaining.
 
 ## Create a custom role
 
@@ -92,11 +192,11 @@ You can't edit or delete built-in roles; they change only when you upgrade Arcan
 | Role                | ID                     | Grants                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Admin**           | `role_admin`           | Every permission (`*`), including permissions added in later releases.                                                                                                                                                                                                                                                                                                                                                             |
-| **Editor**          | `role_editor`          | Full Docker, Podman, GitOps, webhook, job, vulnerability, and activity management, plus templates and variables. Read-only on users, roles, API keys, federated credentials, settings, agent settings, registries, Git repositories, and S3 destinations. Can list, read, and sync agents, but not create, edit, delete, pair, or restart them. No Swarm init, join, leave, or unlock, no `system:upgrade`, no `gitops:lifecycle`. |
+| **Editor**          | `role_editor`          | Full Docker, Podman, GitOps, webhook, job, vulnerability, and activity management, plus templates and variables. Read-only on users, roles, groups, API keys, federated credentials, settings, agent settings, registries, Git repositories, and S3 destinations. Can list, read, and sync agents, but not create, edit, delete, pair, or restart them. No Swarm init, join, leave, or unlock, no `system:upgrade`, no `gitops:lifecycle`. |
 | **No-Shell Editor** | `role_no_shell_editor` | Editor without `containers:exec`.                                                                                                                                                                                                                                                                                                                                                                                                  |
 | **Deployer**        | `role_deployer`        | Everything Monitor has, plus read on registries, templates, and variables. Start, stop, restart, redeploy, kill, and pause containers. Deploy, stop, and restart projects. Pull, tag, and commit images. Check for **and apply** image updates. Container and Podman auto-update. Trigger GitOps syncs. Cancel activities. No create or delete, no settings, users, roles, or API keys.                                            |
 | **Monitor**         | `role_monitor`         | List and read, on agents: containers, projects, images, volumes, networks, Swarm, Podman (pods, Quadlets, secrets), image updates, vulnerabilities, and activities. Logs, events, and system info. No org-level pages, no actions.                                                                                                                                                                                                 |
-| **Viewer**          | `role_viewer`          | Everything Monitor has, plus read-only access to users, roles, API keys, federated credentials, settings, agent settings, registries, templates, variables, Git repositories, S3 destinations, and GitOps, and the webhook list.                                                                                                                                                                                                   |
+| **Viewer**          | `role_viewer`          | Everything Monitor has, plus read-only access to users, roles, groups, API keys, federated credentials, settings, agent settings, registries, templates, variables, Git repositories, S3 destinations, and GitOps, and the webhook list.                                                                                                                                                                                                   |
 
 Podman permissions per built-in role:
 
