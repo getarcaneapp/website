@@ -26,14 +26,8 @@ packageExtensions:
       "@emnapi/runtime": "1.11.3"
 
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
-  vite-plus: 1.7.0
-
-peerDependencyRules:
-  allowAny:
-    - vite
-  allowedVersions:
-    vite: "*"
+  vite: npm:@voidzero-dev/vite-plus-core@8.3.8001
+  vite-plus: 1.8.0
 
 minimumReleaseAgeExclude:
   - "@biomejs/biome@2.6.5"
