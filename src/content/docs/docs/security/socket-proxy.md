@@ -5,6 +5,9 @@ description: "Limit what Arcane can do through the Docker socket by putting a pr
 
 A socket proxy is a small container that sits between Arcane and `/var/run/docker.sock`. It forwards only the Docker API routes you allow and blocks the rest.
 
+> [!TIP]
+> A Manager that only manages remote agents needs no socket, so no proxy either. See [Run the Manager without local Docker](/docs/remote/agents#run-the-manager-without-local-docker).
+
 ## What it does and does not protect
 
 - It filters **which API routes** Arcane can call. Blocked routes (for example plugins) fail.
@@ -17,7 +20,7 @@ A socket proxy is a small container that sits between Arcane and `/var/run/docke
 ## Set up the proxy
 
 1. Read [Installation](/docs/get-started/installation) for the encryption key, projects folder, and first login.
-2. Create a `compose.yaml` from an example below. Use **wollomatic/socket-proxy** (what the [Instance Generator](/generator) produces). Use **Tecnativa** only if you already run it.
+2. Create a `compose.yaml` from one of the examples below. We recommend **wollomatic/socket-proxy** (which is what the [Instance Generator](/generator) produces); only use **Tecnativa** if you're already running it.
 3. Replace `<your-encryption-key>` with your key and `/opt/docker` with your projects folder.
 4. Run `docker compose up -d`.
 

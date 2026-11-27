@@ -8,9 +8,8 @@ This runs Podman's own auto-update on every Podman agent at once. It covers cont
 ## Run auto-update
 
 1. Open **Podman → Auto Update**.
-2. Optional (Podman 6.2 or later): turn on **Dry run** to check without applying, or **Roll back failed updates** to restore the previous image if the new one doesn't start.
-3. Run it.
-4. Check the results. Errors are listed with the agent they came from.
+2. On Podman 6.2 or later, you can turn on **Dry run** to check without applying, or **Roll back failed updates** to restore the previous image if the new one doesn't start.
+3. Run the update and review the results. Any errors are listed alongside the agent they came from.
 
 Podman's `podman-auto-update.timer` keeps running on its schedule either way.
 

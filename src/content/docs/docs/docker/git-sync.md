@@ -79,11 +79,7 @@ The Compose file is read-only for **Pull** projects.
 2. Edit and commit on the Git host.
 3. In Arcane, click **Sync from Git**.
 
-`.env` stays editable in Arcane:
-
-- Arcane merges the repository's `.env.git` with your `project.env` edits into `.env`.
-- Your values win. They replace keys in place, keeping order and inline comments. New keys are appended.
-- To pass the values to services, add `env_file: .env` to the Compose file.
+`.env` stays editable in Arcane. On sync, Arcane merges the repository's `.env.git` with your `project.env` edits into `.env`: your values win, replacing keys in place while keeping order and inline comments, and new keys are appended. To pass those values to services, add `env_file: .env` to the Compose file.
 
 ### Import multiple syncs from JSON
 
@@ -141,12 +137,7 @@ Push backs up project configuration only; use [backups](/docs/docker/backups) fo
 
 ### Check a push
 
-The project's **Git Backup** tab shows pending changes, the last push, and errors.
-
-- To push now, click **Back up now**.
-- To see earlier commits, open the history.
-- Arcane commits only when selected files differ.
-- Files you delete or deselect, including `.env`, are removed on the next push. Other repository files are left alone.
+The project's **Git Backup** tab shows pending changes, the last push, and any errors. Click **Back up now** to push immediately, or open the history to see earlier commits. Arcane only commits when selected files differ, and any files you delete or deselect (including `.env`) are removed on the next push while leaving other repository files alone.
 
 ### Resolve repository changes
 
@@ -175,12 +166,7 @@ One sync pulls repository changes into the project and commits changes made in A
 8. Optional: set **Environment Variables**, **Pull Image After Sync**, or **Redeploy After Sync**. They work as in [Pull](#pull-from-git).
 9. Save the sync.
 
-A two-way sync differs from the other directions:
-
-- It targets a project, never a Swarm stack.
-- It has no **Compose Override File** field and no **Max Binary Size** limit.
-- Environment files aren't synced. Arcane's own `.env` is never pushed or pulled.
-- The project name is set by the sync and can't be changed on the project page.
+A two-way sync has a few differences from the other directions: it always targets a project (never a Swarm stack), has no **Compose Override File** field or **Max Binary Size** limit, and never syncs environment files (Arcane's own `.env` is neither pushed nor pulled). The project name is also controlled by the sync and can't be changed on the project page.
 
 ### Run a sync
 

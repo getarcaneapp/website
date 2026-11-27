@@ -25,9 +25,7 @@ Open **Containers** in the sidebar. The table shows name, ID, image, and status.
   decoding="async"
 />
 
-- Long port lists collapse behind a `+N` expander.
-- To show only published host mappings, hide exposed-only ports in the view options menu.
-- To select a range, select a row checkbox, then **Shift**-select another. This works on the current page.
+Long port lists collapse behind a `+N` expander. In the view options menu, you can hide exposed-only ports to show only published host mappings, or turn on **Show Swarm Task Hostnames** on Swarm hosts to display task hostnames in the list (search and sort still use Docker names). To select a range of rows on the current page, check one box and **Shift**-click another.
 
 ### Filter by Docker label
 
@@ -52,10 +50,7 @@ On Podman, Quadlet containers show a **Quadlet** badge. Start, stop, and restart
 2. Change the image, ports, mounts, variables, restart policy, networks, resource limits, or Linux capabilities. Network options include static IPv4 addresses and aliases.
 3. Apply and confirm. Arcane **recreates** the container, so it gets a new container ID.
 
-- Editing needs `containers:update`. Changing network connections also needs `networks:connect` / `networks:disconnect`.
-- Existing mount options are kept.
-- The new image is pulled only if it's missing locally.
-- If recreation fails, Arcane restores the original. Auto-remove containers can't be restored.
+Editing requires `containers:update`, and changing network connections also needs `networks:connect` and `networks:disconnect`. Existing mount options are preserved, and the new image is only pulled if it isn't already on the host. If recreation fails, Arcane restores the original container unless it was configured to auto-remove.
 
 ## Convert a container to a Compose project
 
@@ -78,13 +73,9 @@ To delete them instead, select **Remove original container(s) after creation**. 
 
 ## Inspect a container
 
-Click a container's name or **Inspect**. The detail view has tabs for configuration, network settings, mounts, and logs.
+Click a container's name or **Inspect** to open its detail view, which has tabs for configuration, network settings, mounts, and logs. On **Overview**, clicking the volume or network counts jumps straight to those tabs, and network details show assigned IPv4 and IPv6 addresses. Containers that belong to an Arcane-managed Compose project also link back to their project and include a **Compose** tab showing the root Compose file (or the included file when the service comes from a Compose `include`). That tab is read-only for Git-synced projects.
 
-- **Overview** volume and network counts open their tabs.
-- Network details show assigned IPv4 and IPv6 addresses.
-- Containers in an Arcane-managed Compose project get a **Compose** tab. It shows the root Compose file, or the included file when the service comes from a Compose `include`. It's read-only for Git-synced projects.
-- Project containers link to their project.
-- Sensitive environment values are masked on the **Configuration** and **Inspect** tabs. **Show** reveals them all; on **Configuration**, **Reveal value** shows one. A variable is sensitive when a `_`-separated part of its name is a word such as `PASSWORD`, `SECRET`, `TOKEN`, `KEY`, or `AUTH`, or its value is a URL with credentials (contains `://` and `@`). Names ending in `_FILE`, `_PATH`, or `_DIR` are never masked.
+Well-known container and service labels are pretty-printed on the **Configuration** tab for readability. Sensitive environment values are masked on both **Configuration** and **Inspect**; click **Show** to reveal all of them, or **Reveal value** on **Configuration** to show a single one. Arcane treats a variable as sensitive if any `_`-separated part of its name matches words like `PASSWORD`, `SECRET`, `TOKEN`, `KEY`, or `AUTH`, or if its value looks like a URL with credentials (contains `://` and `@`). Names ending in `_FILE`, `_PATH`, or `_DIR` are never masked.
 
 ### Updates
 
@@ -100,11 +91,12 @@ Auto Heal restarts running containers whose Docker healthcheck reports `unhealth
 2. Under **Monitoring**, turn on **Auto-Heal**. It's off by default.
 3. Optional: change its schedule. The default checks every 5 minutes (`*/5 * * * *`).
 
-| Setting                      | Default | What it does                                                                                      |
-| ---------------------------- | ------- | ------------------------------------------------------------------------------------------------- |
-| **Max Restarts**             | 5       | Restarts allowed per container within the restart window. After that, Arcane skips the container. |
-| **Restart Window (minutes)** | 30      | How far back restarts are counted.                                                                |
-| **Excluded Containers**      | None    | Containers Auto Heal never restarts.                                                              |
+| Setting                      | Default   | What it does                                                                                                                           |
+| ---------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Max Restarts**             | 5         | Restarts allowed per container within the restart window. After that, Arcane skips the container.                                      |
+| **Restart Window (minutes)** | 30        | How far back restarts are counted.                                                                                                     |
+| **Auto-Heal Mode**           | `exclude` | `exclude` heals every container except the listed ones. `include` only heals listed containers and those with `com.getarcaneapp.arcane.auto-heal=true`. |
+| **Auto-Heal Containers**     | None      | Comma-separated container list. Skipped in `exclude` mode, targeted in `include` mode.                                                 |
 
 Both numbers must be at least 1. Auto Heal also skips Arcane's own container, Arcane's helper containers, and Podman [Quadlet](/docs/podman/quadlets) containers, whose systemd `Restart=` policy handles recovery.
 
@@ -114,18 +106,14 @@ Each restart is logged as a container restart event and sends an **Auto-Heal Res
 
 1. Open a running container's detail view.
 2. Open the **Shell** tab. This needs `containers:exec`.
-3. Pick `sh`, `bash`, `ash`, `zsh`, or enter a custom path.
+3. Pick **Auto** (`bash` when the container has it, otherwise `sh`), `sh`, `bash`, `ash`, `zsh`, or enter a custom path.
+4. Optional: pick a user to run the shell as, or leave it on **Container default**.
 
-Your browser remembers the choice per Compose service (or container name), so it survives recreation. Without a saved choice, Arcane uses the agent's **Default Shell** (**Settings → Docker**), which is `/bin/sh` by default.
+Arcane remembers your shell and user choice per Compose service (or container name), so it survives recreation. Without a saved choice, it uses your **Default Shell** preference under **Account → Preferences** (a path, `auto`, or the agent's default), falling back to the agent's **Default Shell** (**Settings → Docker**, `/bin/sh` by default).
 
 ## View logs
 
-Open the container's **Logs** tab.
-
-- **Search** filters lines. The line-count menu picks how far back to load, from **50 lines** to **All logs**.
-- JSON and logfmt logs render as structured rows. Multiline messages, such as stack traces, stay together.
-- Standard error lines carry a marker.
-- Small CPU and memory monitors show alongside.
+Open the container's **Logs** tab. Use **Search** to filter lines and the line-count menu to choose how far back to load, from **50 lines** to **All logs**. JSON and logfmt entries render as structured rows while keeping multiline messages like stack traces together, stderr lines carry a marker, and small CPU and memory monitors sit alongside the output.
 
 Open **Display** to toggle **Auto-scroll**, **Timestamps**, **Raw output** (original line text instead of parsed rows), and **Auto-start** (stream when the tab opens). Project logs also offer **Stream labels**, which show the service name on each line.
 
@@ -139,10 +127,7 @@ Open **Display** to toggle **Auto-scroll**, **Timestamps**, **Raw output** (orig
 
 ### Download logs
 
-Click the download icon. You get a plain-text `.log` file with timestamps and all stdout and stderr Docker still keeps.
-
-- The download ignores the viewer's filters and line limit.
-- Logs already removed by Docker's log rotation aren't included.
+Click the download icon to save a plain-text `.log` file with timestamps and all stdout and stderr Docker still keeps. The download ignores the viewer's filters and line limit, though logs already removed by Docker's log rotation won't be included.
 
 ## Remove a container
 

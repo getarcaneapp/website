@@ -12,7 +12,7 @@ Open **Account → Preferences** to set your theme, fonts, layout, language, edi
 
 - **Theme:** Light, Dark, or System (follows your operating system).
 - **Application Theme:** Default, Abyss, Amber, Carbon, Everforest, GitHub, Graphite, Mono, Neon, Nord, Ocean, Rosé Pine, or Twilight.
-- **Import Theme:** add a custom theme from a JSON file or pasted JSON. Up to 20. Export or delete a custom theme from its card menu.
+- **Import Theme:** add up to 20 custom themes from a JSON file or pasted JSON. You can export or delete a custom theme from its card menu.
 - **Accent Color:** the highlight color used across the UI.
 - **OLED Mode:** true-black backgrounds. Works only with the Default application theme in dark mode.
 - **Icon Catalog:** **selfh.st** or **Dashboard Icons**, used to resolve project and container icon slugs. See [Compose Labels](/docs/reference/compose-labels).
@@ -86,7 +86,4 @@ Under **Logos and icons**, each image has **Upload** (**Replace** once set) and 
 | **Favicon**   | PNG, SVG, or ICO                 | Browser tab.                                          |
 | **App icon**  | Square PNG, 512×512 to 4096×4096 | Installed app and home screen icons.                  |
 
-- Each file can be up to 2 MB.
-- Arcane resizes the **App icon** to every app icon size.
-- Uploaded images replace the development artwork on [preview builds](/docs/get-started/preview-builds).
-- The API endpoints are `PUT` and `DELETE` on `/api/app/images/logo/{mark|full}`, `/api/app/images/favicon`, and `/api/app/images/pwa`. Uploads are `multipart/form-data` with a `file` field.
+Files can be up to 2 MB, and Arcane automatically resizes the **App icon** to every required app icon size. Uploaded images also replace the development artwork on [preview builds](/docs/get-started/preview-builds). If you're automating branding via the API, send `multipart/form-data` with a `file` field using `PUT` or `DELETE` on `/api/app/images/logo/{mark|full}`, `/api/app/images/favicon`, and `/api/app/images/pwa`.

@@ -54,16 +54,14 @@ What Arcane tracks:
 
 ## Review automation runs
 
-This needs `jobs:list`.
+You need the `jobs:list` permission to view automation runs.
 
-1. Open **Settings → Automations**, then **Run history** for a job. Or open the agent's **History** tab under **Agents**.
-2. Select a run. It shows attempts, errors, per-target results, and activity output.
+1. Open **Settings → Automations**, then select **Run history** for a job. You can also open an agent's **History** tab under **Agents**.
+2. Select a run to inspect its attempts, errors, per-target results, and activity output.
 
-- Update checks, auto updates, scans, patching, GitOps syncs, and backups also list **Steps**.
-- A queued run on a remote agent shows **Waiting for agent** until the agent is reachable.
-- Agents on an older Arcane version must be upgraded to report run history.
-- Depending on its state, a run offers **Retry run** or **Cancel pending run**.
-- For a failed, partial, or **Needs attention** run, check its output and the affected resources before you retry.
+Update checks, auto updates, scans, patching, GitOps syncs, and backups also break down their progress under **Steps**. If a run is queued for an offline remote agent, it stays in **Waiting for agent** until the agent reconnects. Agents on older Arcane versions need an upgrade before they can report run history.
+
+Depending on a run's state, you can **Retry run** or **Cancel pending run**. If a run failed, partially succeeded, or is marked **Needs attention**, check its output and affected resources before retrying.
 
 ## Review the Event Log
 

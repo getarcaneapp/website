@@ -51,7 +51,7 @@ To generate the encryption key and mount your projects folder, see [Installation
 
 ## Run an agent
 
-To manage the LXC as a remote agent, run the agent in it. Set `pid: host` and mount `/proc` so the agent can read host process metrics:
+If you'd rather manage this LXC as a remote agent instead of running the full Manager, deploy the agent container with `pid: host` and `/proc` mounted so it can read host process metrics:
 
 ```yaml
 services:

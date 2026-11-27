@@ -12,7 +12,7 @@ import ScreenshotFrame from "#components/content/ScreenshotFrame.astro";
 Use this when an agent isn't in a Swarm yet. Arcane then includes it in the rest of the Swarm workspace.
 
 1. Open **Swarm → Cluster** and click **Inspect** on the agent.
-2. Optional: under **Initialize Cluster**, open **Advanced settings**. The defaults suit a local or single-network cluster.
+2. Optionally open **Advanced settings** under **Initialize Cluster** (the defaults work fine for a local or single-network cluster).
 3. Click **Initialize**.
 
 <ScreenshotFrame
@@ -48,7 +48,7 @@ To add an agent to a running cluster as a manager or worker:
 1. Click **Easy Join** on a manager's row under **Swarm → Cluster**, or on a Remote Agent's detail page or row menu.
 2. Select each target. Only enabled, online agents not already linked to a node of this cluster are offered.
 3. For each target, choose **worker** or **manager** and an availability mode.
-4. Optional: set listen, advertise, or data-path addresses per target. Blank manager addresses use the ones Arcane finds in the cluster. Any you enter must be reachable from every selected host.
+4. Optionally set listen, advertise, or data-path addresses per target. Blank manager addresses use the ones Arcane finds in the cluster. Any you enter must be reachable from every selected host.
 5. Confirm.
 
 Join tokens are never shown. Each target gets its own result in **Join results**, and one failure doesn't undo the others:

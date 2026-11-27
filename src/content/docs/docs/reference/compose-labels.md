@@ -17,7 +17,8 @@ x-arcane:
   icon-dark: nginx
   urls:
     - https://docs.example.com
-    - https://github.com/example/repo
+    - url: https://github.com/example/repo
+      label: Source
 
 services:
   nginx:
@@ -26,10 +27,10 @@ services:
 
 | Field        | Meaning                                                                  |
 | ------------ | ------------------------------------------------------------------------ |
-| `icon-light` | Light-coloured icon, shown when Arcane uses the dark theme.              |
-| `icon-dark`  | Dark-coloured icon, shown when Arcane uses the light theme.              |
+| `icon-light` | Light-colored icon, shown when Arcane uses the dark theme.               |
+| `icon-dark`  | Dark-colored icon, shown when Arcane uses the light theme.               |
 | `icon`       | Single icon for both themes, used only when neither of the above is set. |
-| `urls`       | Extra links shown next to the project, such as docs or a homepage.       |
+| `urls`       | Extra links shown next to the project, such as docs or a homepage. Entries can be plain URL strings or `{ url, label }` objects. |
 
 Project tags can also go here; see [Projects](/docs/docker/projects).
 
@@ -48,7 +49,7 @@ services:
 
 They work like the project fields; `com.getarcaneapp.arcane.icon` is the single-icon fallback. Short forms `arcane.icon`, `arcane.icon-light`, and `arcane.icon-dark` also work. Project and service icons are independent.
 
-Icon values are absolute `http://` or `https://` URLs (used as-is) or icon catalog slugs. Data URIs and base64 icons are not supported. The **Icon Catalog** account preference decides how slugs resolve:
+Icon values are absolute `http://` or `https://` URLs (used as-is) or icon catalog slugs. Data URIs and base64 icons aren't supported. The **Icon Catalog** account preference decides how slugs resolve:
 
 | Catalog                | `nginx` resolves to                                                     |
 | ---------------------- | ----------------------------------------------------------------------- |
@@ -103,13 +104,13 @@ services:
 
 | Field         | Label                                         | Meaning                                                                                                                                                                                                                         |
 | ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled`     | `com.getarcaneapp.arcane.updater`             | Boolean. `false` stops automatic installation; the container is still checked. It does not turn on the agent's auto-update schedule.                                                                                            |
+| `enabled`     | `com.getarcaneapp.arcane.updater`             | Boolean. `false` stops automatic installation; the container is still checked. It doesn't turn on the agent's auto-update schedule.                                                                                           |
 | `strategy`    | `com.getarcaneapp.arcane.updater.strategy`    | `digest` (default), `auto`, or `tag`.                                                                                                                                                                                           |
 | `constraint`  | `com.getarcaneapp.arcane.updater.constraint`  | Semantic version range, such as `3.x`, `3.20.x`, or `=3.20.1`. Without one, version updates stay within the current major, or current minor for `0.x`.                                                                          |
 | `tag-pattern` | `com.getarcaneapp.arcane.updater.tag-pattern` | Regex the whole tag must match. A named `version` capture extracts the version from variant tags; without one, the whole tag must be a semantic version.                                                                        |
 | `delay`       | `com.getarcaneapp.arcane.updater.delay`       | Whole hours, `0` to `8760`, a new image must be available before auto-update installs it. Overrides the agent's **Update Delay**; `0` installs immediately. See [Delay new images](/docs/docker/auto-updates#delay-new-images). |
 
-Each field resolves separately; first match wins: an explicit service label, then the service's `x-arcane.updater` field, then the project's `x-arcane.updater` default. An empty `constraint` or `tag-pattern` string clears an inherited value. Arcane can check project metadata before containers exist, and the Compose editor offers completions and hover help for these fields.
+Each field resolves separately, with the first match winning: an explicit service label, then the service's `x-arcane.updater` field, and finally the project's `x-arcane.updater` default. An empty `constraint` or `tag-pattern` string clears an inherited value. Arcane can check project metadata before containers exist, and the Compose editor offers completions and hover help for these fields.
 
 Strategies and how updates are checked and applied are explained in [Auto Updates](/docs/docker/auto-updates).
 
@@ -118,8 +119,8 @@ Strategies and how updates are checked and applied are explained in [Auto Update
 | Label                                              | Purpose                                                                                                                                    |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `com.getarcaneapp.arcane.icon`                     | Fallback service icon.                                                                                                                     |
-| `com.getarcaneapp.arcane.icon-light`               | Light-coloured service icon for the dark theme.                                                                                            |
-| `com.getarcaneapp.arcane.icon-dark`                | Dark-coloured service icon for the light theme.                                                                                            |
+| `com.getarcaneapp.arcane.icon-light`               | Light-colored service icon for the dark theme.                                                                                             |
+| `com.getarcaneapp.arcane.icon-dark`                | Dark-colored service icon for the light theme.                                                                                             |
 | `com.getarcaneapp.arcane.hidden`                   | Hide the container from the default list.                                                                                                  |
 | `com.getarcaneapp.arcane.updater`                  | Allow or block automatic installation.                                                                                                     |
 | `com.getarcaneapp.arcane.updater.strategy`         | Update strategy.                                                                                                                           |
@@ -128,6 +129,7 @@ Strategies and how updates are checked and applied are explained in [Auto Update
 | `com.getarcaneapp.arcane.updater.delay`            | Hours to wait before auto-update installs a new image.                                                                                     |
 | `com.getarcaneapp.arcane.updater.configured-image` | Set by Arcane, not by you. Records the image reference of a container Arcane had to roll back to an image ID, so it keeps getting updates. |
 | `com.getarcaneapp.arcane.update-check`             | `false` stops update checks and notifications. Also `x-arcane.update-check`.                                                               |
+| `com.getarcaneapp.arcane.auto-heal`                | Opt a container into (`true`) or out of (`false`) [Auto Heal](/docs/docker/containers#restart-unhealthy-containers-automatically).         |
 | `com.getarcaneapp.arcane.depends-on`               | Comma-separated container names to restart in order during updates. No `x-arcane` field.                                                   |
 | `com.getarcaneapp.arcane.stop-signal`              | Signal used to stop the container during updates. No `x-arcane` field.                                                                     |
 

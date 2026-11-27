@@ -79,7 +79,7 @@ Sending `multipart/form-data` directly to the consuming endpoints still works bu
 
 ## Inbound Webhooks
 
-Use a webhook when an external system, such as GitHub Actions or another CI job, needs to trigger Arcane without a logged-in session. Targets: a single container update, a project redeploy, an agent-wide updater run, or a Git Sync run.
+Use a webhook when an external system, such as GitHub Actions or another CI job, needs to trigger Arcane without a logged-in session. A webhook can target a single container update, a project redeploy, an agent-wide updater run, or a Git Sync run.
 
 Trigger it with a POST to its tokenized public endpoint:
 
@@ -89,7 +89,6 @@ curl -X POST "https://arcane.example.com/api/webhooks/trigger/arc_wh_xxxxxxxxxxx
 
 A valid trigger returns `202 Accepted` and `{"success": true, "data": {"status": "accepted"}}` right away, so CI jobs don't wait on an open connection. The deploy, sync, or update runs in the background; its outcome is recorded in the Event Log, not the HTTP response.
 
-- The token in the URL is the credential. It's shown once at creation, and Arcane stores only a hash.
-- Disabled webhooks return `403`; unknown or invalid tokens return `404`.
+The token in the URL is the credential. It's shown once at creation, and Arcane only stores a hash. Disabled webhooks return `403`, and unknown or invalid tokens return `404`.
 
 Create and manage webhooks in **System → Webhooks**. The list shows webhooks from every agent, and **Agent** sets where a new webhook runs.

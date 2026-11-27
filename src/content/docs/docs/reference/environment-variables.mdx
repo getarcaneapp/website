@@ -28,6 +28,9 @@ Set these variables on the Arcane container in your Compose file. Most settings 
 
 ## Manager variables
 
+> [!TIP]
+> No Docker socket on the Manager? Set `ARCANE_LOCAL_DOCKER_ENABLED=false`. See [Run the Manager without local Docker](/docs/remote/agents#run-the-manager-without-local-docker).
+
 <div id="environment-variables" class="scroll-m-28">
   <EnvTable />
 </div>
@@ -39,10 +42,7 @@ For the `ARCANE_DATABASE_URL` Postgres format, see [External Postgres database](
 
 ## Settings overrides
 
-Set a variable below to override that setting. The UI locks the setting and shows **Set by** with the variable name.
-
-- An invalid value stops Arcane at startup.
-- `ARCANE_UI_CONFIGURATION_DISABLED=true` makes every setting read-only in the UI.
+Set a variable below to override that setting. The UI locks the setting and shows **Set by** with the variable name. An invalid value stops Arcane at startup. To make every setting read-only in the UI, set `ARCANE_UI_CONFIGURATION_DISABLED=true`.
 
 <EnvOverridesTable />
 
@@ -93,10 +93,7 @@ An Arcane Agent needs these three variables. The install command from [Add an ag
   </table>
 </div>
 
-- Missing `ARCANE_MANAGER_API_URL` or `ARCANE_AGENT_TOKEN` stops the agent at startup.
-- `AGENT_MODE=true` or `ARCANE_AGENT_MODE=true` without `ARCANE_AGENT=true` stops startup.
-- Optional: `ARCANE_AGENT_TRANSPORT`. See [Remote Agents](/docs/remote/agents#choose-a-transport).
-- Optional: `ARCANE_AGENT_MTLS_*`. See [Agent mTLS](/docs/security/edge-mtls).
+The agent won't start if `ARCANE_MANAGER_API_URL` or `ARCANE_AGENT_TOKEN` is missing, or if `AGENT_MODE=true` or `ARCANE_AGENT_MODE=true` is set without `ARCANE_AGENT=true`. You can also optionally set `ARCANE_AGENT_TRANSPORT` (see [Remote Agents](/docs/remote/agents#choose-a-transport)) and `ARCANE_AGENT_MTLS_*` (see [Agent mTLS](/docs/security/edge-mtls)).
 
 ## Container runtime user
 
@@ -126,7 +123,7 @@ Set job intervals and cron expressions in the Settings UI or with [settings over
 
 ## Default admin account
 
-On first start with an empty database, Arcane creates an admin named `arcane` with a random password, writes the password to `/app/data/initial-admin-password`, and asks for a new password at first sign-in. These variables change that. They are read only when the admin is created, so they never change an existing account.
+On first start with an empty database, Arcane creates an admin named `arcane` with a random password, writes the password to `/app/data/initial-admin-password`, and asks for a new password at first sign-in. These variables change that. They're only read when the admin is created, so they never change an existing account.
 
 | Variable                        | Default  | Description                                                                                       |
 | ------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
@@ -134,7 +131,7 @@ On first start with an empty database, Arcane creates an admin named `arcane` wi
 | `ARCANE_DEFAULT_ADMIN_PASSWORD` | Random   | Password of that admin. To read it from a file, set `ARCANE_DEFAULT_ADMIN_PASSWORD_FILE` instead. |
 | `ARCANE_DEFAULT_ADMIN_DISABLED` | `false`  | Set to `true` to create no default admin.                                                         |
 
-A password you set is not written to that file, and Arcane does not ask you to change it. It must meet the [password policy](/docs/access/account-recovery#password-policy); otherwise Arcane logs a warning and creates no admin until you fix the value and restart.
+A password you set isn't written to that file, and Arcane won't ask you to change it. It must meet the [password policy](/docs/access/account-recovery#password-policy); otherwise Arcane logs a warning and creates no admin until you fix the value and restart.
 
 ```yaml
 services:

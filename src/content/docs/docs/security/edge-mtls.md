@@ -25,8 +25,8 @@ With mTLS, each agent also proves its identity with a client certificate, so a l
    ARCANE_AGENT_MTLS_CA_FILE=/etc/ssl/manager-ca.crt
    ```
 
-4. Mount the agent's `ARCANE_AGENT_MTLS_ASSETS_DIR` on a persistent volume. Otherwise the agent enrolls again on every restart.
-5. If a reverse proxy terminates HTTPS, make it require client certificates on the agent tunnel routes.
+4. Mount the agent's `ARCANE_AGENT_MTLS_ASSETS_DIR` on a persistent volume, otherwise it'll re-enroll on every restart.
+5. If a reverse proxy terminates HTTPS, configure it to require client certificates on the agent tunnel routes.
 
 Arcane creates the CA and signs each agent's certificate. Each agent generates its own private key, which never leaves the agent host, and renews its certificate automatically.
 
@@ -73,14 +73,12 @@ When both `ARCANE_AGENT_MTLS_CERT_FILE` and `ARCANE_AGENT_MTLS_KEY_FILE` are set
 
 ## Download certificates from the UI
 
-The Manager holds no agent private keys, so only public certificates can be downloaded.
+Because the Manager never holds agent private keys, you can only download public certificates:
 
-- The **Connection & Agent** tab, under **Certificate files**: **Download mTLS Bundle** (the agent CA, plus the agent's certificate once it has enrolled) and **Download certificate**.
-- The Manager CA: **Download Agent CA** on the **Agents** page.
+- **Agent certificates:** Open the **Connection & Agent** tab and look under **Certificate files** for **Download mTLS Bundle** (the agent CA plus the agent's certificate once enrolled) and **Download certificate**.
+- **Manager CA:** Click **Download Agent CA** on the **Agents** page.
 
-Every download needs `environments:pair`. Each download logs an `environment.mtls.download` event with the user and file name.
-
-To provision an agent by hand, see [Use your own certificates](#use-your-own-certificates).
+Downloading certificates requires the `environments:pair` permission, and each download logs an `environment.mtls.download` event with the user and file name. If you want to provision an agent by hand, see [Use your own certificates](#use-your-own-certificates).
 
 ## Renew or cut off an agent
 
@@ -101,26 +99,21 @@ To provision an agent by hand, see [Use your own certificates](#use-your-own-cer
 
 ## How it works
 
-- The enrollment token is traded once for the agent key. The agent then uses that key to request a client certificate.
-- The agent key alone can't produce a usable certificate. The Manager only signs the public key in the request, so the private key stays on the agent.
-- If Arcane terminates TLS, the certificate authenticates every later request. It must belong to the same agent as the agent key.
-- If a reverse proxy terminates TLS, the proxy checks the certificate before forwarding agent tunnel traffic. Arcane uses the agent key to find the agent.
-- Whichever layer terminates TLS rejects a missing or invalid certificate, or one for the wrong agent.
+The enrollment token is traded once for the agent key, which the agent then uses to request a client certificate. Because the Manager only signs the public key in the request, the private key never leaves the agent host, and a leaked agent key alone can't produce a usable certificate.
+
+When Arcane terminates TLS directly, the client certificate authenticates every subsequent request and must match the agent key. When a reverse proxy terminates TLS, the proxy validates the certificate before forwarding tunnel traffic, and Arcane uses the agent key to identify the agent. Either way, whichever layer terminates TLS rejects missing, invalid, or mismatched certificates.
 
 ### Enrollment
 
 1. The agent generates a private key and a certificate signing request (CSR).
 2. The agent calls `POST /api/tunnel/mtls/enroll` over HTTPS with the CSR, presenting its agent key.
 3. The Manager signs the CSR's public key into a client certificate valid for about a year and returns it with the agent CA.
-4. The agent checks that the certificate matches its key, then saves `agent.crt`, `agent.key`, and `ca.crt` in `ARCANE_AGENT_MTLS_ASSETS_DIR`.
-5. The agent reconnects with them. Later starts reuse the files.
-6. The agent enrolls again, with a new key, when the certificate is expired or close to expiry.
+4. The agent verifies that the certificate matches its key, then saves `agent.crt`, `agent.key`, and `ca.crt` in `ARCANE_AGENT_MTLS_ASSETS_DIR`.
+5. The agent reconnects using those files and reuses them on later restarts.
+6. When the certificate expires or gets close to expiry, the agent enrolls again with a new key.
 
-For 15 minutes after an enrollment, the Manager only re-sends the same certificate to the same key. A request with a different key is refused until the window ends.
+For 15 minutes after an enrollment, the Manager will only re-send the same certificate to the same key; any request with a different key is refused until that window ends.
 
 ### Key types
 
-- New CAs use **ML-DSA-87**, a post-quantum signature algorithm.
-- Agents generate **ML-DSA-87** keys.
-- An existing ECDSA P-384 CA keeps working. Enrolled agents keep their P-384 certificate until it renews, then switch to an ML-DSA-87 key.
-- ML-DSA certificates need **TLS 1.3** on every hop. TLS 1.2-only proxies break them.
+New CAs and agent keys use **ML-DSA-87**, a post-quantum signature algorithm. Existing ECDSA P-384 CAs still work: enrolled agents keep their P-384 certificates until renewal, then switch to an ML-DSA-87 key. Note that ML-DSA certificates require **TLS 1.3** on every hop, so TLS 1.2-only proxies will break them.

@@ -36,4 +36,4 @@ Docker doesn't allow changing the name, config content, or secret value. To chan
 
 If someone else changes it while you edit, Docker rejects your save. Open it again to load the current version.
 
-Join tokens and the manager unlock key are not Swarm secrets. They're cluster credentials, managed on the Cluster page.
+Join tokens and the manager unlock key aren't Swarm secrets; they're cluster credentials managed on the **Cluster** page.

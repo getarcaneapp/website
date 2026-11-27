@@ -5,7 +5,7 @@ description: "Let users sign in to Arcane through your OpenID Connect provider."
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
-Works with any OpenID Connect provider, such as Authentik, Keycloak, Pocket ID, or Azure AD.
+Arcane works with any OpenID Connect provider, including Authentik, Keycloak, Pocket ID, and Microsoft Entra ID (Azure AD).
 
 ## Before you start
 
@@ -78,6 +78,9 @@ If the provider is down or misconfigured, open `https://<your-arcane-url>/login/
 ## Map provider groups to roles
 
 A mapping grants a role when a value in the user's groups claim matches. It can apply globally or to one agent. Arcane re-checks the claim on every login, so removing a user from a provider group removes the role at their next sign-in.
+
+> [!TIP]
+> To grant multiple roles or [resource-scoped roles](/docs/access/roles#scope-roles-to-specific-resources) from a single provider group — or share the same mapping across OIDC and LDAP — map the claim to an Arcane [user group](/docs/access/roles#sync-group-membership-from-oidc-or-ldap) under **System → Groups** instead.
 
 First, get groups into the user's token:
 

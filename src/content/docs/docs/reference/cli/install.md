@@ -37,9 +37,7 @@ The script downloads the binary for your platform. Stable installs come from Git
    export PATH="$ARCANE_INSTALL_DIR:$PATH"
    ```
 
-- It installs to `$HOME/.arcane/bin` unless you set `ARCANE_INSTALL_DIR`.
-- `--beta` always installs the latest build from the `next` channel. You can't pin a beta version.
-- To install manually, download the binary from [GitHub Releases](https://github.com/getarcaneapp/arcane/releases/latest).
+By default, the script installs to `$HOME/.arcane/bin` unless you set `ARCANE_INSTALL_DIR`. Passing `--beta` always grabs the latest build from the `next` channel (you can't pin a specific beta version). If you prefer to install manually, download the binary directly from [GitHub Releases](https://github.com/getarcaneapp/arcane/releases/latest).
 
 ## Install with APT (Debian / Ubuntu)
 

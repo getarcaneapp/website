@@ -3,7 +3,7 @@ title: "TLS and HTTP/2"
 description: "Serve Arcane over HTTPS through a reverse proxy or your own TLS certificates."
 ---
 
-For most installations, let a reverse proxy handle HTTPS (Option A). Otherwise Arcane can serve HTTPS itself with your certificate (Option B).
+For most setups, it's easiest to let a reverse proxy handle HTTPS (Option A). If you'd rather not run a proxy, Arcane can serve HTTPS directly using your own certificate (Option B).
 
 ## Option A: HTTPS handled by a reverse proxy
 
@@ -15,11 +15,11 @@ For most installations, let a reverse proxy handle HTTPS (Option A). Otherwise A
    ARCANE_APP_URL=https://your-domain.com
    ```
 
-3. Optional: set `ARCANE_PORT` (default `3552`).
+3. Optionally, set `ARCANE_PORT` if you want something other than the default `3552`.
 
 ## Option B: Direct Arcane HTTPS and HTTP/2
 
-You need a domain name, a valid certificate and private key, and access to Arcane's `.env` or container settings.
+You'll need a domain name, a valid certificate and private key, and access to Arcane's `.env` or container settings.
 
 1. Set these in your `.env` file or container environment:
 
@@ -32,9 +32,9 @@ You need a domain name, a valid certificate and private key, and access to Arcan
 
    Arcane won't start with `ARCANE_TLS_ENABLED=true` unless both the cert and key files are set.
 
-2. Optional: set `ARCANE_PORT` (default `3552`) and `ARCANE_LISTEN` (empty binds all interfaces).
+2. Optionally, set `ARCANE_PORT` (default `3552`) and `ARCANE_LISTEN` (leaving it empty binds all interfaces).
 3. Restart Arcane.
-4. Open your `https://` URL and check the browser reports a valid certificate.
+4. Open your `https://` URL and verify the browser shows a valid certificate.
 
 ## HTTP/2 without TLS
 

@@ -3,7 +3,7 @@ title: "CLI Commands"
 description: "Practical arcane-cli invocations for everyday tasks."
 ---
 
-Find the `arcane-cli` commands you'll use most, grouped by task. First set your server URL and sign in (see [CLI Configuration](/docs/reference/cli/config)). Run `arcane-cli <command> --help` for all flags, or `arcane-cli --help` for the full command tree.
+Here are the `arcane-cli` commands you'll use most, grouped by task. Make sure you've set your server URL and signed in first (see [CLI Configuration](/docs/reference/cli/config)). Run `arcane-cli <command> --help` for all flags, or `arcane-cli --help` for the full command tree.
 
 ## Sign in
 
@@ -271,9 +271,7 @@ Read the Event Log:
 arcane-cli admin events list
 ```
 
-- Custom roles: `admin roles list`, `get`, `create`, `update`, `delete`, `permissions`.
-- Assignments: `admin roles assign` and `assignments`.
-- See [Roles & Permissions](/docs/access/roles).
+You can also manage custom roles with `admin roles` (`list`, `get`, `create`, `update`, `delete`, `permissions`) and role assignments with `admin roles assign` and `assignments`. See [Roles & Permissions](/docs/access/roles) for details.
 
 ## System backups
 
@@ -397,7 +395,7 @@ arcane-cli updater run
 arcane-cli updater history
 ```
 
-History shows one row per resource: resource, type, status, whether the update was applied, and start time. `--limit` (`-n`) sets how many entries return; the default is 50.
+History shows one row per resource: resource, type, status, whether the update was applied, and start time. `--limit` (`-n`) sets how many entries to return (default 50).
 
 ## Update the CLI
 
@@ -417,7 +415,7 @@ If verification fails, the update stops and your binary is unchanged; there's no
 
 The first update downloads Sigstore's trust data from `tuf-repo-cdn.sigstore.dev`. It's cached in `arcane-cli/sigstore` under your user cache directory (`~/.cache` on Linux, `~/Library/Caches` on macOS). Later updates use the cache, even offline, until the trust data expires; then the CLI must reach `tuf-repo-cdn.sigstore.dev` again.
 
-Releases before v1.18.0 are unsigned, so `self-update` can't install them. A signature proves Arcane published a release. It does not stop you from installing an older signed release, for example with `--version`.
+Releases before v1.18.0 are unsigned, so `self-update` can't install them. A signature proves Arcane published a release. It doesn't stop you from installing an older signed release, for example with `--version`.
 
 ## Diagnose problems and set up your shell
 
@@ -448,7 +446,7 @@ In JSON mode, stdout carries exactly one JSON document; status and progress go t
 Commands that remove or reset resources ask for confirmation. Add `--yes` to skip prompts in unattended scripts; on delete commands, `--force` also works.
 
 > [!IMPORTANT]
-> Without a terminal, or with `--json`, a prompt fails with `confirmation required: re-run with --yes` instead of waiting for input. Piping `y` into the command does not answer it.
+> Without a terminal, or with `--json`, a prompt fails with `confirmation required: re-run with --yes` instead of waiting for input. Piping `y` into the command doesn't answer it.
 
 `--all` (`-a`) returns every item, ignoring pagination. It can't be combined with `--limit` or `--start`:
 

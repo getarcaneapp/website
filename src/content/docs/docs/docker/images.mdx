@@ -69,11 +69,7 @@ If updates don't appear, check that Arcane can reach the registry and has its cr
 
 ### Release notes
 
-Arcane finds release notes through the image's `org.opencontainers.image.source` label (or its `url` or `documentation` label).
-
-- A GitHub source opens the matching GitHub release in a dialog.
-- A non-GitHub source shows a link to the project page.
-- An image with none of these labels has no release notes.
+Arcane finds release notes through the image's `org.opencontainers.image.source` label (or its `url` or `documentation` label). A GitHub source opens the matching GitHub release in a dialog, a non-GitHub source links to the project page, and images without any of these labels won't have release notes.
 
 Unauthenticated GitHub requests are limited to 60 per hour. To raise that to 5,000, set **GitHub Token** under **Settings → Automations**.
 
@@ -85,10 +81,7 @@ Arcane reads the `com.docker.dhi.*` labels on [Docker Hardened Images](https://d
 - **Ending soon:** support ends within 30 days. Rebuild on a newer version.
 - **End of life:** support has ended.
 
-The image's **Docker Hardened Image** tab lists its version, distribution, variant, compliance, release and end-of-life dates, shell, and package manager, with **View in catalog**.
-
-- Filter the **Images** table by **Docker Hardened Image**: **Hardened**, **Ending soon**, **End of life**, or **Not hardened**.
-- The Dashboard flags agents with hardened images past or near end of life.
+The image's **Docker Hardened Image** tab lists its version, distribution, variant, compliance, release and end-of-life dates, shell, and package manager, along with a **View in catalog** link. You can filter the **Images** table by **Docker Hardened Image** (**Hardened**, **Ending soon**, **End of life**, or **Not hardened**), and the Dashboard flags agents running hardened images that are past or near end of life.
 
 ## Private registries
 
@@ -113,9 +106,7 @@ team/api
 team/platform/api
 ```
 
-- Arcane validates each name against Docker's reference format and removes duplicates.
-- They fill the **Repository name** dropdown when pushing [builds](/docs/docker/image-builds).
-- Without them, a registry works for pulls and update checks, but can't be a push target.
+Arcane validates each name against Docker's reference format and removes duplicates. These names populate the **Repository name** dropdown when pushing [builds](/docs/docker/image-builds); without them, a registry still works for pulls and update checks, but can't be used as a push target.
 
 ### Browse a registry
 
@@ -123,11 +114,7 @@ team/platform/api
 2. Pick a repository to see its tags, each with digest, size, platforms, and a copyable image reference.
 3. Optional: delete tags one at a time or in bulk. This needs `registries:delete-tags`.
 
-Which repositories show up:
-
-- Catalog registries, such as self-hosted Distribution, list every repository.
-- Docker Hub, GHCR, and similar don't, so Arcane shows the saved **Repository Names**.
-- To load any other repository, type it into **Open Repository**.
+Catalog registries, such as self-hosted Distribution, list every repository automatically. Docker Hub, GHCR, and similar registries don't expose a catalog, so Arcane lists your saved **Repository Names** instead. To load any other repository, type it into **Open Repository**.
 
 > [!WARNING]
 > Arcane deletes a tag by its manifest digest, so every other tag pointing to the same manifest is removed too. The registry frees the storage only after it runs garbage collection.

@@ -115,11 +115,11 @@ Everything that changed in 3.0, for reference. The steps above cover what you mu
 | `ANALYTICS_DISABLED=true`                      | `ARCANE_ANALYTICS_ENABLED=false`                               |
 | `UPDATE_CHECK_DISABLED=true`                   | `ARCANE_UPDATE_CHECK_ENABLED=false`                            |
 
-- `_FILE` variants also require the `ARCANE_` prefix.
+- `_FILE` variants need the `ARCANE_` prefix too.
 - Setting a legacy variable without its `ARCANE_` replacement stops startup with `legacy environment variables are no longer read` and lists each variable to rename (`rename X to ARCANE_X`).
 - Third-party and standard variables are unchanged: `PUID`, `PGID`, `TZ`, `DOCKER_HOST`, `DOCKER_CONFIG`, `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`, and `OTEL_*`.
-- `JWT_SECRET`, `ANALYTICS_DISABLED`, `UPDATE_CHECK_DISABLED`, and `VOLUME_WORKSPACE_MAX_DEPTH` are ignored and log a startup warning until removed. Arcane now signs session tokens with its own ML-DSA-87 key.
-- A settings variable now always applies and locks that setting in the UI. In 2.x it only applied with `UI_CONFIGURATION_DISABLED=true`. `ARCANE_UI_CONFIGURATION_DISABLED=true` still makes every setting read-only.
+- `JWT_SECRET`, `ANALYTICS_DISABLED`, `UPDATE_CHECK_DISABLED`, and `VOLUME_WORKSPACE_MAX_DEPTH` are ignored and log a startup warning until you remove them. Arcane now signs session tokens with its own ML-DSA-87 key.
+- Any settings variable you set now always takes effect and locks that setting in the UI, whereas in 2.x it only applied when `UI_CONFIGURATION_DISABLED=true` was set. `ARCANE_UI_CONFIGURATION_DISABLED=true` still makes every setting read-only.
 - Invalid values stop startup. See [Settings overrides](/docs/reference/environment-variables#settings-overrides).
 
 </Collapsible>
@@ -231,12 +231,9 @@ Every resource now uses the same verbs: `list`, `read`, `create`, `update`, `del
 
 <Collapsible id="job-schedules" title="Job schedules" description="Five-field cron instead of six.">
 
-- Schedules use standard five-field cron: `minute hour day month weekday`.
-- Saved six-field schedules convert automatically. The seconds field is dropped.
-- Update scripts and settings overrides: `0 0 2 * * *` becomes `0 2 * * *`.
-- Descriptors like `@daily` and `@every 6h` still work.
-- A run missed while Arcane was down runs once on startup.
-- Overlapping runs of the same job wait their turn instead of being skipped.
+Schedules now use standard five-field cron (`minute hour day month weekday`). Saved six-field schedules convert automatically by dropping the seconds field, and descriptors like `@daily` and `@every 6h` still work. Make sure to update any scripts or settings overrides (for example, `0 0 2 * * *` becomes `0 2 * * *`).
+
+If a run is missed while Arcane is down, it runs once on startup. Overlapping runs of the same job now wait their turn instead of being skipped.
 
 </Collapsible>
 

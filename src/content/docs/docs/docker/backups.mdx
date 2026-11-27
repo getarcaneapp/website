@@ -1,6 +1,6 @@
 ---
 title: "Backups"
-description: "Back up Docker volumes and Arcane itself to local storage or S3-compatible storage."
+description: "Back up Docker volumes, Compose projects, and Arcane itself to local storage or S3-compatible storage."
 ---
 
 import ScreenshotFrame from "#components/content/ScreenshotFrame.astro";
@@ -34,9 +34,7 @@ volumes:
   arcane-backups:
 ```
 
-- Removing a named volume deletes its backups.
-- Without a `/backups` mount, Arcane uses a fallback volume named `arcane-backups` and warns in the UI. If that name collides, set `ARCANE_BACKUP_VOLUME_NAME`.
-- S3-only backups keep no permanent local copy.
+Removing a named volume deletes its backups. If you don't mount `/backups`, Arcane falls back to a volume named `arcane-backups` and warns you in the UI (set `ARCANE_BACKUP_VOLUME_NAME` if that name collides). S3-only backups don't keep a permanent local copy.
 
 > [!IMPORTANT]
 > Backups on the same host don't survive a disk or host failure. Use S3, or copy the Rustic repository under `/backups` to another system.
@@ -48,9 +46,7 @@ volumes:
 3. Test the destination. The test writes, downloads, verifies, and deletes a temporary object. **Create** and **Save** need a passing test.
 4. Save.
 
-- Destinations sync from the manager to all remote agents.
-- After changing the endpoint, bucket, region, access key ID, SSL, or path-style setting, re-enter the secret access key and test again.
-- You can't delete a destination that a schedule or retained remote backup still uses.
+Destinations sync automatically from the manager to all remote agents. If you change the endpoint, bucket, region, access key ID, SSL, or path-style setting, re-enter the secret access key and test again. You can't delete a destination that a schedule or retained remote backup still uses.
 
 ## Recovery key
 
@@ -60,20 +56,14 @@ The recovery key encrypts system and volume backups. Without it, snapshots can't
 2. Copy the key and store it outside Arcane. It isn't shown again.
 3. Confirm the key to save it.
 
-Arcane keeps a copy for scheduled jobs.
-
-- **Import recovery key** uses a key from another installation.
-- **Reset recovery key** replaces it.
+Arcane keeps a copy of the key for scheduled jobs. You can also use **Import recovery key** to bring in a key from another installation, or **Reset recovery key** to replace it.
 
 > [!WARNING]
 > Losing the recovery key makes the snapshots unrecoverable. Arcane refuses to reset the key while system backups made with the current key still exist, because only the key that created them can open them.
 
 ### Older volume backups
 
-Volume backups made before any recovery key use a password derived from `ARCANE_ENCRYPTION_KEY`.
-
-- When you set a recovery key, Arcane tries to move its existing volume repositories to the new key.
-- Another instance's repositories must be moved by that instance.
+Volume backups made before any recovery key use a password derived from `ARCANE_ENCRYPTION_KEY`. When you set a recovery key, Arcane tries to migrate its existing volume repositories to the new key; repositories belonging to another instance have to be migrated by that instance.
 
 > [!WARNING]
 > Keep your original `ARCANE_ENCRYPTION_KEY` until you've confirmed older volume backups open with the recovery key. A recovery key imported on a fresh installation can't unlock a repository that still uses the old password.
@@ -92,11 +82,7 @@ Pick one:
   2. Choose **Local**, **S3**, or **Local + S3**.
   3. For an S3 option, pick a saved destination.
 
-The table shows each run's trigger, destination, size, time, and status.
-
-- Failed runs show their error and can't be restored.
-- Only one backup, upload, or delete runs on a volume at a time.
-- A successful backup's row actions let you **Upload to S3** (making it Local + S3), or download it as a `tar.gz` archive.
+The table shows each run's trigger, destination, size, time, and status. Failed runs display their error and can't be restored, and only one backup, upload, or delete can run on a volume at a time. From a successful backup's row actions, you can **Upload to S3** (making it Local + S3) or download it as a `tar.gz` archive.
 
 ### Schedule backups
 
@@ -120,10 +106,7 @@ The table shows each run's trigger, destination, size, time, and status.
 | Destination                       | **Local**, **S3**, or **Local + S3**. If S3 is included, also pick the S3 destination.       |
 | **Stop containers during backup** | Stops running containers that use the volume, takes the snapshot, then starts them again.    |
 
-- Turn on **Stop containers during backup** for apps that write constantly, such as databases. Otherwise the restore point may be inconsistent.
-- Leaving it off avoids downtime.
-- On-demand **Create Backup** never stops containers.
-- Scheduled and on-demand runs appear in the same table and in the Activity Center.
+Turn on **Stop containers during backup** for apps that write constantly, like databases, so the restore point stays consistent. Leaving it off avoids downtime, and on-demand **Create Backup** runs never stop containers. Both scheduled and on-demand runs show up in the same table and in the Activity Center.
 
 ### Restore a volume
 
@@ -133,9 +116,7 @@ The table shows each run's trigger, destination, size, time, and status.
 4. Read the **Restore Volume** warning. It lists any containers Arcane will stop.
 5. Click **Restore** to confirm.
 
-- A whole-volume restore deletes files that aren't in the snapshot.
-- If a restore fails partway, roll back with the safety backup.
-- Restoring to a volume that doesn't exist creates it, with no safety backup.
+A whole-volume restore deletes any files that aren't in the snapshot. If a restore fails partway through, you can roll back using the safety backup. Restoring to a volume that doesn't exist yet creates it without a safety backup.
 
 #### What happens during restore
 
@@ -155,10 +136,7 @@ Manual deletes also try every stored copy:
 - If local deletion succeeds but S3 fails, the row stays as S3-only, with the error.
 - If any remote copy can't be deleted, the row stays.
 
-Disk space comes back slowly, up to two days later:
-
-- Arcane prunes local system and volume repositories twice a day, in the 04:00 and 16:00 hours of the configured timezone. The exact minute differs per installation.
-- Rustic keeps deleted data about a day before a prune removes it.
+Disk space comes back gradually, up to two days later. Arcane prunes local system and volume repositories twice a day (during the 04:00 and 16:00 hours of the configured timezone, at a minute that varies per installation), and Rustic holds onto deleted data for about a day before a prune clears it.
 
 #### Unmanaged backups
 
@@ -185,14 +163,54 @@ To back up many volumes with one schedule (admin only):
 | **Allowlist**   | Only the selected volumes. New volumes are left out until you select them.     |
 | **Blocklist**   | Every volume except the selected ones. New volumes are included automatically. |
 
-- Each run reads Docker's current volume list.
-- **Ignore anonymous volumes** skips unnamed volumes.
-- **Run now** reports matched, successful, failed, and skipped volumes.
-- Results appear in each volume's **Backups** tab as **System-managed**, next to **Volume-managed** backups.
+Each run reads Docker's current volume list, and you can enable **Ignore anonymous volumes** to skip unnamed ones. **Run now** reports matched, successful, failed, and skipped volumes, and results appear in each volume's **Backups** tab as **System-managed**, alongside **Volume-managed** backups.
+
+## Project backups
+
+Back up a Compose project's files and the data of its selected volumes together as one snapshot. When the project's containers are stopped during the snapshot, the files and volumes restore to the same point in time.
+
+### Create a project backup
+
+1. Open a project and select its **Backups** tab.
+2. Click **Create Backup**, or open the dropdown to choose **Local**, **S3**, or **Local + S3** (with a saved S3 destination).
+3. Select the volumes to include. External volumes and volumes using driver options that store data outside Docker aren't backed up. If the project has no volumes, only its files are backed up.
+4. Optional: turn on **Stop containers during backup** so Arcane stops the project's running containers for a consistent snapshot and starts them again afterward. Other containers keep running.
+
+### Schedule project backups
+
+You can schedule backups for one project, or set up a global schedule for many projects at once.
+
+**Per project:**
+
+1. Open the project's **Backups** tab and click **Add schedule**.
+2. Set the cron schedule, retention (**Backups to keep**, `0` keeps all), destination (**Local**, **S3**, or **Local + S3**), volumes, and whether to stop containers during the snapshot.
+3. Save.
+
+**Global schedule (admin only):**
+
+1. Open **System → Backups** and click **Create schedule**.
+2. Choose **Project**.
+3. Set the schedule, retention (per project), destination, and whether to stop each project's containers during its snapshot.
+4. Pick which projects to include:
+
+| Mode             | Included projects                                                               |
+| ---------------- | ------------------------------------------------------------------------------- |
+| **All projects** | Every current and future project.                                               |
+| **Allowlist**    | Only the selected projects. New projects are excluded until you select them.    |
+| **Blocklist**    | Every project except the selected ones. New projects are included automatically.|
+
+Rules are checked against the server's projects at every run. If a project has its own enabled backup schedule, that schedule handles it instead of the global one.
+
+### Restore a project
+
+1. Open the project's **Backups** tab, find a successful backup, and open its row menu.
+2. Click **Restore** and confirm.
+
+Arcane stops the project's containers, restores its files and selected volumes, and starts it again if it was running.
 
 ## Back up Arcane itself
 
-System backups save Arcane's application data and runtime configuration, so you can recover the whole installation.
+System backups save Arcane's own application data and runtime configuration, so you can recover the installation. Projects are backed up separately with [Project backups](#project-backups).
 
 Requirements:
 
@@ -208,9 +226,7 @@ Requirements:
 3. Set the cron expression, destination (**Local**, **S3**, or **Local + S3**), S3 destination, and retention.
 4. Save.
 
-- For a one-off backup, reuse a saved schedule's configuration or pick a destination.
-- Local backups can be uploaded to S3 later.
-- If one copy of a Local + S3 backup can't be read, restores and file browsing use the other.
+For a one-off backup, you can reuse a saved schedule's configuration or pick a destination directly. Local backups can be uploaded to S3 later, and if one copy of a Local + S3 backup becomes unreadable, restores and file browsing fall back to the other.
 
 ### Remote agents
 
@@ -221,22 +237,16 @@ Each system backup on the manager also starts one on every connected remote agen
 | Local       | `/backups` on the agent host.                                        |
 | S3          | `arcane-environment-recovery/<instance ID>` under the object prefix. |
 
-- Agent backups are listed under **System → Backups** with their agent.
-- An agent that is offline is skipped. The Activity Center shows it as failed, and the manager's backup still succeeds.
-- Agent backups show the **Manager** trigger.
-- The schedule's retention count applies to the manager only. Agent backups are deleted after the [Unmanaged Backup Retention](#unmanaged-backups) window on that agent, and kept forever when it is `0`.
-- An agent's backup supports **Restore files**, **Upload to S3**, and **Delete**. A full **Restore** is manager-only.
-- Only the agent that made a backup can restore from it. A replacement agent can't import one.
+Agent backups appear under **System → Backups** tagged with their agent and the **Manager** trigger. If an agent is offline, it's skipped and marked failed in the Activity Center, while the manager's own backup still succeeds.
 
-Each agent encrypts with its own key, derived from your recovery key and the agent ID. The agent stores that key, so its backups never ask for one.
+The schedule's retention count applies only to the manager; agent backups are cleaned up after that agent's [Unmanaged Backup Retention](#unmanaged-backups) window (or kept forever if set to `0`). Agent backups support **Restore files**, **Upload to S3**, and **Delete**, while a full **Restore** is manager-only. Only the agent that created a backup can restore from it—a replacement agent can't import one.
 
-- Resetting the recovery key moves each agent to its new key at the next system backup.
-- The first system backup also moves the agent's existing volume backups to its key.
+Each agent encrypts with its own key derived from your recovery key and the agent ID, and stores it locally so its backups never prompt for one. Resetting the recovery key moves each agent to its new key on the next system backup, and the first system backup also migrates the agent's existing volume backups to that key.
 
 ### Restore Arcane
 
 > [!CAUTION]
-> A system restore replaces Arcane's current database, users, settings, destinations, secrets, and other application data with the selected restore point.
+> A system restore replaces Arcane's current database, users, settings, destinations, secrets, and other application data with the selected restore point. Backups made without projects leave project folders untouched; restore projects from their [project backups](#project-backups). Older backups and safety backups that include projects still restore them.
 
 1. As an admin, open **System → Backups**.
 2. Find a successful **System** backup and open its row menu.
@@ -260,12 +270,7 @@ Each agent encrypts with its own key, derived from your recovery key and the age
 3. Select project files or folders, or use **Select all**.
 4. Restore.
 
-- Arcane first takes a full local safety backup. Containers keep running.
-- Selected files overwrite those paths. A restored folder loses files that aren't in the snapshot.
-- If any file fails, restored files are rolled back.
-- Files from a remote agent's backup are restored on that agent.
-- Database, settings, and secrets need a full system restore.
-- Browsing needs `system-backups:read`. Restoring needs `system-backups:restore`. Both are admin-only.
+Arcane takes a full local safety backup before restoring while containers keep running. Selected files overwrite those paths, and restoring a folder removes any files that aren't in the snapshot. If any file fails, the restored files are rolled back. Files from a remote agent's backup are restored directly on that agent. To restore the database, settings, or secrets, run a full system restore instead. Browsing requires `system-backups:read` and restoring requires `system-backups:restore` (both admin-only).
 
 ## Recover backups on another installation
 
@@ -273,11 +278,7 @@ Each agent encrypts with its own key, derived from your recovery key and the age
 2. Add the S3 destination with the same bucket and object prefix.
 3. Open **System → Backups** to see the restore points Arcane found.
 
-With a recovery key stored, Arcane searches each instance directory in the destination for system and volume snapshots it can decrypt.
-
-- The search runs whenever you save an S3 destination or open the Backups page.
-- A failure in one directory doesn't stop the others.
-- **Find S3 backups** runs the same search on demand, for system backups.
+With a recovery key stored, Arcane searches local storage (`/backups`) and each instance directory in your S3 destinations for system, project, and volume snapshots it can decrypt. This also lets Arcane rediscover local backups if its data volume is lost. The search runs whenever you save an S3 destination or open the Backups page (a failure in one directory won't stop the others), and you can click **Find S3 backups** to trigger it on demand for system backups.
 
 ## Reference
 
