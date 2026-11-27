@@ -128,15 +128,15 @@ Everything that changed in 3.0, for reference. The steps above cover what you mu
 
 Change these on every agent:
 
-| 2.x                          | 3.0                               |
-| ---------------------------- | --------------------------------- |
-| `EDGE_AGENT=true`            | `ARCANE_AGENT=true`               |
-| `EDGE_TRANSPORT`             | `ARCANE_AGENT_TRANSPORT`          |
-| `EDGE_RECONNECT_INTERVAL`    | `ARCANE_AGENT_RECONNECT_INTERVAL` |
-| `EDGE_MTLS_*`                | `ARCANE_AGENT_MTLS_*`             |
-| `EDGE_TRANSPORT=poll`        | Remove it. Use `auto` (default).  |
-| `EDGE_MUX_DISABLED`          | Remove it.                        |
-| Health checks on port `3553` | Remove them.                      |
+| 2.x                          | 3.0                                                                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `EDGE_AGENT=true`            | `ARCANE_AGENT=true`                                                                                         |
+| `EDGE_TRANSPORT`             | `ARCANE_AGENT_TRANSPORT`                                                                                    |
+| `EDGE_RECONNECT_INTERVAL`    | `ARCANE_AGENT_RECONNECT_INTERVAL`                                                                           |
+| `EDGE_MTLS_*`                | `ARCANE_AGENT_MTLS_*`                                                                                       |
+| `EDGE_TRANSPORT=poll`        | Remove it. Use `auto` (default).                                                                            |
+| `EDGE_MUX_DISABLED`          | Remove it.                                                                                                  |
+| Health checks on port `3553` | Remove HTTP checks; use `./arcane-agent health` instead ([Health check](/docs/remote/agents#health-check)). |
 
 - `ARCANE_EDGE_*` and `EDGE_*` names stop startup with `rename X to ARCANE_AGENT_*`.
 - `ARCANE_AGENT_TRANSPORT` accepts `auto`, `grpc`, or `websocket`. Anything else stops startup.

@@ -52,7 +52,20 @@ The agent won't start without `ARCANE_MANAGER_API_URL` and `ARCANE_AGENT_TOKEN`.
 
 An existing agent API key (`arc_…`, not `arc_etkn_…`) in `ARCANE_AGENT_TOKEN` still works as-is.
 
-The agent listens on no port, so HTTP health checks like the old `curl http://localhost:3553/api/health` no longer work. Watch the agent's status in Arcane instead.
+### Health check
+
+The agent opens no port, so HTTP health checks like the old `curl http://localhost:3553/api/health` don't work. Use the built-in `arcane-agent health` command instead—it probes `/api/health` over the agent's local Unix socket (`data/agent-health.sock`):
+
+```yaml
+healthcheck:
+  test: ["CMD", "./arcane-agent", "health", "--timeout", "2s"]
+  interval: 10s
+  timeout: 3s
+  retries: 5
+  start_period: 15s
+```
+
+This checks that the agent process is running and not shutting down (run it from the agent's working directory so it finds `data/agent-health.sock`). Watch the agent's status in Arcane for tunnel connectivity to the Manager.
 
 ### Choose a transport
 
